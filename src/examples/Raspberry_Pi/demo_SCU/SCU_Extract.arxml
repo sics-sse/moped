@@ -1,0 +1,1262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 autosar_4-1-1.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>SCU</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Types</SHORT-NAME>
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE UUID="6ac054e9-61ae-3bfa-8c25-03ccbb76aa87">
+              <SHORT-NAME>UInt8</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BaseTypes/uint8</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE UUID="dfe133af-72de-3083-8c8a-31dc5d752824">
+              <SHORT-NAME>UInt32</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BaseTypes/uint32</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE UUID="b616bd6c-74dd-3a18-8d37-cf4b2630d1f5">
+              <SHORT-NAME>UInt16</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BaseTypes/uint16</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE UUID="86ed56bd-7635-3269-9b03-8490b9b01edf">
+              <SHORT-NAME>Array8</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL />
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT UUID="22d4770c-ca59-47d2-9e22-2349b996c359">
+                  <SHORT-NAME>Array8_elementsImpl</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>8</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE UUID="40806678-a94d-3656-b29c-b2b9f04b509f">
+              <SHORT-NAME>Array16</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL />
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT UUID="5edcd6b2-15c9-43e7-82fa-332a33119ad1">
+                  <SHORT-NAME>Array16_elementsImpl</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>8</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE UUID="fce45ab3-2241-397c-bcc8-5e9015b91b8e">
+              <SHORT-NAME>Array3</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL />
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT UUID="48155785-3ad7-43f3-839a-fad5ebfe25f8">
+                  <SHORT-NAME>Array3_elementsImpl</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>3</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>Extract</SHORT-NAME>
+          <ELEMENTS>
+            <COMPOSITION-SW-COMPONENT-TYPE UUID="6676142a-7615-30d9-aa59-7be82cf65e72">
+              <SHORT-NAME>demo_SCU</SHORT-NAME>
+              <PORTS>
+                <R-PORT-PROTOTYPE UUID="34c0bf7a-1dd4-349c-9df6-b3b4d2ffba2b">
+                  <SHORT-NAME>pluginCommunicationVCUtoSCUsignal</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="58f1a5f3-06f2-38ca-bccb-59926067b658">
+                  <SHORT-NAME>pluginCommunicationSCUtoVCUsignal</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="9cab9a06-d832-3376-917e-0198f9377838">
+                  <SHORT-NAME>pluginCommunicationTCUtoSCUsignal</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="c52879c5-96ef-30f1-838b-afc1a315d3f3">
+                  <SHORT-NAME>pluginCommunicationSCUtoTCUsignal</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="e045789f-2268-3fde-be7b-c82149fd4c30">
+                  <SHORT-NAME>pluginInstallationSCUsignal</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="4216feea-8d33-3a4e-a47e-b46c4411c5f9">
+                  <SHORT-NAME>acknowledgementSCUsignal</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface2</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+              </PORTS>
+              <COMPONENTS>
+                <SW-COMPONENT-PROTOTYPE UUID="b0505476-bc2d-308a-8306-1a2ee9869c2f">
+                  <SHORT-NAME>PirteSWCProto</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/SCU/Components/PirteSWC</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="2820bd19-9095-3cc0-ae35-905f7f2b54ef">
+                  <SHORT-NAME>ImuSWCProto</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/SCU/Components/ImuSWC</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="f0eaebd0-8c39-3fdb-84aa-da8067ee4fbd">
+                  <SHORT-NAME>UltraSWCProto</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/SCU/Components/UltraSWC</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="23ba67e9-cdb2-3f7d-b9b0-91dc0e482f8c">
+                  <SHORT-NAME>IoHwAbService</SHORT-NAME>
+                  <TYPE-TREF DEST="SERVICE-SW-COMPONENT-TYPE">/SCU/Components/IoHwAb</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+              </COMPONENTS>
+              <CONNECTORS>
+                <ASSEMBLY-SW-CONNECTOR UUID="855d68e1-29c7-38c5-8a1a-e6aab2feefe7">
+                  <SHORT-NAME>ImuSWCProto_ImuSwcWriteGyroDataToPirteSwcPort1_to_PirteSWCProto_PirteSwcReadDataFromImuGyroPort7</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/ImuSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcWriteGyroDataToPirteSwcPort1</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromImuGyroPort7</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="68c8dc6e-f033-337b-919a-336dc2d4dfb6">
+                  <SHORT-NAME>ImuSWCProto_ImuSwcWriteAcceDataToPirteSwcPort2_to_PirteSWCProto_PirteSwcReadDataFromImuAccePort8</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/ImuSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcWriteAcceDataToPirteSwcPort2</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromImuAccePort8</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="adfad40b-204f-3962-b936-48e096a46b9e">
+                  <SHORT-NAME>UltraSWCProto_UltraSwcDataOutPort2_to_PirteSWCProto_PirteSwcReadDataFromUltraSwcPort9</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/UltraSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/UltraSWC/UltraSwcDataOutPort2</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromUltraSwcPort9</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="04e29ca0-3dc1-3be1-8cc3-55331cbfab8d">
+                  <SHORT-NAME>IoHwAbService_IoHwGyroDataInPort1_to_ImuSWCProto_ImuSwcToIoHwGyroDataInPort3</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/IoHwAbService</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwGyroDataInPort1</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/ImuSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcToIoHwGyroDataInPort3</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="40b4dadd-3067-3526-a93d-25532f7e5eb9">
+                  <SHORT-NAME>IoHwAbService_IoHwAcceDataInPort2_to_ImuSWCProto_ImuSwcToIoHwAcceDataInPort4</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/IoHwAbService</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwAcceDataInPort2</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/ImuSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcToIoHwAcceDataInPort4</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="293c3f70-40c9-3887-b96a-65a22ca85b1e">
+                  <SHORT-NAME>IoHwAbService_IoHwUltraDataInPort3_to_UltraSWCProto_UltraSwcDataInPort1</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/IoHwAbService</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwUltraDataInPort3</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/UltraSWCProto</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/UltraSWC/UltraSwcDataInPort1</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="b77b4935-0f77-3ecb-9a29-59b65731796b">
+                  <SHORT-NAME>pluginCommunicationVCUtoSCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromVCUPort1</TARGET-R-PORT-REF>
+                    </R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationVCUtoSCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="61263247-d415-3886-95c2-c52a28748f69">
+                  <SHORT-NAME>pluginCommunicationSCUtoVCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteDataToVCUPort2</TARGET-P-PORT-REF>
+                    </P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationSCUtoVCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="d2e5fb75-ee54-3cd7-acd8-b030a8ddee21">
+                  <SHORT-NAME>pluginCommunicationTCUtoSCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadCommDataFromTCUPort3</TARGET-R-PORT-REF>
+                    </R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationTCUtoSCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="2a94eff4-1511-3ca6-a060-93ec7156eef7">
+                  <SHORT-NAME>pluginCommunicationSCUtoTCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteCommDataToTCUPort4</TARGET-P-PORT-REF>
+                    </P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationSCUtoTCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="8a3c5a79-6f0f-3817-abf1-4a0b437d1ff1">
+                  <SHORT-NAME>pluginInstallationSCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadInstallDataFromTCUPort5</TARGET-R-PORT-REF>
+                    </R-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginInstallationSCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+                <DELEGATION-SW-CONNECTOR UUID="9759ed09-0021-3a42-a903-64c18ddc6b88">
+                  <SHORT-NAME>acknowledgementSCUsignal_delegate_connector0</SHORT-NAME>
+                  <INNER-PORT-IREF>
+                    <P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                      <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</CONTEXT-COMPONENT-REF>
+                      <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteAckDataToTCUPort6</TARGET-P-PORT-REF>
+                    </P-PORT-IN-COMPOSITION-INSTANCE-REF>
+                  </INNER-PORT-IREF>
+                  <OUTER-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/acknowledgementSCUsignal</OUTER-PORT-REF>
+                </DELEGATION-SW-CONNECTOR>
+              </CONNECTORS>
+            </COMPOSITION-SW-COMPONENT-TYPE>
+            <SYSTEM UUID="6a59e90c-1d06-43e2-853c-4e3eab2f4909">
+              <SHORT-NAME>demo_SCUEcuExtract</SHORT-NAME>
+              <CATEGORY>ECU_EXTRACT</CATEGORY>
+              <MAPPINGS>
+                <SYSTEM-MAPPING UUID="df383aef-4a92-4fce-a9dc-6decca9a59f9">
+                  <SHORT-NAME>ImplementationMappings</SHORT-NAME>
+                  <SW-IMPL-MAPPINGS>
+                    <SWC-TO-IMPL-MAPPING UUID="2ca58dfa-5e79-4939-a5cf-e0053e000a97">
+                      <SHORT-NAME>PirteSWCProtoMapping</SHORT-NAME>
+                      <COMPONENT-IMPLEMENTATION-REF DEST="SWC-IMPLEMENTATION">/SCU/Components/PirteSwcImplementation</COMPONENT-IMPLEMENTATION-REF>
+                      <COMPONENT-IREFS>
+                        <COMPONENT-IREF>
+                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/PirteSWCProto</TARGET-COMPONENT-REF>
+                        </COMPONENT-IREF>
+                      </COMPONENT-IREFS>
+                    </SWC-TO-IMPL-MAPPING>
+                    <SWC-TO-IMPL-MAPPING UUID="706419ce-58d3-46ef-86cd-d2a442fb8f49">
+                      <SHORT-NAME>ImuSWCProtoMapping</SHORT-NAME>
+                      <COMPONENT-IMPLEMENTATION-REF DEST="SWC-IMPLEMENTATION">/SCU/Components/ImuSwcImplementation</COMPONENT-IMPLEMENTATION-REF>
+                      <COMPONENT-IREFS>
+                        <COMPONENT-IREF>
+                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/ImuSWCProto</TARGET-COMPONENT-REF>
+                        </COMPONENT-IREF>
+                      </COMPONENT-IREFS>
+                    </SWC-TO-IMPL-MAPPING>
+                    <SWC-TO-IMPL-MAPPING UUID="f271d1a6-8749-4683-bbe1-9eb635d07a74">
+                      <SHORT-NAME>UltraSWCProtoMapping</SHORT-NAME>
+                      <COMPONENT-IMPLEMENTATION-REF DEST="SWC-IMPLEMENTATION">/SCU/Components/UltraSwcImplementation</COMPONENT-IMPLEMENTATION-REF>
+                      <COMPONENT-IREFS>
+                        <COMPONENT-IREF>
+                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/UltraSWCProto</TARGET-COMPONENT-REF>
+                        </COMPONENT-IREF>
+                      </COMPONENT-IREFS>
+                    </SWC-TO-IMPL-MAPPING>
+                    <SWC-TO-IMPL-MAPPING UUID="791a3544-140b-45d4-a38a-7043ef84f81e">
+                      <SHORT-NAME>IoHwAbServiceMapping</SHORT-NAME>
+                      <COMPONENT-IMPLEMENTATION-REF DEST="SWC-IMPLEMENTATION">/SCU/Components/IoHwAbImplementation</COMPONENT-IMPLEMENTATION-REF>
+                      <COMPONENT-IREFS>
+                        <COMPONENT-IREF>
+                          <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                          <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/SCU/Extract/demo_SCU/IoHwAbService</TARGET-COMPONENT-REF>
+                        </COMPONENT-IREF>
+                      </COMPONENT-IREFS>
+                    </SWC-TO-IMPL-MAPPING>
+                  </SW-IMPL-MAPPINGS>
+                </SYSTEM-MAPPING>
+                <SYSTEM-MAPPING UUID="1a7ab231-75b3-424d-97b7-6473294a271b">
+                  <SHORT-NAME>SignalMappings</SHORT-NAME>
+                  <DATA-MAPPINGS>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationVCUtoSCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationVCUtoSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationSCUtoVCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationSCUtoVCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationTCUtoSCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationTCUtoSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginCommunicationSCUtoTCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationSCUtoTCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/pluginInstallationSCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginInstallationSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                    <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                      <DATA-ELEMENT-IREF>
+                        <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/SCU/Extract/demo_SCUEcuExtract/demo_SCUPrototype</CONTEXT-COMPOSITION-REF>
+                        <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Extract/demo_SCU/acknowledgementSCUsignal</CONTEXT-PORT-REF>
+                        <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface2/acknowledgementVCU</TARGET-DATA-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                      <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/acknowledgementSCUsignalacknowledgementVCUSSig</SYSTEM-SIGNAL-REF>
+                    </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                  </DATA-MAPPINGS>
+                </SYSTEM-MAPPING>
+              </MAPPINGS>
+              <ROOT-SOFTWARE-COMPOSITIONS>
+                <ROOT-SW-COMPOSITION-PROTOTYPE UUID="d2c65e64-a781-4b64-a9a7-19e557977294">
+                  <SHORT-NAME>demo_SCUPrototype</SHORT-NAME>
+                  <SOFTWARE-COMPOSITION-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/SCU/Extract/demo_SCU</SOFTWARE-COMPOSITION-TREF>
+                </ROOT-SW-COMPOSITION-PROTOTYPE>
+              </ROOT-SOFTWARE-COMPOSITIONS>
+            </SYSTEM>
+          </ELEMENTS>
+          <AR-PACKAGES>
+            <AR-PACKAGE UUID="c4fc3eff-634f-4abf-8a83-eb1f5cdcff8e">
+              <SHORT-NAME>SystemSignals</SHORT-NAME>
+              <ELEMENTS>
+                <SYSTEM-SIGNAL UUID="ddde29fc-2da7-4319-bfe4-1a9c2d84b443">
+                  <SHORT-NAME>pluginCommunicationVCUtoSCUsignalargInt32SSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+                <SYSTEM-SIGNAL UUID="1ead13a0-67f9-4aad-b13f-8676fc9678e6">
+                  <SHORT-NAME>pluginCommunicationSCUtoVCUsignalargInt32SSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+                <SYSTEM-SIGNAL UUID="d37a546f-aaa4-4b16-9147-32b9ac8dd66b">
+                  <SHORT-NAME>pluginCommunicationTCUtoSCUsignalargInt32SSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+                <SYSTEM-SIGNAL UUID="07ebed02-a99d-484f-b557-c13ff80fb16a">
+                  <SHORT-NAME>pluginCommunicationSCUtoTCUsignalargInt32SSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+                <SYSTEM-SIGNAL UUID="b1198a8a-7685-4874-a21b-651b81d30ed5">
+                  <SHORT-NAME>pluginInstallationSCUsignalargInt32SSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+                <SYSTEM-SIGNAL UUID="1c765c14-3dbd-496e-88e4-bc144a2c8c4a">
+                  <SHORT-NAME>acknowledgementSCUsignalacknowledgementVCUSSig</SHORT-NAME>
+                </SYSTEM-SIGNAL>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE UUID="a5766f98-ad9c-4b9a-ac73-e07c32f6ce99">
+              <SHORT-NAME>Communication</SHORT-NAME>
+              <ELEMENTS>
+                <I-SIGNAL UUID="931a3e65-0f80-464e-b832-f8ef4ca48e43">
+                  <SHORT-NAME>pluginCommunicationVCUtoSCUsignalargInt32ISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationVCUtoSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="8c58c400-abc4-4725-b9e8-05395914942c">
+                  <SHORT-NAME>pluginCommunicationVCUtoSCUsignalargInt32IPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="4342ac96-580e-4e07-a427-5c7ed0112496">
+                      <SHORT-NAME>pluginCommunicationVCUtoSCUsignalargInt32Mapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/pluginCommunicationVCUtoSCUsignalargInt32ISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+                <I-SIGNAL UUID="b7894156-7473-4b89-aca4-e47def73722e">
+                  <SHORT-NAME>pluginCommunicationSCUtoVCUsignalargInt32ISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationSCUtoVCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="1b7d99b5-e3b9-4c37-b1d7-2c103a039e81">
+                  <SHORT-NAME>pluginCommunicationSCUtoVCUsignalargInt32IPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="58a8b7df-7515-4a19-bb6f-338874b20150">
+                      <SHORT-NAME>pluginCommunicationSCUtoVCUsignalargInt32Mapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/pluginCommunicationSCUtoVCUsignalargInt32ISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+                <I-SIGNAL UUID="7f866141-b09e-48b4-93cd-598e32d6766a">
+                  <SHORT-NAME>pluginCommunicationTCUtoSCUsignalargInt32ISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationTCUtoSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="416b4570-6276-49e8-a8ec-bd2e22c8f856">
+                  <SHORT-NAME>pluginCommunicationTCUtoSCUsignalargInt32IPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="935dda48-46cc-4d68-a387-658fa8efd6fa">
+                      <SHORT-NAME>pluginCommunicationTCUtoSCUsignalargInt32Mapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/pluginCommunicationTCUtoSCUsignalargInt32ISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+                <I-SIGNAL UUID="954f8b44-660b-4dc9-b7d5-9dc1cb5c5f72">
+                  <SHORT-NAME>pluginCommunicationSCUtoTCUsignalargInt32ISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginCommunicationSCUtoTCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="0c45d769-4876-4f2b-b995-7fdd43bf7920">
+                  <SHORT-NAME>pluginCommunicationSCUtoTCUsignalargInt32IPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="0881f777-15a9-495f-a53a-9a2a2534f9e0">
+                      <SHORT-NAME>pluginCommunicationSCUtoTCUsignalargInt32Mapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/pluginCommunicationSCUtoTCUsignalargInt32ISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+                <I-SIGNAL UUID="1fba5f1b-d96b-45b0-9162-7084215f71c9">
+                  <SHORT-NAME>pluginInstallationSCUsignalargInt32ISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/pluginInstallationSCUsignalargInt32SSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="a8bb151e-61de-4931-9640-dd899147f68a">
+                  <SHORT-NAME>pluginInstallationSCUsignalargInt32IPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="7ea4901a-922b-43ed-a471-5cc8a1dd2e1a">
+                      <SHORT-NAME>pluginInstallationSCUsignalargInt32Mapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/pluginInstallationSCUsignalargInt32ISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+                <I-SIGNAL UUID="52bde5ca-9a6a-459f-bdfb-d06fc1f77ef3">
+                  <SHORT-NAME>acknowledgementSCUsignalacknowledgementVCUISig</SHORT-NAME>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/SCU/Extract/SystemSignals/acknowledgementSCUsignalacknowledgementVCUSSig</SYSTEM-SIGNAL-REF>
+                </I-SIGNAL>
+                <I-SIGNAL-I-PDU UUID="6f5fbc3d-b8dd-4321-873f-ecbf6e442ead">
+                  <SHORT-NAME>acknowledgementSCUsignalacknowledgementVCUIPdu</SHORT-NAME>
+                  <I-SIGNAL-TO-PDU-MAPPINGS>
+                    <I-SIGNAL-TO-I-PDU-MAPPING UUID="8ecfc5ac-c49d-4ebb-ad25-1831377dc164">
+                      <SHORT-NAME>acknowledgementSCUsignalacknowledgementVCUMapping</SHORT-NAME>
+                      <I-SIGNAL-REF DEST="I-SIGNAL">/SCU/Extract/Communication/acknowledgementSCUsignalacknowledgementVCUISig</I-SIGNAL-REF>
+                    </I-SIGNAL-TO-I-PDU-MAPPING>
+                  </I-SIGNAL-TO-PDU-MAPPINGS>
+                </I-SIGNAL-I-PDU>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>Components</SHORT-NAME>
+          <ELEMENTS>
+            <APPLICATION-SW-COMPONENT-TYPE UUID="55235755-fc72-3090-9ad7-efa75d6e9d59">
+              <SHORT-NAME>PirteSWC</SHORT-NAME>
+              <PORTS>
+                <R-PORT-PROTOTYPE UUID="28a41b18-cac7-308c-9987-1fce0c63219a">
+                  <SHORT-NAME>PirteSwcReadDataFromVCUPort1</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="a14e4089-5dfd-3654-b12e-6fe9cc3f9b97">
+                  <SHORT-NAME>PirteSwcWriteDataToVCUPort2</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="2dadc4d4-baa8-3e7f-aab4-9d240e80f95f">
+                  <SHORT-NAME>PirteSwcReadCommDataFromTCUPort3</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="73cd1dac-fcfa-3ffe-aa70-81553384afc3">
+                  <SHORT-NAME>PirteSwcWriteCommDataToTCUPort4</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="c8d320da-6326-3517-9c5b-a5cca1b14fd3">
+                  <SHORT-NAME>PirteSwcReadInstallDataFromTCUPort5</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface1</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="80a40456-be5a-36c1-8a2a-f0c33ca11209">
+                  <SHORT-NAME>PirteSwcWriteAckDataToTCUPort6</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface2</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="ebd89062-f162-357f-927d-bd1fca8de36c">
+                  <SHORT-NAME>PirteSwcReadDataFromImuGyroPort7</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface3</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="17dcaa52-ab8f-312e-a2df-0059b30c5858">
+                  <SHORT-NAME>PirteSwcReadDataFromImuAccePort8</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface3</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="6113e3c0-e46e-321d-b3b4-75f8e8bb9ac6">
+                  <SHORT-NAME>PirteSwcReadDataFromUltraSwcPort9</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface4</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR UUID="3a4a0e5e-fb8d-356e-8cb2-56a63fcf65d4">
+                  <SHORT-NAME>PirteSwcBehavior</SHORT-NAME>
+                  <EVENTS>
+                    <DATA-RECEIVED-EVENT UUID="7fd54a75-9419-4d6e-870f-50d291db46ba">
+                      <SHORT-NAME>VCUdataInEvent</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/PirteSWC/PirteSwcBehavior/SCU_Communication_VCU_ReadRunnable</START-ON-EVENT-REF>
+                      <DATA-IREF>
+                        <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromVCUPort1</CONTEXT-R-PORT-REF>
+                        <TARGET-DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-ELEMENT-REF>
+                      </DATA-IREF>
+                    </DATA-RECEIVED-EVENT>
+                    <DATA-RECEIVED-EVENT UUID="3f206b79-1918-45d7-b231-da263b843e78">
+                      <SHORT-NAME>TCUdataInEvent</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/PirteSWC/PirteSwcBehavior/SCU_Communication_TCU_ReadRunnable</START-ON-EVENT-REF>
+                      <DATA-IREF>
+                        <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadCommDataFromTCUPort3</CONTEXT-R-PORT-REF>
+                        <TARGET-DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-ELEMENT-REF>
+                      </DATA-IREF>
+                    </DATA-RECEIVED-EVENT>
+                    <DATA-RECEIVED-EVENT UUID="5ba82ab7-c57d-4825-8860-dbf9b4b0c159">
+                      <SHORT-NAME>SCUInstallEvent</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/PirteSWC/PirteSwcBehavior/SCU_Installation_TCU_ReadRunnable</START-ON-EVENT-REF>
+                      <DATA-IREF>
+                        <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadInstallDataFromTCUPort5</CONTEXT-R-PORT-REF>
+                        <TARGET-DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-ELEMENT-REF>
+                      </DATA-IREF>
+                    </DATA-RECEIVED-EVENT>
+                    <DATA-RECEIVED-EVENT UUID="6c88f2c6-eeb1-48e1-a4d5-200b0d8876b8">
+                      <SHORT-NAME>IMUDataInEvent</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/PirteSWC/PirteSwcBehavior/Pirte_ReadIMUSensor_Runnable</START-ON-EVENT-REF>
+                      <DATA-IREF>
+                        <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromImuGyroPort7</CONTEXT-R-PORT-REF>
+                        <TARGET-DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface3/dataUInt16</TARGET-DATA-ELEMENT-REF>
+                      </DATA-IREF>
+                    </DATA-RECEIVED-EVENT>
+                    <DATA-RECEIVED-EVENT UUID="65542716-8884-491e-aafe-b80c1b887e9d">
+                      <SHORT-NAME>UltraDataInEvent</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/PirteSWC/PirteSwcBehavior/Pirte_ReadUltrasonicSensor_Runnable</START-ON-EVENT-REF>
+                      <DATA-IREF>
+                        <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromUltraSwcPort9</CONTEXT-R-PORT-REF>
+                        <TARGET-DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface4/dataInt32</TARGET-DATA-ELEMENT-REF>
+                      </DATA-IREF>
+                    </DATA-RECEIVED-EVENT>
+                  </EVENTS>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY UUID="8ed7f58e-86ab-3559-bff5-5acf13b861d4">
+                      <SHORT-NAME>SCU_Communication_VCU_ReadRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS>
+                        <VARIABLE-ACCESS UUID="2ec5d0a4-0464-3e29-be86-4cac7b4698e1">
+                          <SHORT-NAME>dataReadAccess_SCU_Communication_VCU_ReadRunnable_PirteSwcReadDataFromVCUPort1_pluginCommunication</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromVCUPort1</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="2e897984-eedd-38ef-a8b5-2b474d8885ae">
+                          <SHORT-NAME>dataReadAccess_SCU_Communication_VCU_ReadRunnable_PirteSwcReadDataFromVCUPort1_argInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromVCUPort1</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-READ-ACCESSS>
+                      <SYMBOL>SCU_Communication_VCU_ReadRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="a83cb674-eb24-393a-86e1-2cbb0402382b">
+                      <SHORT-NAME>SCU_Communication_VCU_WriteRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-WRITE-ACCESSS>
+                        <VARIABLE-ACCESS UUID="683626a7-dc9f-38ea-9ad9-727d96be6a9d">
+                          <SHORT-NAME>dataWriteAccess_SCU_Communication_VCU_WriteRunnable_PirteSwcWriteDataToVCUPort2_pluginCommunication</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteDataToVCUPort2</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="e0a711bc-1581-35c6-8e60-31adc7972ead">
+                          <SHORT-NAME>dataWriteAccess_SCU_Communication_VCU_WriteRunnable_PirteSwcWriteDataToVCUPort2_argInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteDataToVCUPort2</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-WRITE-ACCESSS>
+                      <SYMBOL>SCU_Communication_VCU_WriteRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="c05b51cf-691a-37e4-bd3a-f26dca52a85b">
+                      <SHORT-NAME>SCU_Communication_TCU_ReadRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS>
+                        <VARIABLE-ACCESS UUID="fefbffc4-aec3-3c89-a7d2-f8d9ff755a68">
+                          <SHORT-NAME>dataReadAccess_SCU_Communication_TCU_ReadRunnable_PirteSwcReadCommDataFromTCUPort3_pluginCommunication</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadCommDataFromTCUPort3</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="7ce3b35b-dc61-3a65-88b8-a9859149ca4f">
+                          <SHORT-NAME>dataReadAccess_SCU_Communication_TCU_ReadRunnable_PirteSwcReadCommDataFromTCUPort3_argInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadCommDataFromTCUPort3</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-READ-ACCESSS>
+                      <SYMBOL>SCU_Communication_TCU_ReadRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="3c9ccfe8-b5e7-3d1f-a2f4-80fedfa5d9a9">
+                      <SHORT-NAME>SCU_Communication_TCU_WriteRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-WRITE-ACCESSS>
+                        <VARIABLE-ACCESS UUID="74278875-3134-3e35-9569-86b22282b31a">
+                          <SHORT-NAME>dataWriteAccess_SCU_Communication_TCU_WriteRunnable_PirteSwcWriteCommDataToTCUPort4_pluginCommunication</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteCommDataToTCUPort4</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="6d01f0e0-0a3e-3f4a-bb05-09012fc89cb3">
+                          <SHORT-NAME>dataWriteAccess_SCU_Communication_TCU_WriteRunnable_PirteSwcWriteCommDataToTCUPort4_argInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteCommDataToTCUPort4</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-WRITE-ACCESSS>
+                      <SYMBOL>SCU_Communication_TCU_WriteRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="b03c2fab-d221-3602-86df-9cb5f426e210">
+                      <SHORT-NAME>SCU_Installation_TCU_ReadRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS>
+                        <VARIABLE-ACCESS UUID="ab3c6220-790e-3467-a72a-dcd478cb902d">
+                          <SHORT-NAME>dataReadAccess_SCU_Installation_TCU_ReadRunnable_PirteSwcReadInstallDataFromTCUPort5_pluginCommunication</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadInstallDataFromTCUPort5</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/pluginCommunication</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="28d3c161-6d8c-3adf-aa81-ff6d79a9f9a0">
+                          <SHORT-NAME>dataReadAccess_SCU_Installation_TCU_ReadRunnable_PirteSwcReadInstallDataFromTCUPort5_argInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadInstallDataFromTCUPort5</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface1/argInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-READ-ACCESSS>
+                      <SYMBOL>SCU_Installation_TCU_ReadRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="b9bef512-0b10-3e30-8644-961323127150">
+                      <SHORT-NAME>SCU_Installation_TCU_AckRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-WRITE-ACCESSS>
+                        <VARIABLE-ACCESS UUID="a6bafecd-b1d5-3cd6-96eb-499215adea17">
+                          <SHORT-NAME>dataWriteAccess_SCU_Installation_TCU_AckRunnable_PirteSwcWriteAckDataToTCUPort6_acknowledgementVCU</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcWriteAckDataToTCUPort6</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface2/acknowledgementVCU</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-WRITE-ACCESSS>
+                      <SYMBOL>SCU_Installation_TCU_AckRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="4100985b-d0aa-3c8c-8d3d-6d18053c038e">
+                      <SHORT-NAME>Pirte_ReadIMUSensor_Runnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS>
+                        <VARIABLE-ACCESS UUID="dc42a184-05ef-3940-a077-506a95435000">
+                          <SHORT-NAME>dataReadAccess_Pirte_ReadIMUSensor_Runnable_PirteSwcReadDataFromImuGyroPort7_dataUInt16</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromImuGyroPort7</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface3/dataUInt16</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="8d346470-7836-3156-bbac-44f05ef5c4a6">
+                          <SHORT-NAME>dataReadAccess_Pirte_ReadIMUSensor_Runnable_PirteSwcReadDataFromImuAccePort8_dataUInt16</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromImuAccePort8</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface3/dataUInt16</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-READ-ACCESSS>
+                      <SYMBOL>Pirte_ReadIMUSensor_Runnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="4990d1ad-d7d8-3d06-928e-cb29737f75bd">
+                      <SHORT-NAME>Pirte_ReadUltrasonicSensor_Runnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS>
+                        <VARIABLE-ACCESS UUID="7bbca265-425f-313a-90d2-897017f8fcdb">
+                          <SHORT-NAME>dataReadAccess_Pirte_ReadUltrasonicSensor_Runnable_PirteSwcReadDataFromUltraSwcPort9_dataInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/PirteSWC/PirteSwcReadDataFromUltraSwcPort9</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface4/dataInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-READ-ACCESSS>
+                      <SYMBOL>Pirte_ReadUltrasonicSensor_Runnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </APPLICATION-SW-COMPONENT-TYPE>
+            <APPLICATION-SW-COMPONENT-TYPE UUID="d1a3607d-5519-3a87-9f25-f2a49c96b729">
+              <SHORT-NAME>ImuSWC</SHORT-NAME>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="fc46cb4e-574b-366d-ab73-d4b97c2e0e94">
+                  <SHORT-NAME>ImuSwcWriteGyroDataToPirteSwcPort1</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface3</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="436f2de6-c45c-347c-a477-ecac10cbf570">
+                  <SHORT-NAME>ImuSwcWriteAcceDataToPirteSwcPort2</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface3</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="093a3a00-c6fe-39ac-9be6-e12ac1404b84">
+                  <SHORT-NAME>ImuSwcToIoHwGyroDataInPort3</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="a8bafa5d-7315-3a04-bd72-b5e4f3ac9a0d">
+                  <SHORT-NAME>ImuSwcToIoHwAcceDataInPort4</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR UUID="d1eb6f62-f6ce-3219-8c47-66cdf9308690">
+                  <SHORT-NAME>ImuSwcBehavior</SHORT-NAME>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY UUID="a9271724-7c2f-33cc-a43f-fd661f215dff">
+                      <SHORT-NAME>ImuSwcRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-WRITE-ACCESSS>
+                        <VARIABLE-ACCESS UUID="59664187-cf29-365d-8b22-696e9d6d751a">
+                          <SHORT-NAME>dataWriteAccess_ImuSwcRunnable_ImuSwcWriteGyroDataToPirteSwcPort1_dataUInt16</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcWriteGyroDataToPirteSwcPort1</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface3/dataUInt16</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                        <VARIABLE-ACCESS UUID="5df4141b-9bdb-36f4-bd93-8f84d75395ac">
+                          <SHORT-NAME>dataWriteAccess_ImuSwcRunnable_ImuSwcWriteAcceDataToPirteSwcPort2_dataUInt16</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcWriteAcceDataToPirteSwcPort2</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface3/dataUInt16</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-WRITE-ACCESSS>
+                      <SERVER-CALL-POINTS>
+                        <SYNCHRONOUS-SERVER-CALL-POINT UUID="17aed843-fc8e-339d-a225-fcd110770fee">
+                          <SHORT-NAME>ImuSwcToIoHwGyroDataInPort3_Read</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcToIoHwGyroDataInPort3</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT UUID="6f6272ea-7b6a-3d6c-a70d-5202ded187eb">
+                          <SHORT-NAME>ImuSwcToIoHwAcceDataInPort4_Read</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/ImuSWC/ImuSwcToIoHwAcceDataInPort4</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                      </SERVER-CALL-POINTS>
+                      <SYMBOL>ImuSwcRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </APPLICATION-SW-COMPONENT-TYPE>
+            <APPLICATION-SW-COMPONENT-TYPE UUID="844f7f9e-e7b5-328c-b788-22737da5e492">
+              <SHORT-NAME>UltraSWC</SHORT-NAME>
+              <PORTS>
+                <R-PORT-PROTOTYPE UUID="a67532ef-847f-3b6d-871e-00c521a5312a">
+                  <SHORT-NAME>UltraSwcDataInPort1</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="cd0a7a44-d02e-36f8-ac9a-ec98d57c5b86">
+                  <SHORT-NAME>UltraSwcDataOutPort2</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SCU/Interfaces/SRInterface4</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR UUID="df074727-56d4-31f0-855d-d4cd73e5087d">
+                  <SHORT-NAME>UltraSwcBehavior</SHORT-NAME>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY UUID="388ecf32-8134-30d7-b428-f2f14f1c067e">
+                      <SHORT-NAME>UltrasonicRunnable</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-WRITE-ACCESSS>
+                        <VARIABLE-ACCESS UUID="3245db0a-b89e-363a-aa51-d93ec3f333f5">
+                          <SHORT-NAME>dataWriteAccess_UltrasonicRunnable_UltraSwcDataOutPort2_dataInt32</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/UltraSWC/UltraSwcDataOutPort2</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/SCU/Interfaces/SRInterface4/dataInt32</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+                      </DATA-WRITE-ACCESSS>
+                      <SERVER-CALL-POINTS>
+                        <SYNCHRONOUS-SERVER-CALL-POINT UUID="0c184325-3b16-3e42-8de9-f55c546d709d">
+                          <SHORT-NAME>UltraSwcDataInPort1_Read</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/SCU/Components/UltraSWC/UltraSwcDataInPort1</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                      </SERVER-CALL-POINTS>
+                      <SYMBOL>UltrasonicRunnable</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </APPLICATION-SW-COMPONENT-TYPE>
+            <SERVICE-SW-COMPONENT-TYPE UUID="bb3f1b31-4f7b-3ebc-ad97-c8d22946f9d6">
+              <SHORT-NAME>IoHwAb</SHORT-NAME>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="555c6109-393f-3c16-98d0-0d862d1c8f31">
+                  <SHORT-NAME>IoHwGyroDataInPort1</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="c4bf84d1-ab8a-3602-b5b4-850f64de5476">
+                  <SHORT-NAME>IoHwAcceDataInPort2</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="e280dca8-5a2e-34e3-9a20-cd60cd14d65d">
+                  <SHORT-NAME>IoHwUltraDataInPort3</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/SCU/Interfaces/GetData</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR UUID="8500d432-35e0-3c14-89aa-60436a824663">
+                  <SHORT-NAME>IoHwAbBehavior</SHORT-NAME>
+                  <EVENTS>
+                    <OPERATION-INVOKED-EVENT UUID="20fbf85b-9193-44a4-a3f5-b9fb5e4c374e">
+                      <SHORT-NAME>IoHwGyroDataInPort1_Read</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/IoHwAb/IoHwAbBehavior/ImuSensorRead</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwGyroDataInPort1</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT UUID="5e01f78d-712a-4e93-9f36-4deedea3033f">
+                      <SHORT-NAME>IoHwAcceDataInPort2_Read</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/IoHwAb/IoHwAbBehavior/ImuSensorRead</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwAcceDataInPort2</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT UUID="8bd37365-0d80-46d1-899c-fc28e608744e">
+                      <SHORT-NAME>IoHwUltraDataInPort3_Read</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/SCU/Components/IoHwAb/IoHwAbBehavior/UltraSensorRead</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwUltraDataInPort3</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/SCU/Interfaces/GetData/Read</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                  </EVENTS>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <PORT-API-OPTIONS>
+                    <PORT-API-OPTION>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>Array3</SHORT-LABEL>
+                              <VALUE>0</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/Array3</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwGyroDataInPort1</PORT-REF>
+                    </PORT-API-OPTION>
+                    <PORT-API-OPTION>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>Array3</SHORT-LABEL>
+                              <VALUE>0</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/Array3</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwAcceDataInPort2</PORT-REF>
+                    </PORT-API-OPTION>
+                    <PORT-API-OPTION>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>UInt32</SHORT-LABEL>
+                              <VALUE>0</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt32</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/SCU/Components/IoHwAb/IoHwUltraDataInPort3</PORT-REF>
+                    </PORT-API-OPTION>
+                  </PORT-API-OPTIONS>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY UUID="51d609ba-2e66-3160-b552-1f99b24f7d63">
+                      <SHORT-NAME>ImuSensorRead</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>ImuSensorRead</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY UUID="a03b6e91-d37c-3f6b-98a0-f13029ff8911">
+                      <SHORT-NAME>UltraSensorRead</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>1.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>UltraSensorRead</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE>
+            <SWC-IMPLEMENTATION UUID="ec716865-7569-363e-a892-e2ea22498329">
+              <SHORT-NAME>PirteSwcImplementation</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE UUID="f9fc0497-eea5-36cd-a3ef-f3a10dce7ea1">
+                  <SHORT-NAME>src</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>artifactDescriptor</SHORT-LABEL>
+                      <CATEGORY>artifactDescriptorCategory</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION UUID="16e59954-a43c-3ab1-a5e0-6e68b21160b9">
+                <SHORT-NAME>resourceConsumption</SHORT-NAME>
+              </RESOURCE-CONSUMPTION>
+              <VENDOR-ID>0</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/SCU/Components/PirteSWC/PirteSwcBehavior</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+            <SWC-IMPLEMENTATION UUID="733b5eff-c6da-3c8d-84f6-bc16380f8653">
+              <SHORT-NAME>ImuSwcImplementation</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE UUID="9f4331a0-d49a-3ca9-8b48-824782d40488">
+                  <SHORT-NAME>src</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>artifactDescriptor</SHORT-LABEL>
+                      <CATEGORY>artifactDescriptorCategory</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION UUID="779ab88c-8e14-3ce7-ba43-ace01cba6fe1">
+                <SHORT-NAME>resourceConsumption</SHORT-NAME>
+              </RESOURCE-CONSUMPTION>
+              <VENDOR-ID>0</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/SCU/Components/ImuSWC/ImuSwcBehavior</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+            <SWC-IMPLEMENTATION UUID="b5d3143b-9c16-33b2-b463-f382d457b65b">
+              <SHORT-NAME>UltraSwcImplementation</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE UUID="8d768f4c-856b-3da2-b41d-51de09105352">
+                  <SHORT-NAME>src</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>artifactDescriptor</SHORT-LABEL>
+                      <CATEGORY>artifactDescriptorCategory</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION UUID="705e0ade-1523-3b06-bf5d-171ad690f3cb">
+                <SHORT-NAME>resourceConsumption</SHORT-NAME>
+              </RESOURCE-CONSUMPTION>
+              <VENDOR-ID>0</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/SCU/Components/UltraSWC/UltraSwcBehavior</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+            <SWC-IMPLEMENTATION UUID="76975f73-15e8-3f8f-bffb-098f5a8f897c">
+              <SHORT-NAME>IoHwAbImplementation</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE UUID="a9769717-d4e4-3a00-ae1c-2400b30bc2bb">
+                  <SHORT-NAME>src</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>artifactDescriptor</SHORT-LABEL>
+                      <CATEGORY>artifactDescriptorCategory</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION UUID="f601a9fa-c4df-3483-8b09-6b8daad874c3">
+                <SHORT-NAME>resourceConsumption</SHORT-NAME>
+              </RESOURCE-CONSUMPTION>
+              <VENDOR-ID>0</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/SCU/Components/IoHwAb/IoHwAbBehavior</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>Interfaces</SHORT-NAME>
+          <ELEMENTS>
+            <SENDER-RECEIVER-INTERFACE UUID="4bd72a4f-4242-39f2-8b14-9f04714bcac6">
+              <SHORT-NAME>SRInterface1</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE UUID="450ca18d-9fbd-31d1-b682-8c3aaa6b1501">
+                  <SHORT-NAME>argInt32</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt32</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+                <VARIABLE-DATA-PROTOTYPE UUID="aa0fddb4-28f6-3cf5-b33c-9069f36c4c1d">
+                  <SHORT-NAME>pluginCommunication</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/Array8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+            <SENDER-RECEIVER-INTERFACE UUID="9f89e4d9-36a4-3e61-9fa2-05ad61c4a810">
+              <SHORT-NAME>SRInterface2</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE UUID="72c80f19-a5d2-3767-9b0a-38b73cf5254f">
+                  <SHORT-NAME>acknowledgementVCU</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+            <SENDER-RECEIVER-INTERFACE UUID="e4715bd2-eb16-3b72-9bda-ae20e0f86318">
+              <SHORT-NAME>SRInterface3</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE UUID="4661419c-600a-3565-abc5-e4b34ffc5abd">
+                  <SHORT-NAME>dataUInt16</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/Array3</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+            <SENDER-RECEIVER-INTERFACE UUID="f8a8101a-8ef4-3afb-9010-004909c98605">
+              <SHORT-NAME>SRInterface4</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE UUID="cb58bf75-0abf-3c04-af21-00b52871bf4c">
+                  <SHORT-NAME>dataInt32</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/UInt32</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+            <CLIENT-SERVER-INTERFACE UUID="4ee7e7eb-5865-364d-ab0e-82899d2d5956">
+              <SHORT-NAME>GetData</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION UUID="8d42f674-17d3-34ae-b650-85b6c8f28701">
+                  <SHORT-NAME>Read</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE UUID="368635ba-30f9-3029-8136-5de060b6830d">
+                      <SHORT-NAME>Data</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SCU/Types/Array3</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/SCU/Interfaces/GetData/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/SCU/Interfaces/GetData/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR UUID="9422a8dc-2b63-381d-9093-e8cb7cd96ca5">
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR UUID="f10915b8-6ed2-3fd9-92e3-d038b14447d7">
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE UUID="1450521b-9371-4e94-8fa5-4946e7eb0711">
+      <SHORT-NAME>BaseTypes</SHORT-NAME>
+      <ELEMENTS>
+        <ECUC-VALUE-COLLECTION>
+          <SHORT-NAME>SCU</SHORT-NAME>
+          <ADMIN-DATA>
+            <SDGS>
+              <SDG GID="PROJECT_LOC/config">
+                <SD GID="_ExtensionKey">GENERATOR_OUTPUT_DIRECTORY</SD>
+                <SD GID="_Type">java.lang.String</SD>
+              </SDG>
+              <SDG GID="PROJECT_LOC">
+                <SD GID="_ExtensionKey">GENERATOR_OUTPUT_SERVICE_DIRECTORY</SD>
+                <SD GID="_Type">java.lang.String</SD>
+              </SDG>
+            </SDGS>
+          </ADMIN-DATA>
+        </ECUC-VALUE-COLLECTION>
+        <SW-BASE-TYPE>
+          <SHORT-NAME>uint8</SHORT-NAME>
+          <NATIVE-DECLARATION>uint8</NATIVE-DECLARATION>
+        </SW-BASE-TYPE>
+        <SW-BASE-TYPE>
+          <SHORT-NAME>uint16</SHORT-NAME>
+          <NATIVE-DECLARATION>uint16</NATIVE-DECLARATION>
+        </SW-BASE-TYPE>
+        <SW-BASE-TYPE>
+          <SHORT-NAME>uint32</SHORT-NAME>
+          <NATIVE-DECLARATION>uint32</NATIVE-DECLARATION>
+        </SW-BASE-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

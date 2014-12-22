@@ -1,0 +1,222 @@
+
+/*** CDS ***/
+@req SWS_Rte_03718
+@req SWS_Rte_03733
+@req SWS_Rte_02608
+@req SWS_Rte_02588
+!req SWS_Rte_06529
+!req SWS_Rte_03719
+!req SWS_Rte_01349
+@req SWS_Rte_03720
+@req SWS_Rte_03835
+@req SWS_Rte_03949
+@req SWS_Rte_03721
+!req SWS_Rte_03716
+!req SWS_Rte_03799
+@req SWS_Rte_02616
+@req SWS_Rte_03799
+!req SWS_Rte_06522
+@req SWS_Rte_02618
+!req SWS_Rte_03717
+!req SWS_Rte_07225
+!req SWS_Rte_07837
+!req SWS_Rte_03722
+@req SWS_Rte_03724
+
+/*** Modes ***/
+@req SWS_Rte_02628
+@req SWS_Rte_02629
+
+@req SWS_Rte_07666
+@req SWS_Rte_02660
+!req SWS_Rte_06742
+!req SWS_Rte_06781
+!req SWS_Rte_06782
+!req SWS_Rte_06743
+!req SWS_Rte_02732
+!req SWS_Rte_06744
+
+Enhanced mode API
+!req SWS_Rte_08500
+!req SWS_Rte_08501
+!req SWS_Rte_08504
+!req SWS_Rte_08505
+!req SWS_Rte_06745
+!req SWS_Rte_06783
+!req SWS_Rte_06784
+!req SWS_Rte_06746
+!req SWS_Rte_08506
+!req SWS_Rte_06747
+
+@req SWS_Rte_02631
+@req SWS_Rte_02632
+@req SWS_Rte_02674
+!req SWS_Rte_02675
+!req SWS_Rte_02673
+
+@req SWS_Rte_02627
+@req SWS_Rte_02659
+@req SWS_Rte_03858
+!req SWS_Rte_07640
+@req SWS_Rte_02568
+@req SWS_Rte_03859
+@req SWS_Rte_02568
+@req SWS_Rte_03859
+
+/*** One Runnable at a time ***/
+@req SWS_Rte_02751
+@req SWS_Rte_03744
+@req SWS_Rte_01302
+@req SWS_Rte_03746
+
+/*** General API: ***/
+@req SWS_Rte_01017
+@req SWS_Rte_01018
+@req SWS_Rte_05107
+!req SWS_Rte_07661
+!req SWS_Rte_07086
+@req SWS_Rte_01019
+@req SWS_Rte_07082
+@req SWS_Rte_05108
+!req SWS_Rte_07083
+@req SWS_Rte_01020
+@req SWS_Rte_05109
+!req SWS_Rte_07084
+@req SWS_Rte_07069
+!req SWS_Rte_08300
+@req SWS_Rte_07070
+@req SWS_Rte_07071
+@req SWS_Rte_07072
+!req SWS_Rte_07073
+!req SWS_Rte_07074
+
+/*** CS API: ***/
+@req SWS_Rte_01102
+@req SWS_Rte_01293
+!req SWS_Rte_01294 Asynchronous calls not supported.
+!req SWS_Rte_01109
+@req SWS_Rte_06639
+
+@req SWS_Rte_01360
+@req SWS_Rte_01166
+@req SWS_Rte_07023
+!req SWS_Rte_07024
+!req SWS_Rte_07025
+!req SWS_Rte_07026
+!req SWS_Rte_07027
+!req SWS_Rte_05193
+
+/*** SR implicit API: ***/
+@req SWS_Rte_02599
+@req SWS_Rte_02600
+@req SWS_Rte_02602
+!req SWS_Rte_02603
+@req SWS_Rte_02604
+@req SWS_Rte_07644
+
+/*** SR explicit API ***/
+@req SWS_Rte_01071
+@req SWS_Rte_01280
+@req SWS_Rte_07820
+!req SWS_Rte_07822 return RTE_E_COM_STOPPED
+!req SWS_Rte_02756 return RTE_E_SEG_FAULT
+@req SWS_Rte_07824
+@req SWS_Rte_07826
+@req SWS_Rte_02635
+!req SWS_Rte_01080 transmission ack feedback
+@req SWS_Rte_01082
+@req SWS_Rte_01091
+@req SWS_Rte_01289
+!req SWS_Rte_07396 Init values not supported
+!req SWS_Rte_01313 No detection of this invalid configuration
+@req SWS_Rte_01093
+!req SWS_Rte_02626 return RTE_E_INVALID
+!req SWS_Rte_02703 return RTE_E_MAX_AGE_EXCEEDED
+!req SWS_Rte_07643 return RTE_E_NEVER_RECEIVED
+!req SWS_Rte_01330 return RTE_E_UNCONNECTED
+
+/*** Calibration API ***/
+@req SWS_Rte_03962
+@req SWS_Rte_03964
+@req SWS_Rte_01252
+@req SWS_Rte_01300
+@req SWS_Rte_03927
+@req SWS_Rte_03952
+@req SWS_Rte_03928
+@req SWS_Rte_03929
+@req SWS_Rte_03930
+@req SWS_Rte_03959
+@req SWS_Rte_03965
+@req SWS_Rte_03961
+@req SWS_Rte_05112
+@req SWS_Rte_03963
+@req SWS_Rte_03958
+@req SWS_Rte_07186
+!req SWS_Rte_07029 - init values for parameter components
+!req SWS_Rte_02749 - parameter components
+!req SWS_Rte_07185 - init
+!req SWS_Rte_07030 - init
+!req SWS_Rte_07034 - init
+!req SWS_Rte_07035 - init
+!req SWS_Rte_03907 - location
+!req SWS_Rte_03982 - location
+!req SWS_Rte_07096 - BSW
+!req SWS_Rte_07033 - NVRAM
+!req SWS_Rte_03905 - configurability
+!req SWS_Rte_03906 - configurability
+!req SWS_Rte_03971 - offline
+!req SWS_Rte_03909 - online
+!req SWS_Rte_03942 - online
+!req SWS_Rte_03910 - online
+!req SWS_Rte_03943 - online
+!req SWS_Rte_03922 - online
+!req SWS_Rte_03960 - online
+!req SWS_Rte_03932 - online
+!req SWS_Rte_03933 - online
+!req SWS_Rte_03934 - online
+!req SWS_Rte_03911 - online param groups
+!req SWS_Rte_03912 - online param groups
+!req SWS_Rte_05194 - online param groups
+!req SWS_Rte_03968 - online param groups
+!req SWS_Rte_03916 - online param groups
+!req SWS_Rte_03908 - online param groups
+!req SWS_Rte_03913 - online single pointered
+!req SWS_Rte_03947 - online single pointered
+!req SWS_Rte_03936 - online single pointered
+!req SWS_Rte_03914 - online double pointered
+!req SWS_Rte_03948 - online double pointered
+!req SWS_Rte_03915 - online init ram
+!req SWS_Rte_03935 - online init ram
+!req SWS_Rte_03981 - section swAddrMethod
+!req SWS_Rte_03982 - section swAddrMethod
+
+/*** Instance handle type ***/
+@req SWS_Rte_01007
+@req SWS_Rte_01148
+@req SWS_Rte_01150
+
+/*** Enumeration data types ***/
+@req SWS_Rte_03809
+@req SWS_Rte_03810
+!req SWS_Rte_08401
+
+/*** Guards ***/
+@req SWS_Rte_07678
+@req SWS_Rte_07125
+
+/*** Per instance memory ***/
+@req SWS_Rte_07161
+@req SWS_Rte_02303
+@req SWS_Rte_02304
+@req SWS_Rte_07133
+@req SWS_Rte_03782
+!req SWS_Rte_07134 - should be fixed in Rte_Type.h
+!req SWS_Rte_07135 - should be handled by a validator
+@req SWS_Rte_02305
+@req SWS_Rte_07182
+@req SWS_Rte_08304
+@req SWS_Rte_07183
+@req SWS_Rte_07184
+!req SWS_Rte_05062
+!req SWS_Rte_07693
+
