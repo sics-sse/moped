@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.arccore.corebuilder.arm.toolchain.891245212/BOARDDIR/delimiter=;
+environment/project/com.arccore.corebuilder.arm.toolchain.891245212/BOARDDIR/operation=replace
+environment/project/com.arccore.corebuilder.arm.toolchain.891245212/BOARDDIR/value=Raspberry_Pi
+environment/project/com.arccore.corebuilder.arm.toolchain.891245212/append=true
+environment/project/com.arccore.corebuilder.arm.toolchain.891245212/appendContributed=true

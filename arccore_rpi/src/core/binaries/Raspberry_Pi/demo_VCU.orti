@@ -1,0 +1,258 @@
+
+
+VERSION 
+{ 
+	KOIL = "2.2"; 
+	OSSEMANTICS = "ORTI", "2.2"; 
+ };
+ 
+ IMPLEMENTATION ArcCore_ORTI {
+ 	OS {
+ 		ENUM [
+ 			"NO_TASK" = 0x0, 
+ 			"OsIdle" = "&(Os_TaskVarList[0])",
+            "ActuatorTask" = "&(Os_TaskVarList[1])",              
+            "CanFunctionTask" = "&(Os_TaskVarList[2])",              
+            "RteTask" = "&(Os_TaskVarList[3])",              
+            "SensorTask" = "&(Os_TaskVarList[4])",              
+            "SquawkTask" = "&(Os_TaskVarList[5])",              
+            "StartupTask" = "&(Os_TaskVarList[6])"              
+
+			] RUNNINGTASK, "Running Task Identification";
+			
+      	ENUM  [
+      		"NO_ISR2" = 0x0,
+      		"ISR_0" = "&(Os_IsrVarList[0])"
+      	] RUNNINGISR2, "ISR Identification";
+ 
+ 		ENUM "unsigned char" [
+ 		] RUNNINGTASKPRIORITY, "Priority of running task";
+ 
+ 	}; /* OS */
+ 	
+ 	TASK {
+		ENUM "unsigned short" [
+		] PRIORITY, "Actual Prio";
+
+		ENUM "void*" [
+     	] STACK, "Task Stack";
+     	
+     	CTYPE "unsigned char" EvWait, "Event Wait";
+    	CTYPE "unsigned char" EvSet, "Event Set";
+    	
+    	STRING TaskType, "Task Type";
+    	CTYPE "unsigned char" MaxActivations, "Max. Activations";
+    	CTYPE "unsigned char" Activations, "Activations";
+     	
+     	ENUM "unsigned char" [
+        	"ST_READY"=1,
+        	"ST_WAITING"=2,
+        	"ST_SUSPENDED"=4,
+        	"ST_RUNNING"=8,
+        	"ST_NOT_STARTED"=16,
+          	"ST_SLEEPING"=32,
+          	"ST_WAITING_SEM"=64          	
+      	] STATE, "State";
+	};  /* TASK */
+ 	
+ 	
+ 	STACK {
+		CTYPE "unsigned short" SIZE, "Stack Size (Byte)";
+		CTYPE "unsigned short*" BASEADDRESS, "Stack Start Address";
+		STRING STACKDIRECTION, "Stack Direction";
+	}, "Stacks";   /* STACK */ 	
+ 
+ 	EVENT {
+		STRING EvMask, "Event Mask";
+	}, "Events";   /* Events */
+ 
+ 
+    ALARM {
+      ENUM "unsigned char" [
+         "STOPPED" = 0,
+         "RUNNING" = 1
+      ] STATE, "Alarm State";
+      
+      CTYPE "unsigned long" CYCLETIME, "Cycle Time (Ticks)";
+      CTYPE "unsigned long" ALARMTIME, "Alarm Time (Ticks)";
+      STRING ACTION, "Action";
+      STRING COUNTER, "Counter";
+   }, "Alarms";   /* Alarms */
+   
+	COUNTER {
+      	CTYPE "unsigned long" VALUE, "Current value";	
+   	}, "Counters";  /* Counters */
+ 
+ 	RESOURCE {
+      ENUM "unsigned char" [
+         "LOCKED"=1,
+         "UNLOCKED"=0
+      ] STATE, "Resource state";
+      
+      ENUM "unsigned short" [
+         "-" = 0xFFFF
+      ] OWNER, "Resource owner";
+      
+      ENUM "unsigned short" [
+         "-" = 0xFFFF
+      ] PRIORITY, "Ceil. priority";
+
+   }, "Resources";   /* Resources */
+ 
+ }; /* IMPLEMENTATION */
+ 
+OS ArcCore {
+	RUNNINGTASK = "Os_Sys.currTaskPtr";
+	RUNNINGISR2 = "Os_Sys.currIsrPtr";
+};
+ 
+TASK OsIdle {
+	PRIORITY = "Os_TaskVarList[0].activePriority";
+	STATE = "Os_TaskVarList[0].state";
+	STACK = "stack_OsIdle";
+}; 
+
+STACK OsIdle {
+	SIZE = "512";
+	BASEADDRESS = "stack_OsIdle[1]";
+	STACKDIRECTION = "DOWN";
+};
+ 
+TASK ActuatorTask {
+	PRIORITY = "Os_TaskVarList[1].activePriority";
+	STATE = "Os_TaskVarList[1].state";
+
+	TaskType = "EXTENDED";
+	EvWait = "Os_TaskVarList[1].ev_wait";
+	EvSet = "Os_TaskVarList[1].ev_set";
+    STACK = "stack_ActuatorTask";
+};
+
+STACK ActuatorTask {
+	SIZE = "2048";
+	BASEADDRESS = "stack_ActuatorTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+TASK CanFunctionTask {
+	PRIORITY = "Os_TaskVarList[2].activePriority";
+	STATE = "Os_TaskVarList[2].state";
+
+	TaskType = "EXTENDED";
+	EvWait = "Os_TaskVarList[2].ev_wait";
+	EvSet = "Os_TaskVarList[2].ev_set";
+    STACK = "stack_CanFunctionTask";
+};
+
+STACK CanFunctionTask {
+	SIZE = "2048";
+	BASEADDRESS = "stack_CanFunctionTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+TASK RteTask {
+	PRIORITY = "Os_TaskVarList[3].activePriority";
+	STATE = "Os_TaskVarList[3].state";
+
+	TaskType = "EXTENDED";
+	EvWait = "Os_TaskVarList[3].ev_wait";
+	EvSet = "Os_TaskVarList[3].ev_set";
+    STACK = "stack_RteTask";
+};
+
+STACK RteTask {
+	SIZE = "2048";
+	BASEADDRESS = "stack_RteTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+TASK SensorTask {
+	PRIORITY = "Os_TaskVarList[4].activePriority";
+	STATE = "Os_TaskVarList[4].state";
+
+	TaskType = "EXTENDED";
+	EvWait = "Os_TaskVarList[4].ev_wait";
+	EvSet = "Os_TaskVarList[4].ev_set";
+    STACK = "stack_SensorTask";
+};
+
+STACK SensorTask {
+	SIZE = "2048";
+	BASEADDRESS = "stack_SensorTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+TASK SquawkTask {
+	PRIORITY = "Os_TaskVarList[5].activePriority";
+	STATE = "Os_TaskVarList[5].state";
+
+	TaskType = "EXTENDED";
+	EvWait = "Os_TaskVarList[5].ev_wait";
+	EvSet = "Os_TaskVarList[5].ev_set";
+    STACK = "stack_SquawkTask";
+};
+
+STACK SquawkTask {
+	SIZE = "10485760";
+	BASEADDRESS = "stack_SquawkTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+TASK StartupTask {
+	PRIORITY = "Os_TaskVarList[6].activePriority";
+	STATE = "Os_TaskVarList[6].state";
+	TaskType = "BASIC";
+	Activations = "Os_TaskVarList[6].activations";
+	MaxActivations = "Os_TaskVarList[6].constPtr->activationLimit";
+    STACK = "stack_StartupTask";
+};
+
+STACK StartupTask {
+	SIZE = "2048";
+	BASEADDRESS = "stack_StartupTask[1]";
+	STACKDIRECTION = "DOWN";
+};
+
+ 
+// Skip Events
+
+COUNTER OsCounter {
+	VALUE = "counter_list[0].val";
+}; 
+
+ 
+ALARM CanFunctionAlarm {
+    STATE = "(alarm_list[0].active) ? 1 : 0";
+	ALARMTIME = "alarm_list[0].alarmtime";
+    CYCLETIME = "alarm_list[0].cycletime";
+	ACTION = "SetEvent CanFunctionTask";
+    COUNTER = "OsCounter";
+};
+ALARM RteFunctionAlarm {
+    STATE = "(alarm_list[1].active) ? 1 : 0";
+	ALARMTIME = "alarm_list[1].alarmtime";
+    CYCLETIME = "alarm_list[1].cycletime";
+	ACTION = "SetEvent RteTask";
+    COUNTER = "OsCounter";
+};
+ALARM SensorAlarm {
+    STATE = "(alarm_list[2].active) ? 1 : 0";
+	ALARMTIME = "alarm_list[2].alarmtime";
+    CYCLETIME = "alarm_list[2].cycletime";
+	ACTION = "SetEvent SensorTask";
+    COUNTER = "OsCounter";
+};
+ALARM SquawkAlarm {
+    STATE = "(alarm_list[3].active) ? 1 : 0";
+	ALARMTIME = "alarm_list[3].alarmtime";
+    CYCLETIME = "alarm_list[3].cycletime";
+	ACTION = "SetEvent SquawkTask";
+    COUNTER = "OsCounter";
+};
+ 
+
+
+
+RESOURCE RES_SCHEDULER {
+   STATE = "(Os_Sys.resScheduler.owner != 0xffff) ? 1 : 0";
+   OWNER = "Os_Sys.resScheduler.owner";
+   PRIORITY = "(Os_Sys.resScheduler.ceiling_priority)";
+};
+
+
+

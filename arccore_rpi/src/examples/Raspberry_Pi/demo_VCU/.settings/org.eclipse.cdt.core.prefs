@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/com.arccore.corebuilder.arm.toolchain.1403854009/BOARDDIR/delimiter=;
+environment/project/com.arccore.corebuilder.arm.toolchain.1403854009/BOARDDIR/operation=replace
+environment/project/com.arccore.corebuilder.arm.toolchain.1403854009/BOARDDIR/value=mpc5516it
+environment/project/com.arccore.corebuilder.arm.toolchain.1403854009/append=true
+environment/project/com.arccore.corebuilder.arm.toolchain.1403854009/appendContributed=true

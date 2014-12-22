@@ -1,0 +1,20 @@
+# 1.0
+# com.arccore.bsw.mcal
+ 
+- !!com.arccore.common.yaml.data.Mcal
+  name: MPC560x
+
+- !!com.arccore.common.yaml.data.Mcal
+  name: MPC551x
+
+- !!com.arccore.common.yaml.data.Mcal
+  name: MPC5567
+
+- !!com.arccore.common.yaml.data.Mcal
+  name: STM32F103
+
+- !!com.arccore.common.yaml.data.Mcal
+  name: STM32F107
+
+- !!com.arccore.common.yaml.data.Mcal
+  name: MPC5744P
