@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">WirelessIno</string>
+    <string name="exit">Exit</string>
+    <string name="title_connected">connected</string>
+    <string name="title_not_connected">not connected</string>
+    <string name="connect">Connect</string>
+    <string name="host_ip">Host:</string>
+    <string name="host_port">Port:</string>
+    <string name="default_host_ip">192.168.1.1</string>
+    <string name="default_host_port">9000</string>
+    <string name="wifiConfig">WiFi configuration</string>
+    <string name="disconnect">Disconnect</string>
+
+</resources>

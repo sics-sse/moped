@@ -1,0 +1,151 @@
+package se.sics.sse.fresta.wirelessino;
+
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class SocketConnecter extends Activity {
+	public static final int STATE_NONE = 0;       // we're doing nothing
+    public static final int STATE_LISTEN = 1;     // now listening for incoming connections
+    public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
+    public static final int STATE_CONNECTED = 3;  // now connected to a remote device
+	
+	private TextView tv_host = null;
+	private TextView tv_port = null;
+	private EditText ed_host = null;
+	private EditText ed_port = null;
+	private Button btn_connect = null;
+	private Socket socket = null;
+
+	// private static final int SERVERPORT = 9000;
+	// private static final String SERVER_IP = "193.10.66.174";
+	// private BufferedReader in = null;
+	// private PrintWriter out = null;
+	// private String content = "";
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.socket_connection_build);
+		tv_host = (TextView) findViewById(R.id.tv_host);
+		ed_host = (EditText) findViewById(R.id.ed_host);
+		tv_port = (TextView) findViewById(R.id.tv_port);
+		ed_port = (EditText) findViewById(R.id.ed_port);
+		btn_connect = (Button) findViewById(R.id.btn_connect);
+		
+		// get old host and port
+		SharedPreferences mSharedPreferences = getSharedPreferences("list",MODE_PRIVATE);
+		String oldHost = mSharedPreferences.getString("host","0.0.0.0");
+		ed_host.setText(oldHost);
+		String oldPort = mSharedPreferences.getString("port","9000");
+		ed_port.setText(oldPort);
+		
+		btn_connect.setOnClickListener(new Button.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						try {
+							String str_host = ed_host.getText().toString();
+							String str_port = ed_port.getText().toString();
+							
+							SharedPreferences mSharedPreferences = getSharedPreferences("list",
+								    MODE_PRIVATE);
+								mSharedPreferences.edit().putString("host",str_host).commit();
+								mSharedPreferences.edit().putString("port",str_port).commit();
+							
+							int int_port = Integer.parseInt(str_port);
+							socket = new Socket(str_host, int_port);
+							if (!socket.isConnected()) {
+								ShowDialog("Fail to connect socket server");
+							} else {
+								// here i call new screen;
+//								ShowDialog("Connect socket server successfully");
+								Main.init(socket);
+								finish();
+							}
+						} catch (UnknownHostException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							ShowDialog("Error1" + e.getMessage());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							ShowDialog("Error2" + e.getMessage());
+						}
+					}
+					
+				}).start();
+				
+			}
+		});
+		// new Thread(SocketConnect.this).start();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	public void ShowDialog(String msg) {
+		new AlertDialog.Builder(this).setTitle("notification").setMessage(msg)
+				.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						// TODO Auto-generated method stub
+
+					}
+				}).show();
+	}
+
+	public Socket getSocket() {
+		return socket;
+	}
+//	
+//	class ClientThread implements Runnable {
+//		private String SERVER_IP;
+//		private int SERVERPORT;
+//		
+//		public ClientThread(String SERVER_IP, int SERVERPORT) {
+//			this.SERVER_IP = SERVER_IP;
+//			this.SERVERPORT = SERVERPORT;
+//		}
+//		
+//		@Override
+//		public void run() {
+//			try {
+//				InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+//				socket = new Socket(serverAddr, SERVERPORT);
+//				if (!socket.isConnected()) {
+//					ShowDialog("Fail to connect socket server");
+//				} else {
+//					// here i call new screen;
+//					ShowDialog("Connect socket server successfully");
+//					Main.socket = socket;
+//				}
+//			} catch (UnknownHostException e1) {
+//				e1.printStackTrace();
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//			}
+//		}
+//	}
+}
