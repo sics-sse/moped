@@ -30,7 +30,7 @@ CFLAGS += -DSIMPLE_STDIO
 PROJECT_C_FILES=$(notdir $(wildcard ../*.c))
 obj-y += $(PROJECT_C_FILES:%.c=%.o)
 
-build-bin-y = kernel.bin #.img
+build-bin-y = kernel.img
 inc-y += ..
 
 
