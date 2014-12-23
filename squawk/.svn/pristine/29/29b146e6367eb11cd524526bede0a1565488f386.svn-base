@@ -1,0 +1,3 @@
+Target.imp.j2me=true
+Target.imp.dependsOn=cldc
+Target.imp.extraSourceDirs=phoneme

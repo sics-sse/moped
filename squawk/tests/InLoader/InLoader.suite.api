@@ -1,0 +1,5 @@
+.suite InLoader
+.class tests.InLoader
+    .method <init> ()V
+    .method main ([Ljava/lang/String;)V
+    .method printString ()V

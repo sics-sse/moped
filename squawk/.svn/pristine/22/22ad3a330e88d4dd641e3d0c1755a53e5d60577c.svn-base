@@ -1,0 +1,2 @@
+Target.translator.j2me=false
+Target.translator.dependsOn=cldc OperandStackEffect Mnemonics Verifier

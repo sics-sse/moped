@@ -1,0 +1,47 @@
+#
+#   
+#
+# Copyright  1990-2007 Sun Microsystems, Inc. All Rights Reserved.
+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version
+# 2 only, as published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License version 2 for more details (a copy is
+# included at /legal/license.txt).
+# 
+# You should have received a copy of the GNU General Public License
+# version 2 along with this work; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA
+# 
+# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
+# Clara, CA 95054 or visit www.sun.com if you need additional
+# information or have any questions.
+#
+
+LIB_DESCRIPTION=RMS Libary reference implementation
+LIB_VERSION=1.0
+LIB_DEPENDENCIES=rms/record_store rms/record_index rms/rms_base
+LIB_JAVA_FILES= \
+    javax/microedition/rms/RecordEnumeration.java \
+    javax/microedition/rms/RecordEnumerationImpl.java \
+    javax/microedition/rms/RecordStore.java \
+    javax/microedition/rms/RecordComparator.java \
+    javax/microedition/rms/RecordListener.java \
+    javax/microedition/rms/RecordFilter.java \
+    com/sun/midp/rms/RecordStoreFactory.java \
+    com/sun/midp/rms/RecordStoreFile.java \
+    com/sun/midp/rms/RecordStoreImpl.java
+
+LIB_C_FILES= \
+    native/recordStoreFile.c
+
+#
+# IMPL_NOTE: revome when decoupling is complete
+#
+LIB_USES_LEGACY_CLASSES=true

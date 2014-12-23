@@ -1,0 +1,2 @@
+Target.IsoTest.j2me=true
+Target.IsoTest.dependsOn=cldc imp

@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+    
+ 
+  Copyright  2007  Sun Microsystems, Inc. All rights reserved.
+
+-->
+</head>
+<body bgcolor="white">
+Provides the functions of the runtime management of MIDlets and suites in
+ conjunction with the javax.microedition.midlet package.
+
+<p> For security purposes the MIDletStateHandler is the anchor of trust
+ internally for the MIDP API, restricted methods obtain the MIDletStateHandler
+ for a MIDlet suite in order to check the properties and actions of a suite.
+ Because of this, there MUST only be one a MIDlet suite per MIDletStateHandler.
+</p>
+<p><h2>MIDlet State Handing</h2>
+</p>
+<p>The MIDletStateHandler handles state transitions for a MIDlet. MIDP
+ Optimized Implementation software has more states than those listed in the MIDP
+ Specification (which are paused, active, and destroyed). The additional
+ states are active pending, pause pending, and destroy pending. The state
+ processing for a MIDlet is described in the table and illustrated in figure
+ below.
+</p>
+<table border=2>
+<tr>
+  <th>State</th>
+  <th>Description</th>
+</tr>
+<tr>
+  <td>Active Pending</td>
+  <td>The starting state. For MIDlets in this state, the MIDlet state handler
+ moves the MIDlet to the active state, and calls the MIDlet's startApp
+ method.</td>
+</tr>
+<tr>
+  <td>Active</td>
+  <td>For MIDlets in this state, the MIDlet state handler does nothing. A
+ MIDlet leaves the active state because of an event outside the MIDlet state
+ handler, such as the user exiting the MIDlet.</td>
+</tr>
+<tr>
+  <td>Pause Pending</td>
+  <td>For MIDlets in this state, the MIDlet state handler moves the MIDlet to
+ the paused state and calls the MIDlet's pauseApp method.</td>
+</tr>
+<tr>
+  <td>Paused</td>
+  <td>For MIDlets in this state, the MIDlet state handler does nothing. A
+ MIDlet leaves the active state because of an event outside the MIDlet state
+ handler, such as the MIDlet requesting its reactivation.</td>
+</tr>
+<tr>
+  <td>Destroy Pending</td>
+  <td>For MIDlets in this state, the MIDlet state handler moves the MIDlet to
+ the destroyed state and calls the MIDlet's destroyApp method.</td>
+</tr>
+<tr>
+  <td>Destroyed</td>
+  <td>The final state. For MIDlets in this state, the MIDlet state handler
+ removes the MIDlet from the list of running MIDlets.</td>
+</tr>
+</table>
+<hr/>
+<b>Note -</b> To save CPU time, if all of the running MIDlets are in either
+ the paused or active state, the MIDletStateHandler stops and waits for a
+ state change.
+<hr/>
+</div>
+<p><img src="doc-files/midletstates.gif" name="midlet_states" align="CENTER"
+ border="0">
+</p>
+<p><h3>Pausing a MIDlet</h3>
+</p>
+<p>A MIDlet can be placed in paused state by either the system or itself, as
+ indicated by the figure above.
+
+A MIDlet pauses itself by calling its pauseNotify method. However, as of MIDP
+ 2.0 there is no longer any reason for this to happen for the following
+ reasons:
+</p>
+<ul>
+<li>A MIDlet does not need to pause itself to give up resources like CPU time
+ or the display. To give up the display a MIDlet should call the
+ Display.setCurrent method with an null argument. To give up CPU time the
+ MIDlet only has to end or block the threads it started. Another option is for
+ the MIDlet to ask the system to start it in the future using the Alarm API.
+ See the Push API in the MIDP Specification for information.</li>
+<li>MIDlets that use a Canvas object suspend and resume threads it created
+ based on the Canvas or CustomItem class's hideNotify and showNotify methods.
+ They must not depend on startApp and pauseApp because the hideNotify and
+ showNotify methods also get called when a MIDlet is paused and activated.</li>
+</ul>
+<p>MIDlet can be paused if desired by a device manufacture by using the
+ MIDletProxy class or the native application manager API. The common reasons
+ for customizing a system to pause MIDlets are:
+</p>
+<ul>
+<li>The system allows the user to launch more than one MIDlet but only has
+ the resources to run one MIDlet. In this case, the system pauses the MIDlets
+ that do not have the physical display until the current MIDlet gives up the
+ display.</li>
+<li>The OS is about to suspend the CPU time for the VM process (as opposed to
+ ending the process). In this case, the system pauses all of the MIDlets and
+ activates them again when the OS resumes CPU time for the VM process.</li>
+</ul>
+</body>
+</html>

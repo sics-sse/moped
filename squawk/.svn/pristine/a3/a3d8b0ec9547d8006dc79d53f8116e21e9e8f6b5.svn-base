@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="80">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <logicalFolder name="src" displayName="src" projectFiles="true">
+      <logicalFolder name="rts" displayName="rts" projectFiles="true">
+        <logicalFolder name="cc" displayName="cc" projectFiles="true">
+          <itemPath>src/rts/cc/os.c</itemPath>
+          <itemPath>src/rts/cc/os_devices.c</itemPath>
+          <itemPath>src/rts/cc/os_devices.h</itemPath>
+          <itemPath>src/rts/cc/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="cortex-m3" displayName="cortex-m3" projectFiles="true">
+          <logicalFolder name="Pictures" displayName="Pictures" projectFiles="true">
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160607.jpg</itemPath>
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160639.jpg</itemPath>
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160643.jpg</itemPath>
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160657.jpg</itemPath>
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160706.jpg</itemPath>
+            <itemPath>src/rts/cortex-m3/Pictures/IMG_20100817_160712.jpg</itemPath>
+          </logicalFolder>
+          <logicalFolder name="src" displayName="src" projectFiles="true">
+            <logicalFolder name="MbedTest" displayName="MbedTest" projectFiles="true">
+              <logicalFolder name="include" displayName="include" projectFiles="true">
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/AnalogIn.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/AnalogOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Base.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/BusIn.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/BusInOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/BusOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/CAN.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/DigitalIn.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/DigitalInOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/DigitalOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/DirHandle.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Ethernet.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/FileHandle.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/FileLike.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/FileSystemLike.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/FunctionPointer.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/I2C.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/I2CSlave.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/InterruptIn.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/LocalFileSystem.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PeripheralNames.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PinNames.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PortIn.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PortInOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PortNames.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PortOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/PwmOut.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/SPI.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/SPIHalfDuplex.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/SPISlave.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Serial.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/SerialHalfDuplex.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Stream.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Ticker.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Timeout.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/Timer.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/TimerEvent.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/can_helper.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/cmsis.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/cmsis_nvic.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/error.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/mbed.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/platform.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/rpc.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/rtc_time.h</itemPath>
+                <itemPath>src/rts/cortex-m3/src/MbedTest/include/wait_api.h</itemPath>
+              </logicalFolder>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/.cproject</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/.project</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/LPC17xx.h</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/LPC17xx.ld</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/Makefile</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/core_cm3.c</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/core_cm3.h</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/mbed_test.elf</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/mbed_test.hex</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/mbed_test.map</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/mbed_test2.bin</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/os_main.c</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/startup_LPC17xx.s</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/system_LPC17xx.c</itemPath>
+              <itemPath>src/rts/cortex-m3/src/MbedTest/system_LPC17xx.h</itemPath>
+            </logicalFolder>
+            <itemPath>src/rts/cortex-m3/src/MbedTest.zip</itemPath>
+          </logicalFolder>
+          <itemPath>src/rts/cortex-m3/Offline Compilation MBed.txt</itemPath>
+        </logicalFolder>
+        <logicalFolder name="gcc" displayName="gcc" projectFiles="true">
+          <itemPath>src/rts/gcc/os.c</itemPath>
+          <itemPath>src/rts/gcc/os_devices.c</itemPath>
+          <itemPath>src/rts/gcc/os_devices.h</itemPath>
+          <itemPath>src/rts/gcc/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="gcc-9200" displayName="gcc-9200" projectFiles="true">
+          <itemPath>src/rts/gcc-9200/9200-io.c</itemPath>
+          <itemPath>src/rts/gcc-9200/jni.h</itemPath>
+          <itemPath>src/rts/gcc-9200/jni_md.h</itemPath>
+          <itemPath>src/rts/gcc-9200/mmu_fat.c</itemPath>
+          <itemPath>src/rts/gcc-9200/mmu_fat.h</itemPath>
+          <itemPath>src/rts/gcc-9200/os.c</itemPath>
+          <itemPath>src/rts/gcc-9200/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="gcc-eb40a" displayName="gcc-eb40a" projectFiles="true">
+          <itemPath>src/rts/gcc-eb40a/eb40a-io.c</itemPath>
+          <itemPath>src/rts/gcc-eb40a/jni.h</itemPath>
+          <itemPath>src/rts/gcc-eb40a/jni_md.h</itemPath>
+          <itemPath>src/rts/gcc-eb40a/os.c</itemPath>
+          <itemPath>src/rts/gcc-eb40a/os_devices.c</itemPath>
+          <itemPath>src/rts/gcc-eb40a/os_devices.h</itemPath>
+          <itemPath>src/rts/gcc-eb40a/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="gcc-macosx" displayName="gcc-macosx" projectFiles="true">
+          <itemPath>src/rts/gcc-macosx/os.c</itemPath>
+          <itemPath>src/rts/gcc-macosx/os_devices.c</itemPath>
+          <itemPath>src/rts/gcc-macosx/os_devices.h</itemPath>
+          <itemPath>src/rts/gcc-macosx/os_main.c</itemPath>
+          <itemPath>src/rts/gcc-macosx/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="msc" displayName="msc" projectFiles="true">
+          <itemPath>src/rts/msc/os.c</itemPath>
+          <itemPath>src/rts/msc/os_devices.c</itemPath>
+          <itemPath>src/rts/msc/os_devices.h</itemPath>
+          <itemPath>src/rts/msc/os_math.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="vxworks" displayName="vxworks" projectFiles="true">
+          <itemPath>src/rts/vxworks/dlfcn.h</itemPath>
+          <itemPath>src/rts/vxworks/jni.h</itemPath>
+          <itemPath>src/rts/vxworks/jni_md.h</itemPath>
+          <itemPath>src/rts/vxworks/malloc.h</itemPath>
+          <itemPath>src/rts/vxworks/os.c</itemPath>
+          <itemPath>src/rts/vxworks/os_devices.c</itemPath>
+          <itemPath>src/rts/vxworks/os_devices.h</itemPath>
+          <itemPath>src/rts/vxworks/os_main.c</itemPath>
+          <itemPath>src/rts/vxworks/os_math.h</itemPath>
+          <itemPath>src/rts/vxworks/socket_release.c</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="vm" displayName="vm" projectFiles="true">
+        <logicalFolder name="fp" displayName="fp" projectFiles="true">
+          <itemPath>src/vm/fp/e_rem_pio2.c</itemPath>
+          <itemPath>src/vm/fp/e_sqrt.c</itemPath>
+          <itemPath>src/vm/fp/fp_bytecodes.c</itemPath>
+          <itemPath>src/vm/fp/global.h</itemPath>
+          <itemPath>src/vm/fp/k_cos.c</itemPath>
+          <itemPath>src/vm/fp/k_rem_pio2.c</itemPath>
+          <itemPath>src/vm/fp/k_sin.c</itemPath>
+          <itemPath>src/vm/fp/k_tan.c</itemPath>
+          <itemPath>src/vm/fp/s_ceil.c</itemPath>
+          <itemPath>src/vm/fp/s_copysign.c</itemPath>
+          <itemPath>src/vm/fp/s_cos.c</itemPath>
+          <itemPath>src/vm/fp/s_fabs.c</itemPath>
+          <itemPath>src/vm/fp/s_floor.c</itemPath>
+          <itemPath>src/vm/fp/s_scalbn.c</itemPath>
+          <itemPath>src/vm/fp/s_sin.c</itemPath>
+          <itemPath>src/vm/fp/s_tan.c</itemPath>
+          <itemPath>src/vm/fp/w_sqrt.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="util" displayName="util" projectFiles="true">
+          <itemPath>src/vm/util/sha.c</itemPath>
+          <itemPath>src/vm/util/sha.h</itemPath>
+        </logicalFolder>
+        <itemPath>src/vm/address.c.spp</itemPath>
+        <itemPath>src/vm/buildflags.h</itemPath>
+        <itemPath>src/vm/bytecodes.c.spp</itemPath>
+        <itemPath>src/vm/cio.c</itemPath>
+        <itemPath>src/vm/debug.c</itemPath>
+        <itemPath>src/vm/debugger.c.spp</itemPath>
+        <itemPath>src/vm/devices.c</itemPath>
+        <itemPath>src/vm/globals.h</itemPath>
+        <itemPath>src/vm/io_delegating.c</itemPath>
+        <itemPath>src/vm/io_native.c</itemPath>
+        <itemPath>src/vm/io_native.h</itemPath>
+        <itemPath>src/vm/io_socket.c</itemPath>
+        <itemPath>src/vm/ioserver.c</itemPath>
+        <itemPath>src/vm/lisp2.c.spp</itemPath>
+        <itemPath>src/vm/memory.c.spp</itemPath>
+        <itemPath>src/vm/msg.c</itemPath>
+        <itemPath>src/vm/os_posix.c</itemPath>
+        <itemPath>src/vm/platform.h.spp</itemPath>
+        <itemPath>src/vm/rom.h</itemPath>
+        <itemPath>src/vm/squawk.c.spp</itemPath>
+        <itemPath>src/vm/suite.c</itemPath>
+        <itemPath>src/vm/switch.c.spp</itemPath>
+        <itemPath>src/vm/trace.c.spp</itemPath>
+        <itemPath>src/vm/util.h.spp</itemPath>
+        <itemPath>src/vm/vm2c.c.spp</itemPath>
+      </logicalFolder>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>../d</itemPath>
+      <itemPath>vmcore-Makefile.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>src/rts/cortex-m3</Elem>
+  </sourceRootList>
+  <projectmakefile>vmcore-Makefile.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>GNU|GNU</compilerSet>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand></buildCommand>
+          <cleanCommand></cleanCommand>
+          <executablePath>../squawk</executablePath>
+          <cTool>
+            <incDir>
+              <pElem>C:/WindRiver/vxworks-6.3/target/h</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>MACROIZE=1</Elem>
+              <Elem>PLATFORM_TYPE_NATIVE=1</Elem>
+              <Elem>SDA_DEBUGGER=1</Elem>
+              <Elem>offsetof=1</Elem>
+            </preprocessorList>
+          </cTool>
+        </makeTool>
+      </makefileType>
+    </conf>
+  </confs>
+</configurationDescriptor>

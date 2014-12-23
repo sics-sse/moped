@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Squawk-builder"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Squawk-cldc"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Squawk-translator"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Squawk-hosted-support"/>
+	<classpathentry kind="output" path="ide-classes"/>
+</classpath>

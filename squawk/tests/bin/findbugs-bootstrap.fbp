@@ -1,0 +1,12 @@
+<Project filename="&lt;&lt;unnamed project&gt;&gt;" projectName="Squawk Bootstrap classes (cldc, imp, debugger)">
+  <Jar>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/cldc/classes.jar</Jar>
+  <Jar>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/imp/classes.jar</Jar>
+  <Jar>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/debugger/classes.jar</Jar>
+  <SrcDir>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/cldc/preprocessed</SrcDir>
+  <SrcDir>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/imp/preprocessed</SrcDir>
+  <SrcDir>/Users/ricky/Hudson-Squawk/hudson/trunk/jobs/normal-build/workspace/trunk/debugger/preprocessed</SrcDir>
+  <SuppressionFilter>
+    <LastVersion value="-1" relOp="NEQ"/>
+    <Designation designation="NOT_A_BUG"/>
+  </SuppressionFilter>
+</Project>

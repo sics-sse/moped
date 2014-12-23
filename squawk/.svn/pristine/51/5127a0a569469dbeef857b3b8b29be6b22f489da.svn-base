@@ -1,0 +1,5 @@
+TEXT FILE
+This is a locked file, for testing error printing stack traces to redirected streams. We are trying to simulate errors in remote printing of
+ stack traces by redirecting std err to a locked file.
+
+THIS IS THE END. NO MORE TEXT AFTER THIS:

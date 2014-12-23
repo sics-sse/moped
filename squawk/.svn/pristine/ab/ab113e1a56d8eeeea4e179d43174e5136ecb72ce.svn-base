@@ -1,0 +1,3 @@
+Target.cldc-native.j2me=false
+Target.cldc-native.extraClassPath=build-commands.jar
+JNAGen.cldc-native.dstDir=cldc/native

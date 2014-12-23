@@ -1,0 +1,2303 @@
+.suite squawk
+.class java.lang.Object
+    .method <init> ()V
+    .method notify ()V
+    .method notifyAll ()V
+    .method wait (J)V
+    .method wait (JI)V
+    .method wait ()V
+    .method getClass ()Ljava/lang/Class;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+    .method toString ()Ljava/lang/String;
+.class java.lang.String
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+    .method <init> ([C)V
+    .method <init> ([CII)V
+    .method <init> ([BIILjava/lang/String;)V
+    .method <init> ([BLjava/lang/String;)V
+    .method <init> ([BII)V
+    .method <init> ([B)V
+    .method <init> (Ljava/lang/StringBuffer;)V
+    .method valueOf (Ljava/lang/Object;)Ljava/lang/String;
+    .method valueOf ([C)Ljava/lang/String;
+    .method valueOf ([CII)Ljava/lang/String;
+    .method valueOf (Z)Ljava/lang/String;
+    .method valueOf (C)Ljava/lang/String;
+    .method valueOf (I)Ljava/lang/String;
+    .method valueOf (J)Ljava/lang/String;
+    .method valueOf (F)Ljava/lang/String;
+    .method valueOf (D)Ljava/lang/String;
+    .method length ()I
+    .method charAt (I)C
+    .method getChars (II[CI)V
+    .method getBytes (Ljava/lang/String;)[B
+    .method getBytes ()[B
+    .method equals (Ljava/lang/Object;)Z
+    .method equalsIgnoreCase (Ljava/lang/String;)Z
+    .method compareTo (Ljava/lang/String;)I
+    .method regionMatches (ZILjava/lang/String;II)Z
+    .method startsWith (Ljava/lang/String;I)Z
+    .method startsWith (Ljava/lang/String;)Z
+    .method endsWith (Ljava/lang/String;)Z
+    .method hashCode ()I
+    .method indexOf (I)I
+    .method indexOf (II)I
+    .method lastIndexOf (I)I
+    .method lastIndexOf (II)I
+    .method indexOf (Ljava/lang/String;)I
+    .method indexOf (Ljava/lang/String;I)I
+    .method substring (I)Ljava/lang/String;
+    .method substring (II)Ljava/lang/String;
+    .method concat (Ljava/lang/String;)Ljava/lang/String;
+    .method replace (CC)Ljava/lang/String;
+    .method toLowerCase ()Ljava/lang/String;
+    .method toUpperCase ()Ljava/lang/String;
+    .method trim ()Ljava/lang/String;
+    .method toString ()Ljava/lang/String;
+    .method toCharArray ()[C
+    .method intern ()Ljava/lang/String;
+.class java.lang.Throwable
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+    .method getMessage ()Ljava/lang/String;
+    .method toString ()Ljava/lang/String;
+    .method printStackTrace ()V
+.class com.sun.squawk.Address
+    .method fromPrimitive (I)Lcom/sun/squawk/Address;
+    .method fromObject (Ljava/lang/Object;)Lcom/sun/squawk/Address;
+    .method zero ()Lcom/sun/squawk/Address;
+    .method max ()Lcom/sun/squawk/Address;
+    .method toObject ()Ljava/lang/Object;
+    .method toUWord ()Lcom/sun/squawk/UWord;
+    .method add (I)Lcom/sun/squawk/Address;
+    .method sub (I)Lcom/sun/squawk/Address;
+    .method addOffset (Lcom/sun/squawk/Offset;)Lcom/sun/squawk/Address;
+    .method subOffset (Lcom/sun/squawk/Offset;)Lcom/sun/squawk/Address;
+    .method or (Lcom/sun/squawk/UWord;)Lcom/sun/squawk/Address;
+    .method and (Lcom/sun/squawk/UWord;)Lcom/sun/squawk/Address;
+    .method diff (Lcom/sun/squawk/Address;)Lcom/sun/squawk/Offset;
+    .method isZero ()Z
+    .method isMax ()Z
+    .method eq (Lcom/sun/squawk/Address;)Z
+    .method ne (Lcom/sun/squawk/Address;)Z
+    .method lo (Lcom/sun/squawk/Address;)Z
+    .method loeq (Lcom/sun/squawk/Address;)Z
+    .method hi (Lcom/sun/squawk/Address;)Z
+    .method hieq (Lcom/sun/squawk/Address;)Z
+    .method roundUp (I)Lcom/sun/squawk/Address;
+    .method roundUpToWord ()Lcom/sun/squawk/Address;
+    .method roundDown (I)Lcom/sun/squawk/Address;
+    .method roundDownToWord ()Lcom/sun/squawk/Address;
+.class com.sun.squawk.UWord
+    .method fromPrimitive (I)Lcom/sun/squawk/UWord;
+    .method zero ()Lcom/sun/squawk/UWord;
+    .method max ()Lcom/sun/squawk/UWord;
+    .method toPrimitive ()I
+    .method toInt ()I
+    .method toOffset ()Lcom/sun/squawk/Offset;
+    .method or (Lcom/sun/squawk/UWord;)Lcom/sun/squawk/UWord;
+    .method and (Lcom/sun/squawk/UWord;)Lcom/sun/squawk/UWord;
+    .method isZero ()Z
+    .method isMax ()Z
+    .method eq (Lcom/sun/squawk/UWord;)Z
+    .method ne (Lcom/sun/squawk/UWord;)Z
+    .method lo (Lcom/sun/squawk/UWord;)Z
+    .method loeq (Lcom/sun/squawk/UWord;)Z
+    .method hi (Lcom/sun/squawk/UWord;)Z
+    .method hieq (Lcom/sun/squawk/UWord;)Z
+.class com.sun.squawk.Offset
+    .method fromPrimitive (I)Lcom/sun/squawk/Offset;
+    .method zero ()Lcom/sun/squawk/Offset;
+    .method toPrimitive ()I
+    .method toInt ()I
+    .method toUWord ()Lcom/sun/squawk/UWord;
+    .method add (I)Lcom/sun/squawk/Offset;
+    .method sub (I)Lcom/sun/squawk/Offset;
+    .method wordsToBytes ()Lcom/sun/squawk/Offset;
+    .method bytesToWords ()Lcom/sun/squawk/Offset;
+    .method isZero ()Z
+    .method eq (Lcom/sun/squawk/Offset;)Z
+    .method ne (Lcom/sun/squawk/Offset;)Z
+    .method lt (Lcom/sun/squawk/Offset;)Z
+    .method le (Lcom/sun/squawk/Offset;)Z
+    .method gt (Lcom/sun/squawk/Offset;)Z
+    .method ge (Lcom/sun/squawk/Offset;)Z
+.class java.lang.Class
+    .method forName (Ljava/lang/String;)Ljava/lang/Class;
+    .method toString ()Ljava/lang/String;
+    .method newInstance ()Ljava/lang/Object;
+    .method isInstance (Ljava/lang/Object;)Z
+    .method isAssignableFrom (Ljava/lang/Class;)Z
+    .method isInterface ()Z
+    .method isArray ()Z
+    .method getName ()Ljava/lang/String;
+    .method getResourceAsStream (Ljava/lang/String;)Ljava/io/InputStream;
+    .method getComponentType ()Ljava/lang/Class;
+    .method desiredAssertionStatus ()Z
+.class java.lang.StringBuilder
+    .method <init> ()V
+    .method <init> (I)V
+    .method <init> (Ljava/lang/String;)V
+    .method length ()I
+    .method capacity ()I
+    .method ensureCapacity (I)V
+    .method trimToSize ()V
+    .method setLength (I)V
+    .method charAt (I)C
+    .method getChars (II[CI)V
+    .method setCharAt (IC)V
+    .method append (Ljava/lang/Object;)Ljava/lang/StringBuilder;
+    .method append (Ljava/lang/String;)Ljava/lang/StringBuilder;
+    .method append (Ljava/lang/StringBuffer;)Ljava/lang/StringBuilder;
+    .method append ([C)Ljava/lang/StringBuilder;
+    .method append ([CII)Ljava/lang/StringBuilder;
+    .method append (Z)Ljava/lang/StringBuilder;
+    .method append (C)Ljava/lang/StringBuilder;
+    .method append (I)Ljava/lang/StringBuilder;
+    .method append (J)Ljava/lang/StringBuilder;
+    .method delete (II)Ljava/lang/StringBuilder;
+    .method deleteCharAt (I)Ljava/lang/StringBuilder;
+    .method replace (IILjava/lang/String;)Ljava/lang/StringBuilder;
+    .method insert (I[CII)Ljava/lang/StringBuilder;
+    .method insert (ILjava/lang/Object;)Ljava/lang/StringBuilder;
+    .method insert (ILjava/lang/String;)Ljava/lang/StringBuilder;
+    .method insert (I[C)Ljava/lang/StringBuilder;
+    .method insert (IZ)Ljava/lang/StringBuilder;
+    .method insert (IC)Ljava/lang/StringBuilder;
+    .method insert (II)Ljava/lang/StringBuilder;
+    .method insert (IJ)Ljava/lang/StringBuilder;
+    .method reverse ()Ljava/lang/StringBuilder;
+    .method toString ()Ljava/lang/String;
+.class java.lang.InterruptedException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.io.UnsupportedEncodingException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.StringBuffer
+    .method <init> ()V
+    .method <init> (I)V
+    .method <init> (Ljava/lang/String;)V
+    .method length ()I
+    .method capacity ()I
+    .method ensureCapacity (I)V
+    .method setLength (I)V
+    .method charAt (I)C
+    .method getChars (II[CI)V
+    .method setCharAt (IC)V
+    .method append (Ljava/lang/Object;)Ljava/lang/StringBuffer;
+    .method append (Ljava/lang/String;)Ljava/lang/StringBuffer;
+    .method append ([C)Ljava/lang/StringBuffer;
+    .method append ([CII)Ljava/lang/StringBuffer;
+    .method append (Z)Ljava/lang/StringBuffer;
+    .method append (C)Ljava/lang/StringBuffer;
+    .method append (I)Ljava/lang/StringBuffer;
+    .method append (J)Ljava/lang/StringBuffer;
+    .method append (F)Ljava/lang/StringBuffer;
+    .method append (D)Ljava/lang/StringBuffer;
+    .method insert (IF)Ljava/lang/StringBuffer;
+    .method insert (ID)Ljava/lang/StringBuffer;
+    .method delete (II)Ljava/lang/StringBuffer;
+    .method deleteCharAt (I)Ljava/lang/StringBuffer;
+    .method insert (ILjava/lang/Object;)Ljava/lang/StringBuffer;
+    .method insert (ILjava/lang/String;)Ljava/lang/StringBuffer;
+    .method insert (I[C)Ljava/lang/StringBuffer;
+    .method insert (IZ)Ljava/lang/StringBuffer;
+    .method insert (IC)Ljava/lang/StringBuffer;
+    .method insert (II)Ljava/lang/StringBuffer;
+    .method insert (IJ)Ljava/lang/StringBuffer;
+    .method reverse ()Ljava/lang/StringBuffer;
+    .method toString ()Ljava/lang/String;
+.class java.io.PrintStream
+    .method <init> (Ljava/io/OutputStream;)V
+    .method flush ()V
+    .method close ()V
+    .method checkError ()Z
+    .method setError ()V
+    .method write (I)V
+    .method write ([BII)V
+    .method print (Z)V
+    .method print (C)V
+    .method print (I)V
+    .method print (J)V
+    .method print (F)V
+    .method print (D)V
+    .method print ([C)V
+    .method print (Ljava/lang/String;)V
+    .method print (Ljava/lang/Object;)V
+    .method println ()V
+    .method println (Z)V
+    .method println (C)V
+    .method println (I)V
+    .method println (J)V
+    .method println (F)V
+    .method println (D)V
+    .method println ([C)V
+    .method println (Ljava/lang/String;)V
+    .method println (Ljava/lang/Object;)V
+.class java.lang.OutOfMemoryError
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.util.SquawkHashtable
+    .method <init> (I)V
+    .method <init> ()V
+    .method enumerationsToString (Ljava/util/Enumeration;Ljava/util/Enumeration;I)Ljava/lang/String;
+    .method printTable (Lcom/sun/squawk/util/SquawkHashtable;)V
+    .method size ()I
+    .method isEmpty ()Z
+    .method keys ()Ljava/util/Enumeration;
+    .method elements ()Ljava/util/Enumeration;
+    .method contains (Ljava/lang/Object;)Z
+    .method containsKey (Ljava/lang/Object;)Z
+    .method get (Ljava/lang/Object;)Ljava/lang/Object;
+    .method rehash ()V
+    .method put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    .method remove (Ljava/lang/Object;)Ljava/lang/Object;
+    .method clear ()V
+    .method toString ()Ljava/lang/String;
+    .method capacity ()I
+    .method getEntryTable ()[Lcom/sun/squawk/util/HashtableEntry;
+.class com.sun.squawk.util.SquawkVector
+    .field elementData [Ljava/lang/Object;
+    .field elementCount I
+    .field capacityIncrement I
+    .method <init> (II)V
+    .method <init> (I)V
+    .method <init> ()V
+    .method copyInto ([Ljava/lang/Object;)V
+    .method trimToSize ()V
+    .method ensureCapacity (I)V
+    .method setSize (I)V
+    .method capacity ()I
+    .method size ()I
+    .method isEmpty ()Z
+    .method elements ()Ljava/util/Enumeration;
+    .method contains (Ljava/lang/Object;)Z
+    .method indexOf (Ljava/lang/Object;)I
+    .method indexOf (Ljava/lang/Object;I)I
+    .method lastIndexOf (Ljava/lang/Object;)I
+    .method lastIndexOf (Ljava/lang/Object;I)I
+    .method elementAt (I)Ljava/lang/Object;
+    .method firstElement ()Ljava/lang/Object;
+    .method lastElement ()Ljava/lang/Object;
+    .method setElementAt (Ljava/lang/Object;I)V
+    .method removeElementAt (I)V
+    .method insertElementAt (Ljava/lang/Object;I)V
+    .method addElement (Ljava/lang/Object;)V
+    .method removeElement (Ljava/lang/Object;)Z
+    .method removeAllElements ()V
+    .method toString ()Ljava/lang/String;
+.class java.io.InputStream
+    .method <init> ()V
+    .method read ()I
+    .method read ([B)I
+    .method read ([BII)I
+    .method skip (J)J
+    .method available ()I
+    .method close ()V
+    .method mark (I)V
+    .method reset ()V
+    .method markSupported ()Z
+.class com.sun.squawk.Isolate
+    .field ENABLE_MULTI_ISOLATE Z
+    .field SHUTDOWN_EVENT_MASK I
+    .field HIBERNATE_EVENT_MASK I
+    .field UNHIBERNATE_EVENT_MASK I
+    .field SUPPORTED_EVENTS I
+    .method <init> (Ljava/util/Hashtable;Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+    .method <init> (Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+    .method <init> (Ljava/util/Hashtable;ILjava/lang/String;Ljava/lang/String;)V
+    .method getIsolates ()[Lcom/sun/squawk/Isolate;
+    .method currentIsolate ()Lcom/sun/squawk/Isolate;
+    .method intern (Ljava/lang/String;)Ljava/lang/String;
+    .method printAllIsolateStates (Ljava/io/PrintStream;)V
+    .method morphBootstrapInto (Ljava/util/Hashtable;Ljava/lang/String;Ljava/lang/String;)V
+    .method getName ()Ljava/lang/String;
+    .method setName (Ljava/lang/String;)V
+    .method getClassPath ()Ljava/lang/String;
+    .method getParentSuiteSourceURI ()Ljava/lang/String;
+    .method getMainClassName ()Ljava/lang/String;
+    .method isTrusted ()Z
+    .method getMainClassArguments ()[Ljava/lang/String;
+    .method setJADProperty (Ljava/lang/String;Ljava/lang/String;)V
+    .method getJADProperty (Ljava/lang/String;)Ljava/lang/String;
+    .method addJADProperties (Ljava/util/Hashtable;)V
+    .method setProperty (Ljava/lang/String;Ljava/lang/String;)V
+    .method getProperty (Ljava/lang/String;)Ljava/lang/String;
+    .method getProperties ()Ljava/util/Enumeration;
+    .method addLifecycleListener (Lcom/sun/squawk/Isolate$LifecycleListener;I)V
+    .method removeLifecycleListener (Lcom/sun/squawk/Isolate$LifecycleListener;I)Z
+    .method start ()V
+    .method run ()V
+    .method join ()V
+    .method exit (I)V
+    .method hibernate ()V
+    .method unhibernate ()V
+    .method isHibernated ()Z
+    .method isAlive ()Z
+    .method isExited ()Z
+    .method isNew ()Z
+    .method isBeingDebugged ()Z
+    .method isMidlet ()Z
+    .method getExitCode ()I
+    .method toString ()Ljava/lang/String;
+    .method addOut (Ljava/lang/String;)V
+    .method addErr (Ljava/lang/String;)V
+    .method removeOut (Ljava/lang/String;)V
+    .method removeErr (Ljava/lang/String;)V
+    .method clearOut ()V
+    .method clearErr ()V
+    .method listOut ()[Ljava/lang/String;
+    .method listErr ()[Ljava/lang/String;
+    .method printAllThreadStates (Ljava/io/PrintStream;)V
+    .method getId ()I
+.class java.lang.RuntimeException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.util.Hashtable
+    .method <init> (I)V
+    .method <init> ()V
+    .method keys ()Ljava/util/Enumeration;
+    .method elements ()Ljava/util/Enumeration;
+    .method contains (Ljava/lang/Object;)Z
+    .method containsKey (Ljava/lang/Object;)Z
+    .method get (Ljava/lang/Object;)Ljava/lang/Object;
+    .method put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+    .method remove (Ljava/lang/Object;)Ljava/lang/Object;
+    .method clear ()V
+    .method size ()I
+    .method isEmpty ()Z
+    .method rehash ()V
+    .method toString ()Ljava/lang/String;
+.class java.lang.ClassNotFoundException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.pragma.AllowInlinedPragma
+.class com.sun.squawk.pragma.ForceInlinedPragma
+.class com.sun.squawk.pragma.HostedPragma
+.class com.sun.squawk.pragma.NotInlinedPragma
+.class com.sun.squawk.util.IntHashtable
+    .field table [Lcom/sun/squawk/util/IntHashtableEntry;
+    .field count I
+    .field threshold I
+    .method <init> (I)V
+    .method <init> ()V
+    .method size ()I
+    .method isEmpty ()Z
+    .method keys ()Ljava/util/Enumeration;
+    .method elements ()Ljava/util/Enumeration;
+    .method visit (Lcom/sun/squawk/util/IntHashtableVisitor;)V
+    .method contains (Ljava/lang/Object;)Z
+    .method containsKey (I)Z
+    .method get (I)Ljava/lang/Object;
+    .method rehash ()V
+    .method put (ILjava/lang/Object;)Ljava/lang/Object;
+    .method remove (I)Ljava/lang/Object;
+    .method clear ()V
+    .method toString ()Ljava/lang/String;
+.class com.sun.squawk.pragma.NativePragma
+.class java.util.Enumeration
+    .method hasMoreElements ()Z
+    .method nextElement ()Ljava/lang/Object;
+.class java.lang.IndexOutOfBoundsException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.CallbackManager
+    .method <init> (Z)V
+    .method isRunOnce ()Z
+    .method add (Lcom/sun/squawk/Isolate;Ljava/lang/Runnable;)V
+    .method add (Ljava/lang/Runnable;)V
+    .method remove (Lcom/sun/squawk/Isolate;Ljava/lang/Runnable;)Z
+    .method remove (Ljava/lang/Runnable;)Z
+    .method remove (Lcom/sun/squawk/Isolate;)Z
+    .method removeAll ()V
+    .method runHooks ()V
+    .method containsOtherIsolates ()Z
+.class com.sun.squawk.CrossIsolateThread
+    .method <init> (Lcom/sun/squawk/Isolate;Ljava/lang/String;)V
+.class com.sun.squawk.DoBlock
+    .method <init> ()V
+    .method value (Ljava/lang/Object;)Ljava/lang/Object;
+.class com.sun.squawk.GC
+    .method getCollector ()Lcom/sun/squawk/GarbageCollector;
+    .method freeMemory ()J
+    .method totalMemory ()J
+    .method getPartialCount ()I
+    .method getFullCount ()I
+    .method getTotalCount ()I
+    .method allObjectsFromDo (Ljava/lang/Object;Lcom/sun/squawk/DoBlock;)V
+.class com.sun.squawk.GarbageCollector
+    .field NATIVE_GC_ONLY Z
+    .field INTERP_GC_ONLY Z
+    .method getLastGCTime ()J
+    .method getMaxFullGCTime ()J
+    .method getMaxPartialGCTime ()J
+    .method getMaxGCTime ()J
+    .method getTotalGCTime ()J
+    .method getTotalFullGCTime ()J
+    .method getTotalPartialGCTime ()J
+    .method getBytesLastFreed ()J
+    .method getBytesLastScanned ()J
+    .method getBytesFreedTotal ()J
+    .method getBytesAllocatedSinceLastGC ()I
+    .method getBytesAllocatedTotal ()J
+.class com.sun.squawk.Isolate$LifecycleListener
+    .method handleLifecycleListenerEvent (Lcom/sun/squawk/Isolate;I)V
+.class com.sun.squawk.ObjectMemoryFile
+.class com.sun.squawk.ObjectMemoryLoader
+    .method loadHeader (Ljava/io/DataInputStream;Ljava/lang/String;)Lcom/sun/squawk/ObjectMemoryFile;
+.class com.sun.squawk.ResourceFile
+    .field name Ljava/lang/String;
+    .field data [B
+    .field length I
+    .field isNew Z
+    .field isPersistent Z
+    .method <init> (Ljava/lang/String;Z)V
+    .method <init> (Ljava/lang/String;[B)V
+    .method close ()V
+    .method getData ()[B
+    .method write (IB)V
+.class com.sun.squawk.Test
+    .method main ([Ljava/lang/String;)V
+    .method runXTests ()V
+    .method fib (I)I
+.class com.sun.squawk.TestJava5
+    .method <init> ()V
+    .method main ([Ljava/lang/String;)V
+    .method runTests ()V
+    .method testAutoUnboxing ()V
+    .method testAutoUnboxingShort (Ljava/lang/Short;S)V
+    .method testAutoUnboxingLong (Ljava/lang/Long;J)V
+    .method testAutoUnboxingFloat (Ljava/lang/Float;F)V
+    .method testAutoUnboxingCharacter (Ljava/lang/Character;C)V
+    .method testAutoUnboxingDouble (Ljava/lang/Double;D)V
+    .method testAutoUnboxingByte (Ljava/lang/Byte;B)V
+    .method testAutoUnboxingBoolean (Ljava/lang/Boolean;Z)V
+    .method testAutoUnboxingInteger (Ljava/lang/Integer;I)V
+    .method testEnums ()V
+    .method testForLoop ()V
+    .method testStringConcat ()V
+.class com.sun.squawk.Unsafe
+    .method setByte (Lcom/sun/squawk/Address;II)V
+    .method setShort (Lcom/sun/squawk/Address;II)V
+    .method setChar (Lcom/sun/squawk/Address;II)V
+    .method setInt (Lcom/sun/squawk/Address;II)V
+    .method setUWord (Lcom/sun/squawk/Address;ILcom/sun/squawk/UWord;)V
+    .method setLong (Lcom/sun/squawk/Address;IJ)V
+    .method setLongAtWord (Lcom/sun/squawk/Address;IJ)V
+    .method setAddress (Lcom/sun/squawk/Address;ILcom/sun/squawk/Address;)V
+    .method getByte (Lcom/sun/squawk/Address;I)I
+    .method getUByte (Lcom/sun/squawk/Address;I)I
+    .method getShort (Lcom/sun/squawk/Address;I)I
+    .method getChar (Lcom/sun/squawk/Address;I)I
+    .method getInt (Lcom/sun/squawk/Address;I)I
+    .method getUWord (Lcom/sun/squawk/Address;I)Lcom/sun/squawk/UWord;
+    .method getLong (Lcom/sun/squawk/Address;I)J
+    .method getLongAtWord (Lcom/sun/squawk/Address;I)J
+    .method getAddress (Lcom/sun/squawk/Address;I)Lcom/sun/squawk/Address;
+    .method getBytes (Lcom/sun/squawk/Address;I[BII)V
+    .method getShorts (Lcom/sun/squawk/Address;I[SII)V
+    .method getInts (Lcom/sun/squawk/Address;I[III)V
+    .method getLongs (Lcom/sun/squawk/Address;I[JII)V
+    .method setBytes (Lcom/sun/squawk/Address;I[BII)V
+    .method setShorts (Lcom/sun/squawk/Address;I[SII)V
+    .method setInts (Lcom/sun/squawk/Address;I[III)V
+    .method setLongs (Lcom/sun/squawk/Address;I[JII)V
+    .method getUnalignedShort (Lcom/sun/squawk/Address;I)I
+    .method getUnalignedInt (Lcom/sun/squawk/Address;I)I
+    .method getUnalignedLong (Lcom/sun/squawk/Address;I)J
+    .method setUnalignedShort (Lcom/sun/squawk/Address;II)V
+    .method setUnalignedInt (Lcom/sun/squawk/Address;II)V
+    .method setUnalignedLong (Lcom/sun/squawk/Address;IJ)V
+.class com.sun.squawk.VM
+    .field STREAM_STDOUT I
+    .field STREAM_STDERR I
+    .field MAX_SYS_PRIORITY I
+    .method isHosted ()Z
+    .method setProperty (Ljava/lang/String;Ljava/lang/String;)V
+    .method getMethodBodyLength (Ljava/lang/Object;)I
+    .method setStream (I)I
+    .method printUWord (Lcom/sun/squawk/UWord;)V
+    .method printOffset (Lcom/sun/squawk/Offset;)V
+    .method printAddress (Ljava/lang/Object;)V
+    .method printAddress (Lcom/sun/squawk/Address;)V
+    .method printBytes ([BII)V
+    .method printObject (Ljava/lang/Object;)V
+    .method print (C)V
+    .method print (Ljava/lang/String;)V
+    .method print (I)V
+    .method print (J)V
+    .method print (F)V
+    .method print (D)V
+    .method print (Z)V
+    .method println (C)V
+    .method println (Ljava/lang/String;)V
+    .method println (I)V
+    .method println (Z)V
+    .method println (J)V
+    .method println (F)V
+    .method println (D)V
+    .method println ()V
+    .method registerPluginObjectMemory (Ljava/lang/String;[B)V
+    .method getPluginObjectMemories ()Ljava/util/Hashtable;
+    .method getRomStart ()Lcom/sun/squawk/Address;
+    .method getBootstrapStart ()Lcom/sun/squawk/Address;
+    .method getBootstrapEnd ()Lcom/sun/squawk/Address;
+    .method getBootstrapHash ()I
+    .method getPathSeparatorChar ()C
+    .method getFileSeparatorChar ()C
+    .method branchCount ()J
+    .method startTracing ()V
+    .method isVerbose ()Z
+    .method isVeryVerbose ()Z
+    .method makeLong (II)J
+    .method getHi (J)I
+    .method getLo (J)I
+    .method getTimeMicros ()J
+    .method getTimeMillis ()J
+    .method adjustSystemTime (J)V
+    .method relativeTimeMillis ()J
+    .method collectGarbage (Z)V
+    .method stopVM (I)V
+    .method haltVM (I)V
+    .method addShutdownHook (Lcom/sun/squawk/Isolate;Ljava/lang/Runnable;)V
+    .method removeShutdownHook (Lcom/sun/squawk/Isolate;Ljava/lang/Runnable;)Z
+    .method addShutdownHook (Ljava/lang/Thread;)V
+    .method removeShutdownHook (Ljava/lang/Thread;)Z
+    .method getTaskCache ()Ljava/util/Stack;
+    .method shallowCopy (Ljava/lang/Object;)Ljava/lang/Object;
+    .method outPrintBC ()V
+    .method printVMStackTrace (Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;)V
+    .method printExceptionAndTrace (Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Throwable;
+    .method outPrint (Ljava/io/PrintStream;Ljava/lang/String;)V
+    .method outPrintln (Ljava/io/PrintStream;Ljava/lang/String;)V
+    .method outPrintln (Ljava/io/PrintStream;)V
+    .method outPrint (Ljava/io/PrintStream;J)V
+    .method outPrint (Ljava/lang/String;)V
+    .method outPrintln (Ljava/lang/String;)V
+    .method outPrintln ()V
+    .method outPrint (J)V
+    .method printExceptionAndTrace (Ljava/lang/Throwable;Ljava/lang/String;Z)Ljava/lang/Throwable;
+    .method execSyncIO (IIIIIIILjava/lang/Object;Ljava/lang/Object;)I
+    .method execSyncIO (IIIIIIIILjava/lang/Object;Ljava/lang/Object;)I
+    .method execSyncIO (II)I
+    .method execIO (IIIIIIIILjava/lang/Object;Ljava/lang/Object;)I
+    .method execIOLong (IIIIIIIILjava/lang/Object;Ljava/lang/Object;)J
+    .method setAsDaemonThread (Ljava/lang/Thread;)V
+    .method setSystemThreadPriority (Ljava/lang/Thread;I)V
+    .method setMaxSelectWait (J)V
+    .method setMaxSystemWait (J)V
+    .method allowUserGC (Z)V
+    .method userGCAllowed ()Z
+    .method usingTypeMap ()Z
+    .method getCurrentIsolate ()Lcom/sun/squawk/Isolate;
+    .method getManifestPropertyNames ()Ljava/util/Enumeration;
+    .method getAppProperty (Ljava/lang/String;)Ljava/lang/String;
+    .method getManifestProperty (Ljava/lang/String;)Ljava/lang/String;
+    .method getManifestPropertiesOfSuite (Ljava/lang/String;)Ljava/util/Hashtable;
+    .method unregisterSuite (Ljava/lang/String;)V
+    .method isCurrentIsolateInitialized ()Z
+    .method getClass (Ljava/lang/Object;)Ljava/lang/Object;
+    .method isArray (Ljava/lang/Object;)Z
+    .method getLength (Ljava/lang/Object;)I
+    .method getTimeBeforeAnotherThreadIsRunnable ()J
+    .method getPeripheralRegistry ()Lcom/sun/squawk/peripheral/PeripheralRegistry;
+    .method getRunnableThreads ()[Ljava/lang/Thread;
+    .method getKeyedGlobalsMutex ()Ljava/lang/Object;
+    .method getKeyedGlobal (I)Ljava/lang/Object;
+    .method putKeyedGlobal (ILjava/lang/Object;)Ljava/lang/Object;
+.class com.sun.squawk.VM$Stats
+    .field STAT_WALL_TIME I
+    .field STAT_WAIT_TIME I
+    .field STAT_GC_TIME I
+    .field STAT_FULL_GC_TIME I
+    .field STAT_PARTIAL_GC_TIME I
+    .field STAT_LAST_GC_TIME I
+    .field STAT_MAX_FULLGC_TIME I
+    .field STAT_MAX_PARTGC_TIME I
+    .field STAT_FIRST_COUNT_STAT I
+    .field STAT_FULL_GC_COUNT I
+    .field STAT_PARTIAL_GC_COUNT I
+    .field STAT_BYTES_LAST_FREED I
+    .field STAT_BYTES_TOTAL_FREED I
+    .field STAT_BYTES_TOTAL_ALLOCATED I
+    .field STAT_OBJECTS_TOTAL_ALLOCATED I
+    .field STAT_THREADS_ALLOCATED I
+    .field STAT_THREAD_SWITCH_COUNT I
+    .field STAT_CONTENDED_MONITOR_COUNT I
+    .field STAT_MONITORS_ALLOCATED I
+    .field STAT_STACKS_ALLOCATED I
+    .field STAT_MAX_STACK_SIZE I
+    .field STAT_THROW_COUNT I
+    .field STAT_BRANCH_COUNT I
+    .field STAT_HEAP_FREE I
+    .field STAT_HEAP_TOTAL I
+    .field NUM_STAT_VALUES I
+    .method getTotalWaitTime ()J
+    .method getObjectsAllocatedTotal ()I
+    .method getThreadsAllocatedCount ()I
+    .method getThreadSwitchCount ()I
+    .method getContendedMontorEnterCount ()I
+    .method getMonitorsAllocatedCount ()I
+    .method getStacksAllocatedCount ()I
+    .method getMaxStackSize ()I
+    .method getThrowCount ()I
+    .method initHeapStats ()V
+    .method printHeapStats (Ljava/lang/Object;Z)V
+    .method printHeap (Ljava/lang/Object;)V
+    .method <init> ()V
+    .method readAllValues ([J)V
+    .method sendStatData (Ljava/io/DataOutputStream;)V
+.class com.sun.squawk.io.BufferedReader
+    .method <init> (Ljava/io/Reader;I)V
+    .method <init> (Ljava/io/Reader;)V
+    .method read ()I
+    .method read ([CII)I
+    .method readLine ()Ljava/lang/String;
+    .method skip (J)J
+    .method ready ()Z
+    .method markSupported ()Z
+    .method mark (I)V
+    .method reset ()V
+    .method close ()V
+.class com.sun.squawk.io.BufferedWriter
+    .method <init> (Ljava/io/Writer;)V
+    .method <init> (Ljava/io/Writer;I)V
+    .method write (I)V
+    .method write ([CII)V
+    .method write (Ljava/lang/String;II)V
+    .method newLine ()V
+    .method flush ()V
+    .method close ()V
+.class com.sun.squawk.io.ConnectionBase
+    .method <init> ()V
+    .method open (Ljava/lang/String;Ljava/lang/String;IZ)Ljavax/microedition/io/Connection;
+    .method openInputStream ()Ljava/io/InputStream;
+    .method openOutputStream ()Ljava/io/OutputStream;
+    .method close ()V
+    .method openDataInputStream ()Ljava/io/DataInputStream;
+    .method openDataOutputStream ()Ljava/io/DataOutputStream;
+.class com.sun.squawk.io.MulticastOutputStream
+    .method <init> ()V
+    .method write (I)V
+    .method write ([BII)V
+    .method close ()V
+    .method flush ()V
+    .method add (Ljava/lang/String;Ljava/io/OutputStream;)Ljava/io/OutputStream;
+    .method remove (Ljava/lang/String;)Ljava/io/OutputStream;
+    .method removeAll ()Ljava/util/Enumeration;
+    .method getSize ()I
+    .method listNames ()Ljava/util/Enumeration;
+    .method get (Ljava/lang/String;)Ljava/io/OutputStream;
+.class com.sun.squawk.io.mailboxes.AddressClosedException
+.class com.sun.squawk.io.mailboxes.ByteArrayEnvelope
+    .method <init> ([BII)V
+    .method <init> ([B)V
+    .method getContents ()Ljava/lang/Object;
+    .method getData ()[B
+.class com.sun.squawk.io.mailboxes.ByteArrayInputStreamEnvelope
+    .method <init> ([BII)V
+    .method <init> ([B)V
+    .method getContents ()Ljava/lang/Object;
+    .method getData ()Ljava/io/ByteArrayInputStream;
+.class com.sun.squawk.io.mailboxes.Channel
+    .method lookup (Ljava/lang/String;)Lcom/sun/squawk/io/mailboxes/Channel;
+    .method send (Lcom/sun/squawk/io/mailboxes/Envelope;)V
+    .method receive ()Lcom/sun/squawk/io/mailboxes/Envelope;
+    .method close ()V
+    .method isOpen ()Z
+.class com.sun.squawk.io.mailboxes.Envelope
+    .method <init> ()V
+    .method getContents ()Ljava/lang/Object;
+    .method checkCallContext ()V
+.class com.sun.squawk.io.mailboxes.ICopiable
+    .method copyFrom (Ljava/lang/Object;)V
+.class com.sun.squawk.io.mailboxes.Mailbox$AnonymousMailboxHandler
+    .method handleOpen (Lcom/sun/squawk/io/mailboxes/Mailbox;Lcom/sun/squawk/io/mailboxes/MailboxAddress;Lcom/sun/squawk/io/mailboxes/MailboxAddress;)Lcom/sun/squawk/io/mailboxes/MailboxAddress;
+    .method handleClose (Lcom/sun/squawk/io/mailboxes/MailboxAddress;)Lcom/sun/squawk/io/mailboxes/AddressClosedException;
+.class com.sun.squawk.io.mailboxes.MailboxAddress$AddressClosedEnvelope
+    .method getContents ()Ljava/lang/Object;
+.class com.sun.squawk.io.mailboxes.MailboxClosedException
+.class com.sun.squawk.io.mailboxes.MailboxInUseException
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.io.mailboxes.NoSuchMailboxException
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.io.mailboxes.ObjectEnvelope
+    .field contents Lcom/sun/squawk/io/mailboxes/ICopiable;
+    .method <init> (Lcom/sun/squawk/io/mailboxes/ICopiable;)V
+    .method getContents ()Ljava/lang/Object;
+.class com.sun.squawk.io.mailboxes.ServerChannel
+    .method create (Ljava/lang/String;)Lcom/sun/squawk/io/mailboxes/ServerChannel;
+    .method reOpen ()V
+    .method getName ()Ljava/lang/String;
+    .method accept ()Lcom/sun/squawk/io/mailboxes/Channel;
+    .method close ()V
+    .method isOpen ()Z
+.class com.sun.squawk.io.mailboxes.ServerChannel$NewChannelEnvelope
+    .method getContents ()Ljava/lang/Object;
+.class com.sun.squawk.peripheral.INorFlashSector
+    .field USER_PURPOSED I
+    .field SYSTEM_PURPOSED I
+    .field RMS_PURPOSED I
+    .method erase ()V
+    .method getBytes (I[BII)V
+    .method getErasedValue ()B
+    .method getPurpose ()I
+    .method getSize ()I
+    .method getStartAddress ()Lcom/sun/squawk/Address;
+    .method setBytes (I[BII)V
+.class com.sun.squawk.peripheral.INorFlashSectorAllocator
+    .method getInitialSectors (I)[Lcom/sun/squawk/peripheral/INorFlashSector;
+    .method getExtraSector (I)Lcom/sun/squawk/peripheral/INorFlashSector;
+    .method releaseSector (Lcom/sun/squawk/peripheral/INorFlashSector;I)V
+.class com.sun.squawk.peripheral.IPeripheral
+.class com.sun.squawk.peripheral.InsufficientFlashMemoryException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.peripheral.PeripheralRegistry
+    .method <init> ()V
+    .method add (Lcom/sun/squawk/peripheral/IPeripheral;)V
+    .method getSingleton (Ljava/lang/Class;)Lcom/sun/squawk/peripheral/IPeripheral;
+    .method getAll (Ljava/lang/Class;)[Lcom/sun/squawk/peripheral/IPeripheral;
+    .method removeAll (Ljava/lang/Class;)V
+.class com.sun.squawk.peripheral.SimulatedNorFlashSectorAllocator
+    .field sectors Ljava/util/Vector;
+    .method <init> ()V
+    .method getSingleton ()Lcom/sun/squawk/peripheral/SimulatedNorFlashSectorAllocator;
+    .method resetSingleton ()V
+    .method getExtraSector (I)Lcom/sun/squawk/peripheral/INorFlashSector;
+    .method getInitialSectors (I)[Lcom/sun/squawk/peripheral/INorFlashSector;
+    .method installSectors (III)V
+    .method releaseSector (Lcom/sun/squawk/peripheral/INorFlashSector;I)V
+    .method setupSectors (IIIZ)V
+    .method uninstallSectors ()V
+.class com.sun.squawk.pragma.GlobalStaticFields
+.class com.sun.squawk.pragma.PragmaException
+.class com.sun.squawk.realtime.OffsetOutOfBoundsException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.realtime.RawMemoryAccess
+    .field vbase Lcom/sun/squawk/Address;
+    .method <init> (Ljava/lang/Object;J)V
+    .method <init> (Ljava/lang/Object;JJ)V
+    .method checkMultiBounds (IIII)V
+    .method checkBounds (III)V
+    .method checkMultiRead (III)V
+    .method getByte (J)B
+    .method getBytes (J[BII)V
+    .method getInt (J)I
+    .method getInts (J[III)V
+    .method getLong (J)J
+    .method getLongs (J[JII)V
+    .method getMappedAddress ()J
+    .method getAddress ()Lcom/sun/squawk/Address;
+    .method size ()Lcom/sun/squawk/UWord;
+    .method getShort (J)S
+    .method getShorts (J[SII)V
+    .method map ()J
+    .method map (J)J
+    .method map (JJ)J
+    .method checkMultiWrite (III)V
+    .method setByte (JB)V
+    .method setBytes (J[BII)V
+    .method setInt (JI)V
+    .method setInts (J[III)V
+    .method setLong (JJ)V
+    .method setLongs (J[JII)V
+    .method setShort (JS)V
+    .method setShorts (J[SII)V
+    .method wasMalloced ()Z
+    .method invalidate ()V
+.class com.sun.squawk.realtime.RawMemoryFloatAccess
+    .method <init> (Ljava/lang/Object;J)V
+    .method <init> (Ljava/lang/Object;JJ)V
+    .method getDouble (J)D
+    .method getDoubles (J[DII)V
+    .method getFloat (J)F
+    .method getFloats (J[FII)V
+    .method setDouble (JD)V
+    .method setDoubles (J[DII)V
+    .method setFloat (JF)V
+    .method setFloats (J[FII)V
+.class com.sun.squawk.realtime.SizeOutOfBoundsException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.realtime.UnsupportedPhysicalMemoryException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.security.HexEncoding
+    .method hexEncode ([B)Ljava/lang/String;
+    .method hexEncode ([BI)Ljava/lang/String;
+    .method hexDecode (Ljava/lang/String;)[B
+.class com.sun.squawk.util.Arrays
+    .method sort ([J)V
+    .method sort ([JII)V
+    .method sort ([I)V
+    .method sort ([III)V
+    .method sort ([S)V
+    .method sort ([SII)V
+    .method sort ([C)V
+    .method sort ([CII)V
+    .method sort ([B)V
+    .method sort ([BII)V
+    .method sort ([D)V
+    .method sort ([DII)V
+    .method sort ([F)V
+    .method sort ([FII)V
+    .method sort ([Ljava/lang/Object;Lcom/sun/squawk/util/Comparer;)V
+    .method sort ([Ljava/lang/Object;IILcom/sun/squawk/util/Comparer;)V
+    .method boundsCheck (III)V
+    .method binarySearch ([JJ)I
+    .method binarySearch ([II)I
+    .method binarySearch ([SS)I
+    .method binarySearch ([CC)I
+    .method binarySearch ([BB)I
+    .method binarySearch ([DD)I
+    .method binarySearch ([FF)I
+    .method binarySearch ([Ljava/lang/Object;Ljava/lang/Object;Lcom/sun/squawk/util/Comparer;)I
+    .method copy ([ZIIII)[Z
+    .method copy ([BIIII)[B
+    .method copy ([CIIII)[C
+    .method copy ([DIIII)[D
+    .method copy ([FIIII)[F
+    .method copy ([IIIII)[I
+    .method copy ([JIIII)[J
+    .method copy ([Ljava/lang/Object;I[Ljava/lang/Object;II)[Ljava/lang/Object;
+    .method copy ([Ljava/lang/Object;)[Ljava/lang/Object;
+    .method copy ([SIIII)[S
+    .method equals ([J[J)Z
+    .method equals ([I[I)Z
+    .method equals ([S[S)Z
+    .method equals ([C[C)Z
+    .method equals ([B[B)Z
+    .method equals ([Z[Z)Z
+    .method equals ([D[D)Z
+    .method equals ([F[F)Z
+    .method equals ([Ljava/lang/Object;[Ljava/lang/Object;)Z
+    .method equals (Ljava/lang/Object;Ljava/lang/Object;)Z
+    .method hashCode (Ljava/lang/Object;)I
+    .method length (Ljava/lang/Object;)I
+    .method fill ([JJ)V
+    .method fill ([JIIJ)V
+    .method fill ([II)V
+    .method fill ([IIII)V
+    .method fill ([SS)V
+    .method fill ([SIIS)V
+    .method fill ([CC)V
+    .method fill ([CIIC)V
+    .method fill ([BB)V
+    .method fill ([BIIB)V
+    .method fill ([ZZ)V
+    .method fill ([ZIIZ)V
+    .method fill ([DD)V
+    .method fill ([DIID)V
+    .method fill ([FF)V
+    .method fill ([FIIF)V
+    .method fill ([Ljava/lang/Object;Ljava/lang/Object;)V
+    .method fill ([Ljava/lang/Object;IILjava/lang/Object;)V
+.class com.sun.squawk.util.ByteArrayInputStreamWithSetBytes
+    .field offset I
+    .method <init> ([B)V
+    .method <init> ([BII)V
+    .method getPos ()I
+    .method setBytes ([BII)V
+.class com.sun.squawk.util.ByteArrayOutputStreamWithGetBytes
+    .method <init> ()V
+    .method <init> (I)V
+    .method getBytes ()[B
+    .method ensureEnoughRoomFor (I)V
+    .method skip (I)V
+.class com.sun.squawk.util.Comparer
+    .method compare (Ljava/lang/Object;Ljava/lang/Object;)I
+.class com.sun.squawk.util.HashtableEntry
+.class com.sun.squawk.util.IntHashtableEntry
+.class com.sun.squawk.util.IntHashtableVisitor
+    .method visitIntHashtable (ILjava/lang/Object;)V
+.class com.sun.squawk.util.LineReader
+    .method <init> (Ljava/io/Reader;)V
+    .method readLines (Ljava/lang/String;Ljava/util/Vector;)V
+    .method readLine ()Ljava/lang/String;
+    .method readLines (Ljava/util/Vector;)Ljava/util/Vector;
+.class com.sun.squawk.util.MathUtils
+    .method scalbn (DI)D
+    .method round (F)I
+    .method round (D)J
+    .method exp (D)D
+    .method log (D)D
+    .method pow (DD)D
+    .method asin (D)D
+    .method acos (D)D
+    .method atan (D)D
+    .method atan2 (DD)D
+    .method rint (D)D
+    .method log1p (D)D
+    .method expm1 (D)D
+    .method IEEEremainder (DD)D
+.class com.sun.squawk.util.NotImplementedYetException
+    .method throwNow ()V
+    .method mark ()V
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class com.sun.squawk.util.StringTokenizer
+    .method <init> (Ljava/lang/String;Ljava/lang/String;Z)V
+    .method <init> (Ljava/lang/String;Ljava/lang/String;)V
+    .method <init> (Ljava/lang/String;)V
+    .method hasMoreTokens ()Z
+    .method nextToken ()Ljava/lang/String;
+    .method nextToken (Ljava/lang/String;)Ljava/lang/String;
+    .method hasMoreElements ()Z
+    .method nextElement ()Ljava/lang/Object;
+    .method countTokens ()I
+.class com.sun.squawk.util.UnexpectedException
+    .field unexpected Ljava/lang/Throwable;
+    .method <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+    .method <init> (Ljava/lang/Throwable;)V
+    .method printStackTrace ()V
+.class com.sun.squawk.vm.ChannelConstants
+    .field CHANNEL_GENERIC I
+    .field CHANNEL_LAST_FIXED I
+    .field RESULT_OK I
+    .field RESULT_BADCONTEXT I
+    .field RESULT_EXCEPTION I
+    .field RESULT_BADPARAMETER I
+    .field RESULT_MALLOCFAILURE I
+    .field GLOBAL_CREATECONTEXT I
+    .field GLOBAL_GETEVENT I
+    .field GLOBAL_POSTEVENT I
+    .field GLOBAL_WAITFOREVENT I
+    .field CONTEXT_DELETE I
+    .field CONTEXT_HIBERNATE I
+    .field CONTEXT_GETHIBERNATIONDATA I
+    .field CONTEXT_GETCHANNEL I
+    .field CONTEXT_FREECHANNEL I
+    .field CONTEXT_GETRESULT I
+    .field CONTEXT_GETRESULT_2 I
+    .field CONTEXT_GETERROR I
+    .field LAST_BASIC_OPCODE I
+    .field OPENCONNECTION I
+    .field CLOSECONNECTION I
+    .field ACCEPTCONNECTION I
+    .field OPENINPUT I
+    .field CLOSEINPUT I
+    .field WRITEREAD I
+    .field READBYTE I
+    .field READSHORT I
+    .field READINT I
+    .field READLONG I
+    .field READBUF I
+    .field SKIP I
+    .field AVAILABLE I
+    .field MARK I
+    .field RESET I
+    .field MARKSUPPORTED I
+    .field OPENOUTPUT I
+    .field FLUSH I
+    .field CLOSEOUTPUT I
+    .field WRITEBYTE I
+    .field WRITESHORT I
+    .field WRITEINT I
+    .field WRITELONG I
+    .field WRITEBUF I
+    .field LAST_GENERIC_CONNECTION_OPCODE I
+    .field PLATFORM_OPCODES I
+    .field DLOPEN I
+    .field DLCLOSE I
+    .field DLERROR I
+    .field DLSYM I
+    .field LAST_PLATFORM_TYPE_OPCODE I
+    .field LAST_GUI_OPCODE I
+    .field CHANNEL_IRQ I
+    .field CHANNEL_SPI I
+    .field CHANNEL_LAST_PLATFORM I
+    .field PLATFORM_OPCODE I
+    .field IRQ_WAIT I
+    .field GET_HARDWARE_REVISION I
+    .field GET_LAST_DEVICE_INTERRUPT_TIME_ADDR I
+    .field GET_CURRENT_TIME_ADDR I
+    .field SPI_OPCODES I
+    .field SPI_SEND_RECEIVE_8 I
+    .field SPI_SEND_RECEIVE_8_PLUS_SEND_16 I
+    .field SPI_SEND_RECEIVE_8_PLUS_SEND_N I
+    .field SPI_SEND_RECEIVE_8_PLUS_RECEIVE_16 I
+    .field SPI_SEND_RECEIVE_8_PLUS_VARIABLE_RECEIVE_N I
+    .field SPI_SEND_AND_RECEIVE_WITH_DEVICE_SELECT I
+    .field SPI_SEND_AND_RECEIVE I
+    .field SPI_GET_MAX_TRANSFER_SIZE I
+    .field SPI_PULSE_WITH_DEVICE_SELECT I
+    .field I2C_OPCODES I
+    .field I2C_OPEN I
+    .field I2C_CLOSE I
+    .field I2C_SET_CLOCK_SPEED I
+    .field I2C_READ I
+    .field I2C_WRITE I
+    .field I2C_BUSY I
+    .field I2C_PROBE I
+    .field SLEEP_OPCODES I
+    .field DEEP_SLEEP I
+    .field SHALLOW_SLEEP I
+    .field WAIT_FOR_DEEP_SLEEP I
+    .field DEEP_SLEEP_TIME_MILLIS_HIGH I
+    .field DEEP_SLEEP_TIME_MILLIS_LOW I
+    .field SET_DEEP_SLEEP_ENABLED I
+    .field SET_MINIMUM_DEEP_SLEEP_TIME I
+    .field TOTAL_SHALLOW_SLEEP_TIME_MILLIS_HIGH I
+    .field TOTAL_SHALLOW_SLEEP_TIME_MILLIS_LOW I
+    .field SET_SHALLOW_SLEEP_CLOCK_MODE I
+    .field MISC_OPCODES I
+    .field FLASH_ERASE I
+    .field FLASH_WRITE I
+    .field USB_GET_STATE I
+    .field GET_SERIAL_CHARS I
+    .field WRITE_SERIAL_CHARS I
+    .field AVAILABLE_SERIAL_CHARS I
+    .field AVR_GET_TIME_HIGH I
+    .field AVR_GET_TIME_LOW I
+    .field AVR_GET_STATUS I
+    .field WRITE_SECURED_SILICON_AREA I
+    .field READ_SECURED_SILICON_AREA I
+    .field SET_SYSTEM_TIME I
+    .field ENABLE_AVR_CLOCK_SYNCHRONISATION I
+    .field GET_PUBLIC_KEY I
+    .field COMPUTE_CRC16_FOR_MEMORY_REGION I
+    .field REPROGRAM_MMU I
+    .field GET_ALLOCATED_FILE_SIZE I
+    .field GET_FILE_VIRTUAL_ADDRESS I
+    .field GET_DMA_BUFFER_SIZE I
+    .field GET_DMA_BUFFER_ADDRESS I
+    .field GET_RECORDED_OUTPUT I
+    .field GET_VAR_ADDR I
+    .field GET_SYSTEM_CORE_CLOCK I
+    .field ETHERNET_OP I
+    .field ETHERNET_INIT I
+    .field ETHERNET_CONFIG_NETIF I
+    .field ETHERNET_START_PROCESS I
+    .field ETHERNET_STOP_PROCESS I
+    .field ETHERNET_BIND I
+    .field ETHERNET_LISTEN I
+    .field ETHERNET_SEND I
+    .field ETHERNET_CONNECT I
+    .field ETHERNET_CLOSE I
+    .field ETHERNET_TCP_NEW I
+    .field ETHERNET_CHECK_EVENT I
+    .field ETHERNET_POP_EVENT I
+    .field ETHERNET_GET_EVENT_OPCODE I
+    .field ETHERNET_GET_EVENT_PCB I
+    .field ETHERNET_GET_EVENT_BUF I
+    .field ETHERNET_GET_EVENT_BUF_PTR I
+    .field ETHERNET_GET_EVENT_BUF_PUSHTOAPP I
+    .field ETHERNET_GET_EVENT_BUF_LEN I
+    .field ETHERNET_GET_EVENT_ERR I
+    .field ETHERNET_GET_EVENT_ARG I
+    .field ETHERNET_COPY_PBUF I
+    .field ETHERNET_FREE_PBUF I
+    .field ETHERNET_SET_SCKOPT I
+    .field ETHERNET_GET_SCKOPT I
+    .field GET_ETHERNET_EVENT I
+    .field ETHERNET_DNS_SETSERVER I
+    .field ETHERNET_DNS_GETSERVER I
+    .field VAR_JAVA_IRQ_GPIO_STATUS I
+    .field INTERNAL_SETSTREAM I
+    .field INTERNAL_OPENSTREAM I
+    .field INTERNAL_PRINTCHAR I
+    .field INTERNAL_PRINTSTRING I
+    .field INTERNAL_PRINTINT I
+    .field INTERNAL_PRINTFLOAT I
+    .field INTERNAL_PRINTDOUBLE I
+    .field INTERNAL_PRINTUWORD I
+    .field INTERNAL_PRINTOFFSET I
+    .field INTERNAL_PRINTLONG I
+    .field INTERNAL_PRINTADDRESS I
+    .field INTERNAL_LOW_RESULT I
+    .field INTERNAL_GETTIMEMILLIS_HIGH I
+    .field INTERNAL_GETTIMEMICROS_HIGH I
+    .field INTERNAL_STOPVM I
+    .field INTERNAL_NATIVE_PLATFORM_NAME I
+    .field INTERNAL_PRINTCONFIGURATION I
+    .field INTERNAL_PRINTGLOBALOOPNAME I
+    .field INTERNAL_PRINTGLOBALS I
+    .field INTERNAL_GETPATHSEPARATORCHAR I
+    .field INTERNAL_GETFILESEPARATORCHAR I
+    .field INTERNAL_COMPUTE_SHA1_FOR_MEMORY_REGION I
+    .field INTERNAL_PRINTBYTES I
+    .field RPI_PRINTSTRING I
+    .field LAST_OPCODE I
+.class java.lang.ArithmeticException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.ArrayIndexOutOfBoundsException
+    .method <init> ()V
+    .method <init> (I)V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.ArrayStoreException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.AssertionError
+    .method <init> ()V
+    .method <init> (Ljava/lang/Object;)V
+    .method <init> (Z)V
+    .method <init> (C)V
+    .method <init> (I)V
+    .method <init> (J)V
+.class java.lang.Boolean
+    .field TRUE Ljava/lang/Boolean;
+    .field FALSE Ljava/lang/Boolean;
+    .method <init> (Z)V
+    .method valueOf (Z)Ljava/lang/Boolean;
+    .method booleanValue ()Z
+    .method toString ()Ljava/lang/String;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.Byte
+    .field MIN_VALUE B
+    .field MAX_VALUE B
+    .method parseByte (Ljava/lang/String;)B
+    .method parseByte (Ljava/lang/String;I)B
+    .method <init> (B)V
+    .method valueOf (B)Ljava/lang/Byte;
+    .method byteValue ()B
+    .method toString ()Ljava/lang/String;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.Character
+    .field MIN_RADIX I
+    .field MAX_RADIX I
+    .field MIN_VALUE C
+    .field MAX_VALUE C
+    .method <init> (C)V
+    .method isLowerCase (C)Z
+    .method isUpperCase (C)Z
+    .method isDigit (C)Z
+    .method toLowerCase (C)C
+    .method toUpperCase (C)C
+    .method digit (CI)I
+    .method valueOf (C)Ljava/lang/Character;
+    .method charValue ()C
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+    .method toString ()Ljava/lang/String;
+.class java.lang.ClassCastException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Double
+    .field POSITIVE_INFINITY D
+    .field NEGATIVE_INFINITY D
+    .field NaN D
+    .field MAX_VALUE D
+    .field MIN_VALUE D
+    .method toString (D)Ljava/lang/String;
+    .method valueOf (Ljava/lang/String;)Ljava/lang/Double;
+    .method parseDouble (Ljava/lang/String;)D
+    .method isNaN (D)Z
+    .method isInfinite (D)Z
+    .method <init> (D)V
+    .method doubleToLongBits (D)J
+    .method longBitsToDouble (J)D
+    .method valueOf (D)Ljava/lang/Double;
+    .method isNaN ()Z
+    .method isInfinite ()Z
+    .method toString ()Ljava/lang/String;
+    .method byteValue ()B
+    .method shortValue ()S
+    .method intValue ()I
+    .method longValue ()J
+    .method floatValue ()F
+    .method doubleValue ()D
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.Enum
+    .field ordinal_ I
+    .method <init> (Ljava/lang/String;I)V
+    .method setEnumValues ([Ljava/lang/Object;Ljava/lang/Class;)V
+    .method getEnumValues (Ljava/lang/Class;)[Ljava/lang/Enum;
+    .method valueOf (Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;
+    .method equals (Ljava/lang/Object;)Z
+    .method hashCode ()I
+    .method toString ()Ljava/lang/String;
+    .method compareTo (Ljava/lang/Enum;)I
+    .method name ()Ljava/lang/String;
+    .method ordinal ()I
+    .method getDeclaringClass ()Ljava/lang/Class;
+.class java.lang.Error
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Exception
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.FDBigInt
+    .method lshiftMe (I)V
+    .method normalizeMe ()I
+    .method mult (I)Ljava/lang/FDBigInt;
+    .method multaddMe (II)V
+    .method mult (Ljava/lang/FDBigInt;)Ljava/lang/FDBigInt;
+    .method add (Ljava/lang/FDBigInt;)Ljava/lang/FDBigInt;
+    .method sub (Ljava/lang/FDBigInt;)Ljava/lang/FDBigInt;
+    .method cmp (Ljava/lang/FDBigInt;)I
+    .method quoRemIteration (Ljava/lang/FDBigInt;)I
+    .method longValue ()J
+.class java.lang.Float
+    .field POSITIVE_INFINITY F
+    .field NEGATIVE_INFINITY F
+    .field NaN F
+    .field MAX_VALUE F
+    .field MIN_VALUE F
+    .method toString (F)Ljava/lang/String;
+    .method valueOf (Ljava/lang/String;)Ljava/lang/Float;
+    .method isNaN (F)Z
+    .method isInfinite (F)Z
+    .method <init> (F)V
+    .method <init> (D)V
+    .method parseFloat (Ljava/lang/String;)F
+    .method floatToIntBits (F)I
+    .method intBitsToFloat (I)F
+    .method valueOf (F)Ljava/lang/Float;
+    .method isNaN ()Z
+    .method isInfinite ()Z
+    .method toString ()Ljava/lang/String;
+    .method byteValue ()B
+    .method shortValue ()S
+    .method intValue ()I
+    .method longValue ()J
+    .method floatValue ()F
+    .method doubleValue ()D
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.FloatingDecimal
+    .method readJavaFormatString (Ljava/lang/String;)Ljava/lang/FloatingDecimal;
+    .method toString ()Ljava/lang/String;
+    .method toJavaFormatString ()Ljava/lang/String;
+    .method doubleValue ()D
+    .method floatValue ()F
+.class java.lang.IllegalAccessException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.IllegalArgumentException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.IllegalMonitorStateException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.IllegalStateException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.IllegalThreadStateException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.InstantiationException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Integer
+    .field MIN_VALUE I
+    .field MAX_VALUE I
+    .method toString (II)Ljava/lang/String;
+    .method toHexString (I)Ljava/lang/String;
+    .method toOctalString (I)Ljava/lang/String;
+    .method toBinaryString (I)Ljava/lang/String;
+    .method toString (I)Ljava/lang/String;
+    .method parseInt (Ljava/lang/String;I)I
+    .method parseInt (Ljava/lang/String;)I
+    .method valueOf (Ljava/lang/String;I)Ljava/lang/Integer;
+    .method valueOf (Ljava/lang/String;)Ljava/lang/Integer;
+    .method <init> (I)V
+    .method valueOf (I)Ljava/lang/Integer;
+    .method byteValue ()B
+    .method shortValue ()S
+    .method intValue ()I
+    .method longValue ()J
+    .method floatValue ()F
+    .method doubleValue ()D
+    .method toString ()Ljava/lang/String;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.Iterable
+    .method iterator ()Ljava/util/Iterator;
+.class java.lang.Long
+    .field MIN_VALUE J
+    .field MAX_VALUE J
+    .method toString (JI)Ljava/lang/String;
+    .method toString (J)Ljava/lang/String;
+    .method parseLong (Ljava/lang/String;I)J
+    .method parseLong (Ljava/lang/String;)J
+    .method <init> (J)V
+    .method valueOf (J)Ljava/lang/Long;
+    .method longValue ()J
+    .method floatValue ()F
+    .method doubleValue ()D
+    .method toString ()Ljava/lang/String;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.Math
+    .field E D
+    .field PI D
+    .method sin (D)D
+    .method cos (D)D
+    .method tan (D)D
+    .method toRadians (D)D
+    .method toDegrees (D)D
+    .method sqrt (D)D
+    .method ceil (D)D
+    .method floor (D)D
+    .method abs (I)I
+    .method abs (J)J
+    .method abs (F)F
+    .method abs (D)D
+    .method max (II)I
+    .method max (JJ)J
+    .method max (FF)F
+    .method max (DD)D
+    .method min (II)I
+    .method min (JJ)J
+    .method min (FF)F
+    .method min (DD)D
+.class java.lang.NegativeArraySizeException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.NoClassDefFoundError
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.NullPointerException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.NumberFormatException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Override
+.class java.lang.Runnable
+    .method run ()V
+.class java.lang.Runtime
+    .method getRuntime ()Ljava/lang/Runtime;
+    .method exit (I)V
+    .method freeMemory ()J
+    .method totalMemory ()J
+    .method gc ()V
+.class java.lang.SecurityException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Short
+    .field MIN_VALUE S
+    .field MAX_VALUE S
+    .method parseShort (Ljava/lang/String;)S
+    .method parseShort (Ljava/lang/String;I)S
+    .method <init> (S)V
+    .method valueOf (S)Ljava/lang/Short;
+    .method shortValue ()S
+    .method toString ()Ljava/lang/String;
+    .method hashCode ()I
+    .method equals (Ljava/lang/Object;)Z
+.class java.lang.StringIndexOutOfBoundsException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+    .method <init> (I)V
+.class java.lang.SuppressWarnings
+    .method value ()[Ljava/lang/String;
+.class java.lang.System
+    .field out Ljava/io/PrintStream;
+    .field err Ljava/io/PrintStream;
+    .method currentTimeMillis ()J
+    .method arraycopy (Ljava/lang/Object;ILjava/lang/Object;II)V
+    .method identityHashCode (Ljava/lang/Object;)I
+    .method getProperty (Ljava/lang/String;)Ljava/lang/String;
+    .method exit (I)V
+    .method gc ()V
+.class java.lang.Thread
+    .field MIN_PRIORITY I
+    .field NORM_PRIORITY I
+    .field MAX_PRIORITY I
+    .method currentThread ()Ljava/lang/Thread;
+    .method yield ()V
+    .method sleep (J)V
+    .method <init> ()V
+    .method <init> (Ljava/lang/Runnable;)V
+    .method <init> (Ljava/lang/Runnable;Ljava/lang/String;)V
+    .method <init> (Ljava/lang/String;)V
+    .method activeCount ()I
+    .method start ()V
+    .method run ()V
+    .method interrupt ()V
+    .method isAlive ()Z
+    .method setPriority (I)V
+    .method getPriority ()I
+    .method getName ()Ljava/lang/String;
+    .method join ()V
+    .method toString ()Ljava/lang/String;
+.class java.lang.VirtualMachineError
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.lang.Void
+.class java.lang.annotation.Annotation
+    .method annotationType ()Ljava/lang/Class;
+    .method equals (Ljava/lang/Object;)Z
+    .method hashCode ()I
+    .method toString ()Ljava/lang/String;
+.class java.lang.annotation.Documented
+.class java.lang.annotation.ElementType
+    .field ANNOTATION_TYPE Ljava/lang/annotation/ElementType;
+    .field CONSTRUCTOR Ljava/lang/annotation/ElementType;
+    .field FIELD Ljava/lang/annotation/ElementType;
+    .field LOCAL_VARIABLE Ljava/lang/annotation/ElementType;
+    .field METHOD Ljava/lang/annotation/ElementType;
+    .field PACKAGE Ljava/lang/annotation/ElementType;
+    .field PARAMETER Ljava/lang/annotation/ElementType;
+    .field TYPE Ljava/lang/annotation/ElementType;
+    .method values ()[Ljava/lang/annotation/ElementType;
+    .method valueOf (Ljava/lang/String;)Ljava/lang/annotation/ElementType;
+.class java.lang.annotation.Inherited
+.class java.lang.annotation.Retention
+    .method value ()Ljava/lang/annotation/RetentionPolicy;
+.class java.lang.annotation.RetentionPolicy
+    .field CLASS Ljava/lang/annotation/RetentionPolicy;
+    .field RUNTIME Ljava/lang/annotation/RetentionPolicy;
+    .field SOURCE Ljava/lang/annotation/RetentionPolicy;
+    .method values ()[Ljava/lang/annotation/RetentionPolicy;
+    .method valueOf (Ljava/lang/String;)Ljava/lang/annotation/RetentionPolicy;
+.class java.lang.annotation.Target
+    .method value ()[Ljava/lang/annotation/ElementType;
+.class java.lang.ref.Reference
+    .method clear ()V
+    .method get ()Ljava/lang/Object;
+.class java.lang.ref.WeakReference
+    .method <init> (Ljava/lang/Object;)V
+.class com.sun.cldc.i18n.StreamReader
+    .field in Ljava/io/InputStream;
+    .method <init> ()V
+    .method open (Ljava/io/InputStream;Ljava/lang/String;)Ljava/io/Reader;
+    .method ready ()Z
+    .method markSupported ()Z
+    .method mark (I)V
+    .method reset ()V
+    .method close ()V
+    .method sizeOf ([BII)I
+.class com.sun.cldc.i18n.StreamWriter
+    .field out Ljava/io/OutputStream;
+    .method <init> ()V
+    .method open (Ljava/io/OutputStream;Ljava/lang/String;)Ljava/io/Writer;
+    .method flush ()V
+    .method close ()V
+    .method sizeOf ([CII)I
+.class com.sun.cldc.jna.DynamicStructure
+    .field DEBUG Z
+    .field STRUCTURE_SIZE_INDEX I
+    .method <init> ()V
+    .method initLayout (Ljava/lang/Class;I)[I
+    .method getLayout ()[I
+    .method size ()I
+.class com.sun.cldc.jna.Function
+    .field DEBUG Z
+    .field funcAddr Lcom/sun/squawk/Address;
+    .field name Ljava/lang/String;
+    .method getFunction (Ljava/lang/String;Ljava/lang/String;)Lcom/sun/cldc/jna/Function;
+    .method errno ()I
+    .method returnStruct (Ljava/lang/Class;I)Lcom/sun/cldc/jna/Structure;
+    .method returnString (I)Ljava/lang/String;
+    .method getName ()Ljava/lang/String;
+    .method toString ()Ljava/lang/String;
+    .method preamble ()V
+    .method postscript (I)V
+    .method call0 ()I
+    .method call1 (I)I
+    .method call2 (II)I
+    .method call3 (III)I
+    .method call4 (IIII)I
+    .method call5 (IIIII)I
+    .method call6 (IIIIII)I
+    .method call7 (IIIIIII)I
+    .method call8 (IIIIIIII)I
+    .method call9 (IIIIIIIII)I
+    .method call10 (IIIIIIIIII)I
+    .method call1 (Lcom/sun/cldc/jna/Pointer;)I
+    .method call2 (ILcom/sun/cldc/jna/Pointer;)I
+    .method call2 (Lcom/sun/cldc/jna/Pointer;I)I
+    .method call2 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call3 (IILcom/sun/cldc/jna/Pointer;)I
+    .method call3 (ILcom/sun/cldc/jna/Pointer;I)I
+    .method call3 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call3 (Lcom/sun/cldc/jna/Pointer;II)I
+    .method call3 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call3 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call3 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call4 (IIILcom/sun/cldc/jna/Pointer;)I
+    .method call4 (IILcom/sun/cldc/jna/Pointer;I)I
+    .method call4 (IILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call4 (ILcom/sun/cldc/jna/Pointer;II)I
+    .method call4 (ILcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call4 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call4 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;III)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;IILcom/sun/cldc/jna/Pointer;)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;I)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;II)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call4 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (IIILcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (IILcom/sun/cldc/jna/Pointer;II)I
+    .method call5 (IILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;III)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;II)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;IIII)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;IILcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;II)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;III)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;II)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;I)I
+    .method call5 (IIIIILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (IIILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (IILcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (IILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;IILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;IIILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;IILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;IILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;)I
+    .method call5 (Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;Lcom/sun/cldc/jna/Pointer;)I
+.class com.sun.cldc.jna.Includes
+    .method value ()[Ljava/lang/String;
+.class com.sun.cldc.jna.JNAPlatform
+.class com.sun.cldc.jna.JNAPlatformImpl
+    .method <init> ()V
+    .method initConstInt (I)I
+.class com.sun.cldc.jna.Library
+    .method initConstInt (I)I
+.class com.sun.cldc.jna.Native
+    .field DEFAULT Ljava/lang/String;
+    .field DEBUG Z
+    .field POINTER_SIZE I
+    .field LONG_SIZE I
+    .field WCHAR_SIZE I
+    .method getLibraryLoading ()Lcom/sun/cldc/jna/NativeLibrary;
+    .method loadLibrary (Ljava/lang/String;Ljava/lang/Class;)Lcom/sun/cldc/jna/Library;
+    .method doInitCheck ([ZII)[Z
+.class com.sun.cldc.jna.NativeLibrary
+    .method getInstance (Ljava/lang/String;)Lcom/sun/cldc/jna/NativeLibrary;
+    .method getDefaultInstance ()Lcom/sun/cldc/jna/NativeLibrary;
+    .method errorStr ()Ljava/lang/String;
+    .method getFunction (Ljava/lang/String;)Lcom/sun/cldc/jna/Function;
+    .method getGlobalVariableAddress (Ljava/lang/String;I)Lcom/sun/cldc/jna/VarPointer;
+    .method dispose ()V
+    .method toString ()Ljava/lang/String;
+.class com.sun.cldc.jna.OpaqueStructure
+    .method <init> ()V
+    .method size ()I
+    .method read ()V
+    .method write ()V
+.class com.sun.cldc.jna.Platform
+    .field commonMappings Ljava/util/Hashtable;
+    .field PLATFORM_PACKAGE Ljava/lang/String;
+    .method getPlatform ()Lcom/sun/cldc/jna/Platform;
+    .method commonLibraryMapping (Ljava/lang/String;)Ljava/lang/String;
+    .method <init> ()V
+    .method hasRuntimeExec ()Z
+    .method isFreeBSD ()Z
+    .method isLinux ()Z
+    .method isMac ()Z
+    .method isOpenBSD ()Z
+    .method isSolaris ()Z
+    .method isWindows ()Z
+    .method isWindowsCE ()Z
+    .method isX11 ()Z
+    .method getPlatformPackageName ()Ljava/lang/String;
+    .method getPlatformNativePackageName ()Ljava/lang/String;
+    .method platformName ()Ljava/lang/String;
+    .method toString ()Ljava/lang/String;
+.class com.sun.cldc.jna.Pointer
+    .method NULL ()Lcom/sun/cldc/jna/Pointer;
+    .method <init> (I)V
+    .method <init> (JI)V
+    .method <init> (Lcom/sun/squawk/Address;Lcom/sun/squawk/UWord;)V
+    .method <init> (Lcom/sun/squawk/Address;I)V
+    .method NativeUnsafeGetString (Lcom/sun/squawk/Address;)Ljava/lang/String;
+    .method createStringBuffer (Ljava/lang/String;)Lcom/sun/cldc/jna/Pointer;
+    .method copyBytes (Lcom/sun/cldc/jna/Pointer;ILcom/sun/cldc/jna/Pointer;II)V
+    .method share (J)Lcom/sun/cldc/jna/Pointer;
+    .method share (JJ)Lcom/sun/cldc/jna/Pointer;
+    .method align (I)Lcom/sun/cldc/jna/Pointer;
+    .method toString ()Ljava/lang/String;
+    .method address ()Lcom/sun/squawk/Address;
+    .method getSize ()I
+    .method clear (I)V
+    .method clear ()V
+    .method getPointer (II)Lcom/sun/cldc/jna/Pointer;
+    .method setPointer (ILcom/sun/cldc/jna/Pointer;)V
+    .method getString (I)Ljava/lang/String;
+    .method setString (ILjava/lang/String;)V
+    .method free ()V
+    .method release ()V
+    .method isValid ()Z
+.class com.sun.cldc.jna.PointerType
+    .method <init> ()V
+    .method <init> (Lcom/sun/cldc/jna/Pointer;)V
+    .method getPointer ()Lcom/sun/cldc/jna/Pointer;
+    .method setPointer (Lcom/sun/cldc/jna/Pointer;)V
+.class com.sun.cldc.jna.PrivatePointer
+    .method setUpArrayBufferState ()Z
+    .method tearDownArrayBufferState (Z)V
+    .method preCheckArrayBuffer (Ljava/lang/Object;)V
+    .method preCheckArrayBuffer (Ljava/lang/Object;II)V
+    .method createArrayBuffer (Ljava/lang/Object;)Lcom/sun/squawk/Address;
+    .method createArrayBuffer (Ljava/lang/Object;II)Lcom/sun/squawk/Address;
+.class com.sun.cldc.jna.Structure
+    .field NULL Lcom/sun/cldc/jna/Structure;
+    .field backingNativeMemory Lcom/sun/cldc/jna/Pointer;
+    .method <init> (Lcom/sun/cldc/jna/Pointer;)V
+    .method <init> ()V
+    .method read ()V
+    .method write ()V
+    .method size ()I
+    .method getPointer ()Lcom/sun/cldc/jna/Pointer;
+    .method useMemory (Lcom/sun/cldc/jna/Pointer;)V
+    .method allocateMemory ()V
+    .method allocateMemory (I)V
+    .method freeMemory ()V
+    .method release ()V
+    .method clear ()V
+    .method toString ()Ljava/lang/String;
+.class com.sun.cldc.jna.Structure$NullStruct
+    .method read ()V
+    .method write ()V
+    .method size ()I
+.class com.sun.cldc.jna.VarPointer
+    .method toString ()Ljava/lang/String;
+.class com.sun.cldc.jna.ptr.ByReference
+    .method <init> (I)V
+    .method free ()V
+.class com.sun.cldc.jna.ptr.IntByReference
+    .method <init> (I)V
+    .method getValue ()I
+    .method setValue (I)V
+.class com.sun.squawk.io.j2me.multicastoutput.Protocol
+    .method <init> ()V
+    .method open (Ljava/lang/String;Ljava/lang/String;IZ)Ljavax/microedition/io/Connection;
+    .method openOutputStream ()Ljava/io/OutputStream;
+.class java.io.ByteArrayInputStream
+    .field buf [B
+    .field pos I
+    .field mark I
+    .field count I
+    .method <init> ([B)V
+    .method <init> ([BII)V
+    .method read ()I
+    .method read ([BII)I
+    .method skip (J)J
+    .method available ()I
+    .method markSupported ()Z
+    .method mark (I)V
+    .method reset ()V
+    .method close ()V
+.class java.io.ByteArrayOutputStream
+    .field buf [B
+    .field count I
+    .method <init> ()V
+    .method <init> (I)V
+    .method write (I)V
+    .method write ([BII)V
+    .method reset ()V
+    .method toByteArray ()[B
+    .method size ()I
+    .method toString ()Ljava/lang/String;
+    .method close ()V
+.class java.io.DataInput
+    .method readFully ([B)V
+    .method readFully ([BII)V
+    .method skipBytes (I)I
+    .method readBoolean ()Z
+    .method readByte ()B
+    .method readUnsignedByte ()I
+    .method readShort ()S
+    .method readUnsignedShort ()I
+    .method readChar ()C
+    .method readInt ()I
+    .method readLong ()J
+    .method readFloat ()F
+    .method readDouble ()D
+    .method readUTF ()Ljava/lang/String;
+.class java.io.DataInputStream
+    .field in Ljava/io/InputStream;
+    .method <init> (Ljava/io/InputStream;)V
+    .method readUTF (Ljava/io/DataInput;)Ljava/lang/String;
+    .method read ()I
+    .method read ([B)I
+    .method read ([BII)I
+    .method readFully ([B)V
+    .method readFully ([BII)V
+    .method skipBytes (I)I
+    .method readBoolean ()Z
+    .method readByte ()B
+    .method readUnsignedByte ()I
+    .method readShort ()S
+    .method readUnsignedShort ()I
+    .method readChar ()C
+    .method readInt ()I
+    .method readLong ()J
+    .method readFloat ()F
+    .method readDouble ()D
+    .method readUTF ()Ljava/lang/String;
+    .method skip (J)J
+    .method available ()I
+    .method close ()V
+    .method mark (I)V
+    .method reset ()V
+    .method markSupported ()Z
+.class java.io.DataOutput
+    .method write (I)V
+    .method write ([B)V
+    .method write ([BII)V
+    .method writeBoolean (Z)V
+    .method writeByte (I)V
+    .method writeShort (I)V
+    .method writeChar (I)V
+    .method writeInt (I)V
+    .method writeLong (J)V
+    .method writeFloat (F)V
+    .method writeDouble (D)V
+    .method writeChars (Ljava/lang/String;)V
+    .method writeUTF (Ljava/lang/String;)V
+.class java.io.DataOutputStream
+    .field out Ljava/io/OutputStream;
+    .method <init> (Ljava/io/OutputStream;)V
+    .method write (I)V
+    .method write ([BII)V
+    .method flush ()V
+    .method close ()V
+    .method writeBoolean (Z)V
+    .method writeByte (I)V
+    .method writeShort (I)V
+    .method writeChar (I)V
+    .method writeInt (I)V
+    .method writeLong (J)V
+    .method writeFloat (F)V
+    .method writeDouble (D)V
+    .method writeChars (Ljava/lang/String;)V
+    .method writeUTF (Ljava/lang/String;)V
+.class java.io.EOFException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.io.IOException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.io.InputStreamReader
+    .method <init> (Ljava/io/InputStream;)V
+    .method <init> (Ljava/io/InputStream;Ljava/lang/String;)V
+    .method read ()I
+    .method read ([CII)I
+    .method skip (J)J
+    .method ready ()Z
+    .method markSupported ()Z
+    .method mark (I)V
+    .method reset ()V
+    .method close ()V
+.class java.io.InterruptedIOException
+    .field bytesTransferred I
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.io.OutputStream
+    .method <init> ()V
+    .method write (I)V
+    .method write ([B)V
+    .method write ([BII)V
+    .method flush ()V
+    .method close ()V
+.class java.io.OutputStreamWriter
+    .method <init> (Ljava/io/OutputStream;)V
+    .method <init> (Ljava/io/OutputStream;Ljava/lang/String;)V
+    .method write (I)V
+    .method write ([CII)V
+    .method write (Ljava/lang/String;II)V
+    .method flush ()V
+    .method close ()V
+.class java.io.Reader
+    .field lock Ljava/lang/Object;
+    .method <init> ()V
+    .method <init> (Ljava/lang/Object;)V
+    .method read ()I
+    .method read ([C)I
+    .method read ([CII)I
+    .method skip (J)J
+    .method ready ()Z
+    .method markSupported ()Z
+    .method mark (I)V
+    .method reset ()V
+    .method close ()V
+.class java.io.UTFDataFormatException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.io.Writer
+    .field lock Ljava/lang/Object;
+    .method <init> ()V
+    .method <init> (Ljava/lang/Object;)V
+    .method write (I)V
+    .method write ([C)V
+    .method write ([CII)V
+    .method write (Ljava/lang/String;)V
+    .method write (Ljava/lang/String;II)V
+    .method flush ()V
+    .method close ()V
+.class java.util.Calendar
+    .field YEAR I
+    .field MONTH I
+    .field DATE I
+    .field DAY_OF_MONTH I
+    .field DAY_OF_WEEK I
+    .field AM_PM I
+    .field HOUR I
+    .field HOUR_OF_DAY I
+    .field MINUTE I
+    .field SECOND I
+    .field MILLISECOND I
+    .field SUNDAY I
+    .field MONDAY I
+    .field TUESDAY I
+    .field WEDNESDAY I
+    .field THURSDAY I
+    .field FRIDAY I
+    .field SATURDAY I
+    .field JANUARY I
+    .field FEBRUARY I
+    .field MARCH I
+    .field APRIL I
+    .field MAY I
+    .field JUNE I
+    .field JULY I
+    .field AUGUST I
+    .field SEPTEMBER I
+    .field OCTOBER I
+    .field NOVEMBER I
+    .field DECEMBER I
+    .field AM I
+    .field PM I
+    .field time J
+    .field fields [I
+    .field isSet [Z
+    .method <init> ()V
+    .method getInstance ()Ljava/util/Calendar;
+    .method getInstance (Ljava/util/TimeZone;)Ljava/util/Calendar;
+    .method getTime ()Ljava/util/Date;
+    .method setTime (Ljava/util/Date;)V
+    .method getTimeInMillis ()J
+    .method setTimeInMillis (J)V
+    .method get (I)I
+    .method set (II)V
+    .method equals (Ljava/lang/Object;)Z
+    .method before (Ljava/lang/Object;)Z
+    .method after (Ljava/lang/Object;)Z
+    .method setTimeZone (Ljava/util/TimeZone;)V
+    .method getTimeZone ()Ljava/util/TimeZone;
+    .method computeFields ()V
+    .method computeTime ()V
+.class java.util.Date
+    .method <init> ()V
+    .method <init> (J)V
+    .method getTime ()J
+    .method setTime (J)V
+    .method equals (Ljava/lang/Object;)Z
+    .method hashCode ()I
+    .method toString ()Ljava/lang/String;
+.class java.util.EmptyStackException
+    .method <init> ()V
+.class java.util.Iterator
+    .method hasNext ()Z
+    .method next ()Ljava/lang/Object;
+.class java.util.NoSuchElementException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class java.util.Random
+    .method <init> ()V
+    .method <init> (J)V
+    .method setSeed (J)V
+    .method next (I)I
+    .method nextInt ()I
+    .method nextInt (I)I
+    .method nextLong ()J
+    .method nextFloat ()F
+    .method nextDouble ()D
+.class java.util.Stack
+    .method <init> ()V
+    .method push (Ljava/lang/Object;)Ljava/lang/Object;
+    .method pop ()Ljava/lang/Object;
+    .method peek ()Ljava/lang/Object;
+    .method empty ()Z
+    .method search (Ljava/lang/Object;)I
+.class java.util.TimeZone
+    .method <init> ()V
+    .method getTimeZone (Ljava/lang/String;)Ljava/util/TimeZone;
+    .method getDefault ()Ljava/util/TimeZone;
+    .method getAvailableIDs ()[Ljava/lang/String;
+    .method getOffset (IIIIII)I
+    .method getRawOffset ()I
+    .method useDaylightTime ()Z
+    .method getID ()Ljava/lang/String;
+.class java.util.Vector
+    .field elementData [Ljava/lang/Object;
+    .field elementCount I
+    .field capacityIncrement I
+    .method <init> (II)V
+    .method <init> (I)V
+    .method <init> ()V
+    .method copyInto ([Ljava/lang/Object;)V
+    .method trimToSize ()V
+    .method ensureCapacity (I)V
+    .method setSize (I)V
+    .method capacity ()I
+    .method size ()I
+    .method isEmpty ()Z
+    .method iterator ()Ljava/util/Iterator;
+    .method elements ()Ljava/util/Enumeration;
+    .method contains (Ljava/lang/Object;)Z
+    .method indexOf (Ljava/lang/Object;)I
+    .method indexOf (Ljava/lang/Object;I)I
+    .method lastIndexOf (Ljava/lang/Object;)I
+    .method lastIndexOf (Ljava/lang/Object;I)I
+    .method elementAt (I)Ljava/lang/Object;
+    .method firstElement ()Ljava/lang/Object;
+    .method lastElement ()Ljava/lang/Object;
+    .method setElementAt (Ljava/lang/Object;I)V
+    .method removeElementAt (I)V
+    .method insertElementAt (Ljava/lang/Object;I)V
+    .method addElement (Ljava/lang/Object;)V
+    .method removeElement (Ljava/lang/Object;)Z
+    .method removeAllElements ()V
+    .method toString ()Ljava/lang/String;
+.class java.util.VectorEnumerator
+    .method hasMoreElements ()Z
+    .method nextElement ()Ljava/lang/Object;
+    .method hasNext ()Z
+    .method next ()Ljava/lang/Object;
+.class javax.microedition.io.Connection
+    .method close ()V
+.class javax.microedition.io.ConnectionNotFoundException
+    .method <init> ()V
+    .method <init> (Ljava/lang/String;)V
+.class javax.microedition.io.Connector
+    .field READ I
+    .field WRITE I
+    .field READ_WRITE I
+    .method open (Ljava/lang/String;)Ljavax/microedition/io/Connection;
+    .method open (Ljava/lang/String;I)Ljavax/microedition/io/Connection;
+    .method open (Ljava/lang/String;IZ)Ljavax/microedition/io/Connection;
+    .method openInputStream (Ljava/lang/String;)Ljava/io/InputStream;
+    .method openOutputStream (Ljava/lang/String;)Ljava/io/OutputStream;
+    .method openDataInputStream (Ljava/lang/String;)Ljava/io/DataInputStream;
+    .method openDataOutputStream (Ljava/lang/String;)Ljava/io/DataOutputStream;
+.class javax.microedition.io.ContentConnection
+    .method getType ()Ljava/lang/String;
+    .method getEncoding ()Ljava/lang/String;
+    .method getLength ()J
+.class javax.microedition.io.Datagram
+    .method getAddress ()Ljava/lang/String;
+    .method getData ()[B
+    .method getLength ()I
+    .method getOffset ()I
+    .method setAddress (Ljava/lang/String;)V
+    .method setAddress (Ljavax/microedition/io/Datagram;)V
+    .method setLength (I)V
+    .method setData ([BII)V
+    .method reset ()V
+.class javax.microedition.io.DatagramConnection
+    .method getMaximumLength ()I
+    .method getNominalLength ()I
+    .method send (Ljavax/microedition/io/Datagram;)V
+    .method receive (Ljavax/microedition/io/Datagram;)V
+    .method newDatagram (I)Ljavax/microedition/io/Datagram;
+    .method newDatagram (ILjava/lang/String;)Ljavax/microedition/io/Datagram;
+    .method newDatagram ([BI)Ljavax/microedition/io/Datagram;
+    .method newDatagram ([BILjava/lang/String;)Ljavax/microedition/io/Datagram;
+.class javax.microedition.io.InputConnection
+    .method openInputStream ()Ljava/io/InputStream;
+    .method openDataInputStream ()Ljava/io/DataInputStream;
+.class javax.microedition.io.MulticastConnection
+    .method getLocalAddress ()Ljava/lang/String;
+    .method getLocalPort ()I
+.class javax.microedition.io.MulticastDatagram
+    .method getSourceAddress ()Ljava/lang/String;
+    .method getSourcePort ()I
+.class javax.microedition.io.OutputConnection
+    .method openOutputStream ()Ljava/io/OutputStream;
+    .method openDataOutputStream ()Ljava/io/DataOutputStream;
+.class javax.microedition.io.ServerSocketConnection
+    .method getLocalAddress ()Ljava/lang/String;
+    .method getLocalPort ()I
+.class javax.microedition.io.SocketConnection
+    .field DELAY B
+    .field LINGER B
+    .field KEEPALIVE B
+    .field RCVBUF B
+    .field SNDBUF B
+    .method setSocketOption (BI)V
+    .method getSocketOption (B)I
+    .method getLocalAddress ()Ljava/lang/String;
+    .method getLocalPort ()I
+    .method getAddress ()Ljava/lang/String;
+    .method getPort ()I
+.class javax.microedition.io.StreamConnection
+.class javax.microedition.io.StreamConnectionNotifier
+    .method acceptAndOpen ()Ljavax/microedition/io/StreamConnection;
+.class javax.microedition.io.UDPDatagramConnection
+    .method getLocalAddress ()Ljava/lang/String;
+    .method getLocalPort ()I
+.class net.sourceforge.retroweaver.runtime.java.lang.Iterable_
+    .method iterator (Ljava/lang/Object;)Ljava/util/Iterator;
+.class sics.ArrayList
+    .method <init> ()V
+    .method add (Ljava/lang/Object;)V
+    .method get (I)Ljava/lang/Object;
+.class sics.PIRTE
+    .field MAILBOX_NAME Ljava/lang/String;
+    .field vpports Ljava/util/Hashtable;
+    .field vrports Ljava/util/Hashtable;
+    .field speed I
+    .field steer I
+    .field NUM_Messages I
+    .field NUM_CLient I
+    .field CHANNEL_CONTEXT_TYPE I
+    .field CHANNEL_DATA_TYPE I
+    .method <init> ()V
+    .method sendPublishData (Ljava/lang/String;Ljava/lang/String;)V
+    .method main ([Ljava/lang/String;)V
+    .method registerPort (Lsics/port/Port;)V
+    .method process ()V
+    .method deliverValue (II)V
+    .method deliverValue (ILjava/lang/String;)V
+    .method sendValue (ILsics/messages/PluginMessage;)V
+.class sics.PIRTE$PluginLoader
+    .method <init> (Lsics/PIRTE;Ljava/lang/String;[Ljava/lang/String;)V
+    .method run ()V
+.class sics.PIRTE$Server
+    .method run ()V
+.class sics.PIRTE$ServerChannelHandler
+    .method <init> (Lsics/PIRTE;Lcom/sun/squawk/io/mailboxes/Channel;)V
+    .method run ()V
+.class sics.configs.Configuration
+    .field PPORT2PPORT I
+    .field PPORT2VPORT I
+    .field VPORT2PPORT I
+    .field ECM_ID I
+    .method <init> ()V
+.class sics.link.Linker
+    .method <init> (Lsics/PIRTE;)V
+    .method getVirtualRPortId (I)I
+    .method getVirtualPPortId (I)I
+    .method getPluginRPortId (I)I
+    .method link (Lsics/messages/LinkContextEntry;)V
+    .method registerPort (Lsics/port/Port;)V
+    .method getPirte ()Lsics/PIRTE;
+.class sics.messages.ChannelFrameType
+    .field START_SIGNAL B
+    .field STOP_SIGNAL B
+    .field INT_VALUE_TRANSMIT B
+    .field STRING_VALUE_TRANSMIT B
+    .field INT_VALUE_RQ B
+    .field STRING_VALUE_RQ B
+    .field LONG_VALUE_RQ B
+    .field LONG_VALUE_TRANSMIT B
+    .field STRING_VALUE_SEND B
+    .field STRING_VALUE_RECEIVE B
+    .field NONE B
+    .method <init> (B)V
+.class sics.messages.Enum
+    .field _enumValue B
+    .method <init> (B)V
+    .method Value ()B
+.class sics.messages.InstallAckMessage
+    .method <init> (B)V
+    .method getPluginId ()B
+    .method setPluginId (B)V
+.class sics.messages.LinkContextEntry
+    .method <init> ()V
+    .method <init> (III)V
+    .method getFromPortId ()I
+    .method setFromPortId (I)V
+    .method getToPortId ()I
+    .method setToPortId (I)V
+    .method getRemotePortId ()I
+    .method setRemotePortId (I)V
+.class sics.messages.LoadAckMessage
+    .method <init> (Ljava/lang/String;)V
+    .method getPluginName ()Ljava/lang/String;
+    .method setPluginName (Ljava/lang/String;)V
+.class sics.messages.Message
+    .method <init> ()V
+    .method <init> (B)V
+    .method getMessageType ()B
+    .method setMessageType (B)V
+.class sics.messages.MessageType
+    .field INIT B
+    .field INSTALL_ACK B
+    .field UNINSTALL_ACK B
+    .field PUBLISH B
+    .field INSTALL B
+    .field UNINSTALL B
+    .field RESTORE B
+    .field PLUGIN_MESSAGE B
+    .field PORT_LINK_CONTEXT_MESSAGE B
+    .field PORT_LINK_ACK_MESSAGE B
+    .field RESTORE_ACK B
+    .field LOAD B
+    .field LOAD_ACK B
+    .field SUBSCRIBE B
+    .field REQUEST_ID B
+    .field REQUEST_ID_ACK B
+    .method <init> (B)V
+.class sics.messages.PluginMessage
+    .method <init> (ILjava/lang/String;)V
+    .method getRemotePortId ()I
+    .method getValue ()Ljava/lang/String;
+    .method setValue (Ljava/lang/String;)V
+.class sics.messages.RequestIdAckMessage
+    .method <init> ()V
+    .method <init> (I)V
+    .method getId ()I
+.class sics.messages.RequestIdMessage
+    .method <init> ()V
+.class sics.messages.RestoreAckMessage
+    .method <init> (Ljava/lang/String;)V
+    .method getPluginName ()Ljava/lang/String;
+    .method setPluginName (Ljava/lang/String;)V
+.class sics.messages.UninstallAckMessage
+    .method <init> ()V
+    .method <init> (B)V
+    .method getPluginId ()B
+    .method setPluginId (B)V
+.class sics.plugin.PlugInComponent
+    .field MAILBOX_NAME Ljava/lang/String;
+    .field clientChannel Lcom/sun/squawk/io/mailboxes/Channel;
+    .method <init> ()V
+    .method <init> ([Ljava/lang/String;)V
+    .method init ()V
+    .method getClientChannel ()Lcom/sun/squawk/io/mailboxes/Channel;
+    .method getPortId (Ljava/lang/String;)I
+    .method initPortInitContext ([Ljava/lang/String;)V
+.class sics.plugin.PlugInComponent$Client
+    .method run ()V
+.class sics.port.EcuVirtualPPort
+    .method <init> (I)V
+    .method getId ()I
+    .method setId (I)V
+    .method setPirte (Lsics/PIRTE;)V
+    .method addConnectedRPort (Lsics/port/PluginRPort;)V
+    .method byteArrayToInt ([B)I
+.class sics.port.EcuVirtualRPort
+    .method <init> (I)V
+    .method getId ()I
+    .method setId (I)V
+    .method getConnectedPluginPorts ()Lsics/ArrayList;
+    .method addConnectedPluginPort (I)V
+.class sics.port.PluginPPort
+    .method <init> (Lsics/plugin/PlugInComponent;Ljava/lang/String;)V
+    .method getId ()I
+    .method setId (I)V
+    .method getPlugin ()Lsics/plugin/PlugInComponent;
+    .method getName ()Ljava/lang/String;
+    .method setName (Ljava/lang/String;)V
+    .method setPlugInComponent (Lsics/plugin/PlugInComponent;)V
+    .method write (I)V
+    .method write (Ljava/lang/String;)V
+    .method send (Ljava/lang/String;)V
+.class sics.port.PluginPort
+    .method getId ()I
+    .method setId (I)V
+    .method getName ()Ljava/lang/String;
+.class sics.port.PluginRPort
+    .method <init> (Lsics/plugin/PlugInComponent;Ljava/lang/String;)V
+    .method getId ()I
+    .method setId (I)V
+    .method getName ()Ljava/lang/String;
+    .method setName (Ljava/lang/String;)V
+    .method setPlugInComponent (Lsics/plugin/PlugInComponent;)V
+    .method readInt ()I
+    .method readLong ()J
+    .method readString ()Ljava/lang/String;
+    .method receive ()Ljava/lang/Object;
+.class sics.port.Port
+.class sics.port.VirtualPPort
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+    .method setPirte (Lsics/PIRTE;)V
+    .method addConnectedRPort (Lsics/port/PluginRPort;)V
+.class sics.port.VirtualPort
+    .method getId ()I
+    .method setId (I)V
+.class sics.port.VirtualRPort
+    .method deliver (Ljava/lang/Object;)V
+    .method getConnectedPluginPorts ()Lsics/ArrayList;
+    .method addConnectedPluginPort (I)V
+.class sics.port.instances.ReadPluginDataFromTCUVirtualPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.ReadSpeedInPirteVirtualPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.ReadSteerInPirteVirtualPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.SCUWritePluginData2VCURPort
+    .method <init> (I)V
+    .method deliver (Ljava/lang/Object;)V
+.class sics.port.instances.VCUReadPluginDataFromSCUVirtualPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualAdcPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualFrontWheelPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualIMUPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualLedRPort
+    .method <init> (I)V
+    .method deliver (Ljava/lang/Object;)V
+.class sics.port.instances.VirtualPositionPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualPublishPort
+    .method <init> (I)V
+    .method deliver (Ljava/lang/Object;)V
+.class sics.port.instances.VirtualRearWheelPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class sics.port.instances.VirtualSpeedPort
+    .method <init> (I)V
+    .method deliver (Ljava/lang/Object;)V
+.class sics.port.instances.VirtualSteeringPort
+    .method <init> (I)V
+    .method deliver (Ljava/lang/Object;)V
+.class sics.port.instances.VirtualUltraSonicPPort
+    .method <init> (I)V
+    .method deliver ()Ljava/lang/Object;
+    .method deliver (I)Ljava/lang/Object;
+.class com.sun.squawk.microedition.io.FileConnection
+    .method isOpen ()Z
+    .method openInputStream ()Ljava/io/InputStream;
+    .method openDataInputStream ()Ljava/io/DataInputStream;
+    .method openOutputStream ()Ljava/io/OutputStream;
+    .method openDataOutputStream ()Ljava/io/DataOutputStream;
+    .method openOutputStream (J)Ljava/io/OutputStream;
+    .method fileSize ()J
+    .method create ()V
+    .method exists ()Z
+    .method isDirectory ()Z
+    .method delete ()V
+    .method getName ()Ljava/lang/String;
+    .method getPath ()Ljava/lang/String;
+    .method getURL ()Ljava/lang/String;

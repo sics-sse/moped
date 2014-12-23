@@ -1,0 +1,260 @@
+package tests;
+
+import com.sun.squawk.VM;
+import java.lang.Math;
+
+import sics.configs.Configuration;
+import sics.port.PluginPPort;
+import sics.PIRTE;
+import java.io.IOException;
+import com.sun.squawk.io.mailboxes.Channel;
+import com.sun.squawk.io.mailboxes.Envelope;
+import com.sun.squawk.io.mailboxes.ByteArrayEnvelope;
+
+public class AutoPath {
+	public final static String MAILBOX_NAME = "PirteChannel";
+    public static Channel clientChannel = null;
+	
+	private PluginPPort speed;
+	private PluginPPort steering;
+
+	public AutoPath() {
+		speed = new PluginPPort("speed");
+		speed.setId(0);
+		steering = new PluginPPort("steering");
+		steering.setId(1);
+	}
+
+	public static void main(String[] args) {
+		VM.println("AutoPath.main()\r\n");
+		
+		Client client = new Client();
+		client.start();
+//        try {
+//        	client.join();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+        AutoPath autopath = new AutoPath();
+//        sendContextItem(1, 0, 0, Configuration.PPORT2VPORT);
+		autopath.doFunction();
+		VM.println("AutoPath-main done\r\n");
+	}
+
+	//TODO: Move this outside of each individual app class (either to Isolate or to a SquawkApp.java)
+	static class Client extends Thread {
+		public void run() {
+			try {
+				clientChannel = Channel.lookup(MAILBOX_NAME);
+				while(true) {
+					clientChannel.receive();
+				}
+				
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	public static void sendData(String name, int value) {
+		int totalSize = name.length() + 4;
+		byte dataBytes[] = new byte[totalSize];
+		dataBytes[0] = (byte) (value >> 24);
+		dataBytes[1] = (byte) (value >> 16);
+		dataBytes[2] = (byte) (value >> 8);
+		dataBytes[3] = (byte) (value);
+		
+		byte[] nameBytes = name.getBytes();
+		for(int i=4;i<totalSize;i++) {
+			dataBytes[i] = nameBytes[i-4];
+		}
+		
+		Envelope dataEnv = new ByteArrayEnvelope(dataBytes);
+		try {
+			clientChannel.send(dataEnv);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+//	public static void sendContextItem(int typeId, int fromPortId, int toPortId, int remotePortId) {
+//		byte dataBytes[] = new byte[16];
+//		dataBytes[0] = (byte) (typeId >> 24);
+//		dataBytes[1] = (byte) (typeId >> 16);
+//		dataBytes[2] = (byte) (typeId >> 8);
+//		dataBytes[3] = (byte) (typeId);
+//		dataBytes[4] = (byte) (fromPortId >> 24);
+//		dataBytes[5] = (byte) (fromPortId >> 16);
+//		dataBytes[6] = (byte) (fromPortId >> 8);
+//		dataBytes[7] = (byte) (fromPortId);
+//		dataBytes[8] = (byte) (toPortId >> 24);
+//		dataBytes[9] = (byte) (toPortId >> 16);
+//		dataBytes[10] = (byte) (toPortId >> 8);
+//		dataBytes[11] = (byte) (toPortId);
+//		dataBytes[12] = (byte) (remotePortId >> 24);
+//		dataBytes[13] = (byte) (remotePortId >> 16);
+//		dataBytes[14] = (byte) (remotePortId >> 8);
+//		dataBytes[15] = (byte) (remotePortId);
+//		
+//		Envelope contextEnv = new ByteArrayEnvelope(dataBytes);
+//		try {
+//			clientChannel.send(contextEnv);
+//		} catch (IOException ex) {
+//			ex.printStackTrace();
+//		}
+//	}
+	
+//	public static void sendData(int typeId, int fromPortId, int value) {
+//		byte dataBytes[] = new byte[12];
+//		dataBytes[0] = (byte) (typeId >> 24);
+//		dataBytes[1] = (byte) (typeId >> 16);
+//		dataBytes[2] = (byte) (typeId >> 8);
+//		dataBytes[3] = (byte) (typeId);
+//		dataBytes[4] = (byte) (fromPortId >> 24);
+//		dataBytes[5] = (byte) (fromPortId >> 16);
+//		dataBytes[6] = (byte) (fromPortId >> 8);
+//		dataBytes[7] = (byte) (fromPortId);
+//		dataBytes[8] = (byte) (value >> 24);
+//		dataBytes[9] = (byte) (value >> 16);
+//		dataBytes[10] = (byte) (value >> 8);
+//		dataBytes[11] = (byte) (value);
+//		
+//		Envelope dataEnv = new ByteArrayEnvelope(dataBytes);
+//		try {
+//			clientChannel.send(dataEnv);
+//		} catch (IOException ex) {
+//			ex.printStackTrace();
+//		}
+//	}
+	
+//	static class Client extends Thread {
+//		public void run() {
+//			try {
+//				byte[] data = msg1.getBytes();
+//
+//				long start = System.currentTimeMillis();
+//				Channel testChan = Channel.lookup(MAILBOX_NAME);
+//
+//				for (int i = 0; i < NUM_MESSAGES; i++) {
+//					Envelope cmdEnv = new ByteArrayEnvelope(data);
+//					testChan.send(cmdEnv);
+//					ByteArrayEnvelope replyEnv = (ByteArrayEnvelope) testChan
+//							.receive();
+//					byte[] replyData = replyEnv.getData();
+//					if (replyData.length != 1 || (replyData[0] != 0)) {
+//						System.err.println("Reply not OK");
+//						VM.println("[Client] Reply not OK");
+//					}
+//				}
+//				long time = System.currentTimeMillis() - start;
+//
+//				System.err.println("Client sent " + NUM_MESSAGES
+//						+ " messages of " + data.length + " bytes in " + time
+//						+ "ms");
+//				VM.println("[Client] done!");
+//				testChan.close();
+//
+//			} catch (IOException ex) {
+//				ex.printStackTrace();
+//			}
+//		}
+//	}
+
+	public void doFunction() {
+		try {
+			for (int i = 0; i < 5; i++) {
+				VM.println("[AutoPath is running]");
+				
+				// warmup
+				Thread.sleep(2000);
+				sendData("BW.speed", rescaleToPwm(90));
+				sendData("BW.steering", rescaleToPwm(90));
+				Thread.sleep(2000);
+
+				// forward
+				sendData("BW.speed", rescaleToPwm(100));
+				sendData("BW.steering", rescaleToPwm(90));
+				Thread.sleep(2000);
+
+				// turn left
+				sendData("BW.speed", rescaleToPwm(100));
+				sendData("BW.steering", rescaleToPwm(20));
+				Thread.sleep(3000);
+
+				// right, right
+				sendData("BW.speed", rescaleToPwm(100));
+				sendData("BW.steering", rescaleToPwm(160));
+				Thread.sleep(6000);
+
+				// straight
+				sendData("BW.speed", rescaleToPwm(100));
+				sendData("BW.steering", rescaleToPwm(90));
+				Thread.sleep(4000);
+
+				// stop
+				sendData("BW.speed", rescaleToPwm(90));
+				sendData("BW.steering", rescaleToPwm(90));
+				Thread.sleep(2000);
+			}
+		} catch (InterruptedException e) {
+			VM.println("Interrupted.\r\n");
+		}
+	}
+	
+	
+//	public void doFunction() {
+//		try {
+//			for (int i = 0; i < 5; i++) {
+//				// warmup
+//				Thread.sleep(2000);
+//				VM.println("21\r\n");
+//				speed.write(rescaleToPwm(90));
+//				VM.println("22\r\n");
+//				steering.write(rescaleToPwm(90));
+//				VM.println("23\r\n");
+//				Thread.sleep(2000);
+//
+//				// forward
+//				speed.write(rescaleToPwm(100));
+//				steering.write(rescaleToPwm(90));
+//				Thread.sleep(2000);
+//
+//				// turn left
+//				speed.write(rescaleToPwm(100));
+//				steering.write(rescaleToPwm(20));
+//				Thread.sleep(3000);
+//
+//				// right, right
+//				speed.write(rescaleToPwm(100));
+//				steering.write(rescaleToPwm(160));
+//				Thread.sleep(6000);
+//
+//				// straight
+//				speed.write(rescaleToPwm(100));
+//				steering.write(rescaleToPwm(90));
+//				Thread.sleep(4000);
+//
+//				// stop
+//				speed.write(rescaleToPwm(90));
+//				steering.write(rescaleToPwm(90));
+//				Thread.sleep(2000);
+//			}
+//		} catch (InterruptedException e) {
+//			VM.println("Interrupted.\r\n");
+//		}
+//	}
+
+	public PluginPPort getSpeedPort() {
+		return speed;
+	}
+
+	public PluginPPort getSteeringPort() {
+		return steering;
+	}
+
+	private int rescaleToPwm(int val) {
+		return (int) (Math.ceil(100 + (0.55556 * val)) * 16.38);
+	}
+}

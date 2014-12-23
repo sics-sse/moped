@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<!--
+
+  	
+
+  Copyright  2007  Sun Microsystems, Inc. All rights reserved.
+
+-->
+
+<html>
+  <head>
+    <title>J2SE Language classes for MID Profile</title>
+    <!-- Changed  11-Sep-2001 -->
+    <!-- Changed  12-Feb-2002 -->
+    <!-- Changed  23-Apr-2002 -->
+    <!-- Changed  26-Aug-2002 -->
+  </head>
+
+  <body>
+    MID Profile Language Classes included from Java 2 Standard
+    Edition. In addition to the <code>java.lang</code> classes
+    specified in the Connected Limited Device Configuration the
+    Mobile Information Device Profile includes the following
+    class from Java 2 Standard Edition. 
+
+    <ul>
+      <li>java.lang.IllegalStateException.java</li>
+    </ul>
+
+    <p><code>IllegalStateException</code>s are thrown when illegal 
+      transitions are requested, such as scheduling a 
+      <code>TimerTask</code> or in the containment of 
+      user interface components.</p>
+
+
+    <H2>System Functions </H2>
+
+    <P>
+      The MIDP is based on the Connected, Limited Device Configuration
+      (CLDC). Some features of the CLDC are modified or extended by the
+      MIDP.</P>
+    
+    
+    <H2>System Properties</H2>
+    <P>
+      The MIDP defines the following property values (in addition to
+      those defined in the CLDC specification) that MUST be made
+      available to the application using
+      <CODE>java.lang.System.getProperty</CODE> :</P>
+    <TABLE BORDER="2">
+      <H6>
+	System Properties Defined by MIDP</H6>
+      <TR>
+	<TH ROWSPAN="1" COLSPAN="1">
+	  <P>
+	    System Property</P>
+	</TH>
+	<TH ROWSPAN="1" COLSPAN="1">
+	  <P>
+	    Description</P>
+	</TH>
+      </TR>
+      <TR>
+	<TD ROWSPAN="1" COLSPAN="1">
+	  <P>
+	    <CODE>
+	      microedition.locale</CODE>
+	  </P>
+	</TD>
+	<TD ROWSPAN="1" COLSPAN="1">
+	  <P>
+	    The current locale of the device, may be <CODE>null</CODE></P>
+	</TD>
+      </TR>
+      <TR>
+	<TD ROWSPAN="1" COLSPAN="1">
+	  <P>
+	    <CODE>
+	      microedition.profiles</CODE>
+	  </P>
+	</TD>
+	<TD ROWSPAN="1" COLSPAN="1">
+	  <P>
+	  is a blank (Unicode U+0020) separated list of the J2ME profiles
+	  that this device supports. For MIDP devices, this
+	  property MUST contain at least &quot;MIDP-2.0&quot;</P>
+	</TD>
+      </TR>
+    </TABLE>
+    
+    <P>Other properties may be available from other profiles or 
+      the implementation.</P>
+
+    <EM>
+      Property microedition.locale</EM>
+    <P>
+      The locale property, if not <CODE>null</CODE>, MUST consist of
+      the language and MAY optionally also contain the country code,
+      and variant separated by &quot;-&quot; (Unicode U+002D). For example,
+      &quot;fr-FR&quot; or &quot;en-US.&quot; 
+
+      (Note: the MIDP 1.0 specification used the HTTP formatting of
+      language tags as defined in 
+      <A HREF="http://www.ietf.org/rfc/rfc3066.txt">RFC3066</A>
+      <EM>Tags for the Identification of
+      Languages</EM>. This is different from the J2SE definition
+      for <code>Locale</code> printed strings where fields are
+      separated by &quot;_&quot; (Unicode U+005F).
+      )
+    </P>
+
+    <P>
+      The language codes MUST be the lower-case, two-letter codes as
+      defined by <A
+      HREF="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt">ISO-639</A>.</P>
+    <P>
+      The country code MUST be the upper-case, two-letter codes as
+      defined by <A
+      HREF="http://www.chemie.fu-berlin.de/diverse/doc/ISO_3166.html">ISO-3166</A>.</P>
+
+
+
+    <H2>Application Resource Files</H2>
+    <P>
+      Application resource files are accessed using 
+      <CODE>getResourceAsStream(String name)</CODE>
+      in 
+      <CODE>java.lang.Class</CODE>
+      . In the MIDP specification, 
+      <CODE>getResourceAsStream</CODE>
+      is used to allow resource files to be retrieved from the MIDlet
+      Suite's JAR file. </P>
+    <P>
+      Resource names refer to the contents of the MIDlet Suite JAR file.
+      Absolute pathnames, beginning with &quot;/&quot; are fully qualified file
+      names within the jar file.</P>
+      
+    <P>Relative pathnames, not beginning with &quot;/&quot; are
+      relative to the class upon which
+      <CODE>getResourceAsStream</CODE> is called.  Relative names are
+      converted to absolute by prepending a &quot;/&quot; followed by
+      the fully qualified package with &quot;.&quot; characters
+      converted to &quot;/&quot; and a separator of &quot;/&quot;.
+      The resulting string is reduced to canonical form by applying
+      as many times as possible the following:</P>
+    <UL>
+      <LI>All occurrences of &quot;/./&quot;  are replaced with
+	&quot;/&quot;.</LI> 
+      <LI>All occurrences of &quot;/segment/../&quot; are replaced
+	with &quot;/&quot; where segment does not contain
+	&quot;/&quot;.</LI> 
+    </UL>
+    <P>The canonical resource name is the absolute pathname of
+      the resource within the JAR.</P>
+    <P>In no case can the path extend outside the JAR file, and
+      resources outside the JAR file MUST NOT be accessible. For
+      example, using "../../" does NOT point outside the JAR
+      file.
+      If there are any remaining &quot;.&quot; or &quot;..&quot;
+      characters they are treated literally in locating the
+      resource. No resource can exist with that name so
+      <code>null</code> is returned from
+      <code>Class.getResourceAsStream</code>.
+      Also, devices MUST NOT allow classfiles to be read from
+      the JAR file as resources, but all other files MUST be
+      accessible.</P>
+
+    <H2> System.exit</H2>
+    <P>
+      The behavior of 
+      <CODE>java.lang.System.exit</CODE>
+      MUST throw a 
+      <CODE>java.lang.SecurityException</CODE>
+      when invoked by a MIDlet. The only way a MIDlet can indicate that it
+      is complete is by calling 
+      <CODE>MIDlet.notifyDestroyed</CODE>
+      .</P>
+    
+    
+    <H2>Runtime.exit</H2>
+    <P>
+      The behavior of 
+      <CODE>java.lang.Runtime.exit</CODE>
+      MUST throw a
+      <CODE>java.lang.SecurityException</CODE>
+      when invoked by a MIDlet. The only way a MIDlet can indicate that it
+      is complete is by calling 
+      <CODE> MIDlet.notifyDestroyed</CODE>
+      .</P>
+  @since MIDP 1.0
+  </body>
+</html>
+

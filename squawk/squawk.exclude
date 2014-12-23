@@ -1,0 +1,122 @@
+###############################################
+#           EXCLUDES FILE
+# 
+# This file controls which java classes will be excluded when creating a suite (the bootstrap suite in this case).
+# Excluded classes can be specified by either using an fully qualified class name, or by specifying a package prefix.
+# An exclusion can either be unconditional, or conditional on a build property (defined in build.properties by default).
+#
+# FORMAT
+#    Comment lines start with '#' (see left)
+#    STATEMENT:
+#       [PREDICATE] CLASSSPEC
+#    CLASSSPEC:
+#       fully-qualified-class-name | package-prefix'*'
+#    PREDICATE:
+#       property OP value
+#    OP:
+#       =
+#       !=
+#
+###############################################
+
+
+# The following 3 lines have to be uncommented to include as much of the compiler
+# in the bootstrap image as is currently possible (until CSystem is replaced with
+# something compatible with Squawk)
+#com.sun.squawk.compiler.tests.*
+#com.sun.squawk.compiler.Linker
+#com.sun.squawk.compiler.Compilation
+com.sun.squawk.compiler.*
+
+com.sun.squawk.os.*
+TRACING_ENABLED=false                          com.sun.squawk.BytecodeTracer
+
+GC!=com.sun.squawk.Lisp2Collector              com.sun.squawk.Lisp2Collector*
+GC!=com.sun.squawk.Lisp2GenerationalCollector  com.sun.squawk.Lisp2Generational*
+GC!=com.sun.squawk.CheneyCollector             com.sun.squawk.CheneyCollector*
+
+###############################################
+# Classes only used when PLATFORM_TYPE = BARE_METAL 
+###############################################
+# PLATFORM_TYPE_BARE_METAL=false                    CLASSSPEC
+
+###############################################
+# Classes only used when PLATFORM_TYPE = SOCKET
+###############################################
+# PLATFORM_TYPE_SOCKET=false                        CLASSSPEC
+
+###############################################
+# Classes only used when PLATFORM_TYPE = DELEGATING 
+###############################################
+PLATFORM_TYPE_DELEGATING=false                 com.sun.squawk.io.j2me.channel.*
+
+###############################################
+# Classes only used when PLATFORM_TYPE = NATIVE 
+###############################################
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.j2me.file.*
+# Currently the platform classes are only used by PLATFORM_TYPE=NATIVE, but that may change...
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.platform.Platform
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.platform.BaseGCFFile
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.platform.GCFFile
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.platform.posix.*
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.microedition.io.FileConnection
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.ConnectionBaseInterface
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.ConnectionBaseAdapter
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.BaseInputStream
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.BaseOutputStream
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.io.j2me.ParameterParser
+
+#in progress:
+PLATFORM_TYPE_NATIVE=false                     com.sun.squawk.platform.windows.*
+
+###############################################
+# Classes only used when GCFSOCKETS_ENABLE = TRUE
+###############################################
+GCFSOCKETS_ENABLE=false                        com.sun.squawk.io.j2me.socket.*
+GCFSOCKETS_ENABLE=false                        com.sun.squawk.io.j2me.serversocket.*
+GCFSOCKETS_ENABLE=false                        com.sun.squawk.platform.GCFSockets
+
+ENABLE_ETHERNET_SUPPORT=false                  com.sun.squawk.io.j2me.http.*
+
+###############################################
+# Classes that don't need to be on device, but on desktop:
+###############################################
+FLASH_MEMORY=true                            com.sun.cldc.jna.platform.Windows
+FLASH_MEMORY=true                            com.sun.cldc.jna.platform.Posix
+
+###############################################
+# Classes that don't need to be on desktop device, but on device:
+###############################################
+FLASH_MEMORY=false                            com.sun.squawk.io.j2me.spotsuite.*
+FLASH_MEMORY=false                            com.sun.cldc.jna.platform.Spot
+
+###############################################
+# Other Property-dependant classes
+###############################################
+CHAIN_VERIFY_SIGNATURES=false                  com.sun.squawk.security.verifier.*
+
+##############################################
+# from phoneme, but not needed?
+##############################################
+com.sun.cldc.i18n.j2me.Gen_Reader
+com.sun.cldc.i18n.j2me.Gen_Writer
+com.sun.cldc.i18n.j2me.UTF_16_Reader
+com.sun.cldc.i18n.j2me.UTF_16_Writer
+com.sun.cldc.i18n.j2me.UTF_16BE_Reader
+com.sun.cldc.i18n.j2me.UTF_16BE_Writer
+com.sun.cldc.i18n.j2me.UTF_16LE_Reader
+com.sun.cldc.i18n.j2me.UTF_16LE_Writer
+
+###############################################
+# Obsolete properties?
+###############################################
+
+###############################################
+# Classes on the way out. No known users:
+###############################################
+com.sun.cldc.io.connections.HttpConnection
+com.sun.squawk.ClassTunnel
+
+# We are useing our own CldcAgent2, not this
+com.sun.tck.cldc.javatest.agent.CldcAgent
+ENABLE_ETHERNET_SUPPORT=false                  com.sun.cldc.communication.http.*

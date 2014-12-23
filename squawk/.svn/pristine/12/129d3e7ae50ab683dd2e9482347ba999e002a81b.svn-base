@@ -1,0 +1,13 @@
+set logging file debug/tooltestrunlog.txt
+set logging overwrite on
+set logging on
+set remotebaud 115200
+target remote /dev/com1
+load
+break _exit
+continue
+quit
+
+
+
+

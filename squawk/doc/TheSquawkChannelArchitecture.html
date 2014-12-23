@@ -1,0 +1,576 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./TheSquawkChannelArchitecture_files/filelist.xml">
+<title>The Squawk channel architecture</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author> ns</o:Author>
+  <o:LastAuthor>Cristina Cifuentes</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>34203</o:TotalTime>
+  <o:LastPrinted>2004-10-05T19:41:00Z</o:LastPrinted>
+  <o:Created>2005-03-18T22:59:00Z</o:Created>
+  <o:LastSaved>2005-03-18T22:59:00Z</o:LastSaved>
+  <o:Pages>5</o:Pages>
+  <o:Words>1310</o:Words>
+  <o:Characters>7469</o:Characters>
+  <o:Company> ns</o:Company>
+  <o:Lines>62</o:Lines>
+  <o:Paragraphs>14</o:Paragraphs>
+  <o:CharactersWithSpaces>9172</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Courier;
+	panose-1:0 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:0;
+	mso-generic-font-family:modern;
+	mso-font-format:other;
+	mso-font-pitch:fixed;
+	mso-font-signature:3 0 0 0 1 0;}
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:13.0pt;
+	font-family:Arial;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:510727801;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1767281258 67698689 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1011102798;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1473504244 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l2
+	{mso-list-id:1992981453;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1767281258 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l2:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1>The Squawk Channel Architecture</h1>
+
+<p class=MsoNormal>The Squawk channel architecture is:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo3;tab-stops:list .5in'>A
+     general way to factor I/O out of the VM.</li>
+</ul>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo3;tab-stops:list .5in'>A
+     mechanism whereby each isolate has a separate I/O context.</li>
+</ul>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l0 level1 lfo3;tab-stops:list .5in'>A way
+     to perform asynchronous I/O that makes no assumptions about how thread
+     scheduling is performed in the VM.</li>
+</ul>
+
+<h1>Fundamental concepts</h1>
+
+<h2>The I/O Pipe</h2>
+
+<p class=MsoNormal>This architecture, at its most basic, is one that separates
+the VM from the I/O execution software using an I/O pipe.</p>
+
+<p class=MsoNormal><span style="mso-spacerun: yes"> </span><span
+style='font-family:Courier'><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Courier'><span style='mso-tab-count:
+2'>          </span><span style='mso-tab-count:2'>          </span><span
+style="mso-spacerun: yes"> </span><span style='mso-tab-count:1'>     </span>I/O
+Pipe <o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-family:Courier'><span style="mso-spacerun:
+yes">    </span>Squawk VM ------------------------------ I/O Server<o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There are currently two implementations of the pipe, both of
+which use the same J2SE Java code to implement the I/O server. The first uses
+the Java JNI interface to implement the communication between Squawk and the
+J2SE server code; the second uses a TCP/IP socket to do this. By default Squawk
+uses the first system. The second is used when the </p>
+
+<p class=MsoNormal><span style='font-family:Courier'>-Xioport:</span> option is
+used on the Squawk command line.</p>
+
+<h2>Contexts and Channels</h2>
+
+<p class=MsoNormal>Contexts and Channels are used to multiplex I/O operations
+over the I/O pipe. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A context is used to represent a place where all the I/O for
+a single Java isolate is performed. When a new isolate is created a new context
+is also created. Each context is assigned a unique positive 32-bit integer. One
+can think of a context as a kind of process (or isolate) identifier.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Channels are created within contexts and perform the same
+job as file handles in a Unix process. The current Squawk implementation has
+three types of channel. There is a channel to write graphical I/O, a channel to
+read keyboard, mouse and other GUI events, and there is a channel that
+implements the J2ME <i>Generic Connection Framework</i>. This latter channel
+type is used to perform I/O on files and sockets.</p>
+
+<h2>Channel Blocking</h2>
+
+<p class=MsoNormal>It is highly desirable for a JVM to allow threads to execute
+when lengthy I/O operations are being performed, and the channel architecture
+allows for this. The implementer of a channel has to decide whether the nature
+of the operations performed using the channel warrant the use of blocking. For
+instance, a channel to display graphics might not benefit from the use of
+channel blocking, but a channel operation to read from a socket almost
+certainly will. </p>
+
+<h2>Events</h2>
+
+<p class=MsoNormal>Channels are blocked when I/O is going to take a significant
+amount of time. The semantics of a channel operation is such that if it is
+blocked an <i>event number</i> will be returned by the channel operation. This
+is a positive 32-bit number that is used to communicate to the VM when the
+operation may be retried. Operations that return an event number are always
+terminated. The communication of an event is an indication that the operation
+may be re-executed, and <i>might</i> work, but it could also result in the
+channel being blocked again. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In the current Squawk implementation the processing of
+events is tightly bound into the thread scheduling system. The pseudo code for
+channel execution and the processing events is roughly:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">    </span>for (;;) {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">        </span>int result
+= execute(...);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">        </span>if (result
+== 0) {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">            </span>break;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">        </span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">       
+</span>Thread.waitForEvent(result);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">    </span>}</span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The routine <span style='font-size:10.0pt;mso-bidi-font-size:
+12.0pt;font-family:Courier'>Thread.waitForEvent()</span> will block the calling
+Java thread until the event is ready to be retried.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The unblocking of channels is done by the VM polling the
+channel architecture for events. This is done by code in the <span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'>java.lang.Thread</span>
+class that is called when thread rescheduling is performed.</p>
+
+<h2>Waiting for Events</h2>
+
+<p class=MsoNormal>A condition may exist when none the threads in any isolate
+can be run. When this is the case the thread scheduling system in the <span
+style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'>java.lang.Thread</span>
+class will perform a special channel operation that will not return until an
+event becomes due, or a certain time has passed. This is the only channel
+operation that will block the calling thread. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<b><span style='font-size:16.0pt;font-family:Arial;mso-fareast-font-family:
+"Times New Roman";mso-font-kerning:16.0pt;mso-ansi-language:EN-US;mso-fareast-language:
+EN-US;mso-bidi-language:AR-SA'><br clear=all style='page-break-before:always'>
+</span></b>
+
+<h1>The Low Level API<span style='font-family:Courier'><o:p></o:p></span></h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The pipe API is implemented using a single function called
+execute, with the following parameters:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">    </span>int execute(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>context,<span
+style="mso-spacerun: yes">   </span>// The context for the channel operation<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>op,<span
+style="mso-spacerun: yes">        </span>// The operation code<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>channel,<span
+style="mso-spacerun: yes">   </span>// The channel number<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i1,<span
+style="mso-spacerun: yes">        </span>// Six integer parameters.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i2,<span
+style="mso-spacerun: yes">        </span>// ...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i3,<span
+style="mso-spacerun: yes">        </span>// ...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i4,<span
+style="mso-spacerun: yes">        </span>// ...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i5,<span
+style="mso-spacerun: yes">        </span>// ...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>int<span style="mso-spacerun: yes">    </span>i6,<span
+style="mso-spacerun: yes">        </span>// ...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">          </span><span
+style="mso-spacerun: yes">       </span>Object o1,<span style="mso-spacerun:
+yes">        </span>// A buffer to send data<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">                
+</span>Object o2<span style="mso-spacerun: yes">         </span>// A buffer to
+receive data<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:8.0pt;mso-bidi-font-size:12.0pt;
+font-family:Courier'><span style="mso-spacerun: yes">               </span>)</span><span
+style='font-family:Courier'><o:p></o:p></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>(This is a generalization of the API that takes slightly
+different forms when implemented in C or Java.)</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The parameters are:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<ul style='margin-top:0in' type=disc>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>context
+     </i>- This is the identifier of the context in which the I/O operation
+     must take place. Some operations have global context and in these cases
+     this parameter is ignored.</li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>op</i>
+     - This is the operation code.</li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>channel</i>
+     - This is the channel identifier for the I/O operation. Some operations
+     operate above the level of a channel and in these cases this parameter is
+     ignored.</li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>i1-i6</i>
+     - These are six integers that may contain parameters for the channel
+     operation.</li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>o1</i>
+     - This is an optional references to a buffer that may be of type <span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'>byte[]</span>,<span
+     style="mso-spacerun: yes">  </span><span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Courier'>char[]</span>,<span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'>
+     short[]</span>, <span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+     font-family:Courier'>int[]</span>, or <span style='font-size:10.0pt;
+     mso-bidi-font-size:12.0pt;font-family:Courier'>java.lang.String</span>.
+     These buffers are transmitted from the VM to the I/O server.</li>
+ <li class=MsoNormal style='mso-list:l1 level1 lfo2;tab-stops:list .5in'><i>o2</i>
+     - This is an optional references to a buffer in which data may be returned
+     from the I/O server to the VM. This buffer can only be it type <span
+     style='font-size:10.0pt;mso-bidi-font-size:12.0pt;font-family:Courier'>byte[]</span>.</li>
+</ul>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The result depends on the operation being performed, but for
+most channel operations the result will be:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span><span
+style="mso-spacerun: yes"> </span>0<span style='mso-tab-count:1'>            </span><span
+style='font-family:Courier'>RESULT_OK</span><span style='mso-tab-count:2'>              </span><span
+style='mso-tab-count:1'>            </span>It worked</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>-1<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>RESULT_BADCONTEXT</span><span
+style='mso-tab-count:1'>       </span>The <span style='font-family:Courier'>context</span>
+parameter was not valid</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>-2<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>RESULT_EXCEPTION</span><span
+style='mso-tab-count:1'>          </span>An I/O exception occurred</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>-3<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>RESULT_BADPARAMETER</span><span
+style='mso-tab-count:1'>  </span>A bad parameter was presented</p>
+
+<p class=MsoNormal><span style="mso-spacerun: yes">           </span>&gt;0<span
+style='mso-tab-count:1'>         </span><span style='mso-tab-count:2'>                        </span><span
+style='mso-tab-count:1'>            </span><span style='mso-tab-count:1'>            </span>This
+is an event number on which to wait<span style='mso-tab-count:1'>  </span><span
+style='mso-tab-count:2'>                        </span><span style='mso-tab-count:
+2'>                        </span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This is admittedly a somewhat arbitrary interface, but it
+has proved flexible enough to implement all the operations for the channels
+written so far.</p>
+
+<h1>The Standard Operations</h1>
+
+<h2>GLOBAL_CREATECONTEXT</h2>
+
+<p class=MsoNormal>This will create a new I/O context or un-hibernate an old
+one. If the <span style='font-family:Courier'>i1</span> parameter is zero then
+a new context is created, if it is non-zero then this is the hibernation
+context that will be un-hibernated. The result in both cases is the context
+identifier for future operations.</p>
+
+<h2>GLOBAL_DELETECONTEXT</h2>
+
+<p class=MsoNormal>This will delete the context specified by the <span
+style='font-family:Courier'>context</span> parameter.</p>
+
+<h2>GLOBAL_HIBERNATECONTEXT</h2>
+
+<p class=MsoNormal>This will hibernate the context specified by the <span
+style='font-family:Courier'>context</span> parameter. The hibernated context is
+returned.</p>
+
+<h2>GLOBAL_GETEVENT</h2>
+
+<p class=MsoNormal>This will return the number of the next event or zero if
+none are pending.</p>
+
+<h2>GLOBAL_WAITFOREVENT</h2>
+
+<p class=MsoNormal>This will wait until the next event is ready or for a
+specified number of milliseconds. The <span style='font-family:Courier'>i1</span>
+parameter contains the high 32-bits of the time, and the <span
+style='font-family:Courier'>i2</span> parameter contains the low 32-bits of the
+time.</p>
+
+<h2>CONTEXT_GETCHANNEL</h2>
+
+<p class=MsoNormal>Create an I/O channel. The <span style='font-family:Courier'>i1</span>
+parameter must contain the channel type. The currently valid types are:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>1<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>CHANNEL_GENERIC<span
+style='mso-tab-count:1'>     </span></span><span style='mso-tab-count:1'>            </span>Generic
+connection channel</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>2<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>CHANNEL_GUIIN<span
+style='mso-tab-count:1'>  </span></span><span style='mso-tab-count:1'>            </span>GUI
+input channel</p>
+
+<p class=MsoNormal><span style='mso-tab-count:1'>            </span>3<span
+style='mso-tab-count:1'>            </span><span style='font-family:Courier'>CHANNEL_GUIOUT<span
+style='mso-tab-count:1'> </span></span><span style='mso-tab-count:1'>            </span>GUI
+output channel</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The result will be an error, or a positive channel number.</p>
+
+<h2>CONTEXT_FREECHANNEL</h2>
+
+<p class=MsoNormal>Free a channel. </p>
+
+<h2>CONTEXT_GETRESULT</h2>
+
+<p class=MsoNormal>Some channel operations yield a result. This function will
+return a 32-bit result value.</p>
+
+<h2>CONTEXT_GETRESULT_2</h2>
+
+<p class=MsoNormal>This function will return the high 32-bits of a 64-bit
+result.</p>
+
+<h2>CONTEXT_GETERROR</h2>
+
+<p class=MsoNormal>When a channel operation returns with the error code <span
+style='font-family:Courier'>RESULT_EXCEPTION</span> the exception type can be
+retrieved using this operation. To retrieve the whole name this function must
+be called repeatedly until the value zero is read.</p>
+
+<h1>Generic Connection Channel Operations</h1>
+
+<p class=MsoNormal>The generic connection framework is the J2ME I/O standard
+that is implemented in the Squawk system. The generic connection channel is the
+mechanism that onto which the generic connection framework is mapped. All the
+connection API and the input and output stream APIs are assigned channel
+operation codes. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Most of the operations are considered quick enough so no
+attempt to implement channel blocking has been done in much of the current
+implementation. There are however two exceptions. All the <span
+style='font-family:Courier'>InputStream</span> read() API functions will block
+if no data is available. The other case is the <span style='font-family:Courier'>acceptAndOpen()</span>
+function that will wait for an TCP connection to be established.</p>
+
+<h1>Graphical Channel Operations</h1>
+
+<p class=MsoNormal>None of the graphical operations in the current
+implementation are anything approaching a standard. The current code implements
+a number of low-level graphical I/O operations that are used to implement the
+KAWT based graphics interface used for the demo applications.</p>
+
+<h1>Example Wire Protocol</h1>
+
+<p class=MsoNormal>The current implementation has an example wire protocol for
+the channel architecture. The code in the “Slow VM” contains a module called
+ioport.c. This file contains code that converts all the channel operations into
+messages sent over a TCP/IP connection. The other end of the connection is
+implemented in the ChannelIO class of the J2SE server code that is always
+currently used to implement the I/O server. This system is used when the when
+the <span style='font-family:Courier'>-Xioport:</span> option is used on the
+Squawk command line.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

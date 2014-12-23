@@ -1,0 +1,68 @@
+#
+#   
+#
+# Copyright  1990-2007 Sun Microsystems, Inc. All Rights Reserved.
+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version
+# 2 only, as published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License version 2 for more details (a copy is
+# included at /legal/license.txt).
+# 
+# You should have received a copy of the GNU General Public License
+# version 2 along with this work; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA
+# 
+# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
+# Clara, CA 95054 or visit www.sun.com if you need additional
+# information or have any questions.
+#
+######################################################################
+#
+# Module's Component Configuration file
+#
+# Remember: It is up to the module itself to impose rules of
+# how to compile the options. All the global Makefile needs
+# is the final def. of Java and native file lists and some
+# other def. (like VPATH)
+######################################################################
+
+JAVAUTIL_LIB = javautil
+LIB_SET += $(JAVAUTIL_LIB)
+
+JAVAUTIL_DIR = $(SUBSYSTEM_CORE_DIR)/$(JAVAUTIL_LIB)
+
+
+# Javadoc source path
+SUBSYSTEM_JAVAUTIL_SOURCEPATH += $(JAVAUTIL_DIR)/reference/classes
+
+SUBSYSTEM_JAVAUTIL_PACKAGES = \
+    java.util
+
+MIDP_JAVADOC_SOURCEPATH += $(SUBSYSTEM_JAVAUTIL_SOURCEPATH)
+MIDP_JAVADOC_PACKAGES +=  $(SUBSYSTEM_JAVAUTIL_PACKAGES)
+
+MIDP_JAVADOC_ALL += \
+        -group "Java Util Package" \
+	$(shell echo $(SUBSYSTEM_JAVAUTIL_PACKAGES)|tr ' ' $(PATHSEP))
+
+
+SUBSYSTEM_JAVAUTIL_JAVA_FILES += \
+    $(JAVAUTIL_DIR)/reference/classes/com/sun/midp/util/DateParser.java \
+    $(JAVAUTIL_DIR)/reference/classes/com/sun/midp/util/Properties.java
+
+# CDC/Foundation already provides following classes. Don't include them
+# in MIDP.
+ifneq ($(TARGET_VM), cdc_vm)
+SUBSYSTEM_JAVAUTIL_JAVA_FILES += \
+    $(JAVAUTIL_DIR)/reference/classes/java/util/Timer.java \
+    $(JAVAUTIL_DIR)/reference/classes/java/util/TimerTask.java \
+    $(JAVAUTIL_DIR)/reference/classes/java/lang/IllegalStateException.java
+endif
+

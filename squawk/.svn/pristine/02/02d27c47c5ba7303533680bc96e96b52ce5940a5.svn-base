@@ -1,0 +1,99 @@
+#
+#   
+#
+# Copyright  1990-2007 Sun Microsystems, Inc. All Rights Reserved.
+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version
+# 2 only, as published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License version 2 for more details (a copy is
+# included at /legal/license.txt).
+# 
+# You should have received a copy of the GNU General Public License
+# version 2 along with this work; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA
+# 
+# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
+# Clara, CA 95054 or visit www.sun.com if you need additional
+# information or have any questions.
+#
+######################################################################
+#
+# Module's Component Configuration file
+#
+# Remember: It is up to the module itself to impose rules of
+# how to compile the options. All the global Makefile needs
+# is the final def. of Java and native file lists and some
+# other def. (like VPATH)
+#
+######################################################################
+
+
+# I18N base modules
+#
+SUBSYSTEM_I18N_MODULES  = common
+
+# vpath for module ( common )
+#
+vpath % $(I18N_MAIN_DIR)/reference/native
+
+L10N_OUTPUT_DIR = ${GENERATED_DIR}/classes/com/sun/midp/l10n
+I18N_OUTPUT_DIR = ${GENERATED_DIR}/classes/com/sun/midp/i18n
+
+# Java files for module ( common )
+#
+SUBSYSTEM_I18N_JAVA_FILES = \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/Conv.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/Gen_Reader.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/Gen_Writer.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_8_Reader.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_8_Writer.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16_Reader.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16_Writer.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16BE_Reader.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16BE_Writer.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16LE_Reader.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/$(J2ME_CONFIGURATION)/i18n/j2me/UTF_16LE_Writer.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/midp/i18n/Resource.java \
+    $(I18N_MAIN_DIR)/classes/com/sun/midp/i18n/ResourceBundle.java \
+    $(I18N_MAIN_DIR)/reference/classes/com/sun/midp/l10n/LocalizedStrings.java
+
+# Native files for module ( common )
+#
+# Note: LocalizedStringsBase.c is auto-generated
+ifeq ($(TARGET_VM), cldc_vm)
+SUBSYSTEM_I18N_NATIVE_FILES += \
+    conv.c \
+    localeMethod.c 
+endif
+
+SUBSYSTEM_I18N_NATIVE_FILES += \
+    LocalizedStringsBase.c
+
+
+SUBSYSTEM_I18N_EXTRA_INCLUDES += \
+    -I$(I18N_MAIN_DIR)/include
+
+# Generated soure file for public static final int values used by i18n.
+${I18N_OUTPUT_DIR}/ResourceConstants.java: $(L10NTOOL_JAR_FILE)
+	@echo " ... generating $@"
+	@mkdir -p $(I18NCONSTS_DIR) $(LOG)
+	@$(JAVA_CMD) -cp $(TABLEGEN_JAR_FILE) \
+		com.sun.midp.tablegen.TableGenerator ResourceConstants \
+		$(I18NCONSTS_DIR) $(TABLEGEN_MODULES)
+
+$(OBJ_DIR)/LocalizedStringsBase.o: $(L10N_OUTPUT_DIR)/LocalizedStringsBase.c
+	@echo " ... $@" $(LOG)
+	@echo +++ $(CC) $(CFLAGS) -c $(CC_OUTPUT)$@ `$(call fixcygpath, $<)` \
+		$(LOG_ONLY)
+	@$(CC) $(CFLAGS) -c $(CC_OUTPUT)$@ `$(call fixcygpath, $<)` $(LOG)
+
+
+# To add support for more locales, add a rule
+# here that's similar to $(OBJ_DIR)/LocalizedStringsBase.o

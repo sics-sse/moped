@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+  @(#)package.html	1.15 06/04/05 @(#)
+
+  Copyright 2006 Sun Microsystems, Inc. All rights reserved.
+  SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
+
+-->
+</head>
+<body bgcolor="white">
+
+<p>Provides a reference implementation of SSLv3.0 for MIDP.
+  The code is modified version of KSSL from Sun Labs.</p>
+
+<p>Supports abbreviated SSL handshakes.</p>
+
+<p>Does not support SSL client authentication. This is 
+  because purpose of HTTPS for MIDP is to provide the 
+  wireless device with end-to-end confidentiality.
+  The authentication must be done at the application level, 
+  which is what nearly all consumer applications do.</p>
+
+<p>Only supports the <tt>SSL_RSA_WITH_RC4_128_SHA</tt>,
+ <tt>SSL_RSA_WITH_RC4_128_MD5</tt>, and
+ <tt>SSL_RSA_EXPORT_WITH_RC4_40_MD5</tt> cipher suites.
+ All known HTTPS servers support these suites.</p>
+
+<p>Only Supports RSA X.509 certificates, these are the defacto 
+  standard.  KSSL supports version 1, 2, and 3 X.509 certificates 
+  signed using RSA with either SHA-1, MD5 and MD2. For 
+  security reasons only version 3 certificates
+  are allowed to be chained. While the key usage extension is supported,
+  the name constraints extension is not.</p>
+
+<h2>Related Information</h2>
+
+<ul>
+  <li><a href="http://research.sun.com/techrep/2001/abstract-103.html">
+    KSSL: Experiments in Wireless Internet Security</a></li>
+  <li><a href="http://docs.sun.com/source/816-6156-10/index.htm">
+    Introduction to SSL</a></li>
+  <li><a href="http://docs.sun.com/source/816-6154-10/index.htm">
+    Introduction to Public Key Cryptography</a></li>
+  <li><a href="http://www.ietf.org/rfc/rfc2246.txt">
+    RFC 2246, The TLS Protocol Version 1.0</a></li>
+  <li><a href="http://home.netscape.com/eng/ssl3/draft302.txt">
+    SSL Protocol Version 3.0</a></li>
+  <li><a href="http://www.ietf.org/rfc/rfc2459.txt">
+    RFC 2459, Internet X.509 Public Key Infrastructure Certificate 
+    and CRL Profile</a></li>
+  <li><a href="http://www.rsasecurity.com/rsalabs/pkcs/">
+    RSA's PKCS (Public Key Cryptography Standards) document set.</a></li>
+</ul>
+
+@since MIDP 2.0
+
+</body>
+</html>

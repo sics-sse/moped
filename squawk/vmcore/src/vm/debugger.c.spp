@@ -1,0 +1,155 @@
+/*
+ * Copyright 2004-2008 Sun Microsystems, Inc. All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+ * 
+ * This code is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2
+ * only, as published by the Free Software Foundation.
+ * 
+ * This code is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License version 2 for more details (a copy is
+ * included in the LICENSE file that accompanied this code).
+ * 
+ * You should have received a copy of the GNU General Public License
+ * version 2 along with this work; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ * 
+ * Please contact Sun Microsystems, Inc., 16 Network Circle, Menlo
+ * Park, CA 94025 or visit www.sun.com if you need additional
+ * information or have any questions.
+ */
+
+#define DB_MAX_BPS 100
+
+/*if[!MACROIZE]*/
+int sda_bp_set_or_stepping; // TRUE if we have any breakpoints set or are in a stepping mode [optimisation]
+/*end[MACROIZE]*/
+
+
+
+/* Null terminated array of instruction pointer values */
+ByteAddress sda_breakpoints[DB_MAX_BPS + 1];
+
+void dumpSteppingInfo(Offset currentBCI, Offset currentFO, Address step) {
+    fprintf(stderr, format("====== Step Info ======\n    currentBCI: %A, currentFO: %A\n    startFO: %d, startBCI: %d\n    targetBCI: %d, dupBCI: %d, afterDupBCI: %d\n    size: %d, depth: %d\n"),
+            currentBCI, currentFO,
+            com_sun_squawk_Debugger_SingleStep_startFO(step),
+            com_sun_squawk_Debugger_SingleStep_startBCI(step),
+            com_sun_squawk_Debugger_SingleStep_targetBCI(step),
+            com_sun_squawk_Debugger_SingleStep_dupBCI(step),
+            com_sun_squawk_Debugger_SingleStep_afterDupBCI(step),
+            com_sun_squawk_Debugger_SingleStep_size(step),
+            com_sun_squawk_Debugger_SingleStep_depth(step));
+}
+
+/*
+ * Get a pointer to the base of the operand stack for the current method.
+ */
+UWordAddress getInitialStackPointer(UWordAddress thefp) {
+    Address mp = getObject(thefp, FP_method);
+    int delta;
+    int b0 = getb0(mp);
+    if (b0 < 128) {
+        int b1 = getb1(mp);
+/*if[REVERSE_PARAMETERS]*/
+        delta = decodeLocalCount(b0, b1);
+/*else[REVERSE_PARAMETERS]*/
+//      delta = decodeLocalCount(b0, b1) + decodeStackCount(b0, b1);
+/*end[REVERSE_PARAMETERS]*/
+    } else {
+        delta = getLocalCountPlusStackCountIfNotReversingParms(mp);
+    }
+    return thefp - delta + 1;
+}
+
+boolean isInterpreterInvoked(UWordAddress mp) {
+    int b0 = getb0(mp);
+    if (b0 < 128) {
+        return false;
+    } else {
+        return (b0 & com_sun_squawk_MethodHeader_FMT_I) != 0;
+    }
+}
+
+/**
+ * Determines if the interpreter is in a system frame.
+ *
+ * @param userFP      the last known user frame
+ * @param currentFP   the current frame
+ * @return true if currentFP is more nested on the call stack than userFP and there is
+ *         a frame between these two for a call into a method that is only called by the VM
+ */
+boolean inSystemFrame(UWordAddress userFP, UWordAddress currentFP) {
+    if (hi(currentFP, userFP)) {
+        return false;
+    } else {
+        do {
+            Address mp = getObject(currentFP, FP_method);
+            if (isInterpreterInvoked(mp)) {
+                return true;
+            }
+            currentFP = (UWordAddress)getObject(currentFP, FP_returnFP);
+        } while (lo(currentFP, userFP));
+    }
+    return false;
+}
+
+boolean sda_isOperandStackEmpty(UWordAddress actual_fp, UWordAddress actual_sp) {
+    boolean result = true;
+    if (actual_fp != null) {
+        UWordAddress initial_sp = getInitialStackPointer(actual_fp);
+        if (Address_diff(initial_sp, actual_sp) != 0) {
+            result = false;
+        }
+    }
+    return result;
+}
+
+/**
+ * Call everytime we switch threads. If the new thread is running in an isolate with
+ * a debugging context, and there are breakpoints set in that context, then cache the current
+ * set of breakpoints. Otherwise clear the cached state.
+ *
+ * This means that there will be no breakpoint searching for the service thread or the
+ * debugger isolate. Since calling GC involves switching to a service thread, this means that
+ * we will never see stale addresses in sda_breakpoints. Also, since all commands that add or
+ * clear breakpoints occur in the debugger isolate, the thread switchs will clear the cached
+ * breakpoint data, and cause the cache to be regenerated when the app isolate is rescheduled.
+ */
+ boolean sda_updateBreakpointCache(Address isolate) {
+    Address breakpoints;
+    /* clear by default: */
+    boolean bp_set_or_stepping = false;
+    sda_breakpoints[0] = 0;
+
+    if ((isolate != null) && (breakpoints = (Address)com_sun_squawk_Isolate_breakpoints(isolate)) != null) {
+        int len;
+        int i;
+        len = getArrayLength(breakpoints);
+        assume(len > 0);
+        assume(len < DB_MAX_BPS);
+        assume(!runningOnServiceThread);
+
+        for (i = 0; i < len; i++) {
+            Address bp = getObject(breakpoints, i);
+            Address bp_mp = com_sun_squawk_Isolate_Breakpoint_mp(bp);
+            int     bp_ip = com_sun_squawk_Isolate_Breakpoint_ip(bp);
+            sda_breakpoints[i] = Address_add(bp_mp, bp_ip);
+/* fprintf(stderr, "Setting breakpoint #%d for %x + %x = %x\n", i, bp_mp, bp_ip, sda_breakpoints[i]); */
+        }
+
+        sda_breakpoints[len] = 0;
+        bp_set_or_stepping = true;
+    }
+
+    if (!bp_set_or_stepping) {
+        Address step = com_sun_squawk_VMThread_step(com_sun_squawk_VMThread_currentThread);
+        bp_set_or_stepping = (step != null &&
+                                  com_sun_squawk_Debugger_SingleStep_state(step) != com_sun_squawk_Debugger_SingleStep_HIT);
+    }
+
+    return bp_set_or_stepping;
+}

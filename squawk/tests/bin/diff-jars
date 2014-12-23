@@ -1,0 +1,38 @@
+#!/bin/sh
+# compare 2 jar files by expanding out to dirs, ignoring MATA_INF, and
+# diffing remaining files
+#
+# Usage: diff-jars <jar1> <jar2>
+#
+# Exit status: 0 if jars are the same
+#
+# Derek White
+
+jar1=$1
+jar2=$2
+
+rm -rf jar1.tmpdir
+rm -rf jar2.tmpdir
+
+mkdir jar1.tmpdir
+mkdir jar2.tmpdir
+
+cp $jar1 jar1.tmpdir
+cp $jar2 jar2.tmpdir
+
+cd jar1.tmpdir
+jar xf $jar1
+rm -rf META-INF $jar1
+cd ..
+
+cd jar2.tmpdir
+jar xf $jar2
+rm -rf META-INF $jar2
+cd ..
+
+diff -r jar1.tmpdir jar2.tmpdir
+status=$?
+
+rm -rf jar1.tmpdir
+rm -rf jar2.tmpdir
+exit $status

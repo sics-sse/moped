@@ -1,0 +1,3 @@
+Target.launcher-hosted-support.j2me=false
+Target.launcher-hosted-support.dependsOn=cldc
+Target.launcher-hosted-support.extraClassPath=build-commands.jar

@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+    
+
+  Copyright  2007  Sun Microsystems, Inc. All rights reserved.
+
+-->
+
+</head>
+
+<body bgcolor="white">
+
+Implementations of <code>java.io.InputStreamReader</code> and
+<code>java.io.OutputStreamWriter</code> for various character
+encodings.
+
+@since MIDP 1.0
+
+</body>
+</html>

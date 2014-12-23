@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+    
+ 
+  Copyright  2007  Sun Microsystems, Inc. All rights reserved.
+
+-->
+</head>
+<body bgcolor="white">
+<p>
+ The RecordStoreFile class provides a file interface to persistent
+ storage for MIDlet suite records via the RecordStore API.  Implements
+ a unified random access file interface to storage utilizing the
+ capabilities of the File and RandomAccessStream classes provided by
+ the internal com.sun.midp.io.j2me.storage package.
+<p>
+ An important capability of this class is to confine the scope of the
+ storage name space visible to a MIDlet to be files created by
+ applications in its MIDlet suite.  This occurs because all
+ RecordStore calls that access storage do so through RecordStoreFile,
+ which converts maps the RecordStore's name into a unique identifier
+ in storage, prefixed by a prefix unique to its MIDlet suite.  Any
+ call which modifies storage (e.g. deleteRecordStore) is confined in
+ scope to storage allocated by a MIDlet or another MIDlet in the same
+ suite.
+</body>
+</html>

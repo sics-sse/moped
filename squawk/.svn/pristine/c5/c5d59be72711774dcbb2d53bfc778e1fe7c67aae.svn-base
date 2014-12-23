@@ -1,0 +1,4 @@
+Target.cldc.j2me=true
+Target.cldc.extraClassPath=
+Target.cldc.dependsOn=copyphoneme OPC cldc-native-declarations-gen
+Target.cldc.extraSourceDirs=phoneme retroweaver native

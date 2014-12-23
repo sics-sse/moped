@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://www.netbeans.org/ns/project/1">
+    <type>org.netbeans.modules.ant.freeform</type>
+    <configuration>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/1">
+            <name>Squawk-imp</name>
+        </general-data>
+        <general-data xmlns="http://www.netbeans.org/ns/freeform-project/2">
+            <!-- Do not use Project Properties customizer when editing this file manually. -->
+            <name>Squawk-imp</name>
+            <properties/>
+            <folders>
+                <source-folder>
+                    <label>Squawk-imp</label>
+                    <location>.</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>src</label>
+                    <type>java</type>
+                    <location>src</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>phoneme</label>
+                    <type>java</type>
+                    <location>phoneme</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+                <source-folder>
+                    <label>test-desktop/src</label>
+                    <type>java</type>
+                    <location>test-desktop/src</location>
+                    <encoding>UTF-8</encoding>
+                </source-folder>
+            </folders>
+            <ide-actions>
+                <action name="test">
+                    <target>test</target>
+                </action>
+                <action name="build">
+                    <target>jar</target>
+                </action>
+                <action name="clean">
+                    <target>clean</target>
+                </action>
+                <action name="rebuild">
+                    <target>clean</target>
+                    <target>jar</target>
+                </action>
+            </ide-actions>
+            <export>
+                <type>jar</type>
+                <location>classes.jar</location>
+                <build-target>jar</build-target>
+            </export>
+            <export>
+                <type>jar</type>
+                <location>classes.jar</location>
+                <build-target>jar</build-target>
+            </export>
+            <view>
+                <items>
+                    <source-folder style="packages">
+                        <label>src</label>
+                        <location>src</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>phoneme</label>
+                        <location>phoneme</location>
+                    </source-folder>
+                    <source-folder style="packages">
+                        <label>test-desktop/src</label>
+                        <location>test-desktop/src</location>
+                    </source-folder>
+                    <source-file>
+                        <location>build.xml</location>
+                    </source-file>
+                </items>
+                <context-menu>
+                    <ide-action name="build"/>
+                    <ide-action name="rebuild"/>
+                    <ide-action name="clean"/>
+                    <ide-action name="test"/>
+                </context-menu>
+            </view>
+            <subprojects/>
+        </general-data>
+        <java-data xmlns="http://www.netbeans.org/ns/freeform-project-java/2">
+            <compilation-unit>
+                <package-root>src</package-root>
+                <classpath mode="compile">../cldc/classes.jar</classpath>
+                <built-to>classes.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>phoneme</package-root>
+                <classpath mode="compile">../cldc/classes.jar:classes.jar</classpath>
+                <built-to>classes.jar</built-to>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+            <compilation-unit>
+                <package-root>test-desktop/src</package-root>
+                <unit-tests/>
+                <classpath mode="compile">../squawk_classes.jar:test-desktop/lib/jmock2-SNAPSHOT.jar:test-desktop/lib/jmock2-junit3-SNAPSHOT.jar:test-desktop/lib/jmock2-junit4-SNAPSHOT.jar:test-desktop/lib/hamcrest-library-SNAPSHOT.jar:test-desktop/lib/hamcrest-api-SNAPSHOT.jar</classpath>
+                <source-level>1.5</source-level>
+            </compilation-unit>
+        </java-data>
+    </configuration>
+</project>
