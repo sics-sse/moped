@@ -16,3 +16,4 @@ It consists of the following packages:
 * Simulator, intended to simplify plugin development off-board 
 * WirelessIno, an Android app for RC car steering using a smart phone
 * Plugin repository
+* API for the plugin developer
