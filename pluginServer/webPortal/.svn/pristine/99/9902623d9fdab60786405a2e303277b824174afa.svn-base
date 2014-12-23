@@ -1,0 +1,50 @@
+/* Basic styling for login widget
+   This styling aligns the gravtar left, the links right.*/
+.widget_wp_sidebarlogin .avatar_container, #sidebar-login .avatar_container {
+	float:left;
+}
+.widget_wp_sidebarlogin ul {
+	list-style: none outside !important;
+}
+.widget_wp_sidebarlogin .avatar_container img, #sidebar-login .avatar_container img {
+	padding: 3px;
+	border: 1px solid #ddd;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	margin-right: 8px;
+	margin-top: 5px;
+}
+.widget_wp_sidebarlogin hr {
+	display: block;
+	clear: both;
+	border: 0;
+	border-top: 1px solid #999;
+	height: 1px;
+}
+.widget_wp_sidebarlogin ul.sidebar_login_links {
+	margin-left: 0 !important;
+}
+.widget_wp_sidebarlogin .sidebar_login_error {
+	color: #ae121e;
+	background-color: #fbb1b7;
+	border: 1px solid;
+	margin: 1em 0;
+	padding: 1em;
+	font-size: 13px;
+}
+.widget_wp_sidebarlogin .login_error a {
+	color: #ae121e;
+}
+.widget_wp_sidebarlogin form {
+	margin: 1em 0;
+}
+.widget_wp_sidebarlogin form p {
+	margin: .5em 0;
+}
+.widget_wp_sidebarlogin form .input {
+	width: 100%;
+	margin: 2px;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}

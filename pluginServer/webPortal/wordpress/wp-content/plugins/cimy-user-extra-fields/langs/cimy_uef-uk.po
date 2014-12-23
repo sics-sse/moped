@@ -1,0 +1,1226 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Cimy User Extra Fields\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-02 15:03-0800\n"
+"PO-Revision-Date: 2013-06-02 15:03-0800\n"
+"Last-Translator: Marco Cimmino <cimmino.marco@gmail.com>\n"
+"Language-Team: Oleg Bondarenko <o.o.bondarenko@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Language: Ukrainian\n"
+"X-Poedit-Country: Ukraine\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /var/www/wp-content/plugins/cimy-user-extra-fields\n"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:478
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:482
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:496
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:516
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:528
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:541
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:552
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:563
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:569
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:581
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:587
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:598
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:603
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:644
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:652
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1026
+msgid "ERROR"
+msgstr "ПОМИЛКА"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:478
+msgid "does not match."
+msgstr "не збігається."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:482
+msgid "hasn&#8217;t a correct email syntax."
+msgstr "неправильний синтаксис електронної пошти."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:496
+msgid "couldn&#8217;t be empty."
+msgstr "не може бути порожнім."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:515
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:524
+msgid "isn&#8217;t correct"
+msgstr "не правильно"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:521
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1026
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1029
+msgid "YES"
+msgstr "ТАК"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:521
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1026
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1029
+msgid "NO"
+msgstr "НІ"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:526
+msgid "should be"
+msgstr "повинно бути"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:541
+msgid "should be an image."
+msgstr "повинно бути зображення."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:552
+msgid "does not accept this file type."
+msgstr ""
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:563
+msgid "couldn&#8217;t have size less than"
+msgstr "не може бути розміром менше ніж"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:569
+msgid "couldn&#8217;t have length less than"
+msgstr "не може мати довжину менше ніж"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:581
+msgid "couldn&#8217;t have size different than"
+msgstr "не може відрізнятися розміром від"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:587
+msgid "couldn&#8217;t have length different than"
+msgstr "не може  відрізнятися довжиною від"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:598
+msgid "couldn&#8217;t have size more than"
+msgstr "не може бути розміром більше ніж"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:603
+msgid "couldn&#8217;t have length more than"
+msgstr "не може мати довжину більш ніж"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:644
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:652
+msgid "Typed code is not correct."
+msgstr "Введений код не правильний."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:722
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1448
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1449
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:192
+msgid "Username"
+msgstr "Ім'я користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:749
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1458
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1459
+msgid "E-mail"
+msgstr "Ел. пошта"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1000
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:304
+msgid "Please upload a file with one of the following extensions"
+msgstr "Будь ласка, завантажте файл з одним з наступних розширень"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1006
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:310
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:282
+msgid "Please upload an image with one of the following extensions"
+msgstr "Будь ласка, завантажте файл з одним з наступних розширень"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1181
+msgid "Strength indicator"
+msgstr "Індикатор сили"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1182
+msgid "Hint: The password should be at least seven characters long. To make it stronger, use upper and lower case letters, numbers and symbols like ! \" ? $ % ^ &amp; )."
+msgstr "Підказка: пароль повинен бути не менше семи символів. Щоб зробити його сильнішим, використовуйте верхній та нижній регістр, цифри і символи, наприклад ! \" ? $ % ^ &amp; )."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1221
+msgid "Change image"
+msgstr "Змінити картинку"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1224
+msgid "Insert the code:"
+msgstr "Вставте код:"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1296
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1298
+msgid "Confirm your registration"
+msgstr "Підтвердіть реєстрацію"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1304
+msgid "A password will be e-mailed to you."
+msgstr "Пароль буде направлений до вас ел. поштою."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_register.php:1312
+msgid "&larr; Back"
+msgstr "&larr; Назад"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:17
+msgid "Add field"
+msgstr "Додати поле"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:18
+msgid "Update field"
+msgstr "Оновити поле"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:19
+msgid "Delete field"
+msgstr "Видалити поле"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:20
+msgid "Delete selected fields"
+msgstr "Видалити вибрані поля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:21
+msgid "Change order"
+msgstr "Зміна порядку"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:30
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:846
+msgid "Min length"
+msgstr "Мін. довжина"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:31
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:847
+msgid "Exact length"
+msgstr "Точна довжина"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:32
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:848
+msgid "Max length"
+msgstr "Макс. довжина"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:33
+msgid "Exact or Max length"
+msgstr "Точна або макс. довжина"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:133
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:22
+msgid "Fields"
+msgstr "Поля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:133
+msgid "changed to"
+msgstr "змінено на"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:136
+msgid "You cannot give an order that misses some numbers"
+msgstr "Ви не можете віддати порядок, у якому пропущені деякі числа"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:139
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:214
+msgid "Nothing selected"
+msgstr "Нічого не вибрано"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:211
+msgid "Field(s)"
+msgstr "Поле(-я)"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:211
+msgid "deleted correctly"
+msgstr "видалено правильно"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:242
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:838
+msgid "Min size"
+msgstr "Мін. розмір"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:243
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:839
+msgid "Exact size"
+msgstr "Точний розмір"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:244
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:840
+msgid "Max size"
+msgstr "Макс. розмір"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:246
+msgid "Exact or Max size"
+msgstr "Точний або макс. розмір"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:285
+msgid "Name not specified"
+msgstr "Ім'я не задано"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:287
+msgid "Name cannot contains spaces"
+msgstr "Ім'я не може містити пробіли"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:290
+msgid "Label not specified"
+msgstr "Надпис не задано"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:295
+msgid "not selected (with this type is necessary)"
+msgstr "не вибрано (з цим типом необхідно)"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:301
+msgid "If you select"
+msgstr "Якщо ви виберете"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:301
+msgid "you cannot select Min or Max"
+msgstr "Ви не можете вибрати Мін. або Макс."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:306
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:311
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:316
+msgid "should be in the range of"
+msgstr "повинно бути в діапазоні"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:326
+msgid "Equal TO not specified"
+msgstr "Не обрано Дорівнює"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:329
+msgid "With checkbox type Equal TO can only be"
+msgstr "Може бути тільки з прапорцем вибору типу Дорівнює"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:332
+msgid "With radio type Equal TO can only be"
+msgstr "Може бути тільки з перемикачем вибору (радіо) типу Дорівнює "
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:348
+msgid "With checkbox type Value can only be"
+msgstr "Може бути тільки з прапорцем вибору типу Значення "
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:351
+msgid "With radio type Value can only be"
+msgstr "Може бути тільки з перемикачем вибору (радіо) типу Значення"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:407
+msgid "Field inserted correctly"
+msgstr "Поле вставлене коректно"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:409
+msgid "Field #"
+msgstr "Поле №"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:409
+msgid "updated correctly"
+msgstr "оновлено коректно"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:421
+msgid "Name inserted is just in the database, change to another one"
+msgstr "Вставлене ім'я вже є у базі даних, змінити на інше"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:436
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:367
+msgid "Add a new Field"
+msgstr "Додати нове поле"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:551
+msgid "To add a new field you have to choose a name, type and label; optional are value and description. Rules are applied during user registration."
+msgstr "Щоб додати нове поле ви повинні вибрати назву, тип та надпис; додатково можна значення і опис. Правила застосовуються при реєстрації користувача."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:553
+msgid "With <strong>radio</strong> and <strong>checkbox</strong>: <em>Value</em> and <em>equal TO</em> can only be 'Yes' or 'No' that means 'selected' or 'not selected'"
+msgstr "З <strong> радіо</strong> та <strong>прапорцем</strong>: <em>Значення</em> і <em>Дорівнює</em> може бути тільки 'Так' або 'Ні', що означає 'обрано' або 'не обрано'"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:554
+msgid "With <strong>drop-down</strong>: you have to add all options into label for example: label/item1,item2,item3"
+msgstr "З <strong>випадаючим списком (drop-down)</strong>: ви повинні додати всі варіанти надписів, наприклад: надпис/елемент1, елемент2, елемент3"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:555
+msgid "With <strong>picture</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> means max pixel size (width or height) for thumbnail"
+msgstr "З <strong>картинкою</strong>: ви можете попередньо завантажити зображення за замовчуванням введенням URL в поле <em>Значення</em>; 'мін., точний, макс. розміри' у КБ; <em>Дорівнює</em> означає макс. розмір у пікселях (ширина або висота) для ескізів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:556
+msgid "With <strong>picture-url</strong>: you can preload a default image putting url in <em>Value</em>; <em>equal TO</em> means max width pixel size (height will be proportional)"
+msgstr "З <strong>URL-картинки</strong>: ви можете попередньо завантажити зображення за замовчуванням введенням URL в поле <em>Значення</em>; <em>Дорівнює</em> означає макс. ширину у пікселах (висота буде пропорційною)"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:557
+msgid "With <strong>registration-date</strong>: <em>equal TO</em> means date and time format"
+msgstr "З <strong>датою реєстрації</strong>: <em>Дорівнює</em> означає формат дати і часу"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:558
+msgid "With <strong>avatar</strong>: you can preload a default image putting url in <em>Value</em>; 'min,exact,max size' are in KB; <em>equal TO</em> is automatically set to 512 pixels"
+msgstr "З <strong>аватар</strong>: ви можете попередньо завантажити зображення за замовчуванням введенням URL в поле <em>Значення</em>; 'мін., точний, макс. розміри' в КБ; <em>Дорівнює</em> автоматично встановлює на 512 пікселів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:559
+msgid "With <strong>file</strong>: you can preload a default file putting url in <em>Value</em>; 'min,exact,max size' are in KB; under <em>equal TO</em> can be specified allowed extensions separated by comma, example: zip,pdf,doc"
+msgstr "З <strong>файл<strong>: ви можете попередньо завантажити файл за замовчуванням введенням URL в поле <em>Значення</em>; 'мін., точний, макс. розміри' в КБ; під <em>Дорівнює</em> можуть бути вказані дозволені розширення, розділені комами, напр.: zip, pdf, doc"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:566
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:576
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:777
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:871
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1453
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1454
+msgid "Name"
+msgstr "Ім'я"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:566
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:577
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:777
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:874
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1763
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1768
+msgid "Value"
+msgstr "Значення"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:567
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:580
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:777
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:877
+msgid "Type"
+msgstr "Тип"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:568
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:596
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:778
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:894
+msgid "Label"
+msgstr "Надпис"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:568
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:597
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:778
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:897
+msgid "Description"
+msgstr "Надпис"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:569
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:779
+msgid "Rules"
+msgstr "Правила"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:570
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:780
+msgid "Actions"
+msgstr "Дії"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:591
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:888
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1199
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1290
+msgid "Fieldset"
+msgstr "Група полів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:609
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:911
+msgid "Can be empty"
+msgstr "Може бути порожнім"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:610
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:912
+msgid "Check for E-mail syntax"
+msgstr "Перевірка синтаксису ел. пошти "
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:613
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:915
+msgid "Can be modified"
+msgstr "Може бути змінено"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:614
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:916
+msgid "Can be modified only if empty"
+msgstr "Може бути змінено, тільки якщо порожнє"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:615
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:917
+msgid "Can be modified only by admin"
+msgstr "Може бути змінено тільки адміністратором"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:616
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:918
+msgid "Can be modified only by admin or if empty"
+msgstr "Може бути змінено тільки адміністратором або якщо порожнє"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:617
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:919
+msgid "Cannot be modified"
+msgstr "Не може бути змінено"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:621
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:924
+msgid "Should be equal TO"
+msgstr "Повинно дорівнювати"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:623
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:926
+msgid "Case sensitive"
+msgstr "З урахуванням регістру"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:626
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:928
+msgid "Regular Expression"
+msgstr "Регулярні вирази"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:629
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:933
+msgid "Show the field in the registration"
+msgstr "Показати поле при реєстрації"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:632
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:936
+msgid "Show the field in User's profile"
+msgstr "Показати поле в профілі Користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:635
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:945
+msgid "Show the field in Users Extended section"
+msgstr "Показати поле в Розширеному розділі Користувачів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:638
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:948
+msgid "Show the field in the search engine"
+msgstr "Показати поле в пошукових системах"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:641
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:951
+msgid "Show the field in the blog"
+msgstr "Показати поле у блозі"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:644
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:954
+msgid "Show the field if the role is at least:"
+msgstr "Показати поле, якщо роль, принаймні:"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:646
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:956
+msgid "Anonymous"
+msgstr "Анонімний"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:652
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:962
+msgid "User has 'view_cimy_extra_fields' capability"
+msgstr "Користувач має 'view_cimy_extra_fields' можливості"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:657
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:970
+msgid "Send an email to the admin if the user changes its value"
+msgstr "Надіслати повідомлення адміну, якщо користувач змінює своє значення"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:659
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:975
+msgid "Advanced options"
+msgstr "Додаткові опції"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:664
+msgid "Clear"
+msgstr "Очистити"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:741
+msgid "Invert selection"
+msgstr "Все крім вибраного"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:742
+msgid "Are you sure you want to delete field(s) and all data inserted into by users?"
+msgstr "Ви дійсно хочете видалити поле (-я) і всі дані, вставлені користувачами?"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:748
+msgid "WordPress Fields"
+msgstr "Поля WordPress"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:750
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1763
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1768
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:367
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:115
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:369
+msgid "Extra Fields"
+msgstr "Додаткові поля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:761
+msgid "None!"
+msgstr "Жодного!"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:776
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:859
+msgid "Order"
+msgstr "Порядок"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:979
+msgid "Reset"
+msgstr "Скидання"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1044
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:391
+msgid "SUCCESSFUL"
+msgstr "УСПІШНО"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1063
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1790
+msgid "select"
+msgstr "вибрати"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1203
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1294
+msgid "Users per page"
+msgstr "Користувачів на сторінку"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1205
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1296
+msgid "Apply"
+msgstr "Застосувати"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1370
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:23
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:31
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:36
+msgid "Users Extended"
+msgstr "Користувачі (Розширене)"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1378
+#, php-format
+msgid "Search results for &#8220;%s&#8221;"
+msgstr "Шукати результати для &#8220;%s&#8221;"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1416
+#, php-format
+msgid "%1$s <span class=\"count\">(%2$s)</span>"
+msgstr "%1$s <span class=\"count\">(%2$s)</span>"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1425
+msgid "Search Users"
+msgstr "Пошук Користувачів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1463
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1464
+msgid "Role"
+msgstr "Роль"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1468
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1469
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:324
+msgid "Website"
+msgstr "Веб-сайт"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1473
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1474
+msgid "Posts"
+msgstr "Дописи"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1596
+msgid "View posts by this author"
+msgstr "Переглянути всі дописи цього автора"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1621
+msgid "Super Admin"
+msgstr "Супер Адмін"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1632
+#, php-format
+msgid "e-mail: %s"
+msgstr "ел. пошта: %s"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1743
+msgid "Change"
+msgstr "Зміна"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1759
+msgid "Update selected users"
+msgstr "Оновлення вибраних користувачів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1780
+msgid "Update"
+msgstr "Оновлення"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1795
+msgid "OK"
+msgstr "ОК"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_admin.php:1796
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:45
+#, php-format
+msgid "New user registration on your site %s:"
+msgstr "Реєстрація нового користувача на вашому сайті %s:"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:46
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:214
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:364
+#, php-format
+msgid "Username: %s"
+msgstr "Ім'я користувача: %s"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:47
+#, php-format
+msgid "E-mail: %s"
+msgstr "Адреса ел. пошти: %s."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:52
+#, php-format
+msgid "[%s] New User Registration"
+msgstr "[%s] Реєстрація нового користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:64
+#, php-format
+msgid "[%s] Your username and password"
+msgstr "[%s] Ваше ім'я користувача і пароль"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:105
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:118
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:131
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:137
+#, php-format
+msgid "%s: %s"
+msgstr "%s: %s"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:211
+#, php-format
+msgid ""
+"To activate your user, please click the following link:\n"
+"\n"
+"%s\n"
+"\n"
+"After you activate, you will receive *another email* with your login.\n"
+"\n"
+msgstr ""
+"Щоб активувати користувача, будь ласка, перейдіть за наступним посиланням: \n"
+"\n"
+"%s\n"
+"\n"
+"Після активації, ви отримаєте *ще одне повідомлення* з вашим логіном.\n"
+"\n"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:215
+#, php-format
+msgid "[%1$s] Activate %2$s"
+msgstr ""
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:234
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
+msgid "Your account is now active!"
+msgstr "Тепер ваш акаунт активний!"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:235
+#, php-format
+msgid "Your site at <a href=\"%1$s\">%2$s</a> is active. You may now log in to your site using your chosen username of &#8220;%3$s&#8221;.  Please check your email inbox at %4$s for your password and login instructions.  If you do not receive an email, please check your junk or spam folder.  If you still do not receive an email within an hour, you can <a href=\"%5$s\">reset your password</a></p>."
+msgstr "Ваш сайт за адресою <a href=\"%1$s\">%2$s</a> активний. Тепер ви можете увійти в свій сайт, використовуючи вибране вами ім'я користувача &#8220;%3$s&#8221;. Будь ласка, перевірте вашу ел. поштову скриньку на %4$s для отримання вашого пароля та логіну. Якщо ви не отримаєте ел. пошту, будь ласка, перевірте вашу папку зі спамом. Якщо ви все ще не отримали листа протягом години, ви можете <a href=\"%5$s\">скинути ваш пароль</a></p>."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:237
+msgid "An error occurred during the activation"
+msgstr "Помилка при активації"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:243
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:215
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:365
+#, php-format
+msgid "Password: %s"
+msgstr "Пароль: %s"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:257
+msgid "Invalid activation key."
+msgstr "Неприпустимий ключ активації."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:260
+msgid "The site is already active."
+msgstr "Сайт вже активний."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:280
+msgid "Could not create user"
+msgstr "Не вдається створити користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:292
+msgid "That username is already activated."
+msgstr "Це ім'я користувача вже активовано."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:312
+msgid "That username is currently reserved but may be available in a couple of days."
+msgstr "Це ім'я користувача наразі зарезервовано, але може стати доступним впродовж пари днів."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:315
+msgid "username and email used"
+msgstr "ім'я користувача та адреса ел. пошти використані"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_email_handler.php:325
+msgid "That email address has already been used. Please check your inbox for an activation email. It will become available in a couple of days if you do nothing."
+msgstr "Ця адреса ел. пошти вже використовується. Будь ласка, перевірте вашу поштову скриньку на предмет листа активації. Вона стане доступна через пару днів, якщо нічого не робити."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:141
+msgid "(required)"
+msgstr ""
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:448
+msgid "Delete the file"
+msgstr "Видалити файл"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:449
+msgid "Update the file"
+msgstr "Оновлення файлу"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:452
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:545
+msgid "Delete the picture"
+msgstr "Видалити зображення"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:453
+msgid "Update the picture"
+msgstr "Оновлення картинки"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:473
+msgid "Picture URL:"
+msgstr "URL картинки:"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:722
+#, php-format
+msgid "%s previous value: %s new value: %s"
+msgstr "Попереднє значення %s: нове значення %s: % s."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_profile.php:737
+#, php-format
+msgid "%s (%s) has changed one or more fields"
+msgstr "%s (%s) змінило одне або кілька полів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_init.php:21
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:364
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:557
+msgid "Options"
+msgstr "Опції"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:52
+msgid "WordPress Fields table emptied"
+msgstr "Таблиця WordPress Fields очищена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:57
+msgid "WordPress Fields table deleted"
+msgstr "Таблиця WordPress Fields видалена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:66
+msgid "Extra Fields table emptied"
+msgstr "Таблиця Extra Fields очищена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:71
+msgid "Extra Fields table deleted"
+msgstr "Таблиця Extra Fields видалена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:80
+msgid "Users Data table emptied"
+msgstr "Таблиця користувацьких даних очищена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:85
+msgid "Users Data table deleted"
+msgstr "Таблиця користувацьких даних видалена"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:96
+msgid "Options set to default values"
+msgstr "Опції встановлені за замовчуванням"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:102
+msgid "Options deleted"
+msgstr "Опції видалені"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:256
+msgid "Options changed"
+msgstr "Опції змінено"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:355
+msgid "This operation will create/update all missing tables/options, do you want to proceed?"
+msgstr "Ця операція дозволить створити/обновити всі відсутні таблиці/опції, хочете продовжити?"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:373
+msgid "Support the Cimy Project"
+msgstr "Підтримка проекту Cimy"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:381
+msgid "This plug-in is the results of hours of development to add new features, support new WordPress versions and fix bugs, please donate money if saved you from spending all these hours!"
+msgstr "Цей плагін є результатом багатьох годин розробки, щоб додати нові функції, підтримати нові версії WordPress і виправити помилки, будь ласка, надайте спонсорську допомогу, якщо врятував вас від витрат усіх цих годин!"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:405
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:734
+msgid "Save Changes"
+msgstr "Зберегти зміни"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:406
+msgid "General"
+msgstr "Загальне"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:414
+msgid "installed is"
+msgstr "встановлено"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:418
+msgid "OPTIONS DELETED!"
+msgstr "ОПЦІЇ ВИДАЛЕНІ!"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:421
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:426
+msgid "Fix the problem"
+msgstr "Виправити проблеми"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:424
+msgid "VERSIONS MISMATCH! This because you haven't de-activated and re-activated the plug-in after the update! This could give problems..."
+msgstr "ВЕРСІЇ НЕ ЗБІГАЮТЬСЯ! Це тому що ви не деактивували і повторно не активували плагін після оновлення! Це може створити проблеми ..."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:432
+msgid "Picture/Avatar upload"
+msgstr "Завантаження картинки/аватару "
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:436
+msgid "is created and writable"
+msgstr "створено з перезаписуванням"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:438
+msgid "is NOT created or webserver does NOT have permission to write on it"
+msgstr "НЕ створено або веб-сервер НЕ має дозволу писати на ньому"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:445
+msgid "Show all fields in the welcome email"
+msgstr "Показати всі поля у вітальному повідомлені"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:449
+msgid "the email sent to the admin and to the user upon registration will have all fields"
+msgstr "повідомлення, відправлене на адміністратора і користувача при реєстрації, матиме всі поля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:457
+msgid "Enable email confirmation"
+msgstr "Включити підтвердження ел. поштою"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:461
+msgid "user that registers should confirm its email address via a link click"
+msgstr "користувач, який реєструється, має підтвердити свою адресу ел. пошти кліком за посилання"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:463
+msgid "<strong>note:</strong> this option turned on will automatically disable (only during the registration) all upload fields: file, picture, avatar"
+msgstr "<strong> увага:</strong> ця функція, якщо включена, автоматично деактивує (тільки під час реєстрації) всі завантажені поля: файл, малюнок, аватар"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:470
+msgid "Enable form confirmation"
+msgstr "Включити форму підтвердження"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:474
+msgid "a summary of the registration form will be presented to the user"
+msgstr "резюме реєстраційної форми буде представлено ​​користувачеві"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:480
+msgid "Customize welcome email sent to the new user"
+msgstr "Налаштувати вітальне повідомлення для нового користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:484
+msgid "if you change or remove the placeholders then the email won't have the correct information"
+msgstr "якщо змінити або видалити вставку, то ел. лист не буде мати правильну інформацію"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:490
+msgid "Redirect to the source"
+msgstr "Перенаправлення на джерело"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:494
+msgid "after the registration or confirmation the user will be redirected to the address where was exactly before clicking on the registration link"
+msgstr "після реєстрації або підтвердження користувача буде перенаправлено на адресу, де він був, перш ніж натиснути на посилання реєстрації"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:502
+msgid "No captcha"
+msgstr "Нема КАПЧА"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:510
+msgid "Enable <a href=\"http://www.google.com/recaptcha\" target=\"_blank\">reCAPTCHA</a>"
+msgstr "Включити <a href=\"http://www.google.com/recaptcha\" target=\"_blank\">reCAPTCHA</a>"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:514
+msgid "Public KEY"
+msgstr "Відкритий ключ"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:518
+msgid "Private KEY"
+msgstr "Закритий ключ"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:526
+msgid "Enable <a href=\"http://www.phpcaptcha.org/\" target=\"_blank\">Securimage Captcha</a>"
+msgstr "Включити <a href=\"http://www.phpcaptcha.org/\" target=\"_blank\">Securimage Captcha</a>"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:529
+msgid "This captcha is probably weaker, but is easier for users"
+msgstr "Ця КАПЧА ймовірно, слабкіша, але простіша для користувачів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:533
+#, php-format
+msgid "<strong>WARNING: to activate this captcha download <a href=\"http://www.phpcaptcha.org/latest.zip\" target=\"_blank\">this package</a> and unpack it under %s</strong>"
+msgstr "<strong>УВАГА: для активації цієї КАПЧА скачати <a href=\"http://www.phpcaptcha.org/latest.zip\" target=\"_blank\">цей пакет</a> і розпакувати його під %s</strong>"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:540
+msgid "Change login/registration page logo"
+msgstr "Зміна логотипу на сторінці логіну/реєстрації"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:548
+msgid "Maximum recommended logo width is 328px, but any height should work."
+msgstr "Максимальна рекомендована ширина логотипу 328px, але будь-яка висота повинна працювати."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:554
+msgid "Database"
+msgstr "База даних"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:563
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:580
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:597
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:614
+msgid "select action"
+msgstr "вибрати дію"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:564
+msgid "Default values"
+msgstr "Значення за замовчуванням"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:565
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:582
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:599
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:616
+msgid "Delete"
+msgstr "Видалити"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:569
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:586
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:603
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:621
+msgid "NOT PRESENT"
+msgstr "ВІДСУТНЄ"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:574
+msgid "WordPress Fields table"
+msgstr "Таблиця WordPress Fields"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:581
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:598
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:615
+msgid "Empty"
+msgstr "Порожнє"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:591
+msgid "Extra Fields table"
+msgstr "Таблиця Extra Fields"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:608
+msgid "Users Data table"
+msgstr "Таблиця Даних Користувачів"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:618
+msgid "all data inserted by users in all and only extra fields"
+msgstr "всі дані внесені користувачами в усі та тільки додаткові поля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:626
+msgid "Force tables creation"
+msgstr "Примусове створення таблиць"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:629
+msgid "equivalent to de-activate and activate the plug-in; no other operation will be performed"
+msgstr "еквівалентно деактивуванню та активуванню плагіна, ніякі інші операції не будуть виконуватися"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:635
+msgid "User Profile"
+msgstr "Профіль користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:638
+msgid "Extra Fields section title"
+msgstr "Титул розділу Додаткових Полів "
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:642
+msgid "Fieldset's titles, separates with comma"
+msgstr "Назви груп полів (fieldset), розділені комами"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:642
+msgid "example: title1,title2,title3"
+msgstr "Приклад: заголовок1, заголовок2, заголовок3"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:643
+msgid "<strong>note:</strong> if you change order or remove fieldsets you may need to set all extra fields' fieldset assigment again"
+msgstr "<strong> увага:</strong>якщо ви зміните порядок або видалите групу полів, вам може знадобитися встановлення всіх додаткових полів знову"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:648
+msgid "Authors &amp; Users Extended"
+msgstr "Автори і Користувачі (Розширене)"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:652
+msgid "Hide username field"
+msgstr "Приховати поле з іменем користувача"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:658
+msgid "Hide name field"
+msgstr "Приховати поле з іменем"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:663
+msgid "Hide email field"
+msgstr "Приховати поле ел. пошти"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:667
+msgid "Hide role field"
+msgstr "Приховати поле ролі"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:671
+msgid "Hide website field"
+msgstr "Приховати поле веб-сайту"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:675
+msgid "Hide n. posts field"
+msgstr "Приховати поле з № допису"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:680
+msgid "WordPress hidden fields"
+msgstr "Приховані поля WordPress"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:684
+#, fuzzy
+msgid "Show username"
+msgstr "Показати прізвище"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:685
+msgid "when unchecked the email address will be used as username"
+msgstr ""
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:689
+msgid "Show password"
+msgstr "Показати пароль"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:693
+msgid "Show confirmation password"
+msgstr "Показати підтвердження пароля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:697
+msgid "Show password strength meter"
+msgstr "Показати оцінку сили пароля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:701
+msgid "Show first name"
+msgstr "Показати ім'я"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:705
+msgid "Show last name"
+msgstr "Показати прізвище"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:709
+msgid "Show nickname"
+msgstr "Показати прізвисько"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:713
+msgid "Show website"
+msgstr "Показати веб-сайт"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:717
+msgid "Show AIM"
+msgstr "Показати AIM"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:721
+msgid "Show Yahoo IM"
+msgstr "Показати Yahoo IM"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:725
+msgid "Show Jabber / Google Talk"
+msgstr "Показати Jabber / Google Talk"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_options.php:729
+msgid "Show Biographical Info"
+msgstr "Показати Біографічну Інформацію"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_missing_functions.php:16
+#, php-format
+msgid "File '%s' doesn't exist?"
+msgstr "Файл '%s' не існує?"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_missing_functions.php:19
+msgid "The GD image library is not installed."
+msgstr "Бібліотека GD image library не встановлена."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_missing_functions.php:26
+#, php-format
+msgid "File '%s' is not an image."
+msgstr "Файл '%s' не є зображенням."
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_db.php:207
+msgid "<strong>Note:</strong> this website let you personalize your password; after the registration you will receive an e-mail with another password, do not care about that!"
+msgstr "<strong>Примітка:</strong> цей сайт дозволяє персоналізувати ваш пароль; після реєстрації ви отримаєте повідомлення ел. поштою з іншим паролем, не хвилюйтесь про це!"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:214
+msgid "Password"
+msgstr "Пароль"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:236
+msgid "Password confirmation"
+msgstr "Підтвердження пароля"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:258
+msgid "First name"
+msgstr "Ім'я"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:280
+msgid "Last name"
+msgstr "Прізвище"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:302
+msgid "Nickname"
+msgstr "Прізвисько"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:346
+msgid "AIM"
+msgstr "AIM"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:368
+msgid "Yahoo IM"
+msgstr "Yahoo IM"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:390
+msgid "Jabber / Google Talk"
+msgstr "Jabber / Google Talk"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_user_extra_fields.php:412
+msgid "Biographical Info"
+msgstr "Біографічна Інформація"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_functions.php:431
+msgid "no fieldset"
+msgstr "no fieldset"
+
+#: /var/www/wp-content/plugins/cimy-user-extra-fields/cimy_uef_functions.php:435
+msgid "All"
+msgstr "Всі"
+
+#~ msgid ""
+#~ "You are about to permanently delete the selected items.\n"
+#~ "  'Cancel' to stop, 'OK' to delete."
+#~ msgstr ""
+#~ "Ви збираєтеся видалити вибрані елементи назавжди.\n"
+#~ "'Скасувати', щоб зупинити, 'OK', щоб видалити."
+
+#~ msgid "Very weak"
+#~ msgstr "Дуже слабкий"
+
+#~ msgid "Weak"
+#~ msgstr "Слабкий"
+
+#~ msgid "Strong"
+#~ msgstr "Сильний"
+
+#~ msgid "Mismatch"
+#~ msgstr "Неузгодженість"
+
+#~ msgid "A&amp;U Extended"
+#~ msgstr "A и продвинутые П "
+
+#, fuzzy
+#~ msgid "Users Extended List"
+#~ msgstr "Список Авторов и продвинутых пользователей"
+
+#~ msgid "Authors &amp; Users Extended List"
+#~ msgstr "Список Авторов и продвинутых пользователей"
+
+#, fuzzy
+#~ msgid "Username:"
+#~ msgstr "Имя пользователя"
+
+#~ msgid "Disable get_cimyFieldValue function"
+#~ msgstr "Отключить функцию get_cimyFieldValue"
+
+#~ msgid "leave disabled if you don't know what to do"
+#~ msgstr "оставьте отключенной, если не знаете, что делать"
+
+#~ msgid "Update Options &raquo;"
+#~ msgstr "Обновление настроек &raquo;"
+
+#~ msgid "Hide actions button"
+#~ msgstr "Скрыть кнопку действия"
+
+#~ msgid "User ID"
+#~ msgstr "ID пользователя"
+
+#~ msgid "Edit"
+#~ msgstr "Редактировать"
+
+#~ msgid "label"
+#~ msgstr "метка"

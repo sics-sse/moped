@@ -1,0 +1,28 @@
+
+
+/* CONTENT MIRROR */
+
+.clear									{ clear:both; }
+.how_to									{ margin: 0px 20px 10px 20px; font-size: 11px; color: #666666; font-family: "Lucida Grande",Verdana,Arial,"Bitstream Vera Sans",sans-serif; font-style: italic; line-height: 140%; }
+.tpt_hidden								{ display: none; }
+
+img.content_mirror		 					{ background: url("../../../../../../wp-content/plugins/content-mirror/images/content_mirror.png") no-repeat scroll center center #F2F8FF;
+    										  border: 1px dashed #888888; height: 250px; width: 99%; }
+    										  
+#content_mirror_edit    						{ font-family: "Open Sans",sans-serif; position: relative; }
+#content_mirror_edit h3.mirror-title			{ color: #5A5A5A; font-family: Georgia,"Times New Roman",Times,serif; font-weight: normal; font-size: 22px; margin: 7px 7px 15px 7px; }
+#content_mirror_edit .selecters				{ height: 110px; }
+#content_mirror_edit .row					{ }
+#content_mirror_edit label					{ position: absolute; width: 150px; font-size: 13px; font-weight: bold; margin: 7px; }
+#content_mirror_edit label.simple				{ float: none; font-weight: normal; font-size: 12px; position: relative; top: 5px;  }
+#content_mirror_edit select					{ float: right; width: 250px; border: 1px solid #000; margin: 7px; height: 20px; }
+#content_mirror_edit .preview					{ border: 1px solid #000; background-color: #fdfdfd; margin: 7px; width: 404px; height: 190px; overflow: scroll; font-size: 0.8em; padding: 5px;   }
+#content_mirror_edit .preview_error			{ padding: 0px; margin: 0px; color: #d00; font-family: Georgia,"Times New Roman",Times,serif; }
+#content_mirror_edit .preview_status			{ padding: 0px; margin: 0px; color: #555 !important; font-family: Georgia,"Times New Roman",Times,serif; }
+#content_mirror_edit #form_buttons				{ height: 20px; text-align; right; width: 420px; }
+#content_mirror_edit #form_buttons	*			{ float: right; }
+#content_mirror_edit option.same_item			{ font-style: italic; color: #aaa; }
+
+button									{ background: url("/wp-admin/images/white-grad.png") repeat-x scroll left top #F2F2F2; text-shadow: 0 1px 0 #FFFFFF; border-color: #BBBBBB;
+    										  color: #464646; -moz-box-sizing: content-box; border-radius: 11px 11px 11px 11px; border-style: solid; border-width: 1px; cursor: pointer; 
+    										  font-size: 12px !important; line-height: 13px; padding: 3px 8px; text-decoration: none; margin: 7px 3px; }

@@ -1,0 +1,9 @@
+[22-Sep-2014 09:09:22 UTC] PHP Notice:  Undefined index: table in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/tbl_replace.php on line 274
+[23-Sep-2014 08:51:34 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[23-Sep-2014 15:28:33 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[24-Sep-2014 08:16:04 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[24-Sep-2014 11:20:28 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[24-Sep-2014 12:27:15 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[24-Sep-2014 15:13:10 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[25-Sep-2014 12:56:58 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777
+[26-Sep-2014 10:43:33 UTC] PHP Notice:  Undefined index: js_frame in /var/www/sse/moped.sics.se/wordpress/wp-content/plugins/portable-phpmyadmin/pma/css/phpmyadmin.css.php on line 777

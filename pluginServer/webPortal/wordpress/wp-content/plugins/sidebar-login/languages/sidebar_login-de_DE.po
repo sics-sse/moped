@@ -1,0 +1,125 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sidebar-login\n"
+"POT-Creation-Date: 2013-04-02 16:11+0100\n"
+"PO-Revision-Date: 2013-04-13 00:20+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.3\n"
+"X-Poedit-KeywordsList: _e;__;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ../.\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: .././sidebar-login.php:79
+msgid "Please enter your username"
+msgstr "Bitte geben Sie Ihren Benutzernamen ein"
+
+#: .././sidebar-login.php:80
+msgid "Please enter your password"
+msgstr "Bitte geben Sie ihr Passwort ein"
+
+#: .././sidebar-login.php:166
+msgid "Please enter your username and password to login."
+msgstr "Bitte geben Sie Ihren Benutzernamen und Passwort zur Anmeldung ein."
+
+#: .././includes/class-sidebar-login-widget.php:23
+msgid "Displays a login area in the sidebar."
+msgstr "Zeigt ein Login-Feld in der Sidebar an."
+
+#: .././includes/class-sidebar-login-widget.php:26
+msgid "Sidebar Login"
+msgstr "Sidebar Login"
+
+#: .././includes/class-sidebar-login-widget.php:39
+msgid "Logged-out title"
+msgstr "Logout Titel"
+
+#: .././includes/class-sidebar-login-widget.php:40
+#: .././includes/class-sidebar-login-widget.php:225
+msgid "Login"
+msgstr "Login"
+
+#: .././includes/class-sidebar-login-widget.php:44
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "Links"
+msgstr "Links"
+
+#: .././includes/class-sidebar-login-widget.php:44
+msgid "<code>Text | HREF</code>"
+msgstr "<code>Text | HREF</code>"
+
+#: .././includes/class-sidebar-login-widget.php:49
+msgid "Show lost password link"
+msgstr "Zeige Passwort-Vergessen-Link an"
+
+#: .././includes/class-sidebar-login-widget.php:54
+msgid "Show register link"
+msgstr "Zeige Registrierungs-Link an"
+
+#: .././includes/class-sidebar-login-widget.php:56
+#, php-format
+msgid "<a href=\"%s\">Anyone can register</a> must be enabled."
+msgstr "<a href=\"%s\">Jeder kann sich registrieren</a> muss aktiviert sein."
+
+#: .././includes/class-sidebar-login-widget.php:60
+msgid "Login Redirect URL"
+msgstr "Login Weiterleitungs-URL"
+
+#: .././includes/class-sidebar-login-widget.php:69
+msgid "Logged-in title"
+msgstr "Login Titel"
+
+#: .././includes/class-sidebar-login-widget.php:70
+#: .././includes/class-sidebar-login-widget.php:224
+msgid "Welcome %username%"
+msgstr "Willkommen %username%"
+
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "<code>Text | HREF | Capability</code>"
+msgstr "<code>Text | HREF | Fähigkeiten</code>"
+
+#: .././includes/class-sidebar-login-widget.php:75
+#, php-format
+msgid ""
+"<a href=\"%s\">Capability</a> (optional) refers to the type of user who can "
+"view the link."
+msgstr ""
+"<a href=\"%s\">Fähigkeit</a> (optional) verweist auf den Typ des Benutzers, "
+"der den Link sehen kann."
+
+#: .././includes/class-sidebar-login-widget.php:80
+msgid "Show logged-in user avatar"
+msgstr "Zeige eingeloggt den Avatar an"
+
+#: .././includes/class-sidebar-login-widget.php:85
+msgid "Logout Redirect URL"
+msgstr "Logout Weiterleitungs-URL"
+
+#: .././includes/class-sidebar-login-widget.php:164
+#: .././includes/class-sidebar-login-widget.php:171
+msgid "Register"
+msgstr "Registrieren"
+
+#: .././includes/class-sidebar-login-widget.php:181
+msgid "Lost Password"
+msgstr "Passwort verloren"
+
+#: .././includes/class-sidebar-login-widget.php:271
+msgid "Username"
+msgstr "Benutzername"
+
+#: .././includes/class-sidebar-login-widget.php:272
+msgid "Password"
+msgstr "Passwort"
+
+#: .././includes/class-sidebar-login-widget.php:273
+msgid "Remember Me"
+msgstr "Eingeloggt bleiben"
+
+#: .././includes/class-sidebar-login-widget.php:274
+msgid "Login &rarr;"
+msgstr "Anmelden &rarr;"

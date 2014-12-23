@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sidebar-login\n"
+"POT-Creation-Date: 2013-04-19 17:13+0100\n"
+"PO-Revision-Date: 2013-04-19 18:10+0100\n"
+"Last-Translator: Marko Punnar\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .././sidebar-login.php:79
+msgid "Please enter your username"
+msgstr "Palun sisesta kasutajanimi"
+
+#: .././sidebar-login.php:80
+msgid "Please enter your password"
+msgstr "Palun sisesta parool"
+
+#: .././sidebar-login.php:166
+msgid "Please enter your username and password to login."
+msgstr "Sisse logimiseks sisesta palun kasutajanimi ja parool."
+
+#: .././includes/class-sidebar-login-widget.php:23
+msgid "Displays a login area in the sidebar."
+msgstr "Näitab logimisakend külgmisel paanil."
+
+#: .././includes/class-sidebar-login-widget.php:26
+msgid "Sidebar Login"
+msgstr "Sidebar Login"
+
+#: .././includes/class-sidebar-login-widget.php:39
+msgid "Logged-out title"
+msgstr "Pealkiri välja logituna"
+
+#: .././includes/class-sidebar-login-widget.php:40
+#: .././includes/class-sidebar-login-widget.php:225
+msgid "Login"
+msgstr "Logi sisse"
+
+#: .././includes/class-sidebar-login-widget.php:44
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "Links"
+msgstr "Lingid"
+
+#: .././includes/class-sidebar-login-widget.php:44
+msgid "<code>Text | HREF</code>"
+msgstr "<code>Tekst | HREF</code>"
+
+#: .././includes/class-sidebar-login-widget.php:49
+msgid "Show lost password link"
+msgstr "Näita parooli kadumise linki"
+
+#: .././includes/class-sidebar-login-widget.php:54
+msgid "Show register link"
+msgstr "Näita registreerimise linki"
+
+#: .././includes/class-sidebar-login-widget.php:56
+#, php-format
+msgid "<a href=\"%s\">Anyone can register</a> must be enabled."
+msgstr "<a href=\"%s\">Igaüks võib registreeruda</a> peab olema lubatud."
+
+#: .././includes/class-sidebar-login-widget.php:60
+msgid "Login Redirect URL"
+msgstr "Ümbersuunamise URL peale sisse logimist"
+
+#: .././includes/class-sidebar-login-widget.php:69
+msgid "Logged-in title"
+msgstr "Pealkiri sisse logituna"
+
+#: .././includes/class-sidebar-login-widget.php:70
+#: .././includes/class-sidebar-login-widget.php:224
+msgid "Welcome %username%"
+msgstr "Tervitus %username%"
+
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "<code>Text | HREF | Capability</code>"
+msgstr "<code>Tekst | HREF | Tase</code>"
+
+#: .././includes/class-sidebar-login-widget.php:75
+#, php-format
+msgid ""
+"<a href=\"%s\">Capability</a> (optional) refers to the type of user who can "
+"view the link."
+msgstr ""
+"<a href=\"%s\">Tase</a> (valikuline) viitab kasutaja tasemele, kes saab "
+"linki näha."
+
+#: .././includes/class-sidebar-login-widget.php:80
+msgid "Show logged-in user avatar"
+msgstr "Näita sisse loginud kasutaja avatar'i"
+
+#: .././includes/class-sidebar-login-widget.php:85
+msgid "Logout Redirect URL"
+msgstr "Ümbersuunamise URL peale välja logimist"
+
+#: .././includes/class-sidebar-login-widget.php:164
+#: .././includes/class-sidebar-login-widget.php:171
+msgid "Register"
+msgstr "Registreeru"
+
+#: .././includes/class-sidebar-login-widget.php:181
+msgid "Lost Password"
+msgstr "Parool kadunud"
+
+#: .././includes/class-sidebar-login-widget.php:271
+msgid "Username"
+msgstr "Kasutajanimi"
+
+#: .././includes/class-sidebar-login-widget.php:272
+msgid "Password"
+msgstr "Parool"
+
+#: .././includes/class-sidebar-login-widget.php:273
+msgid "Remember Me"
+msgstr "Pea meeles"
+
+#: .././includes/class-sidebar-login-widget.php:274
+msgid "Login &rarr;"
+msgstr "Logi sisse &rarr;"

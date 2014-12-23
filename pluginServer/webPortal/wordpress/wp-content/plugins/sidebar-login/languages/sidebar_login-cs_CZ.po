@@ -1,0 +1,126 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sidebar-login\n"
+"POT-Creation-Date: 2013-04-02 16:11+0100\n"
+"PO-Revision-Date: 2013-04-14 14:28+0100\n"
+"Last-Translator: Marek Rabas <rabas.marek@gmail.com>\n"
+"Language-Team: Marek Rabas <rabas.marek@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _e;__;_n\n"
+"X-Poedit-Basepath: .\n"
+"Language: Czech\n"
+"X-Poedit-SearchPath-0: ../.\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: .././sidebar-login.php:79
+msgid "Please enter your username"
+msgstr "Vložte prosím vaše uživatelské jméno"
+
+#: .././sidebar-login.php:80
+msgid "Please enter your password"
+msgstr "Vložte prosím vaše heslo"
+
+#: .././sidebar-login.php:166
+msgid "Please enter your username and password to login."
+msgstr "Pro přihlášení vložte prosím vaše uživatelské jméno a heslo."
+
+#: .././includes/class-sidebar-login-widget.php:23
+msgid "Displays a login area in the sidebar."
+msgstr "Zobrazuje přihlašovací pole v postranní liště."
+
+#: .././includes/class-sidebar-login-widget.php:26
+msgid "Sidebar Login"
+msgstr "Sidebar Login"
+
+#: .././includes/class-sidebar-login-widget.php:39
+msgid "Logged-out title"
+msgstr "Název při odhlášení"
+
+#: .././includes/class-sidebar-login-widget.php:40
+#: .././includes/class-sidebar-login-widget.php:225
+msgid "Login"
+msgstr "Přihlásit se"
+
+#: .././includes/class-sidebar-login-widget.php:44
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "Links"
+msgstr "Odkazy"
+
+#: .././includes/class-sidebar-login-widget.php:44
+msgid "<code>Text | HREF</code>"
+msgstr "<code>Text | HREF</code>"
+
+#: .././includes/class-sidebar-login-widget.php:49
+msgid "Show lost password link"
+msgstr "Ukázat odkaz pro zapomenuté heslo"
+
+#: .././includes/class-sidebar-login-widget.php:54
+msgid "Show register link"
+msgstr "Ukázat odkaz pro registraci"
+
+#: .././includes/class-sidebar-login-widget.php:56
+#, php-format
+msgid "<a href=\"%s\">Anyone can register</a> must be enabled."
+msgstr "<a href=\"%s\">Kdokoliv se může registrovat</a> musí být aktivní."
+
+#: .././includes/class-sidebar-login-widget.php:60
+msgid "Login Redirect URL"
+msgstr "URL stránky po přihlášení"
+
+#: .././includes/class-sidebar-login-widget.php:69
+msgid "Logged-in title"
+msgstr "Název při přihlášení"
+
+#: .././includes/class-sidebar-login-widget.php:70
+#: .././includes/class-sidebar-login-widget.php:224
+msgid "Welcome %username%"
+msgstr "Vítejte %username%"
+
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "<code>Text | HREF | Capability</code>"
+msgstr "<code>Text | HREF | Schopnost</code>"
+
+#: .././includes/class-sidebar-login-widget.php:75
+#, php-format
+msgid ""
+"<a href=\"%s\">Capability</a> (optional) refers to the type of user who can "
+"view the link."
+msgstr ""
+"<a href=\"%s\">Schopnost</a> (volitelně) odkazuje na typ uživatele, kterému "
+"je povoleno zobrazení odkazu."
+
+#: .././includes/class-sidebar-login-widget.php:80
+msgid "Show logged-in user avatar"
+msgstr "Zobrazit avatar přihlášeného uživatele"
+
+#: .././includes/class-sidebar-login-widget.php:85
+msgid "Logout Redirect URL"
+msgstr "URL stránky po odhlášení"
+
+#: .././includes/class-sidebar-login-widget.php:164
+#: .././includes/class-sidebar-login-widget.php:171
+msgid "Register"
+msgstr "Registrovat"
+
+#: .././includes/class-sidebar-login-widget.php:181
+msgid "Lost Password"
+msgstr "Zapomněli jste heslo?"
+
+#: .././includes/class-sidebar-login-widget.php:271
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: .././includes/class-sidebar-login-widget.php:272
+msgid "Password"
+msgstr "Heslo"
+
+#: .././includes/class-sidebar-login-widget.php:273
+msgid "Remember Me"
+msgstr "Uložit do paměti"
+
+#: .././includes/class-sidebar-login-widget.php:274
+msgid "Login &rarr;"
+msgstr "Přihlásit se &rarr;"

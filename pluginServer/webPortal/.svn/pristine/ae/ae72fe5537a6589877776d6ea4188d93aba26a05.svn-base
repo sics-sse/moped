@@ -1,0 +1,125 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: sidebar-login\n"
+"POT-Creation-Date: 2013-04-02 16:11+0100\n"
+"PO-Revision-Date: 2013-04-02 16:29+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-KeywordsList: _e;__;_n\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ../.\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: .././sidebar-login.php:79
+msgid "Please enter your username"
+msgstr "Renseignez votre identifiant s'il vous plait"
+
+#: .././sidebar-login.php:80
+msgid "Please enter your password"
+msgstr "Renseignez votre mot de passe s'il vous plait"
+
+#: .././sidebar-login.php:166
+msgid "Please enter your username and password to login."
+msgstr "Renseignez votre identifiant et votre mot de passe s'il vous plait"
+
+#: .././includes/class-sidebar-login-widget.php:23
+msgid "Displays a login area in the sidebar."
+msgstr "Affiche une zone de connexion dans la sidebar."
+
+#: .././includes/class-sidebar-login-widget.php:26
+msgid "Sidebar Login"
+msgstr "Sidebar Connexion"
+
+#: .././includes/class-sidebar-login-widget.php:39
+msgid "Logged-out title"
+msgstr "Titre (état déconnecté)"
+
+#: .././includes/class-sidebar-login-widget.php:40
+#: .././includes/class-sidebar-login-widget.php:225
+msgid "Login"
+msgstr "Connexion"
+
+#: .././includes/class-sidebar-login-widget.php:44
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "Links"
+msgstr "Liens"
+
+#: .././includes/class-sidebar-login-widget.php:44
+msgid "<code>Text | HREF</code>"
+msgstr "<code>Texte | HREF</code>"
+
+#: .././includes/class-sidebar-login-widget.php:49
+msgid "Show lost password link"
+msgstr "Montrer le lien mot de passe perdu"
+
+#: .././includes/class-sidebar-login-widget.php:54
+msgid "Show register link"
+msgstr "Montrer le lien d'enregistrement"
+
+#: .././includes/class-sidebar-login-widget.php:56
+#, php-format
+msgid "<a href=\"%s\">Anyone can register</a> must be enabled."
+msgstr "<a href=\"%s\">Tout le monde peut s'enregister</a> doit être actif."
+
+#: .././includes/class-sidebar-login-widget.php:60
+msgid "Login Redirect URL"
+msgstr "URL de redirection (connexion)"
+
+#: .././includes/class-sidebar-login-widget.php:69
+msgid "Logged-in title"
+msgstr "Titre (état connecté)"
+
+#: .././includes/class-sidebar-login-widget.php:70
+#: .././includes/class-sidebar-login-widget.php:224
+msgid "Welcome %username%"
+msgstr "Bienvenue %username%"
+
+#: .././includes/class-sidebar-login-widget.php:74
+msgid "<code>Text | HREF | Capability</code>"
+msgstr "<code>Texte | HREF | Capacité</code>"
+
+#: .././includes/class-sidebar-login-widget.php:75
+#, php-format
+msgid ""
+"<a href=\"%s\">Capability</a> (optional) refers to the type of user who can "
+"view the link."
+msgstr ""
+"<a href=\"%s\">Capacité</a> (optionnel) se base sur le type d'utilisateur "
+"qui peut voir le lien."
+
+#: .././includes/class-sidebar-login-widget.php:80
+msgid "Show logged-in user avatar"
+msgstr "Montrer l'avatar de l'utilisateur connecté"
+
+#: .././includes/class-sidebar-login-widget.php:85
+msgid "Logout Redirect URL"
+msgstr "URL de redirection (déconnexion)"
+
+#: .././includes/class-sidebar-login-widget.php:164
+#: .././includes/class-sidebar-login-widget.php:171
+msgid "Register"
+msgstr "S'enregistrer"
+
+#: .././includes/class-sidebar-login-widget.php:181
+msgid "Lost Password"
+msgstr "Mot de passe perdu&nbsp;?"
+
+#: .././includes/class-sidebar-login-widget.php:271
+msgid "Username"
+msgstr "Identifiant"
+
+#: .././includes/class-sidebar-login-widget.php:272
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .././includes/class-sidebar-login-widget.php:273
+msgid "Remember Me"
+msgstr "Me retenir"
+
+#: .././includes/class-sidebar-login-widget.php:274
+msgid "Login &rarr;"
+msgstr "Connexion &rarr;"
