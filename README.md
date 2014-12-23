@@ -17,3 +17,4 @@ It consists of the following packages:
 * WirelessIno, an Android app for RC car steering using a smart phone
 * Plugin repository
 * API for the plugin developer
+* Some useful tools
