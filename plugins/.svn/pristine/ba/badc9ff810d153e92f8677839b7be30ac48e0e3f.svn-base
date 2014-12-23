@@ -1,0 +1,1 @@
+ -bootclasspath tests/AP/classes:tests/AP/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/squawk/tests/AP/. -d tests/AP/classes -g tests/AP/preprocessed/tests/AP.java

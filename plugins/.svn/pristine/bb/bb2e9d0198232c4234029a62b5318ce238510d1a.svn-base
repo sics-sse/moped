@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>volvo-rpi1</vehicleName>
+	<brand>Volvo</brand>
+	<plugins>
+		<plugin>
+			<name>BWPub.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>pbw</name>
+				</port>
+				<port>
+					<name>rbw</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>pbw</from>
+			<to>0</to>
+		</link>
+		<link>
+			<from>6</from>
+			<to>rbw</to>
+		</link>
+	</links>
+</app>

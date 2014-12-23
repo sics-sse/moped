@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>LEDLighter.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>led</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>led</from>
+			<to>9</to>
+		</link>
+	</links>
+</app>

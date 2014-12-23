@@ -1,0 +1,8 @@
+.suite BurningWheels
+.class tests.BurningWheels
+    .field MAILBOX_NAME Ljava/lang/String;
+    .field clientChannel Lcom/sun/squawk/io/mailboxes/Channel;
+    .method <init> ()V
+    .method main ([Ljava/lang/String;)V
+.class tests.BurningWheels$Client
+    .method run ()V

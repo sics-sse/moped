@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>IMUPub.suite</name>
+			<ecu>3</ecu>
+			<ports>
+				<port>
+					<name>pub</name>
+				</port>
+				<port>
+					<name>imu</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>pub</from>
+			<to>0</to>
+		</link>
+		<link>
+			<from>14</from>
+			<to>imu</to>
+		</link>
+	</links>
+</app>

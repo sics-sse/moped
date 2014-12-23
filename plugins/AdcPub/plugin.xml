@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>AdcPub.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>ap</name>
+				</port>
+				<port>
+					<name>adc</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>ap</from>
+			<to>0</to>		
+		</link>
+		<link>
+			<from>7</from>
+			<to>adc</to>		
+		</link>
+	</links>
+</app>

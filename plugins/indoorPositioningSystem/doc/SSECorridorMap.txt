@@ -1,0 +1,54 @@
+// Map file for the SSE corridor at SICS
+
+// Ceiling height [m]:
+
+// Corridor ceiling height is 2.41 cm, and the camera is mounted 0.07 cm above the floor
+2.34
+
+// Marker size [m]:
+0.11
+
+// Markers (one per row, with x [m], y [m], orientation [degrees], and type [1..36])
+
+// (0,0) is in the corner outside Efi's office, north is down the corridor from there
+
+// Left row
+
+// Should be: 0.3 0.3 0.0 1. Is:
+0.3 0.29 0.0 1
+
+// Should be: 0.3 2.2 0.0 2. Is:
+0.3 2.18 0.0 2
+
+// Should be: 0.3 4.4 0.0 3. Is:
+0.3 4.45 0.0 3
+
+// Should be: 0.3 6.6 0.0 4. Is:
+0.3 6.53 0.0 4
+
+// Not yet in place:
+0.3 8.8 0.0 5
+0.3 11.0 0.0 6
+0.3 13.2 0.0 7
+0.3 15.4 0.0 8
+0.3 17.6 0.0 10
+0.3 19.5 0.0 11
+
+// Right row
+
+// Should be: 2.2 1.1 0.0 13. Is:
+2.22 1.1 0.0 13
+
+// Should be: 2.2 3.3 0.0 14. Is:
+2.18 3.27 0.0 14
+
+// Should be: 2.2 5.5 0.0 15. Is:
+2.19 5.46 0.0 15
+
+// Not yet in place:
+2.2 7.7 0.0 16
+2.2 9.9 0.0 17
+2.2 12.1 0.0 19
+2.2 14.3 0.0 20
+2.2 16.5 0.0 22
+2.2 18.7 0.0 23

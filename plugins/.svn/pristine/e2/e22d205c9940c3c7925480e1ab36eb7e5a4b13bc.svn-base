@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>CL.suite</name>
+			<ecu>2</ecu>
+			<ports>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+	</links>
+</app>

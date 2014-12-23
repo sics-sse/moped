@@ -1,0 +1,29 @@
+// Settings file for RPi with raspicam
+
+// Camera field of view [degrees]
+60
+
+// Camera offset x [m]
+// For RPi, use -0.021
+-0.021
+
+// Camera offset y [m]
+0
+
+// Hue [0..720], saturation [0..100], and value [0..100] min and max for color 1
+0 80 20 100 30 100
+
+// Hue [0..720], saturation [0..100], and value [0..100] min and max for color 2
+190 270 50 100 30 100
+
+// Hue [0..720], saturation [0..100], and value [0..100] min and max for color 3
+280 359 40 100 30 100
+
+// Settings for the Canny edge detection: threshold1, threshold2 (normally = 3 * threshold1), and Sobel kernel size
+20 60 3
+
+// Threshold for the findMarkers filtering
+3
+
+// Threshold for the selectAndRankMarkers filtering
+0.2
