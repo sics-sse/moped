@@ -1,0 +1,48 @@
+package main;
+
+import car.Car;
+import car.CarFactory;
+import autosar.FakeEcuManager;
+import utils.PropertyAPI;
+import gui.CarModel;
+import gui.CarSimulatorView;
+import gui.SimulatorControl;
+import gui.WallModel;
+import io.IPublisher;
+import io.PublisherFactory;
+import network.external.CarDriver;
+import network.external.CommunicationManager;
+import network.external.IoTManager;
+import network.external.SocketCommunicationManager;
+import network.internal.EcuManager;
+import ecm.Ecm;
+
+public class Main {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		SimulatorControl sim = new SimulatorControl((long) 10.0);
+
+		// Add walls
+		WallModel wall1 = new WallModel(-7.5, 7.5, 7.5, 7.5);
+		WallModel wall2 = new WallModel(7.5, 7.5, 7.5, -7.5);
+		WallModel wall3 = new WallModel(7.5, -7.5, -7.5, -7.5);
+		WallModel wall4 = new WallModel(-7.5, -7.5, -7.5, 7.5);
+		sim.addModel(wall1);
+		sim.addModel(wall2);
+		sim.addModel(wall3);
+		sim.addModel(wall4);
+
+		CarModel car1 = new CarModel();
+		sim.addModel(car1);
+		
+		sim.addView(new CarSimulatorView(sim));
+ 		sim.start();
+ 		
+ 		Car simulatorCar = CarFactory.getCarFactory().generateCar("configs/system1.xml");
+ 		simulatorCar.init();
+	}
+
+}

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vehicle>
+	<name>MOPED</name>
+	<brand>SICS</brand>
+	<vin>20UYA31581L000000</vin>
+	<ecm>
+		<server>
+			<!-- <ip>localhost</ip> -->
+			<!-- <ip>none</ip> -->
+			<ip>appz-ext.sics.se</ip>
+			<socketport>9999</socketport>
+		</server>
+	</ecm>
+	<ecus>
+		<ecu>
+			<id>2</id>
+			<swcs>
+				<swc>
+					<hasPirte>true</hasPirte>
+					<ports>
+						<!-- read data from SCU -->
+						<port>
+							<id>1</id>
+						</port>
+						<!-- write data to SCU -->
+						<port>
+							<id>2</id>
+						</port>
+					</ports>
+				</swc>
+			</swcs>
+
+			<sensors>
+				<!-- read speed data from Speed Sensor -->
+				<sensor>
+					<name>readSpeed</name>
+					<ports>
+						<port>
+							<id>5</id>
+						</port>
+					</ports>
+				</sensor>
+				<!-- read steer data from Steer Sensor -->
+				<sensor>
+					<name>readSteer</name>
+					<ports>
+						<port>
+							<id>6</id>
+						</port>
+					</ports>
+				</sensor>
+				<!-- read ADC data from ADC Sensor -->
+				<sensor>
+					<name>readAdc</name>
+					<ports>
+						<port>
+							<id>7</id>
+						</port>
+					</ports>
+				</sensor>
+				<!-- read Position data from Position Sensor -->
+				<sensor>
+					<name>readPosition</name>
+					<ports>
+						<port>
+							<id>8</id>
+						</port>
+					</ports>
+				</sensor>
+				<!-- write data to LED -->
+				<sensor>
+					<name>writeLED</name>
+					<ports>
+						<port>
+							<id>9</id>
+						</port>
+					</ports>
+				</sensor>
+			</sensors>
+			<actuators>
+			     <!-- PUB port -->
+				<actuator>
+					<name>pubVCUData</name>
+					<ports>
+						<port>
+							<id>0</id>
+						</port>
+					</ports>
+				</actuator>
+			    <!-- write data to Speed Actuator -->
+				<actuator>
+					<name>speedActuator</name>
+					<ports>
+						<port>
+							<id>3</id>
+						</port>
+					</ports>
+				</actuator>
+				<!-- write data to Steer Actuator -->
+				<actuator>
+					<name>steerActuator</name>
+					<ports>
+						<port>
+							<id>4</id>
+						</port>
+					</ports>
+				</actuator>
+			</actuators>
+		</ecu>
+		<ecu>
+			<id>3</id>
+			<swcs>
+				<swc>
+					<hasPirte>true</hasPirte>
+					<ports>
+						<!-- write data to VCU -->
+						<port>
+							<id>11</id>
+						</port>
+						<!-- read data from VCU -->
+						<port>
+							<id>12</id>
+						</port>
+					</ports>
+				</swc>
+			</swcs>
+			
+			<sensors>
+				<!-- read distance data from forward-looking Sensor -->
+				<sensor>
+					<name>readDistance</name>
+					<ports>
+						<port>
+							<id>13</id>
+						</port>
+					</ports>
+				</sensor>
+				<!-- read IMU data from IMU Sensor -->
+				<sensor>
+					<name>readIMU</name>
+					<ports>
+						<port>
+							<id>14</id>
+						</port>
+					</ports>
+				</sensor>
+			</sensors>
+			<actuators>
+			     <!-- PUB port -->
+				<actuator>
+					<name>pubSCUData</name>
+					<ports>
+						<port>
+							<id>10</id>
+						</port>
+					</ports>
+				</actuator>
+			</actuators>
+		</ecu>
+	</ecus>
+
+	<links>
+		<!-- Between VCU and SCU -->
+		<link>
+			<type>2</type>
+			<from>11</from>
+			<to>1</to>
+		</link>
+		<link>
+			<type>2</type>
+			<from>2</from>
+			<to>12</to>
+		</link>
+	</links>
+</vehicle>
