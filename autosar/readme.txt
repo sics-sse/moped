@@ -45,9 +45,13 @@ if your GNU cross compiler is named arm-none-eabi-gcc and located in
   export CROSS_COMPILE=/opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 in build.sh.
 
-Now, run "build.sh" (or "build.sh clean" if you want to clean the binaries before compilation). If everything works, 
-there should be an image file (kernel.img) created in the core/binaries/Raspberry_Pi/-folder. Copy it to the SD-card 
-and have fun!
+Now, run "build.sh" (or "build.sh clean" if you want to clean the binaries before compilation). If everything works, there should be an image file (kernel.img) created in the core/binaries/Raspberry_Pi/-folder. Copy it to the SD-card and have fun!
+
+If you plan to actively develop the Autosar code and re-compile the code rather often, it is more convenient to use the bootloader kernel image for baremetal systems (found in ../tools) to avoid playing around with the SD-card each time the code is compiled. In that case, first copy ../tools/baremetal_bootloader_kernel.img to the SD-card, renaming it to kernel.img. Next, modify the makefile in your example folder (e.g. src/examples/Raspberry_Pi/demo_VCU/makefile) to output kernel.bin. In other words, replace:
+  build-bin-y = kernel.img
+with 
+  build-bin-y = kernel.bin
+Now, you can upload kernel.bin through an xmodem terminal.
 
 On a Windows system:
 If you are using ArcticStudio-tools, they include a cross-compiler for ARM. Otherwise, it might be a bit tricky. 
