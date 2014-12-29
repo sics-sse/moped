@@ -1,0 +1,134 @@
+/**
+ * groups_admin.css
+ * 
+ * Copyright (c) "kento" Karim Rahimpur www.itthinx.com
+ * 
+ * This code is released under the GNU General Public License.
+ * See COPYRIGHT.txt and LICENSE.txt.
+ * 
+ * This code is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * This header and all notices must be kept intact.
+ * 
+ * @author Karim Rahimpur
+ * @package groups
+ * @since groups 1.0.0
+ */
+.manage-groups,
+.manage-capabilities {
+	margin-right: 1em;
+}
+.filters,
+.manage {
+	background-color: #fff;
+	padding: 1em;
+	margin-bottom: 1em;
+	border: 1px solid #ddd;
+}
+.manage a.add {
+	text-decoration: none;
+	cursor: pointer;
+}
+.manage a.add .icon {
+	vertical-align: middle;
+	padding-right: 4px;
+}
+.manage a.add .label {
+	height: 20px;
+	vertical-align: middle;
+}
+.manage a.refresh {
+	text-decoration: none;
+	cursor: pointer;
+	float: right;
+}
+.manage a.refresh .icon {
+	vertical-align: middle;
+}
+.manage a.refresh .label {
+	height: 20px;
+	vertical-align: middle;
+}
+div.field {
+	padding-bottom: 0.62em;
+}
+div.field input[type="submit"],
+div.group.remove input[type="submit"],
+div.capability.remove input[type="submit"] {
+	margin-right: 1em;
+}
+label.group-id-filter,
+label.group-name-filter,
+label.capability-id-filter,
+label.capability-filter,
+label.field-label {
+	padding-right: 0.62em;
+}
+input.group-id-filter,
+input.group-name-filter,
+input.capability-id-filter,
+input.capability-filter {
+	margin-right: 1em;
+}
+input[name="clear_filters"] {
+	float:right;
+}
+
+div.group.new label,
+div.group.edit label,
+div.capability.new label,
+div.capability.edit label {
+	display: block;
+}
+
+
+.groups-overview .page-options,
+.capabilities-overview .page-options {
+	float: left;
+	display: inline;
+	width: 250px;
+	padding-bottom: 1em;
+}
+.groups-overview .tablenav.top,
+.capabilities-overview .tablenav.top {
+	display: inline;
+	width: 250px;
+}
+
+.manage-groups .required,
+.manage-capabilities .required {
+	background: url(../images/required.png) transparent no-repeat left center;
+	padding-left: 16px ! important;
+}
+div.groups-footer {
+	padding-top: 4px;
+	color: #999;
+}
+div.groups-footer a {
+	color: #777;
+}
+div.groups-footer form {
+	display: inline;
+}
+
+.groups-options input[type="checkbox"] {
+	margin-right: 4px;
+}
+.groups-options .groups-permissions thead td {
+	padding: 0 4px;
+	font-weight: bold;
+	margin: 0;
+}
+.groups-options .groups-permissions td.checkbox {
+	text-align: center;
+}
+.info {
+	background-color: #eec;
+	border: 1px solid #cca;
+	border-radius: 4px;
+	margin: 1em;
+	padding: 1em;
+}

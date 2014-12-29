@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-API: IMP
-API-Name: Information Module Profile
-API-Specification-Version: 1.0
-API-Type: Profile
-API-Dependencies: CLDC = 1.1
-

@@ -5,7 +5,7 @@ import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
-import org.apache.mina.filter.logging.LoggingFilter;
+//import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 import ecm.Ecm;
 
@@ -48,6 +48,7 @@ public class SocketCommunicationManager implements CommunicationManager {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
+		System.out.println("Running SocketCommunicationManager");
 		boolean connectServer = false;
 		if (!server.equals("none")) {
 			NioSocketConnector connector = new NioSocketConnector();
@@ -57,7 +58,7 @@ public class SocketCommunicationManager implements CommunicationManager {
 					"codec",
 					new ProtocolCodecFilter(
 							new ObjectSerializationCodecFactory()));
-			connector.getFilterChain().addLast("logger", new LoggingFilter());
+//			connector.getFilterChain().addLast("logger", new LoggingFilter());
 			connector.setHandler(new ClientHandler(this));
 
 			connectServer = true;
@@ -66,6 +67,7 @@ public class SocketCommunicationManager implements CommunicationManager {
 
 			while (true) {
 				try {
+					System.out.println("Trying to connect");
 					ConnectFuture future = connector
 							.connect(new InetSocketAddress(server, port));
 					future.awaitUninterruptibly();
@@ -78,11 +80,11 @@ public class SocketCommunicationManager implements CommunicationManager {
 					// System.exit(-1);
 					isStart = false;
 				}
+				
 				if (isStart) {
 					System.out.println("Connected to trusted server");
 					break;
 				}
-					
 				else {
 					try {
 						Thread.sleep(1000);

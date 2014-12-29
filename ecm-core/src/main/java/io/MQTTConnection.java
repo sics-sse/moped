@@ -4,11 +4,12 @@
  */
 package io;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -100,6 +101,19 @@ public class MQTTConnection {
 	public MQTTConnection(String uniqueId, String location) {
 		if (uniqueId.length() > 23)
 			uniqueId = uniqueId.substring(uniqueId.length() - 23);
+		System.out.println("mqtt-id: " + uniqueId);
+		
+		//TODO: Find a better way than this quick-n-dirty fix to get rid of all these folder that MQTT creates for temporary files
+		//TODO: Does this work or does it remove too much, too early???
+		File currDir = new File(".");
+		for (File subDir : currDir.listFiles()) {
+			if (subDir.getName().contains("-tcpioteclipseorg")) {
+				for (File contents : subDir.listFiles())
+					contents.delete();
+				
+				subDir.delete();
+			}
+		}
 		
 		int colon = location.indexOf(AbstractIO.SCHEME_END);
 		if (colon >= 0) {
@@ -220,7 +234,7 @@ public class MQTTConnection {
 					}
 					// Open connection to server and remember that connection
 					// for future (re)use.
-          this.handler = new MQTTConnectionHandler(server, uniqueId, connection);
+					this.handler = new MQTTConnectionHandler(server, uniqueId, connection);
 					servers.put(server, this.handler);
 				} catch (MqttException e) {
 					System.err.println("Cannot connect to MQTT server at " + server);

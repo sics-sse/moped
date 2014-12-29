@@ -1,2 +1,0 @@
-Target.ThreadTest-DE.j2me=true
-Target.ThreadTest-DE.dependsOn=cldc imp

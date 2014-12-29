@@ -1,2 +1,0 @@
-Target.romizer.j2me=false
-Target.romizer.dependsOn=hosted-support cldc translator 

@@ -1,1 +1,0 @@
- -bootclasspath tests/Platoon/classes:tests/Platoon/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/squawk/tests/Platoon/. -d tests/Platoon/classes -g tests/Platoon/preprocessed/tests/Platoon.java

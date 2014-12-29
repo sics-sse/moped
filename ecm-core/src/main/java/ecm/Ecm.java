@@ -63,7 +63,7 @@ public class Ecm {
 		ecuManager.setEcm(this);
 		commuManager.setEcm(this);
 		carDriver.setEcm(this);
-		iotManager.setEcm(this);
+//		iotManager.setEcm(this);
 	}
 	
 	public void start() {

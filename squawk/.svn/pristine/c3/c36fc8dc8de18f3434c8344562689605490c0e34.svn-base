@@ -1,2 +1,0 @@
-Target.mapper.j2me=false
-Target.mapper.dependsOn=cldc translator hosted-support

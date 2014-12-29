@@ -174,7 +174,10 @@ public class PIRTE implements Runnable {
 						fos.write(binaryFile);
 						fos.close();
 						// Initiate PlugInComponent
-						PlugInComponent loadPlugIn = loader.loadPlugIn(new JarFile(fileLocation));
+						System.out.println("Will try to load jar file at " + fileLocation);
+						JarFile jarFile = new JarFile(fileLocation);
+						System.out.println("jarFile created");
+						PlugInComponent loadPlugIn = loader.loadPlugIn(jarFile);
 						if(loadPlugIn == null) {
 							System.out.println("loadedPlugin is null");
 							System.exit(-1);

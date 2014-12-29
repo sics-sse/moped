@@ -1,2 +1,0 @@
-Target.uei-launcher.j2me=true
-Target.uei-launcher.dependsOn=cldc

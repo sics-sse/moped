@@ -1,4 +1,0 @@
-spot-ota-extension-crypto: com.sun.spot.peripheral.ota.CryptoCommandProcessorExtension
-MIDlet-Name: SSLDemo
-MIDlet-Version: 1.0
-MIDlet-Vendor: Sun

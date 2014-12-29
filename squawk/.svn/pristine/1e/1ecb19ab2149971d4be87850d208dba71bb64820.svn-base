@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Squawk-cldc"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="ide-classes"/>
-</classpath>

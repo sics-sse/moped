@@ -1,3 +1,0 @@
-set remotebaud 115200
-target remote /dev/com2
-load

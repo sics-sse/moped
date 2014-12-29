@@ -1,14 +1,18 @@
 package network.external;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import messages.InitPacket;
 import messages.InstallLinuxAckPacket;
 import messages.InstallMessage;
@@ -22,6 +26,7 @@ import messages.RestorePacket;
 import messages.UninstallMessage;
 import messages.UninstallPacket;
 import messages.UninstallPacketData;
+
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
@@ -65,6 +70,8 @@ public class ClientHandler extends IoHandlerAdapter {
 	@Override
 	public void sessionOpened(IoSession session) throws Exception {
 		String vin = manager.getVin();
+		
+		System.out.println("Opening a session with " + vin);
 
 		// Send VIN to Server
 		InitPacket initPackage = new InitPacket(vin);
@@ -81,6 +88,35 @@ public class ClientHandler extends IoHandlerAdapter {
 	@Override
 	public void messageReceived(IoSession session, Object packet)
 			throws Exception {
+		System.out.println("Message received...");
+		
+		//TODO: TEMP TEST PRINT-OUT
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutput out = null;
+		try {
+			out = new ObjectOutputStream(bos);   
+			out.writeObject(packet);
+			byte[] testBytes = bos.toByteArray();
+			System.out.print("TEST BYTES:");
+			for (int i = 0; i < testBytes.length; i++) {
+				System.out.print(" " + (testBytes[i] & 0xFF));
+			}
+			System.out.println("");
+		} finally {
+		  try {
+		    if (out != null) {
+		      out.close();
+		    }
+		  } catch (IOException ex) {
+		    // ignore close exception
+		  }
+		  try {
+		    bos.close();
+		  } catch (IOException ex) {
+		    // ignore close exception
+		  }
+		}
+		
 		Packet p = (Packet) packet;
 		switch (p.getMessageType()) {
 		case MessageType.INSTALL:
@@ -94,6 +130,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			unpackUninstallPackage(uninstallPacket);
 			break;
 		case MessageType.RESTORE:
+			System.out.println("Restore Packet arrived");
 			RestorePacket restorePacket = (RestorePacket) packet;
 			unpackRestorePackage(restorePacket);
 			break;
@@ -110,9 +147,10 @@ public class ClientHandler extends IoHandlerAdapter {
 	 *            the package message
 	 */
 	private void unpackInstallPackage(InstallPacket packet) {
-		System.out.println("in the unpackInstallPackage");
+		System.out.println("In the unpackInstallPackage");
 		List<InstallPacketData> installPacketDataList = packet
 				.getInstallPacketDataList();
+		System.out.println("installPacketDataList.size() = " + installPacketDataList.size());
 		for (InstallPacketData installPacketData : installPacketDataList) {
 			int sendingPortID = installPacketData.getSendingPortID();
 			int callbackPortID = installPacketData.getCallbackPortID();
@@ -147,9 +185,14 @@ public class ClientHandler extends IoHandlerAdapter {
 					callbackPortID, pluginName, executablePluginName, location, portInitialContext,
 					portLinkingContext);
 			manager.getEcm().insertTmpDBRecord(pluginIdAllocator, dataRecord);
+			
+			System.out.println("tmpDBRecord allocated");
 
 			byte[] binaryFile = installPacketData.getBinaryFile();
+			System.out.println("binaryFile.length = " + binaryFile.length);
 			generateFile(binaryFile, location);
+			
+			System.out.println("Binary file generated at " + location);
 
 			// NOTE: change back value of pluginName somehow after test of integration
 			InstallMessage installMessage = new InstallMessage(reference, pluginIdAllocator++, executablePluginName,
@@ -158,6 +201,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			System.out.println("Before go into manager process");
 			manager.getEcm().process(installMessage);
 
+			System.out.println("Package installed");
 		}
 	}
 
@@ -220,6 +264,7 @@ public class ClientHandler extends IoHandlerAdapter {
 	
 	// save jar file in the ECM
 		private void generateFile(byte[] data, String path) {
+			System.out.println("Will try to generate file at " + path);
 			try {
 				OutputStream output = null;
 				try {

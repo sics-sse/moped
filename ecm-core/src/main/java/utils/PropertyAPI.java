@@ -14,7 +14,7 @@ import java.util.Properties;
 public class PropertyAPI {
 	
 	/** The file path. */
-	private final static String filePath = "setttings.properties";
+	private final static String filePath = "settings.properties";
 	
 	/** The instance. */
 	private static PropertyAPI instance = new PropertyAPI();

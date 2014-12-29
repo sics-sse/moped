@@ -14,7 +14,7 @@ public class Linker {
 	//TODO: Move port list from Hashtable to a List
 	// key: PluginPPortID Integer, value: VirtualRPortId
 	private Hashtable<Integer, Integer> pportId2vrportId= new Hashtable<Integer, Integer>();
-	// key: PluginPPortID Ínteger, value: PluginRPortId
+	// key: PluginPPortID Integer, value: PluginRPortId
 	private Hashtable<Integer, Integer> pportId2rportId = new Hashtable<Integer, Integer>();
 	// key: PluginRPortId, value: VirtualPPort Integer
 	private Hashtable<Integer, Integer> rportId2vpportId = new Hashtable<Integer, Integer>();
