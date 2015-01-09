@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Real AJAX Mutiple Upload</title>
+	
+	<meta name="keywords" content="ajax,upload,ajax upload, html5 upload" />
+	<meta name="description" content="Ajax uploader" />
+	<meta name="author" content="AlbanX" />
+
+	<script src="jslibs/shCore.js" type="text/javascript"></script>
+	<script src="jslibs/shBrushJScript.js"  type="text/javascript" ></script>
+	<script src="jslibs/shBrushXml.js"  type="text/javascript" ></script>
+
+	<!-- SET UP AXUPLOADER  -->
+	<script src="jslibs/jquery.js" type="text/javascript"></script>
+	<script src="jslibs/ajaxupload.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="css/baseTheme/style.css" type="text/css" media="all" />
+	<!-- /SET UP AXUPLOADER  -->
+	
+	<link rel="stylesheet" href="css/body.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shCore.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shThemeEclipse.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shCoreDefault.css" type="text/css"/>
+
+	<script type="text/javascript">
+	SyntaxHighlighter.all({toolbar:false});
+	</script>
+</head>
+
+<body><h1>Real Ajax Multi Uploader</h1>
+
+<h2>Examples 1</h2>
+<table class="options">
+<thead>
+	<tr>
+		<th>Minimal setup</th>
+		<th>Setup code</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>
+			<div id="demo1" style="width:500px"></div>
+			<script type="text/javascript">
+			$('#demo1').ajaxupload({
+				url:'upload.php',
+				remotePath:'uploaded/',
+			});
+			</script>
+		</td>
+
+		<td>
+			<pre class="brush: xml">
+				&lt;div id="demo1"&gt;&lt;/div&gt;
+			</pre>
+			
+			<pre class="brush: javascript">
+			$('#demo1').ajaxupload({
+				url:'upload.php'
+			});
+			</pre>
+		</td>
+	</tr>
+</tbody>
+</table>
+
+</body>
+</html>

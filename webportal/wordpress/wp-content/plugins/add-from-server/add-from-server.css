@@ -1,0 +1,19 @@
+.frmsvr_wrap {
+	margin: 1em;
+}
+.wrap .frmsvr_wrap {
+	margin: 0;
+}
+.frmsvr_wrap .widefat tbody th.check-column {
+	padding-bottom: 0px;
+}
+.frmsvr_wrap .widefat tbody tr.doesnt-meet-guidelines,
+.frmsvr_wrap .widefat tbody tr.unreadable {
+	background-color: #FFE8EE;
+}
+.frmsvr_wrap fieldset {
+	padding: 5px;
+	border: 1px #ebebeb solid;
+	margin-bottom: 0.7em;
+	margin-top: 0.7em;
+}

@@ -1,0 +1,233 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Add From Server 3.2.0.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-04-15 16:56+0900\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Naoko Takano <info@nao-net.com>\n"
+"Language-Team: \n"
+"Language: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Generator: Poedit 1.5.5\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: class.add-from-server-settings.php:11 class.add-from-server.php:64
+msgid "Add From Server Settings"
+msgstr "Add From Server 設定"
+
+#: class.add-from-server-settings.php:19 class.add-from-server-settings.php:22
+msgid "User Access Control"
+msgstr "ユーザーアクセス制限"
+
+#: class.add-from-server-settings.php:25
+msgid "All users with the ability to upload files"
+msgstr "すべてのユーザーに対しファイルアップロードを許可"
+
+#: class.add-from-server-settings.php:30
+msgid "Any user with the ability to upload files in the following roles"
+msgstr "以下で指定した権限のユーザーに対しファイルアップロードを許可"
+
+#: class.add-from-server-settings.php:48
+msgid "Any users with the ability to upload files listed below"
+msgstr "以下のユーザーに対しファイルアップロードを許可"
+
+#: class.add-from-server-settings.php:53
+msgid "List the user login's one per line"
+msgstr "一行につき一人のユーザーログイン名を入力してください。"
+
+#: class.add-from-server-settings.php:58 class.add-from-server-settings.php:61
+msgid "Root Directory"
+msgstr "ルートディレクトリ"
+
+#: class.add-from-server-settings.php:69
+msgid "Do not lock browsing to a specific directory"
+msgstr "ディレクトリ閲覧をブロックしない"
+
+#: class.add-from-server-settings.php:74
+msgid "Lock browsing to the directory specified below"
+msgstr "以下のディレクトリ閲覧をブロック"
+
+#: class.add-from-server-settings.php:80
+#, php-format
+msgid "You may use placeholders such as %s and %s in the path."
+msgstr "パス内には %s や %s などのプレースホルダーを使用できます。"
+
+#: class.add-from-server-settings.php:82
+#, php-format
+msgid "For reference, Your WordPress Root path is: <code>%s</code>"
+msgstr "この WordPress インストールのルートパスは <code>%s</code> です。"
+
+#: class.add-from-server-settings.php:93
+msgid "Save Changes"
+msgstr "変更を保存"
+
+#: class.add-from-server.php:20
+msgid ""
+"<strong>Add From Server:</strong> Sorry, This plugin requires WordPress "
+"3.2+. Please upgrade your WordPress installation or deactivate this plugin."
+msgstr ""
+"<strong>Add From Server:</strong> このプラグインには WordPress 3.2 以降が必要"
+"です。WordPress をアップグレードするか、プラグインを無効化してください。"
+
+#: class.add-from-server.php:63 class.add-from-server.php:64
+#: class.add-from-server.php:80 class.add-from-server.php:100
+#: class.add-from-server.php:124
+msgid "Add From Server"
+msgstr "Add From Server"
+
+#: class.add-from-server.php:70
+msgid "Import Files"
+msgstr "ファイルをインポート"
+
+#: class.add-from-server.php:72
+msgid "Options"
+msgstr "オプション"
+
+#: class.add-from-server.php:212
+#, php-format
+msgid "The placeholder %s is not valid in the root path."
+msgstr "ルートパスのプレースホルダー %s が間違っているようです。"
+
+#: class.add-from-server.php:220
+msgid "The root path specified could not be read."
+msgstr "指定されたルートパスを読み込めませんでした。"
+
+#: class.add-from-server.php:251
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr "<em>%s</em> を<strong>インポートできませんでした</strong>。%s"
+
+#: class.add-from-server.php:256
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em> がメディアライブラリに追加されました。"
+
+#: class.add-from-server.php:288
+msgid "Sorry, this file type is not permitted for security reasons."
+msgstr "セキュリティ上の理由によりこのファイルは許可されていません。"
+
+#: class.add-from-server.php:300
+msgid "Sorry, That file already exists in the WordPress media library."
+msgstr "そのファイルは WordPress メディアライブラリにすでに存在しています。"
+
+#: class.add-from-server.php:331
+#, php-format
+msgid "The selected file could not be copied to %s."
+msgstr "選択したファイルを %s にコピーできませんでした。"
+
+#: class.add-from-server.php:447
+msgid ""
+"<strong>Error:</strong> This users root directory is not readable. Please "
+"have your site administrator correct the <em>Add From Server</em> root "
+"directory settings."
+msgstr ""
+"<strong>エラー:</strong> このユーザーのルートディレクトリは読み込めません。サ"
+"イト管理者に <em>Add From Server</em> のルートディレクトリ設定を修正しても"
+"らってください。"
+
+#: class.add-from-server.php:474
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr "<strong>現在のディレクトリ:</strong> <span id=\"cwd\">%s</span>"
+
+#: class.add-from-server.php:477
+msgid "WordPress Root"
+msgstr "WordPress ルート"
+
+#: class.add-from-server.php:479
+msgid "Uploads Folder"
+msgstr "アップロードフォルダ"
+
+#: class.add-from-server.php:480
+msgid "Content Folder"
+msgstr "コンテンツフォルダ"
+
+#: class.add-from-server.php:499
+#, php-format
+msgid "<strong>Quick Jump:</strong> %s"
+msgstr "<strong>クイックジャンプ:</strong> %s"
+
+#: class.add-from-server.php:506
+#, php-format
+msgid ""
+"Once you have selected files to be imported, Head over to the <a href=\"%s"
+"\">Media Library tab</a> to add them to your post."
+msgstr ""
+"インポートするファイルを選択したら、<a href=\"%s\">メディアライブラリタブ</a>"
+"から投稿に追加してください。"
+
+#: class.add-from-server.php:512 class.add-from-server.php:601
+msgid "File"
+msgstr "ファイル"
+
+#: class.add-from-server.php:524
+msgid "Parent Folder"
+msgstr "上位フォルダ"
+
+#: class.add-from-server.php:592
+msgid ""
+"Sorry, this file type is not permitted for security reasons. Please see the "
+"FAQ."
+msgstr ""
+"セキュリティ上の理由により、このファイルタイプは許可されていません。FAQ をご"
+"覧ください。"
+
+#: class.add-from-server.php:592
+msgid ""
+"Sorry, but this file is unreadable by your Webserver. Perhaps check your "
+"File Permissions?"
+msgstr ""
+"ファイルをサーバーから読み込めませんでした。ファイルのパーミッションを確認し"
+"てみてください。"
+
+#: class.add-from-server.php:607
+msgid "Import Options"
+msgstr "インポートオプション"
+
+#: class.add-from-server.php:610
+msgid "Attach imported files to this post"
+msgstr "インポートファイルをこの投稿に添付"
+
+#: class.add-from-server.php:613
+msgid "Set the imported date to the"
+msgstr "インポート時間を以下に設定する: "
+
+#: class.add-from-server.php:614
+msgid "Current Time"
+msgstr "現在の時刻"
+
+#: class.add-from-server.php:615
+msgid "File Time"
+msgstr "ファイル更新時刻"
+
+#: class.add-from-server.php:617
+msgid "Post Time"
+msgstr "投稿時刻"
+
+#: class.add-from-server.php:622
+msgid "Import"
+msgstr "インポート"
+
+#~ msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+#~ msgstr ""
+#~ "<h1>Добавить с сервера</h1> Извините, этот плагин требует WordPress 2.7 и "
+#~ "новее"
+
+#~ msgid "Do not add selected files to current post Gallery"
+#~ msgstr "Не добавлять выбранные файлы в «Галерею» записи"
+
+#~ msgid "Toggle All"
+#~ msgstr "Wähle alle aus"
+
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "Beachte: Dies wird keine Auswirkungen haben, wenn die ausgewählte Datei "
+#~ "momentan innerhalb eines Upload-Verzeichnisses ist."

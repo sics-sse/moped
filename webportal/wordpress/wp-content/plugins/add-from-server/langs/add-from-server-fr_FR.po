@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: add-from-server\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-11-01 11:58+0100\n"
+"PO-Revision-Date: 2009-11-01 12:01+0100\n"
+"Last-Translator: Denis Rebaud <denis@rebaud.fr>\n"
+"Language-Team: dd32.id.au <contact@dd32.id.au>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: Australia\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: add-from-server.php:51
+#: add-from-server.php:60
+#: add-from-server.php:70
+#: add-from-server.php:92
+msgid "Add From Server"
+msgstr "Ajouter depuis le serveur"
+
+#: add-from-server.php:136
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr "<em>%s</em> n’a <strong>pas été</strong> importé à cause d’une erreur : %s"
+
+#: add-from-server.php:141
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em> a été ajouté à la bibliothèque de médias"
+
+#: add-from-server.php:165
+msgid "File type does not meet security guidelines. Try another."
+msgstr "Le type de fichier ne respecte pas les consignes de sécurité. Essayez un autre."
+
+#: add-from-server.php:193
+#, fuzzy, php-format
+msgid "The selected file could not be moved to %s."
+msgstr "Les fichiers téléchargés ne peuvent pas être copiés dans %s."
+
+#: add-from-server.php:303
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr "<strong>Répertoire actuel:</strong> <span id=\"cwd\">%s</span>"
+
+#: add-from-server.php:306
+msgid "WordPress Root"
+msgstr "Racine WordPress"
+
+#: add-from-server.php:308
+msgid "Uploads Folder"
+msgstr "Répertoire de téléchargement"
+
+#: add-from-server.php:309
+#, fuzzy
+msgid "Content Folder"
+msgstr "Répertoire Parent"
+
+#: add-from-server.php:315
+msgid "<strong>Quick Jump:</strong> "
+msgstr "<strong>Saut rapide :</strong> "
+
+#: add-from-server.php:329
+#, php-format
+msgid "Once you have selected files to be imported, Head over to the <a href=\"%s\">Media Library tab</a> to add them to your post."
+msgstr "Une fois les fichiers à télécharger sélectionnés, Allez à l’onglet <a href=\"%s\">Bibliothèque de médias</a> pour les ajouter à l’article."
+
+#: add-from-server.php:335
+#: add-from-server.php:382
+#, fuzzy
+msgid "File"
+msgstr "Fichier"
+
+#: add-from-server.php:342
+msgid "Parent Folder"
+msgstr "Répertoire Parent"
+
+#: add-from-server.php:389
+msgid "Do not add selected files to current post Gallery"
+msgstr "N’ajoutez pas les fichiers choisis à la galerie de l'article en cours"
+
+#: add-from-server.php:391
+msgid "Import"
+msgstr "Importer"
+
+#~ msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+#~ msgstr ""
+#~ "<h1>Ajouter depuis le serveur</h1> Désolé, ce plugin exige WordPress 2.7+"
+#~ msgid "Toggle All"
+#~ msgstr "Inverser Tout"
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "Nota: Sans effet si le fichier sélectionné est actuellement dans un "
+#~ "répertoire d'upload"
+#~ msgid "Import selected files"
+#~ msgstr "Importer les fichiers sélectionnés"
+#~ msgid "Current Directory"
+#~ msgstr "Répertoire actuel"
+

@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Real Ajax Mutiple Upload</title>
+	
+	<meta name="keywords" content="ajax,upload,ajax upload, html5 upload" />
+	<meta name="description" content="Zoomer plus demo" />
+	<meta name="author" content="AlbanX" />
+	
+	<link href="img/ax.png" rel="shortcut icon" />
+	
+	<script src="jslibs/shCore.js" type="text/javascript"></script>
+	<script src="jslibs/shBrushJScript.js"  type="text/javascript" ></script>
+	<script src="jslibs/shBrushXml.js"  type="text/javascript" ></script>
+	<script src="jslibs/jquery.js" type="text/javascript"></script>
+	
+	<link rel="stylesheet" href="css/body.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shCore.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shThemeEclipse.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="css/shCoreDefault.css" type="text/css"/>
+
+	<script type="text/javascript">
+	SyntaxHighlighter.all({toolbar:false});
+	</script>
+</head>
+
+<body>
+<h1>Real Ajax Multi Uploader</h1>
+<h2>Description:</h2>
+<p>
+	Real Ajax Multi Uploader is a jQuery javascript plugin for creating a simple multiupload file system for web applications. 
+	It is based only on javascript and supports html5 uploading but also is compatible with html4. No flash, no silverlight or other plugins only javascript.
+	Ajaxupload is very simple to use. It is applied to any container tag (div, span, p) and all file inputs, forms and buttons are automatically
+	created by the plugin. 
+	The upload server side script is written in PHP and ASPX, but it can be adapted in all server side languages (ASP, PERL, JSP). 
+	<br />
+	NEW: now with this plugin you can generate thumbnial of images at server side. Also now drag and drop area can be set every where. Images previews can
+	be viewed on light box like zoom mode with just clicking on them.
+</p>
+<ol>
+	<li><a href="#features">Features</a></li>
+	<li><a href="#installation">Installation</a></li>
+	<li><a href="#options">Options</a></li>
+	<li><a href="#methods">Methods</a></li>
+	<li><a href="#forms">Form Integration</a></li>
+	<li><a href="#howit">How it works</a></li>
+	<li><a href="#styling">CSS styling</a></li>
+	<li><a href="#examples">Examples</a></li>
+	<li><a href="#contacts">Contacts</a></li>
+</ol>
+
+<h2 id="features">Features</h2>
+<ul>
+	<li><strong>New v2.3</strong> Rename files before upload option</li>
+	<li><strong>New v2.3</strong> Easy Form Integration</li>
+	<li>Drag & Drop area can be set for uploading files by d&d </li>
+	<li>Now lightbox like preview of images</li>
+	<li>Option for creating thumbnial of images on server side</li>
+	<li>PHP and ASPX upload scripts provided</li>
+	<li>Max file size limit option</li>
+	<li>Fancy Theme</li>
+	<li>Multi file upload on all browsers</li>
+	<li>Multi file select on html5 browsers</li>
+	<li>Upload progress information on html5 browsers</li>
+	<li>File size information on html5 browsers</li>
+	<li>Preview of files(jpg,gif,png) before get uploaded or icon files</li>
+	<li>No flash, no silverlight, on other plugins, only Javascript</li>
+	<li>Support IE 7+, Firefox 3+, Safari 3+, Chrome 4+, Opera</li>
+	<li>Upload files by chunk, for more performance</li>
+	<li>Can set number of parallel file uploads</li>
+	<li>Not dependent by server max post size and max upload file size limits</li>
+	<li>Automatic detect upload method if html5 or standard upload</li>
+</ul>
+
+<h2 id="installation">Setup:</h2>
+<ol>
+	<li>Load jQuery.js and ajaxupload-min.js in the head section for your html document:
+		<pre class="brush: xml">
+		&lt;script src="jslibs/jquery.js" type="text/javascript"&gt;&lt;/script&gt; 	
+		&lt;script src="jslibs/ajaxupload-min.js" type="text/javascript"&gt;&lt;/script&gt;
+		</pre>
+	</li>
+	<li>Load the CSS theme file that styles the plugin (4 themes avaible):
+		<pre class="brush: xml">
+		&lt;link rel="stylesheet" href="css/baseTheme/style.css" type="text/css" media="all" /&gt; 
+		OR
+		&lt;link rel="stylesheet" href="css/listTheme/style.css" type="text/css" media="all" /&gt; 
+		</pre>
+	</li>
+	
+	<li>Create a DIV or SPAN tag (even P), style it as you wish, give a class or id, put where you want:
+		<pre class="brush: xml">
+		&lt;div class="demo" &gt; &lt;/div&gt;
+		</pre>
+	</li>
+	<li>At server side prepare the PHP upload.php or the ASPX upload.aspx and upload.aspx.cs if you have
+		IIS aspx base server script and also copy the css folder:
+		<pre class="brush: xml">
+		upload.php OR upload.aspx + upload.aspx.cs
+		css/
+		</pre>
+	</li>
+	<li>Finally just make a minimal call to the plugin on the created tag and specify the url of ajax call:
+		<pre class="brush:js">
+			$('.demo').ajaxupload({
+				url:'upload.php'
+			});
+		</pre>
+	</li>
+</ol>
+
+
+<h2 id="options">Options:</h2>
+<p>Configurable options</p>
+
+<table class="options">
+<thead>
+	<tr>
+		<th>Option</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>remotePath</td>
+		<td>String, Function</td>
+		<td>''</td>
+		<td>If given as string specify the remote path where to upload the file. In given as function must return the remote upload path as string.
+		This function is excecuted on the start upload event, so the upload path is calculated when Upload button is pressed.</td>
+	</tr>
+	
+	<tr>
+		<td>url</td>
+		<td>String</td>
+		<td>upload.php</td>
+		<td>The url for the upload script server side. On the url can be specified more data in GET</td>
+	</tr>
+	
+	<tr>
+		<td>data</td>
+		<td>String, Function, Object</td>
+		<td>''</td>
+		<td>If given as string is used for sending additional parameters in GET to the php script. If given as function must return
+		a url formated string. This function is excecuted on the start upload event, so the data are created when Upload button is pressed.
+		If given as object must have this format {getvar:value, anothergetvar:value....}. This is similar to jQuery Ajax data.</td>
+	</tr>
+	
+	<tr>
+		<td>async</td>
+		<td>Boolean</td>
+		<td>true</td>
+		<td>If true file uploads are made asyncronyos in parallel. If false files are uploaded one by one. Default to false for not html5 
+		browsers</td>
+	</tr>
+	
+	<tr>
+		<td>maxFiles</td>
+		<td>Int</td>
+		<td>9999</td>
+		<td>Max number of files that can be selected at once.</td>
+	</tr>
+
+	<tr>
+		<td>allowExt</td>
+		<td>array</td>
+		<td>[]</td>
+		<td>An array containing the type of file extension that can be uploaded or selected. If empty all type of files can be selected.
+			Reccomended to be set on server side for security reasons.</td>
+	</tr>
+
+	<tr>
+		<td>showSize</td>
+		<td>string/Enum</td>
+		<td>Mb</td>
+		<td>Format show size of file in MB, Kb, Gb, or byte.</td>
+	</tr>
+	
+	<tr>
+		<td>success</td>
+		<td>function(String fileName)</td>
+		<td>null</td>
+		<td>A function that is called every time a file is uploaded successfully. Return the uploaded file name .</td>
+	</tr>
+		
+	<tr>
+		<td>finish</td>
+		<td>function(Array filesName)</td>
+		<td>null</td>
+		<td>This function is called when all files finish uploading. Returns an array with the file names.</td>
+	</tr>
+	
+	<tr>
+		<td>error</td>
+		<td>function(String err, String fileName)</td>
+		<td>null</td>
+		<td>Function that is trigger when there is an error on uploading file. Returns error text and the file name.</td>
+	</tr>
+		
+	<tr>
+		<td>enable</td>
+		<td>Boolean</td>
+		<td>true</td>
+		<td>If set to false plugin start in disabled mode, in case one want to active upload later under certain conditions.</td>
+	</tr>
+	
+	<tr>
+		<td>chunkSize</td>
+		<td>Int</td>
+		<td>1024*1024</td>
+		<td>When uploading big files with html5 for perfomance reason is better to upload files by chunks. With this option set
+		the size of chunk to upload. Defaul is 1Mb. Avaiable only for browsers that support slice File Api. Set to 0 if want to send all file at once.</td>
+	</tr>
+	<tr>
+		<td>dropColor</td>
+		<td>string</td>
+		<td>red</td>
+		<td>Set the background color of the drop area during the upload by drag and drop. Can use #FFF values or RGB that css accept values.</td>
+	</tr>	
+	
+	<tr>
+		<td>dropArea</td>
+		<td>jQuery selector/DOM element</td>
+		<td>self</td>
+		<td>Set the drag and drop area for files. Defaul the area is the initial container. Example can be set to <i>dropArea:$('.class')</i>.</td>
+	</tr>	
+	
+	<tr>
+		<td>maxConnections</td>
+		<td>Int</td>
+		<td>3</td>
+		<td>Set the maximum number of parallel file uploads. Avaiable only for browsers that support XmlHttpRequest File Upload. Maximum connections supported
+			on Firefox are 6.</td>
+	</tr>
+	
+	<tr>
+		<td>autoStart</td>
+		<td>boolean</td>
+		<td>false</td>
+		<td>If true uploaded will start imediately after file choose.</td>
+	</tr>
+	
+	<tr>
+		<td>thumbHeight</td>
+		<td>int</td>
+		<td>0</td>
+		<td>Set the max height of thumbnial images to be generated on server side.</td>
+	</tr>
+	<tr>
+		<td>thumbWidth</td>
+		<td>int</td>
+		<td>0</td>
+		<td>Set the max width of thumbnial images to be generated on server side.</td>
+	</tr>
+	
+	<tr>
+		<td>thumbPostfix</td>
+		<td>string</td>
+		<td>_thumb</td>
+		<td>Set the postfix of filenames of images.</td>
+	</tr>
+	
+	<tr>
+		<td>thumbPath</td>
+		<td>string</td>
+		<td>same as remotePath</td>
+		<td>set the path where thumbs should be saved, if empty path setted as remotePath.</td>
+	</tr>
+	
+	<tr>
+		<td>thumbFormat</td>
+		<td>String/Enum</td>
+		<td>Same as original image</td>
+		<td>Set the thumbnial format output image. Possible values jpg, gif and png</td>
+	</tr>
+	
+	<tr>
+		<td>form</td>
+		<td>String/Object</td>
+		<td>null</td>
+		<td>Set the form to integrate with uploader. Can set a jquery selector, example <i>#formId</i>, the dom object directly or if set to string 
+			<i>parent</i> it will integrate with the first parent form.</td>
+	</tr>
+	
+	<tr>
+		<td>editFilename</td>
+		<td>boolean</td>
+		<td>false</td>
+		<td>If set true, allow the editing of file names before upload. Does not allow extension change.</td>
+	</tr>
+</tbody>
+</table>
+
+
+<h2 id="methods">Methods, API:</h2>
+<table class="options">
+<thead>
+	<tr>
+		<th>Method</th>
+		<th>Description</th>
+		<th>Example</th>
+	</tr>
+</thead>
+<tbody>
+	<tr>
+		<td>destroy</td>
+		<td>Destroys the ajaxupload.</td>
+		<td>$('.demo').ajaxupload('destroy')</td>
+	</tr>
+	<tr>
+		<td>option</td>
+		<td>Set or get the options of the ajaxupload.</td>
+		<td>getter: $('.demo').ajaxupload('option',allowExt)
+			setter:$('.demo').ajaxupload('option',allowExt,['jpg','gif'])</td>
+	</tr>
+	<tr>
+		<td>enable</td>
+		<td>Enable the plugin the ajaxupload plugin if it has been disabled.</td>
+		<td>$('.demo').ajaxupload('enable')</td>
+	</tr>
+	
+	<tr>
+		<td>disable</td>
+		<td>Disables the plugin.</td>
+		<td>$('.demo').ajaxupload('disable')</td>
+	</tr>
+
+	<tr>
+		<td>start</td>
+		<td>It triggers the upload start event.A function to call for starting upload from other points of code, ie: on some extrenal button click.</td>
+		<td>$('.demo').ajaxupload('start') starts uploading of selected files.</td>
+	</tr>	
+	
+	<tr>
+		<td>clear</td>
+		<td>It triggers the clear event.A function to call for starting upload from other points of code, ie: on some extrenal button click.</td>
+		<td>$('.demo').ajaxupload('clear') clear the list of selected files.</td>
+	</tr>	
+</tbody>
+</table>
+
+<h2 id="forms">How to integrate with existing forms:</h2>
+<p> This upload can be easy integrated with any form. To integrate the uploader there are 2 methods:</p>
+	<ol>
+	<li>Set the <i>form</i> option to the id of the form</li>
+	<li>Set the <i>form</i> option value to <I>parent</I> and include the form div inside a form. In this way the plugin with automatically
+		integrate with the first parent form.</li>
+	</ol>
+<p><strong>NOTE: when integrating with a form and using option 1, be sure to call the ajax upload js function after, the form element or
+	on document ready event.</strong></p>
+
+<p>
+How it works: When the form is submited this happens:</p>
+<ol>
+<li>Start file upload</li>
+<li>After all files are uploaded, to the original form are appended as many hidden inputs as the number of uploaded file.
+	These inputs has the name <i>ax-uploaded-files[]</i>, so on server side (PHP or ASPX) are sended the file names(full path)</li>
+<li>After this, the original form is submited and all the above file name are sended</li>
+</ol>
+
+
+
+<h2 id="howit">How it works:</h2>
+<p> This jQuery plugin detect if <a href="https://developer.mozilla.org/en/Using_files_from_web_applications#Handling_the_upload_process_for_a_file">
+XmlHttpRequest upload</a> is supported as described on mozilla web site. This type of upload is supported by Firefox 3.6+, Safari 4+ and Chrome 4+. 
+On other browsers if support is not detected a standart upload form (with iframe) is created. Obviously the suppport detect is done
+by detecting the support of the feature not detecting the browser. Actually Opera 11, Internet Explorer 9 does not support XmlHttpRequest upload but it seems that IE 10 
+will support it.</p>
+
+<p> When selecting files a preview image of the file is display. If image type is JPEG, GIF, or PNG a real preview of image is show if 
+this features is supported
+<a href="https://developer.mozilla.org/en/Using_files_from_web_applications#Example:.C2.A0Showing_thumbnails_of_user-selected_images">as described here</a>.
+For other type of files or if image preview is not supported by the browser, a custom icon is shown to identify the type of file being uploaded. This icons
+can be configured and extended for each type of files by changing the css styles.</p>
+
+<h2 id="styling">CSS styling</h2>
+<p>All style of plugin is based on CSS and some png images. The base.css can style and change as wish. Other css themes will be build and added to the plugin
+for free. Buttons icons are downloaded from internet and can be customable. All images, elements, buttons and divs created by the plugins have a CSS class.
+They can be simply viewed by looking and source code generated. Using this classes or changeing the base.css given file all style can be customized.</p>
+
+<h2 id="examples">Examples</h2>
+<ul>
+	<li><a href="example1.html">Basic example</a></li>
+	<li><a href="example2.html">Upload by Drag & Drop Area example</a></li>
+	<li><a href="example3.html">With restrict file extension and other options</a></li>
+	<li><a href="example4.html">Success and Finish events and API calls</a></li>
+	<li><a href="example5.html">Option method usage</a></li>
+	<li><a href="example6.html">Classic Theme</a></li>
+	<li><a href="example7.html">Form integration and file rename</a></li>
+</ul>
+
+<h2 id="contacts">Contacts</h2>
+<p>For questions, bugs and suggestions contact me at albanx[at]gmail[dot]com, or visit my web site <a href="http://www.albanx.com">albanx.com</a>
+Real Ajax Multi Uploader is not a free plugin but also there is a free version of this plugin at my web site.</p>
+</body>
+</html>

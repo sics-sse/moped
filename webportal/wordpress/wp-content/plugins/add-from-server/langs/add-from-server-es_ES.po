@@ -1,0 +1,82 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: add-from-server\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-09 00:15+1000\n"
+"PO-Revision-Date: 2008-11-09 00:16+1000\n"
+"Last-Translator: Dion Hulse <contact@dd32.id.au>\n"
+"Language-Team: dd32.id.au <contact@dd32.id.au>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Spanish\n"
+"X-Poedit-Country: SPAIN\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: add-from-server.php:19
+msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+msgstr "<h1>Añadir Desde Servidor</h1> Lo siento, Este plugin requiere WordPress 2.7+"
+
+#: plugin-code.php:19
+#: plugin-code.php:39
+msgid "Add From Server"
+msgstr "Añadir Desde Servidor"
+
+#: plugin-code.php:65
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr ""
+
+#: plugin-code.php:69
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em>  ha sido añadido a la Librería Multimedia"
+
+#: plugin-code.php:112
+#, fuzzy, php-format
+msgid "The selected file could not be moved to %s."
+msgstr "El archivo no puede moverse a %s."
+
+#: plugin-code.php:203
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr ""
+
+#: plugin-code.php:205
+#, php-format
+msgid "Once you have selected files to be imported, Head over to the <a href=\"%s\">Media Library tab</a> to add them to your post."
+msgstr "Una vez que haya seleccionado los archivos que va a importar, Vaya a la pestaña <a href=\"%s\">Librería Multimedia</a> para añadirlos a su entrada."
+
+#: plugin-code.php:210
+#: plugin-code.php:257
+#, fuzzy
+msgid "File"
+msgstr "Nombre de Archivo"
+
+#: plugin-code.php:217
+msgid "Parent Folder"
+msgstr "Carpeta Superior"
+
+#: plugin-code.php:263
+msgid "Do not add selected files to current post Gallery"
+msgstr "No agregar los archivos seleccionados a la galería de la entrada actual"
+
+#: plugin-code.php:264
+msgid "Import"
+msgstr "Importar"
+
+#~ msgid "Toggle All"
+#~ msgstr "Seleccionar Todos"
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "Nota: no tendrá efecto si el archivo seleccionado está actualmente dentro "
+#~ "de una carpeta de subidas"
+#~ msgid "Import selected files"
+#~ msgstr "Importar los Archivos Seleccionados"
+#~ msgid "Current Directory"
+#~ msgstr "Directorio Actual"
+

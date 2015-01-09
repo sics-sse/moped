@@ -1,0 +1,82 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: add-from-server\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-09 17:30+1000\n"
+"PO-Revision-Date: 2008-11-09 17:30+1000\n"
+"Last-Translator: Dion Hulse <contact@dd32.id.au>\n"
+"Language-Team: dd32.id.au <contact@dd32.id.au>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: Australia\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: add-from-server.php:42
+#: add-from-server.php:66
+#: add-from-server.php:85
+msgid "Add From Server"
+msgstr "از سرور اضافه کنید"
+
+#: add-from-server.php:55
+msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+msgstr "<h1>از سرور اضافه کنید</h1> به وردپرس ۲.۷ یا بالاتر احتیاج دارید."
+
+#: add-from-server.php:114
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr "<em>%s</em> به دلیل یک خطا <strong> وارد نشد </strong>: %s"
+
+#: add-from-server.php:118
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em> به کتابخانه رسانه ها اضافه شد"
+
+#: add-from-server.php:157
+#, php-format
+msgid "The selected file could not be moved to %s."
+msgstr "پرونده ی بارگذاری شده نمی تواند به %s افزوده شود."
+
+#: add-from-server.php:251
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr "<strong>دایرکتوری کنونی:</strong> <span id=\"cwd\">%s</span>"
+
+#: add-from-server.php:253
+#, php-format
+msgid "Once you have selected files to be imported, Head over to the <a href=\"%s\">Media Library tab</a> to add them to your post."
+msgstr "هنگامی که پرونده های مورد نظر خود را برای وارد کردن انتخاب کردید به <a href=\"%s\">کتابخانه رسانه ها</a> بروید تا آن ها را به نوشته ی خود بیافزایید."
+
+#: add-from-server.php:258
+#: add-from-server.php:305
+msgid "File"
+msgstr "نام فایل"
+
+#: add-from-server.php:265
+msgid "Parent Folder"
+msgstr "پرونده ی مادر"
+
+#: add-from-server.php:312
+msgid "Do not add selected files to current post Gallery"
+msgstr "پرونده های انتخاب شده را به گالری نوشته اضافه نکن"
+
+#: add-from-server.php:314
+msgid "Import"
+msgstr "واردگر"
+
+#~ msgid "Toggle All"
+#~ msgstr "Inverser Tout"
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "یادداشت: اگر فایل شما در یک پوشه ی بارگذاری است این عمل در حال حاضر انجام "
+#~ "نخواهد شد "
+#~ msgid "Import selected files"
+#~ msgstr "پرونده های انتخاب شده را بارگذاری کن"
+#~ msgid "Current Directory"
+#~ msgstr "فهرست جاری"
+

@@ -42,6 +42,10 @@ function vehicleConfigParser($path) {
 		{  
 			$param = array('arg0' => $path);  
 			$ret = $client->parseVehicleConfiguration($param);
+
+			// delete vehicle config file
+			unlink($path);
+
 			if($ret->return == "true")
 				echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
 			else

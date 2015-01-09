@@ -1,0 +1,83 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Add From Server\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-10 09:33+1000\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Dion Hulse <contact@dd32.id.au>\n"
+"Language-Team: Floeschen <translations@dev.floeschen.ch>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: SWITZERLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: add-from-server.php:48
+#: add-from-server.php:72
+#: add-from-server.php:91
+msgid "Add From Server"
+msgstr "Add From Server"
+
+#: add-from-server.php:61
+msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+msgstr "<h1>Add From Server</h1> Sorry, dieses Plugin benötigt WordPress 2.7+"
+
+#: add-from-server.php:120
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr "<em>%s</em> wurde <strong>nicht importiert</strong>, weil ein Fehler auftrat: %s"
+
+#: add-from-server.php:124
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em> wurde zur Mediathek hinzugefügt."
+
+#: add-from-server.php:163
+#, php-format
+msgid "The selected file could not be moved to %s."
+msgstr "Die ausgewählte Datei konnte nicht nach %s bewegt werden."
+
+#: add-from-server.php:257
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr "<strong>aktuelles Verzeichnis:</strong> <span id=\"cwd\">%s</span>"
+
+#: add-from-server.php:259
+#, php-format
+msgid "Once you have selected files to be imported, Head over to the <a href=\"%s\">Media Library tab</a> to add them to your post."
+msgstr "Wenn du die ausgewählten Dateien importiert hast, gehe zur <a href=\"%s\">Mediathek</a>, um sie zu deinem Artikel hinzuzufügen."
+
+#: add-from-server.php:264
+#: add-from-server.php:311
+msgid "File"
+msgstr "Datei"
+
+#: add-from-server.php:271
+msgid "Parent Folder"
+msgstr "Übergeordnetes Verzeichnis"
+
+#: add-from-server.php:318
+msgid "Do not add selected files to current post Gallery"
+msgstr "Füge die ausgewählte Datei nicht zur Galerie des aktuellen Artikels hinzu."
+
+#: add-from-server.php:320
+msgid "Import"
+msgstr "Importiere"
+
+#~ msgid "Toggle All"
+#~ msgstr "Wähle alle aus"
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "Beachte: Dies wird keine Auswirkungen haben, wenn die ausgewählte Datei "
+#~ "momentan innerhalb eines Upload-Verzeichnisses ist."
+#~ msgid "Import selected files"
+#~ msgstr "Importiere ausgewählte Dateien"
+#~ msgid "Current Directory"
+#~ msgstr "aktuelles Verzeichnis"
+

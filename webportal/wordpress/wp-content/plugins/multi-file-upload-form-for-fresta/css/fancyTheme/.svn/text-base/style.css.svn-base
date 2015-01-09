@@ -1,0 +1,315 @@
+.ax-button span
+{
+	display:none;
+	width:0;
+	height:0;
+}
+
+/*************************buttons Styles*******************/
+.ax-browse-c
+{
+	width:64px;
+	height:64px;
+	overflow: hidden;
+	display: inline-block;
+	position:relative;
+	cursor:pointer;
+	background: url(images.png) no-repeat  0 -21px;
+}
+.ax-upload-all
+{
+	width:64px;
+	height:64px;
+	margin-left:5px;
+	display: inline-block;
+	
+	background: url(images.png) no-repeat  0 -193px;
+	cursor:pointer;
+}
+
+.ax-clear
+{
+	width:64px;
+	height:64px;
+	margin-left:5px;
+	display: inline-block;
+	background: url(images.png) no-repeat  0 -107px;
+	cursor:pointer;
+}
+
+.ax-browse-c:hover,.ax-upload-all:hover,.ax-clear:hover
+{
+	opacity:0.5;
+	filter:alpha(opacity=50);
+}
+
+.ax-remove, .ax-upload, .ax-abort, .ax-confirm
+{
+	margin-top:4px;
+	width:20px;
+	height:20px;
+	margin-left:5px;
+	cursor:pointer;
+	display: inline-block;
+}
+.ax-remove{
+	background: url(images.png) no-repeat  0 -86px;
+}
+.ax-upload{
+	background: url(images.png) no-repeat  0 -172px;
+}
+.ax-abort{
+	background: url(images.png) no-repeat  0 0;
+}
+
+.ax-disabled
+{
+	opacity: 0.5;
+	filter:alpha(opacity=50);
+	cursor:auto;
+}
+
+.ax-confirm
+{
+	display:none;
+}
+
+.ax-remove:hover, .ax-upload:hover, .ax-abort:hover
+{
+	-moz-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 0 3px rgba(0,0,0,0.9),0 0 6px rgba(255,255,255,0.7);
+	-webkit-box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 0 3px rgba(0,0,0,0.9),0 0 6px rgba(255,255,255,0.7);
+	box-shadow:inset 0 1px 0 rgba(255,255,255,0.3),0 0 3px rgba(0,0,0,0.9),0 0 6px rgba(255,255,255,0.7);
+}
+
+.ax-preview
+{
+	max-height:40px;
+	max-width:40px;
+}
+
+.ax-prev-container
+{
+	height:40px;
+    width: 40px;
+    margin: 0 auto;
+    display: inline-block;
+    background: url(icons.png) no-repeat -41px -41px;
+}
+
+/************************List files styles********/
+.ax-file-list
+{
+	overflow:hidden;
+    list-style: none outside none;
+    padding:0;
+	margin:0;
+}
+
+.ax-file-list li
+{
+	background: #cee6ff; /* Old browsers */
+	background: -moz-linear-gradient(top,  #cee6ff 0%, #60abf8 100%, #4096ee 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cee6ff), color-stop(100%,#60abf8), color-stop(100%,#4096ee)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #cee6ff 0%,#60abf8 100%,#4096ee 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #cee6ff 0%,#60abf8 100%,#4096ee 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #cee6ff 0%,#60abf8 100%,#4096ee 100%); /* IE10+ */
+	background: linear-gradient(top,  #cee6ff 0%,#60abf8 100%,#4096ee 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cee6ff', endColorstr='#4096ee',GradientType=0 ); /* IE6-9 */
+	
+	border: 1px solid #000000;
+    float: left;
+    text-align:center;
+    border-radius: 5px;
+    margin: 0 2px 2px 0;
+    padding: 2px;
+    position: relative;
+    text-align:center;
+    
+    width: 105px;
+    height: 105px;
+}
+
+
+.ax-file-name
+{
+	padding:0;
+	color: #000;
+    font: 10px 'PT Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    overflow: hidden;
+    width: 100%;
+    margin:0;
+}
+.ax-file-name input
+{
+	width:80%;
+}
+
+	
+.ax-file-size
+{
+	color: #000;
+    font: 10px 'PT Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    height: 13px;
+    overflow: hidden;
+    width: 100%;
+    margin:0;
+	padding: 0;
+}
+
+.ax-progress
+{
+    background-color: white;
+    margin-top: 2px;
+    padding: 0;
+    float:left;
+    height:10px;
+    width: 100%;
+    position:relative;
+    text-align:center;
+}
+
+.ax-progress-bar
+{
+    height: 10px;
+	position:absolute;
+	top:0;
+	left:0;
+	width: 0%; 
+	background-image: url(loader.gif);
+}
+
+.ax-progress-info
+{
+	font: 10px 'PT Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    height: 10px;
+    position:absolute;
+    width: 100%;
+    top:0;
+	left:0;
+	overflow:hidden;
+}
+
+
+.ax-toolbar
+{
+	width:100%;
+	overflow:hidden;
+}
+
+.ax-browse
+{
+	opacity: 0;
+	filter:alpha(opacity=0);
+	font-size:64px;
+	cursor:pointer;
+	height:64px;
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.ax-details
+{
+	float:left;
+	width:100%;
+	margin:0 auto;
+}
+
+
+
+/*************************************Light Box CSS***************************************/
+#ax-box {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #fff;
+	z-index: 1001;
+	display: none;
+	border:10px solid #fff;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px; 
+	
+  -webkit-box-shadow: 0px 0px 21px 0px #ffffff; /* Saf3-4, iOS 4.0.2 - 4.2, Android 2.3+ */
+     -moz-box-shadow: 0px 0px 21px 0px #ffffff; /* FF3.5 - 3.6 */
+          box-shadow: 0px 0px 21px 0px #ffffff; /* Opera 10.5, IE9, FF4+, Chrome 6+, iOS 5 */
+	
+}
+
+
+#ax-box span
+{
+	margin-left:20px;
+	
+}
+
+#ax-box-shadow 
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #000;
+	filter: alpha(opacity=75);
+	-moz-opacity: 0.75;
+	-khtml-opacity: 0.75;
+	opacity: 0.75;
+	z-index: 1000;
+	display: none;
+}
+/*****************************************************************************************************/
+
+
+/*************************************File Type Icons*************************************************/
+.ax-filetype-pdf{
+	background: url(icons.png) no-repeat  -81px 0px;
+}
+.ax-filetype-zip{
+	background: url(icons.png) no-repeat  -121px -121px;
+}
+.ax-filetype-doc{
+	background: url(icons.png) no-repeat  0 -81px;
+}
+.ax-filetype-docx{
+	background: url(icons.png) no-repeat  0 -81px;
+}
+.ax-filetype-rar{
+	background: url(icons.png) no-repeat -121px -121px;
+}
+.ax-filetype-exe{
+	background: url(icons.png) no-repeat  -41px 0;
+}
+.ax-filetype-xls{
+	background: url(icons.png) no-repeat  0 -121px;
+}
+.ax-filetype-xml{
+	background: url(icons.png) no-repeat -121px -81px;
+}
+.ax-filetype-mp4{
+	background: url(icons.png) no-repeat -121px -41px;
+}
+.ax-filetype-avi{
+	background: url(icons.png) no-repeat -121px -41px;
+}
+.ax-filetype-pdf{
+	background: url(icons.png) no-repeat -81px 0px;
+}
+.ax-filetype-gif{
+	background: url(icons.png) no-repeat -41px -81px;
+}
+.ax-filetype-bmp{
+	background: url(icons.png) no-repeat 0 -41px;
+}
+.ax-filetype-mp3{
+	background: url(icons.png) no-repeat 0 0;
+}
+.ax-filetype-ppt{
+	background: url(icons.png) no-repeat -81px -81px;
+}
+.ax-filetype-tiff{
+	background: url(icons.png) no-repeat -121px 0;
+}
+.ax-filetype-txt{
+	background: url(icons.png) no-repeat -81px -121px;
+}

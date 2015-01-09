@@ -1,0 +1,165 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-14 09:56+1000\n"
+"PO-Revision-Date: 2008-11-14 09:56+1000\n"
+"Last-Translator: Dion Hulse <contact@dd32.id.au>\n"
+"Language-Team: SteAgl <stefano.aglietti@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: add-from-server.php:48
+#: add-from-server.php:72
+#: add-from-server.php:91
+msgid "Add From Server"
+msgstr "Aggiungi da server"
+
+#: add-from-server.php:61
+msgid "<h1>Add From Server</h1> Sorry, This plugin requires WordPress 2.7+"
+msgstr "<h1>Aggiungi da server</h1> Questo plugin richiede almeno WordPress 2.7+"
+
+#: add-from-server.php:120
+#, php-format
+msgid "<em>%s</em> was <strong>not</strong> imported due to an error: %s"
+msgstr "<em>%s</em> <strong>non</strong> è stato importato a causa di un errore: %s"
+
+#: add-from-server.php:124
+#, php-format
+msgid "<em>%s</em> has been added to Media library"
+msgstr "<em>%s</em> è statp aggiunto alla Libreria media"
+
+#: add-from-server.php:163
+#, php-format
+msgid "The selected file could not be moved to %s."
+msgstr "Il file selezionato non può essere spostato in %s."
+
+#: add-from-server.php:257
+#, php-format
+msgid "<strong>Current Directory:</strong> <span id=\"cwd\">%s</span>"
+msgstr "<strong>Directory corrente:</strong> <span id=\"cwd\">%s</span>"
+
+#: add-from-server.php:259
+#, php-format
+msgid "Once you have selected files to be imported, Head over to the <a href=\"%s\">Media Library tab</a> to add them to your post."
+msgstr "Una volta selezionati i file da importare, andare sulla <a href=\"%s\">linguetta Libreria media</a> per aggiungerli al proprio articolo."
+
+#: add-from-server.php:264
+#: add-from-server.php:311
+msgid "File"
+msgstr "File"
+
+#: add-from-server.php:271
+msgid "Parent Folder"
+msgstr "Cartella madre"
+
+#: add-from-server.php:318
+msgid "Do not add selected files to current post Gallery"
+msgstr "Non aggiungere i file selezionati alla Galleria dell'articolo corrente"
+
+#: add-from-server.php:320
+msgid "Import"
+msgstr "Importa"
+
+#~ msgid "Toggle All"
+#~ msgstr "Cambia tutti"
+#~ msgid ""
+#~ "Note: Will not take effect if selected file is within an upload folder at "
+#~ "present"
+#~ msgstr ""
+#~ "Nota: Non avrà effetto se i file selezionati sono al momento nelal "
+#~ "cartella di upload"
+#~ msgid "Import selected files"
+#~ msgstr "Importa i file selezionati"
+#~ msgid "Current Directory"
+#~ msgstr "Directory corrente"
+#~ msgid "Your settings have been saved."
+#~ msgstr "Le impostazioni sono state salvate."
+#~ msgid "Security hash missing."
+#~ msgstr "Has di sicurezza mancante."
+#~ msgid "You don't have enough access rights."
+#~ msgstr "Non disponi dei permessi di accesso."
+#~ msgid "<h2>Set Up Your FeedBurner Feed</h2>"
+#~ msgstr "<h2>Imposta il tuo feed FeedBurner</h2>"
+#~ msgid ""
+#~ "<p>This plugin makes it easy to redirect 100% of traffic for your feeds "
+#~ "to a FeedBurner feed you have created. FeedBurner can then track all of "
+#~ "your feed subscriber traffic and usage and apply a variety of features "
+#~ "you choose to improve and enhance your original WordPress feed.</p>"
+#~ msgstr ""
+#~ "<p>Questo plugin rende semplicissimo reindirizzare il 100% del traffico "
+#~ "dei vostri feed ad un feed FeedBurner  da voi creato. FeedBurner può "
+#~ "tenere traccia di tutto il traffico e l'utilizzo effettuato dagli "
+#~ "abbonati al feed ed applicare una serie di funzioni a vostra scelta per "
+#~ "migliorare e incrementare il feed originale WordPress.</p>"
+#~ msgid "To get started,"
+#~ msgstr "Per iniziare,"
+#~ msgid "create a FeedBurner feed for "
+#~ msgstr "crea un feed Feedburner per "
+#~ msgid "This feed will handle all traffic for your posts."
+#~ msgstr "Questo feed gestirà tutto il traffico per gli articoli."
+#~ msgid ""
+#~ "Once you have created your FeedBurner feed, enter its address into the "
+#~ "field below"
+#~ msgstr ""
+#~ "Una volta creato il feed su FeedBurner, inserire il suo indirizzo nel "
+#~ "campo seguente"
+#~ msgid ""
+#~ "Optional: If you also want to handle your WordPress comments feed using "
+#~ "FeedBurner"
+#~ msgstr ""
+#~ "Opzionale: Se si desidera gestire anche il feed dei commenti di WordPress "
+#~ "utilizzando FeedBurner"
+#~ msgid ""
+#~ "create a FeedBurner comments feed</a> and then enter its address below:"
+#~ msgstr ""
+#~ "crea un feed dei commenti su FeedBurner</a> e quindi inserisci "
+#~ "l'indirizzo qui sotto:"
+#~ msgid "Save"
+#~ msgstr "Salva"
+#~ msgid "Sorry, you are not allowed to access this page."
+#~ msgstr "Non ti è permesso accedere a questa pagina."
+#~ msgid "ShareThis Options"
+#~ msgstr "Opzioni ShareThis"
+#~ msgid ""
+#~ "Where do I go to get the ShareThis Code?<br><br>You can configure your "
+#~ "ShareThis widget using our customizing tool (and be sure to register to "
+#~ "get tracking) located here: <a href=\"http://sharethis.com/publisher?"
+#~ "type=wpplugin\">sharethis.com/publisher?type=wpplugin</a>"
+#~ msgstr ""
+#~ "Dove andare per ottenere il Codice ShareThis?<br><br>Puoi configurare il "
+#~ "tuo widget ShareThis tramite il nostro strumento di personalizzazione (e "
+#~ "assicurati di registrarti per avere accesso al tracking) che si trova "
+#~ "qui: <a href=\"http://sharethis.com/publisher?type=wpplugin\">sharethis."
+#~ "com/publisher?type=wpplugin</a>"
+#~ msgid "Paste your widget code in here:"
+#~ msgstr "Incolla qui il tuo codice del widget:"
+#~ msgid "Automatically add ShareThis to your posts?*"
+#~ msgstr "Aggiungi automaticamente ShareThis ai tuoi articoli?*"
+#~ msgid "Automatically add ShareThis to your pages?*"
+#~ msgstr "Aggiungi automaticamente ShareThis alle tue pagine?*"
+#~ msgid "Yes"
+#~ msgstr "Si"
+#~ msgid "No"
+#~ msgstr "No"
+#~ msgid ""
+#~ "* Note, if you turn this off, you will want to add the <a href=\"http://"
+#~ "support.sharethis.com/publishers/publishers-faq/wordpress/66\">ShareThis "
+#~ "template tag</a> to your theme."
+#~ msgstr ""
+#~ "* Nota, se disabiliti questa opzione, dovrai aggiungere il <a href="
+#~ "\"http://support.sharethis.com/publishers/publishers-faq/wordpress/66"
+#~ "\">marcatore dei tempate di ShareThis</a> al tuo tema."
+#~ msgid "Update ShareThis Options"
+#~ msgstr "Aggiorna opzioni ShareThis"
+#~ msgid "ShareThis"
+#~ msgstr "ShareThis"
+

@@ -1,0 +1,8 @@
+Dear Translators:
+Thank you for translating Add From Server. 
+
+Unfortunately, I do not have a list of who has contributed language translations, as a result, I'm unable to contact translators to get a refreshed language file from you.
+
+I personally do not wish to chase translators up when releasing plugin releases, I understand the hard place this puts non-english users, but I simply do not have the time to achieve this.
+
+I'm hoping to setup a GlotPress installation, or offer separate Language Pack addons for the plugin instead, to decouple the update / language packs update proceedure. But this is not a high priority task, If you've got any thoughts on how to achieve this, Please feel free to contact me: wordpress  [at ] dd32.id.au to discuss your thoughts.
