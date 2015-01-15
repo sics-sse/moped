@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import messages.InitPacket;
@@ -58,6 +59,8 @@ public class ClientHandler extends IoHandlerAdapter {
 	public ClientHandler(SocketCommunicationManager manager) {
 		this.manager = manager;
 		APP_DIR = PropertyAPI.getInstance().getProperty("APP_DIR");
+		
+		(new File(APP_DIR)).mkdirs();
 	}
 
 	/*
@@ -71,8 +74,9 @@ public class ClientHandler extends IoHandlerAdapter {
 	public void sessionOpened(IoSession session) throws Exception {
 		String vin = manager.getVin();
 		
-		System.out.println("Opening a session with " + vin);
-
+		System.out.println("Opening a session to " + session.getRemoteAddress() + " from vin:" + vin);
+		System.out.println("Local session address: " + session.getLocalAddress());
+		
 		// Send VIN to Server
 		InitPacket initPackage = new InitPacket(vin);
 		session.write(initPackage);
@@ -82,13 +86,13 @@ public class ClientHandler extends IoHandlerAdapter {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.apache.mina.core.service.IoHandlerAdapter#messageReceived(org.apache
+	 * org.apache.mina.core.service.IoHandlerAdapter#mesprivate final static String WSDL_PORT = "9998";sageReceived(org.apache
 	 * .mina.core.session.IoSession, java.lang.Object)
 	 */
 	@Override
 	public void messageReceived(IoSession session, Object packet)
 			throws Exception {
-		System.out.println("Message received...");
+		System.out.println("Message received on ECM...");
 		
 		//TODO: TEMP TEST PRINT-OUT
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -136,6 +140,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			break;
 		default:
 			System.out.println("???");
+			System.out.println("Type_" + p.getMessageType() + ": " + p.getVin()); //TODO: TEMP_DBG
 			break;
 		}
 	}
@@ -179,6 +184,12 @@ public class ClientHandler extends IoHandlerAdapter {
 				System.exit(-1);
 			} else {
 				System.out.println("portLinkingContext is not null");
+				//TEMP_DBG
+				for (Iterator<LinkContextEntry> ctxtIter = portLinkingContext.iterator(); ctxtIter.hasNext(); ) {
+					LinkContextEntry ctxt = ctxtIter.next();
+					System.out.println("ctxtIter: " + ctxt.getFromPortId() + " -> " + ctxt.getToPortId() + " via " + ctxt.getRemotePortId());
+				}
+					
 			}
 
 			DataRecord dataRecord = new DataRecord(appId, reference, sendingPortID,
@@ -263,21 +274,20 @@ public class ClientHandler extends IoHandlerAdapter {
 	}
 	
 	// save jar file in the ECM
-		private void generateFile(byte[] data, String path) {
-			System.out.println("Will try to generate file at " + path);
+	private void generateFile(byte[] data, String path) {
+		try {
+			OutputStream output = null;
 			try {
-				OutputStream output = null;
-				try {
-					output = new BufferedOutputStream(new FileOutputStream(path));
-					output.write(data);
-				} finally {
-					output.close();
-				}
-			} catch (FileNotFoundException ex) {
-				System.out.println("File not found.");
-			} catch (IOException ex) {
-				System.out.println(ex);
+				output = new BufferedOutputStream(new FileOutputStream(path));
+				output.write(data);
+			} finally {
+				output.close();
 			}
-		}
+		} catch (FileNotFoundException ex) {
+			System.out.println("File not found.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+	}
 
 }

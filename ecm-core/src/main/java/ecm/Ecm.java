@@ -79,8 +79,47 @@ public class Ecm {
 	}
 	
 	public void loadPlugins(int ecuId) {
+		System.out.println("In loadPlugins()");
+		System.out.println("Loading plugins to ecuId: " + ecuId);
 		// Prepare APPs
 		HashMap<String, DataRecord> installedApps = getInstalledApps(ecuId);
+		
+		//TODO: TEMP
+		if (installedApps != null)
+			System.out.println("Nr installed apps: " + installedApps.size());
+		else
+			System.out.println("installedApps: NULL!!!!!!!!!!!!!!");
+		
+		if (!installedApps.isEmpty()) {
+			String key = installedApps.keySet().iterator().next();
+			DataRecord rec = installedApps.get(key);
+			
+			System.out.println("Found db_key: " + key);
+			System.out.println("app_id: " + rec.getAppId() + 
+					"; remoteEcuId: " + rec.getRemoteEcuId() + 
+					"; sendingPortId: " + rec.getSendingPortID() + 
+					"; callbackPortId: " + rec.getCallbackPortID() + 
+					"; pluginName: " + rec.getPluginName() + 
+					"; executablePluginName + " + rec.getExecutablePluginName() + 
+					"; location: " + rec.getLocation()); 
+
+			System.out.println("portInitialContext: ");
+			HashMap<String, Integer> initCxt = rec.getPortInitialContext();
+			for (Iterator<String> it = initCxt.keySet().iterator(); it.hasNext(); ) {
+				String ctxKey = it.next();
+				System.out.println("\tkey: " + ctxKey + "; value: " + initCxt.get(ctxKey));
+			}
+			
+			System.out.println("portLinkingContext: ");
+			ArrayList<LinkContextEntry> linkCxt = rec.getPortLinkingContext();
+			for (int i = 0; i < linkCxt.size(); i++) {
+				LinkContextEntry entry = linkCxt.get(i);
+				System.out.println("\tfromPortId: " + entry.getFromPortId() + 
+						"; toPortId: " + entry.getToPortId() + 
+						"; remotePortId: " + entry.getRemotePortId());
+			}
+		}
+		
 		Iterator<Entry<String, DataRecord>> iterator = installedApps.entrySet()
 				.iterator();
 		while (iterator.hasNext()) {

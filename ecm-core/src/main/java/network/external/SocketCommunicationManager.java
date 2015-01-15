@@ -1,12 +1,17 @@
 package network.external;
 
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
+
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory;
+import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
+import org.apache.mina.filter.logging.LoggingFilter;
 //import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
+
 import ecm.Ecm;
 
 // TODO: Auto-generated Javadoc
@@ -48,6 +53,8 @@ public class SocketCommunicationManager implements CommunicationManager {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
+		int failCnt = 0;
+		
 		System.out.println("Running SocketCommunicationManager");
 		boolean connectServer = false;
 		if (!server.equals("none")) {
@@ -58,7 +65,8 @@ public class SocketCommunicationManager implements CommunicationManager {
 					"codec",
 					new ProtocolCodecFilter(
 							new ObjectSerializationCodecFactory()));
-//			connector.getFilterChain().addLast("logger", new LoggingFilter());
+//							new TextLineCodecFactory(Charset.forName("UTF-8"))));
+			connector.getFilterChain().addLast("logger", new LoggingFilter());
 			connector.setHandler(new ClientHandler(this));
 
 			connectServer = true;
@@ -67,18 +75,26 @@ public class SocketCommunicationManager implements CommunicationManager {
 
 			while (true) {
 				try {
-					System.out.println("Trying to connect");
+//					server = "127.0.0.1"; //TEMP
+					System.out.println("Trying to connect to " + server + ":" + port);
 					ConnectFuture future = connector
 							.connect(new InetSocketAddress(server, port));
 					future.awaitUninterruptibly();
 					session = future.getSession();
+					
 					isStart = true;
+					failCnt = 0;
 				} catch (Exception e) {
-					System.out
-							.println("Warning! Client failed to connect Server");
+					System.out.println("Warning! Client failed to connect to " + server + ":" + port);
 					System.out.println(e.toString());
 					// System.exit(-1);
 					isStart = false;
+					failCnt++;
+					
+					if (failCnt >= 5) {
+						System.out.println("Error! Giving up attempts to connect to " + server + ":" + port);
+						break;
+					}
 				}
 				
 				if (isStart) {

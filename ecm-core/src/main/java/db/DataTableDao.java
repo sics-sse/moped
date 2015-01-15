@@ -26,22 +26,19 @@ public class DataTableDao {
 	private HashMap<String, DataRecord> pluginDataTable;
 
 	/** The db path. */
-	private String dbPath;
+	private static final String DB_PATH = "db" + File.separator;
 
 	/**
 	 * Instantiates a new data table dao.
-	 * 
-	 * @param ecuName
-	 *            the ecu name
 	 */
-	@SuppressWarnings("unchecked")
 	public DataTableDao() {
-		dbPath = "db" + File.separator;
-		if (isTableExisted()) {
-			pluginDataTable = (HashMap<String, DataRecord>) file2Object();
-		} else {
-			pluginDataTable = new HashMap<String, DataRecord>();
-		}
+		pluginDataTable = fileToMap();
+//		if (pluginTableExists()) {
+//			pluginDataTable = (HashMap<String, DataRecord>) fileToMap();
+//		} else {
+//			System.out.println("else...");
+//			pluginDataTable = new HashMap<String, DataRecord>();
+//		}
 	}
 
 	public void insertRecord(String pluginName, DataRecord dataRecord) {
@@ -128,18 +125,18 @@ public class DataTableDao {
 	 */
 	public void object2File(Object object) {
 		logger.debug("To convert object(" + object.toString() + ") to file ("
-				+ dbPath + ")");
+				+ DB_PATH + ")");
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try {
-			File dest = new File(dbPath);
+			File dest = new File(DB_PATH);
 			if (!dest.exists())
 				dest.mkdirs();
-			fos = new FileOutputStream(dbPath + "plugin.DB");
+			fos = new FileOutputStream(DB_PATH + "plugin.DB");
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(object);
 			logger.debug("Object(" + object.toString() + ") convered to file ("
-					+ dbPath + ")");
+					+ DB_PATH + ")");
 		} catch (FileNotFoundException e) {
 			logger.debug(e.toString());
 		} catch (IOException e) {
@@ -165,78 +162,48 @@ public class DataTableDao {
 	}
 
 	/**
-	 * File2 object.
+	 * Convert a database file to a HashMap object
 	 * 
 	 * @return the object
 	 */
-	public Object file2Object() {
-		logger.debug("To convert file(" + dbPath + ") to object)");
-		FileInputStream fis = null;
+	@SuppressWarnings("unchecked")
+	private HashMap<String, DataRecord> fileToMap() {
 		ObjectInputStream ois = null;
+		HashMap<String, DataRecord> pluginMap = null;
+		
 		try {
-			fis = new FileInputStream(dbPath + "plugin.DB");
-			ois = new ObjectInputStream(fis);
-			Object object = ois.readObject();
-			logger.debug("File(" + dbPath + ") converted to object");
-			return object;
-		} catch (FileNotFoundException e) {
-			logger.debug(e.toString());
-		} catch (IOException e) {
-			logger.debug(e.toString());
-		} catch (ClassNotFoundException e) {
-			logger.debug(e.toString());
+			ois = new ObjectInputStream(new FileInputStream(DB_PATH + "plugin.DB"));
+			pluginMap = (HashMap<String, DataRecord>)ois.readObject();
+		} catch (FileNotFoundException ex) {
+			pluginMap = new HashMap<String, DataRecord>();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
 		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					logger.debug(e.toString());
-				}
-			}
-			fis = null;
 			if (ois != null) {
 				try {
 					ois.close();
-				} catch (IOException e) {
-					logger.debug(e.toString());
+				} catch (IOException ex) {
+					ex.printStackTrace();
 				}
 			}
-			ois = null;
 		}
-		return null;
+		
+		return pluginMap;
 	}
 
-	/**
-	 * Checks if is table existed.
-	 * 
-	 * @return true, if is table existed
-	 */
-	private boolean isTableExisted() {
-		File file = new File(dbPath + "plugin.DB");
-		if (file.isFile())
-			return true;
-		else
-			return false;
-	}
-
-	/**
-	 * Gets the db path.
-	 * 
-	 * @return the db path
-	 */
-	public String getDbPath() {
-		return dbPath;
-	}
-
-	/**
-	 * Sets the db path.
-	 * 
-	 * @param dbPath
-	 *            the new db path
-	 */
-	public void setDbPath(String dbPath) {
-		this.dbPath = dbPath;
-	}
+//	/**
+//	 * Check if there is a table of installed plugins
+//	 * 
+//	 * @return true, if a table of installed plugins exists
+//	 */
+//	private boolean pluginTableExists() {
+//		File file = new File(DB_PATH + "plugin.DB");
+//		if (file.isFile())
+//			return true;
+//		else
+//			return false;
+//	}
 
 	public HashMap<String, DataRecord> getPluginDataTable() {
 		return pluginDataTable;

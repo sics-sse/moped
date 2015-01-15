@@ -234,6 +234,12 @@ public class CanEcuManager implements EcuManager {
 		int id = message.getRemoteEcuId();
 		String executablePluginName = message.getExecutablePluginName();
 		byte[] plugin = message.getBinaryFile();
+		
+		System.out.print("PLUGIN BYTES:");
+		for (int i = 0; i < plugin.length; i++) {
+			System.out.print(" " + (plugin[i] & 0xFF));
+		}
+		System.out.println("");
 
 		int index = 0;
 		int pluginNameSize = executablePluginName.length();
@@ -351,9 +357,10 @@ public class CanEcuManager implements EcuManager {
 
 		// System.out.println("------------------");
 		int can_id = senders.get(id + "-INSTALL");
+		System.out.println("Gonna send can-install to ECU " + id + "; can_id: " + 
+				can_id + "; channel: " + channelNumber);
 		javaCanLibrary.sendBigData(channelNumber, can_id, 8, byteArray.length,
 				byteArray);
-
 	}
 
 	private void sendMessage(InstallMessage message) {

@@ -22,7 +22,6 @@ public class Loader implements Runnable {
 		this.ecuId = ecuId;
 	}
 	
-	@Override
 	public void run() {
 		load(ecuId);
 	}
@@ -30,6 +29,7 @@ public class Loader implements Runnable {
 	public void load(int ecuId) {
 		// Prepare APPs
 		HashMap<String, DataRecord> installedApps = ecm.getInstalledApps(ecuId);
+		System.out.println("Checking installed apps, size: " + installedApps.size());
 		Iterator<Entry<String, DataRecord>> iterator = installedApps.entrySet()
 				.iterator();
 		while (iterator.hasNext()) {

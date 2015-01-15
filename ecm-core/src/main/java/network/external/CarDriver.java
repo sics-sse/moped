@@ -41,7 +41,7 @@ public class CarDriver implements Runnable {
 			mExecutorService = Executors.newCachedThreadPool(); // create a
 																// thread
 			// pool
-			System.out.println("server start ...");
+			System.out.println("CarDriver server start (on ECM) ...");
 			Socket client = null;
 			while (true) {
 				client = server.accept();
