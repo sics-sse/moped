@@ -23,43 +23,47 @@ public class FakeEcuManager implements EcuManager {
 	}
 
 	public void sendMessage(Message message) {
-		int messageType = message.getMessageType();
-		switch (messageType) {
-		case MessageType.INSTALL:
-			System.out
-					.println("[FakeEcuManager - sendInstallMessage(Message)]");
-			InstallMessage installMessage = (InstallMessage) message;
-			sendMessage(installMessage);
-			break;
-		case MessageType.UNINSTALL:
-			System.out
-					.println("[FakeEcuManager - sendUninstallMessage(Message)]");
-			UninstallMessage uninstallMessage = (UninstallMessage) message;
-			sendMessage(uninstallMessage);
-			break;
-		case MessageType.LOAD:
-			LoadMessage loadMessage = (LoadMessage) message;
-			sendMessage(loadMessage);
-			break;
-		case MessageType.PWM:
-			PWMMessage pwmMessage = (PWMMessage) message;
-			byte[] data = pwmMessage.getData();
+		try {
+			int messageType = message.getMessageType();
+			switch (messageType) {
+			case MessageType.INSTALL:
+				System.out
+						.println("[FakeEcuManager - sendInstallMessage(Message)]");
+				InstallMessage installMessage = (InstallMessage) message;
+				sendMessage(installMessage);
+				break;
+			case MessageType.UNINSTALL:
+				System.out
+						.println("[FakeEcuManager - sendUninstallMessage(Message)]");
+				UninstallMessage uninstallMessage = (UninstallMessage) message;
+				sendMessage(uninstallMessage);
+				break;
+			case MessageType.LOAD:
+				LoadMessage loadMessage = (LoadMessage) message;
+				sendMessage(loadMessage);
+				break;
+			case MessageType.PWM:
+				PWMMessage pwmMessage = (PWMMessage) message;
+				byte[] data = pwmMessage.getData();
 //			System.out.println(data[0] + ":" + data[1]);
-			int speed = data[0];
-			CarModel.motorPower = speed / 100.0;
-			if (CarModel.motorPower == 0.0) {
-				CarModel.vehicleSpeed = 0;
+				int speed = data[0];
+				CarModel.motorPower = speed / 100.0;
+				if (CarModel.motorPower == 0.0) {
+					CarModel.vehicleSpeed = 0;
+				}
+				int steer = data[1];
+				CarModel.steeringAngle = steer / 100.0;
+				break;
+			case MessageType.PLUGIN_MESSAGE:
+				PluginMessage pluginMessage = (PluginMessage) message;
+				sendMessage(pluginMessage);
+				break;
+			default:
+				System.out
+						.println("Error: Wrong message type pushed to sending channel");
 			}
-			int steer = data[1];
-			CarModel.steeringAngle = steer / 100.0;
-			break;
-		case MessageType.PLUGIN_MESSAGE:
-			PluginMessage pluginMessage = (PluginMessage) message;
-			sendMessage(pluginMessage);
-			break;
-		default:
-			System.out
-					.println("Error: Wrong message type pushed to sending channel");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

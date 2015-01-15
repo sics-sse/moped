@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vehicle>
+	<!--name>default</name>
+	<brand>moped</brand>
+	<vin>default</vin-->
 	<name>MOPED</name>
 	<brand>SICS</brand>
 	<vin>20UYA31581L000000</vin>
@@ -8,6 +11,7 @@
 			<!-- <ip>localhost</ip> -->
 			<!-- <ip>none</ip> -->
 			<ip>appz-ext.sics.se</ip>
+			<!--ip></ip-->
 			<socketport>9999</socketport>
 		</server>
 	</ecm>

@@ -70,10 +70,13 @@ public class RTE {
 		int messageType = message.getMessageType();
 		switch(messageType) {
 		case MessageType.INSTALL:
+			System.out.println("RTE install");
 			InstallMessage installMessage = (InstallMessage) message;
 			int remoteEcuId = installMessage.getRemoteEcuId();
 			SWC swc = pirteSWCs.get(remoteEcuId);
+			System.out.println("swc: " + swc);
 			swc.getPirte().addMessage(message);
+			System.out.println("RTE message added");
 			break;
 		case MessageType.UNINSTALL:
 			UninstallMessage uninstallMessage = (UninstallMessage) message;

@@ -162,7 +162,7 @@ public class CarFactory {
 							"mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed",
 							"{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 			IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed");
-			IoTManager iotManager = new IoTManager(publisher, receiver);
+			IoTManager iotManager = new IoTManager(publisher); //, receiver);
 			Ecm ecm = new Ecm();
 			ecm.init(ecuManager, commuManager, iotManager, carDriver);
 			car.setEcm(ecm);

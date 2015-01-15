@@ -156,6 +156,7 @@ public class PIRTE implements Runnable {
 				int messageType = message.getMessageType();
 				switch(messageType) {
 				case MessageType.INSTALL:
+					System.out.println("Gonna try to install: ");
 					InstallMessage installMessage = (InstallMessage) message;
 					byte pluginId = installMessage.getPluginId();
 					HashMap<String, Integer> portInitialContext = installMessage.getPortInitialContext();
