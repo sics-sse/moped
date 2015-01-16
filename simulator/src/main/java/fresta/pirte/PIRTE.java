@@ -87,46 +87,46 @@ public class PIRTE implements Runnable {
 				for (Enumeration<JarEntry> e = jarFile.entries(); e
 						.hasMoreElements();) {
 					JarEntry entry = e.nextElement();
+
+					// Skip directories
 					if(entry.isDirectory()) {
+						continue;		
+					}
+					
+					// Skip non-class files
+					String fileName = entry.getName();
+					if (!fileName.endsWith(".class")) {
 						continue;
 					}
-					String classFileName = entry.getName();
-					String className = classFileName.substring(0,
-							classFileName.length() - 6); // Remove .class suffix
-					System.out.println("Installing " + className);
-					InputStream is = jarFile.getInputStream(entry);
-					ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-					int nextValue = is.read();
-					while (-1 != nextValue) {
-						byteStream.write(nextValue);
-						nextValue = is.read();
-					}
-					byte classByte[] = byteStream.toByteArray();
-					// to check if there are the same classes loaded. If so,
-					// load class and otherwise define class
+					
+					// Extract full class name 
+					String className = fileName.substring(0, fileName.length() - 6); 
 					className = className.replace('/', '.');
+					
+					// Check if this class has already been loaded. 
+					// If not, define and load
 					Class<?> newClass;
-					if (findLoadedClass(/*
-										 * packageName + "." +
-										 */className) != null) {
-						newClass = this
-								.loadClass(/* packageName + "." + */className);
+					if (findLoadedClass(className) != null) {
+						newClass = this.loadClass(className);
 					} else {
-						// newClass = defineClass(packageName + "."
-						// + className, classByte, 0, classByte.length);
-						int indexOf = className.indexOf("j2meclasses");
-						className = className.substring(indexOf+12);
+						InputStream is = jarFile.getInputStream(entry);
+						ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+						int nextValue = is.read();
+						while (-1 != nextValue) {
+							byteStream.write(nextValue);
+							nextValue = is.read();
+						}
+						byte classByte[] = byteStream.toByteArray();
+						
 						newClass = defineClass(className, classByte, 0,
 								classByte.length);
 					}
 
-					// if (mainClass == null) // If first entry into jar file,
-					// assume it is main class and
-					// return it
-					
+					// TODO: UGLY HACK (Should be replaced by scanning the Manifest file for main-entry
 					if (!className.contains("$")) 
 						mainClass = newClass;
 				}
+					
 				jarFile.close();
 				System.out.println("main Class" + mainClass);
 //				Constructor con=mainClass.getDeclaredConstructor(new Class[]{String[].class});
