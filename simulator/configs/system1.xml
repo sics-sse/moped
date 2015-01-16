@@ -8,7 +8,7 @@
 	<vin>20UYA31581L000000</vin>
 	<ecm>
 		<server>
-			<!-- <ip>localhost</ip> -->
+			<!--<ip>localhost</ip>-->
 			<!-- <ip>none</ip> -->
 			<ip>appz-ext.sics.se</ip>
 			<!--ip></ip-->
