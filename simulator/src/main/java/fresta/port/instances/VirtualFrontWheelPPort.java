@@ -17,7 +17,7 @@ public class VirtualFrontWheelPPort extends EcuVirtualPPort {
 
 	@Override
 	public Object deliver(int portId) {
-		return new Integer((int)CarModel.vehicleSpeed);
+		return new Integer((int)(100.0 * CarModel.vehicleSpeed));  // Unit: cm/s
 	}
 
 }

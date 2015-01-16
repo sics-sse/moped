@@ -12,13 +12,12 @@ public class VirtualRearWheelPPort extends EcuVirtualPPort {
 	
 	@Override
 	public Object deliver() {
-		return (int)CarModel.rearWheelSpeed;
+		return (int)CarModel.vehicleSpeed;
 	}
 
 	@Override
 	public Object deliver(int portId) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Integer((int)(100.0 * CarModel.vehicleSpeed));  // Unit: cm/s
 	}
 
 }
