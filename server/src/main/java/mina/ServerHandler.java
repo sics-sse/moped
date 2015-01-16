@@ -1,10 +1,12 @@
 package mina;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import messages.InitPacket;
 import messages.InstallAckPacket;
 import messages.InstallLinuxAckPacket;
@@ -12,12 +14,13 @@ import messages.MessageType;
 import messages.Packet;
 import messages.RestoreAckPacket;
 import messages.UninstallAckPacket;
+
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.logging.MdcInjectionFilter;
+
 import cache.Cache;
 import cache.VehiclePluginRecord;
-import dao.DatabasePluginDao;
 import dao.VehicleDao;
 import dao.VehiclePluginDao;
 
@@ -29,7 +32,10 @@ public class ServerHandler extends IoHandlerAdapter {
 	private final Set<IoSession> sessions = Collections  
             .synchronizedSet(new HashSet<IoSession>());  
     // vehicle sets
-    private final static Map<String, IoSession> vehicles = Collections.synchronizedMap(new HashMap<String, IoSession>());
+    private final static Map<String, IoSession> vehicles = Collections.
+    		synchronizedMap(new HashMap<String, IoSession>());
+    
+    private ArrayList<String> ackMessages = new ArrayList<String>();
 	
 	public VehiclePluginDao getVehiclePluginDao() {
 		return vehiclePluginDao;
@@ -47,7 +53,6 @@ public class ServerHandler extends IoHandlerAdapter {
 		this.vehicleDao = vehicleDao;
 	}
 
-	@Override
 	public void sessionClosed(IoSession session) {
 		String vin = (String) session.getAttribute("vehicle");
 		vehicles.remove(vin);
@@ -56,17 +61,17 @@ public class ServerHandler extends IoHandlerAdapter {
 		System.out.println("Vehicle " + vin + " leaves the connection");
 	}
 
-	@Override
 	public void messageSent(IoSession session, Object message) throws Exception {
+		System.out.println("Message sent from server...");
 	}
 	
-	@Override
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
 	}
 
-	@Override
 	public void messageReceived(IoSession session, Object packageMessage)
 			throws Exception {
+		System.out.println("Message received on server...");
+		
 		if (packageMessage instanceof Packet) {
 			Packet p = (Packet) packageMessage;
 			String vin;
@@ -79,12 +84,15 @@ public class ServerHandler extends IoHandlerAdapter {
 				MdcInjectionFilter.setProperty(session, "vehicle", vin);
 				
 				vehicles.put(vin, session);
+				System.out.println("Vehicle " + vin + " joins the connection");
 				break;
 			case MessageType.INSTALL_LINUX_ACK:
 				InstallLinuxAckPacket installLinuxAckPacket = (InstallLinuxAckPacket) packageMessage;
 				String linux_ack_vin = installLinuxAckPacket.getVin();
 				String linux_ack_pluginName = installLinuxAckPacket.getPluginName();
 				System.out.println("[VIN = "+linux_ack_vin+"]" + linux_ack_pluginName + " arrived in the Linux");
+				ackMessages.add(linux_ack_vin + "_" + 
+						linux_ack_pluginName.substring(0, linux_ack_pluginName.lastIndexOf(".")));
 				break;
 			case MessageType.INSTALL_ACK:
 				InstallAckPacket installAckPacket = (InstallAckPacket) packageMessage;
@@ -110,7 +118,6 @@ public class ServerHandler extends IoHandlerAdapter {
 						vehicleDao.addApp(vin, installAppId);
 					}
 				}
-				
 				
 				break;
 			case MessageType.UNINSTALL_ACK:
@@ -141,6 +148,33 @@ public class ServerHandler extends IoHandlerAdapter {
 				break;
 			}
 		}
+		else if (packageMessage instanceof String) {
+			//TODO: Step 1: use strings instead of packets (which are unnecessarily complicated), using existing TextLineCodecFactory-ProtocolCodecFilter
+			//		Step 2: possiblty implement a codec filter, targeted at our messages
+			System.out.println("This is a string packet!!!");
+			System.out.println("PACKET: " + (String)packageMessage);
+			
+//			InitPacket initPackageMessage = (InitPacket) packageMessage;
+//			String vin = initPackageMessage.getVin();
+//			sessions.add(session);
+//			session.setAttribute("vehicle", vin);
+//			MdcInjectionFilter.setProperty(session, "vehicle", vin);
+//			
+//			vehicles.put(vin, session);
+//			System.out.println("Vehicle " + vin + " joins the connection");
+		}
+		else {
+			System.out.println("ERROR:: a non-Packet message was received");
+		}
+	}
+	
+	public boolean existsAckMessage(String msg) {
+		if (ackMessages.contains(msg)) {
+			ackMessages.remove(msg);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public static IoSession getSession(String vin) {

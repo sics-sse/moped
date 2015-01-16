@@ -20,10 +20,11 @@
 	<!-- database configuration -->
 
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" /> <property 
-		name="url" value="jdbc:mysql://localhost:3306/fresta?characterEncoding=utf8" 
-		/> <property name="username" value="fresta" /> <property name="password" 
-		value="turbine_r4d4r_pLOw" /> </bean>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
+		<property name="url" value="jdbc:mysql://localhost:3306/fresta?characterEncoding=utf8"/> 
+		<property name="username" value="fresta"/> 
+		<property name="password" value="turbine_r4d4r_pLOw"/>
+	</bean>
 
  	<!-- 
 		<bean id="dataSource"
@@ -130,7 +131,7 @@
 		</property>
 	</bean>
 
-	<!-- The IoAcceptor which binds to port 8081 -->
+	<!-- The IoAcceptor which binds to port 9999 -->
 	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
 		init-method="bind" destroy-method="unbind">
 		<property name="defaultLocalAddress" value=":9999" />

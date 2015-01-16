@@ -1,0 +1,8 @@
+many-to-one:
+create table VEHICLE_CONFIG (id int not null auto_increment, model varchar(30), version varchar(30), primary key (id));
+create table ECU (id int not null auto_increment, name varchar(30), config_id int default null, primary key (id));
+
+many-to-many:
+create table VEHICLE_CONFIG (id int not null auto_increment, model varchar(30), version varchar(30), primary key (id));
+create table ECU (id int not null auto_increment, name varchar(30), primary key (id));
+create table VEHICLE_CONFIG__ECU (config_id int not null, ecu_id int not null, primary key (config_id, ecu_id));

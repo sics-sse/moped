@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="test.VehicleConfig" table="VEHICLE_CONFIG">
+	 	<meta attribute="class-description">
+	 		This class contains vehicle configurations details
+	 	</meta>
+	 	<id name="id" type="int" column="id"><generator class="native"/></id>
+	 	<property name="model" column="model" type="string"/>
+	 	<property name="version" column="version" type="string"/>
+	 	<set name="ecus" cascade="save-update" table="VEHICLE_CONFIG__ECU">
+			<key column="config_id"/>
+	        <many-to-many column="ecu_id" class="test.Ecu"/>
+	    </set>
+ 	</class>
+ 	
+	<class name="test.Ecu" table="ECU">
+      <meta attribute="class-description">
+         This class contains the ECU records. 
+      </meta>
+      <id name="id" type="int" column="id"><generator class="native"/></id>
+      <property name="name" column="name" type="string"/>
+   </class>
+</hibernate-mapping>

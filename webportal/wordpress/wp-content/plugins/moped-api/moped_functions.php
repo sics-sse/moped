@@ -3,6 +3,8 @@
 /********************************************************************************/
 /*								Moped functions									*/
 /********************************************************************************/
+add_shortcode('plugin_upload_form', 'plugin_upload_form');
+
 try {
 	$client = new SoapClient("http://localhost:9990/moped/pws?wsdl",
 				array('cache_wsdl' => WSDL_CACHE_NONE));

@@ -66,7 +66,6 @@ public class SuiteGen {
 
 	public class RuntimeInput implements Runnable {
 
-		@Override
 		public void run() {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					process.getInputStream()));

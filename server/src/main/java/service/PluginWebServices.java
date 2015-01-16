@@ -2,13 +2,24 @@ package service;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Style;
 
 import service.exception.PluginWebServicesException;
 
 @WebService
+@SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
 	@WebMethod
-	public String install(String vin, int appID)
+	public boolean get_ack_status(String vin, int appId)
+			throws PluginWebServicesException;
+	
+	@WebMethod
+	public void register_vehicle(String name, String vin, String type)
+			throws PluginWebServicesException;
+	
+	@WebMethod
+	public String install(String vin, int appID, String jvm)
 			throws PluginWebServicesException;
 	
 	@WebMethod

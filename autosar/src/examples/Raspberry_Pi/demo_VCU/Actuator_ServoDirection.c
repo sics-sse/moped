@@ -19,7 +19,7 @@ UInt32 steer_select_option = 0;
  *  	 (Y)Pirte_data|   |Select Option (S/P)
  *    		         _|___|_
  *          	    |		|
- * PWM_drvier(Z)____| Servo |
+ * PWM_driver(Z)____| Servo |
  *          	 	|  SWC  |
  *         		    |_______|
  *              	    |

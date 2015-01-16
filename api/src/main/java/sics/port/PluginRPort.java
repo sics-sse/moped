@@ -6,10 +6,16 @@ public class PluginRPort implements PluginPort {
 	private int id;
 	private String name;
 	private PlugInComponent plugin;
+	private Object data;
 
 	public PluginRPort(PlugInComponent plugin, String name) {
+		this(plugin, name, null);
+	}
+	
+	public PluginRPort(PlugInComponent plugin, String name, Object data) {
 		this.plugin = plugin;
 		this.name = name;
+		this.data = data;
 		id = plugin.getPortId(name);
 	}
 

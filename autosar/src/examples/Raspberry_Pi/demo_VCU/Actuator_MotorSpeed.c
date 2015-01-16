@@ -19,7 +19,7 @@ UInt32 speed_select_option = 0;
  *  	 (Y)Pirte_data|   |Selection_data (S)
  *    		         _|___|_
  *          	    |		|
- * PWM_drvier(Z)____| speed |
+ * PWM_driver(Z)____| speed |
  *          	 	|  SWC  |
  *         		    |_______|
  *              	    |
@@ -53,8 +53,12 @@ void MotorControlRunnable(void){
 
     }*/
 
-    if(pirte_write_speed == true){
+    //TODO: Make it better (fulhack)
+    if (select == 1) {
+    	pirte_write_speed = true;
+    }
 
+    if (pirte_write_speed == true) {
     	speed_value_pirte = Rte_IRead_MotorControlRunnable_MotorSwcReadDataFromPirteSwcPort1_dataInt32();
     	Rte_Call_MotorSWC_MotorSWCProto_MotorSwcWriteDataToIoHwPwmPort3_Write(&speed_value_pirte);
     	pirte_write_speed = false;
@@ -62,7 +66,7 @@ void MotorControlRunnable(void){
     	printf("infor: autopath speed: %d\r\n", speed_value_pirte);
 #endif
 
-    }else{
+    } else {
     	speed_value = Rte_IRead_MotorControlRunnable_MotorSwcReadDataFromTCUPort2_SpeedSteer();
     	Rte_Call_MotorSWC_MotorSWCProto_MotorSwcWriteDataToIoHwPwmPort3_Write(&speed_value[0]);
 #if SPEED_PRINT_DEBUG

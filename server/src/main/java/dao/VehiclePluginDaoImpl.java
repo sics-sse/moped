@@ -3,10 +3,12 @@ package dao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+
 import cache.VehiclePluginRecord;
 import messages.LinkContextEntry;
 import model.VehiclePlugin;
@@ -14,7 +16,17 @@ import model.VehiclePlugin;
 @Repository
 public class VehiclePluginDaoImpl implements VehiclePluginDao {
 	private short currentMaxPluginId;
-	private SessionFactory sessionFactory;
+	private SessionFactory sessionFactory = null;
+	
+	private DBConnection db;
+	
+	public VehiclePluginDaoImpl(DBConnection db) {
+		this.db = db;
+	}
+	
+	public VehiclePluginDaoImpl(SessionFactory sessionFactory) {
+		setSessionFactory(sessionFactory);
+	}
 
 	public short getCurrentMaxPluginId() {
 		return currentMaxPluginId;
@@ -32,7 +44,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
 	public VehiclePlugin getVehiclePlugin(String vin, String pluginName) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -47,7 +58,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		return vehiclePlugin;
 	}
 
-//	@Override
 //	public synchronized short generateVehiclePluginID(String vin) {
 //		if (currentMaxPluginId != -1) {
 //			currentMaxPluginId = (short) (currentMaxPluginId + 1);
@@ -69,7 +79,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 //		}
 //	}
 
-	@Override
 	public void saveVehiclePlugin(VehiclePlugin vehiclePlugin) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -77,7 +86,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		session.getTransaction().commit();
 	}
 
-//	@Override
 //	public void setIsInstallFlag(String vin, String vehiclePluginName) {
 //		Session session = sessionFactory.getCurrentSession();
 //		session.beginTransaction();
@@ -96,7 +104,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 //		session.getTransaction().commit();
 //	}
 
-	@Override
 	public synchronized void removeVehiclePlugin(String vin,
 			String vehiclePluginName) {
 		Session session = sessionFactory.getCurrentSession();
@@ -109,7 +116,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public List<VehiclePlugin> getPluginsInSpecificEcu(String vin,
 			int ecuReference) {
 		Session session = sessionFactory.getCurrentSession();
@@ -123,7 +129,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		return vehiclePlugins;
 	}
 
-	@Override
 	public List<VehiclePlugin> getVehilePlugins(String vin, int appId) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -136,7 +141,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		return vehiclePlugins;
 	}
 
-	@Override
 	public void saveVehiclePlugin(String vin, int appId, VehiclePluginRecord record) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -154,7 +158,6 @@ public class VehiclePluginDaoImpl implements VehiclePluginDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public int getApplicationId(String vin, String pluginName) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

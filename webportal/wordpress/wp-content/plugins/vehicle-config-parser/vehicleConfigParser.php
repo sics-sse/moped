@@ -69,7 +69,6 @@ enctype="multipart/form-data">
 </form>
 <?php
 }
-
 add_shortcode('vehicle_configuration_upload_form', 'vehicle_configuration_upload_form');
 
 if (isset($_POST['submit'])) {

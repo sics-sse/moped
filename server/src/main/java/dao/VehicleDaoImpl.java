@@ -1,16 +1,26 @@
 package dao;
 
 import java.util.List;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+
+import service.PluginWebServicePublisher;
 import common.AllocationStrategy;
 import model.Vehicle;
 
 @Repository
 public class VehicleDaoImpl implements VehicleDao {
 	private SessionFactory sessionFactory;
+	private DBConnection db;
+	
+	public VehicleDaoImpl(DBConnection db) {
+		this.db = db;
+	}
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -20,7 +30,6 @@ public class VehicleDaoImpl implements VehicleDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
 	public byte generateEcuId(String vin,
 			AllocationStrategy allocationStrategy, byte ecuReference) {
 		byte ecuId = 0;
@@ -52,21 +61,38 @@ public class VehicleDaoImpl implements VehicleDao {
 		return ecuId;
 	}
 
-	@Override
 	public Vehicle getVehicle(String vin) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Query query = session
-				.createQuery("from Vehicle v where v.VIN = ?");
-		query.setString(0, vin);
-		query.setMaxResults(1);
-		@SuppressWarnings("unchecked")
-		List<Vehicle> vehicles = query.list();
-		session.getTransaction().commit();  
-		return vehicles.get(0);
+		Vehicle vehicle = (Vehicle)db.getSingleResult("FROM Vehicle V where V.VIN = '" + vin + "'");
+				
+//		Vehicle vehicle = null;
+//		
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		
+//		try {
+//			Query query = session.createQuery("FROM Vehicle V where V.VIN = '" + vin + "'");
+//
+//			@SuppressWarnings("unchecked")
+//			List<Vehicle> vehicles = query.list();
+//			if (vehicles.isEmpty()) {
+//				System.out.println("WARNING: NO VEHICLE WAS FOUND WITH VIN " + vin + " in the database");
+//			}
+//			else {
+//				vehicle = vehicles.get(0);
+//			}
+//			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+		
+		return vehicle; 
 	}
 
-	@Override
 	public void addApp(String vin, int appId) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -89,7 +115,6 @@ public class VehicleDaoImpl implements VehicleDao {
 		session.getTransaction().commit();  
 	}
 
-	@Override
 	public void removeOneAppId(String vin, int uninstalledAppId) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -105,7 +130,6 @@ public class VehicleDaoImpl implements VehicleDao {
 		session.getTransaction().commit();  
 	}
 
-	@Override
 	public void saveVehicle(Vehicle vehicle) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

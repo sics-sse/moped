@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="CleanDialogSettings">
+		<item value="563" key="DIALOG_WIDTH"/>
+		<item value="false" key="BUILD_ALL"/>
+		<item value="true" key="TOGGLE_SELECTED"/>
+		<item value="473" key="DIALOG_HEIGHT"/>
+		<item value="true" key="BUILD_NOW"/>
+		<item value="100" key="DIALOG_Y_ORIGIN"/>
+		<item value="434" key="DIALOG_X_ORIGIN"/>
+	</section>
+	<section name="NewWizardAction">
+		<item value="org.eclipse.jdt.ui.wizards.JavaProjectWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.eclipse.jdt.ui.java"/>
+		</list>
+	</section>
 	<section name="org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog">
-		<item value="false" key="ShowDerived"/>
 		<item value="true" key="ShowStatusLine"/>
 		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;workingSet workingSetName=&quot;&quot;/&gt;" key="WorkingSet"/>
-		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/car/CarFactory.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/fresta/link/Linker.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/main/Main.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/fresta/pirte/PIRTE.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/ecm-linux/src/main/java/main/Main.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/messages/UninstallPacket.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/messages/InstallPacket.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/custom/install_handle.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/pom.xml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/main/Main.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/messages/Packet.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/VehiclePluginDaoImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/pom.xml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/VehicleConfigDao.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/VehicleConfig.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/Port.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/Vehicle.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/wp-load.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/VehicleDaoImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/PluginPortConfig.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/PluginLinkConfig.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/VehicleConfigDaoImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/AppConfigDaoImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/messages/InitPacket.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/resources/FrestaConfig.hbm.xml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/AppConfig.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/PluginConfig.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/Ecu.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/dao/ApplicationDaoImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/DatabasePlugin.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/Link.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/model/Application.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/service/PluginWebServices.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/mina/ServerHandler.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/custom/upload_form_handle.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/fresta/pirte/PIRTE.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/custom/globalVariables.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/simulator/src/main/java/sics/plugin/PlugInComponent.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/wp-content/plugins/moped-api/moped_functions.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/service/PluginWebServicePublisher.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/java/service/PluginWebServicesImpl.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/ecm-core/src/main/java/network/external/ClientHandler.java&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/wp-content/plugins/table-display-form-for-fresta/table-display-form-for-fresta.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/webportal/wordpress/custom/moped_functions.php&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;infoNode path=&quot;/server/src/main/webapp/WEB-INF/beans.xml&quot; type=&quot;1&quot;/&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<item value="false" key="ShowDerived"/>
 		<section name="DialogBoundsSettings">
-			<item value="620" key="DIALOG_WIDTH"/>
-			<item value="53" key="DIALOG_Y_ORIGIN"/>
-			<item value="350" key="DIALOG_X_ORIGIN"/>
-			<item value="576" key="DIALOG_HEIGHT"/>
+			<item value="760" key="DIALOG_WIDTH"/>
 			<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+			<item value="724" key="DIALOG_HEIGHT"/>
+			<item value="0" key="DIALOG_Y_ORIGIN"/>
+			<item value="521" key="DIALOG_X_ORIGIN"/>
 		</section>
 	</section>
 </section>

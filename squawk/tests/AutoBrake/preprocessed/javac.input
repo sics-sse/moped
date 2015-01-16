@@ -1,0 +1,1 @@
+ -bootclasspath tests/AutoBrake/classes:tests/AutoBrake/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/moped/squawk/tests/AutoBrake/. -d tests/AutoBrake/classes -g tests/AutoBrake/preprocessed/tests/AutoBrake.java

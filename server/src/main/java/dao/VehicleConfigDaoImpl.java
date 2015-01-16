@@ -1,20 +1,38 @@
 package dao;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+
+import service.PluginWebServicePublisher;
 import common.GlobalVariables;
+import model.Application;
 import model.Ecu;
 import model.Link;
 import model.Port;
+import model.Vehicle;
 import model.VehicleConfig;
 
 @Repository
 public class VehicleConfigDaoImpl implements VehicleConfigDao {
-	private SessionFactory sessionFactory;
+	private SessionFactory sessionFactory = null;
+	private DBConnection db;
+	
+	public VehicleConfigDaoImpl(DBConnection db) {
+		this.db = db;
+	}
+	
+	public VehicleConfigDaoImpl(SessionFactory sessionFactory) {
+		setSessionFactory(sessionFactory);
+	}
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -24,22 +42,40 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
+	//TODO: This kind of operations could be encapsulated
 	public VehicleConfig getVehicleConfig(int vehicleConfigId) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Query query = session
-				.createQuery("from VehicleConfig v where v.id = ?");
-		query.setInteger(0, vehicleConfigId);
-		query.setMaxResults(1);
-		@SuppressWarnings("unchecked")
-		List<VehicleConfig> vehicleConfigs = query.list();
-		VehicleConfig vehicleConfig = vehicleConfigs.get(0);
-		session.getTransaction().commit();
-		return vehicleConfig;
+		VehicleConfig config = (VehicleConfig)db.getSingleResult(
+				"from VehicleConfig v where v.id = '" + vehicleConfigId + "'");
+		
+//		VehicleConfig config = null;
+//		
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		
+//		try {
+//			Query query = session.createQuery("from VehicleConfig v where v.id = '" + vehicleConfigId + "'");
+//
+//			@SuppressWarnings("unchecked")
+//			List<VehicleConfig> configs = query.list();
+//			if (configs.isEmpty()) {
+//				System.out.println("WARNING: NO CONFIGURATION WAS FOUND FOR VEHICLE WITH ID " + vehicleConfigId + " in the database");
+//			} 
+//			else {
+//				config = configs.get(0);
+//			}
+//			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+
+		return config;
 	}
 
-	@Override
 	public VehicleConfig getVehicleConfig(String vehicle, String band) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -55,7 +91,6 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 		return vehicleConfig;
 	}
 	
-	@Override
 	public void savePort(Port port) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -63,23 +98,84 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public void saveEcu(Ecu ecu) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
 		session.save(ecu);
 		session.getTransaction().commit();
 	}
+	
+//	//TODO: AK_new
+//	private test.Ecu getEcu(String ecuName) {
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		test.Ecu ecu = null;
+//		
+//		try {
+//			List matchList = session.createQuery("FROM Ecu E WHERE E.name = '" + ecuName + "'").list();
+//			if (!matchList.isEmpty())
+//				ecu = (test.Ecu)matchList.get(0);
+//			else
+//				ecu = new test.Ecu(ecuName);
+//		}
+//		catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+//		
+//		return ecu;
+//	}
 
-	@Override
 	public void saveVehicleConfig(VehicleConfig vehicleConfig) {
+		//TODO: See http://www.tutorialspoint.com/hibernate/hibernate_sessions.htm
+		// 		The session objects should not be kept open for a long time because 
+		//		they are not usually thread safe and they should be created and destroyed them as needed. 
+		//Thus: Session session = factory.openSession();
+		//		Transaction tx = session.beginTransaction();
+		//		tx.commit();
+		//		finally { session.close(); }
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
 		session.save(vehicleConfig);
 		session.getTransaction().commit();
 	}
+	
+//	//TODO: AK_new
+//	public void newSaveVehicleConfig(String model, String version, List<String> ecuNames) {
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		
+//		try {
+//			System.out.println("searching for model: '" + model + "'; version: '" + version + "'");
+//			List matchList = session.createQuery("FROM VehicleConfig V WHERE V.model = '" + 
+//					model + "' AND version = '" + version + "'").list();
+//			System.out.println("matchList.size: " + matchList.size());
+//			
+//			if (matchList.isEmpty()) {
+//				test.VehicleConfig config = new test.VehicleConfig(model, version);
+//			
+//				HashSet<test.Ecu> ecus = new HashSet<test.Ecu>(ecuNames.size());
+//				for (Iterator<String> iterator = ecuNames.iterator(); iterator.hasNext();) {
+//					ecus.add(getEcu(iterator.next()));
+//				}
+//				config.setEcus(ecus);
+//				
+//				session.save(config);
+//			}
+//			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+//	}
 
-	// @Override
 	// public LinkContextReceiverFormatForPV getLinkContext4VPort(String
 	// vehicleName,
 	// String brandName, byte ecuId, String portName, int remotePluginPortId) {
@@ -117,7 +213,6 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 	// return null;
 	// }
 
-//	@Override
 //	public byte getVPortId(String vehicleName, String brandName, byte ecuId,
 //			String portName) {
 //		Session session = sessionFactory.getCurrentSession();
@@ -152,19 +247,34 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 //		return -1;
 //	}
 
-	@Override
 	public int getSendingPortId(int vehicleConfigId, int recipientEcu) {
 		int sendingPortId = -1;
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Query query = session
-				.createQuery("from VehicleConfig vc where vc.id = ?");
-		query.setInteger(0, vehicleConfigId);
-		query.setMaxResults(1);
+		
+//		VehicleConfig config = (VehicleConfig)db.getSingleResult(
+//				"FROM VehicleConfig vc WHERE vc.id = " + vehicleConfigId);
+		
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+		
+//		try {
+//			Query query = session.
+//					createQuery("FROM VehicleConfig vc where vc.id = " + vehicleConfigId);
+//
+//			@SuppressWarnings("unchecked")
+//			List<VehicleConfig> configs = query.list();
+//			if (!configs.isEmpty()) {
+//				System.out.println("WARNING: NO VEHICLE CONFIGURATION WAS FOUND FOR VEHICLE_CONFIG_ID " + 
+//									vehicleConfigId + " in the database");
+//			} 
+//			else {
+		
+//				Set<Link> links = configs.get(0).getLinks();
+//		if (config != null) {
+			
 		@SuppressWarnings("unchecked")
-		List<VehicleConfig> vehicleConfigs = query.list();
-		VehicleConfig vehicleConfig = vehicleConfigs.get(0);
-		Set<Link> links = vehicleConfig.getLinks();
+		List<Link> links = (List<Link>)db.getAllResults(
+				"FROM Link l WHERE l.vehicleConfig = " + vehicleConfigId);
+			
 		for (Link link : links) {
 			int type = link.getType();
 			if(type == GlobalVariables.SWC_PORT_TYPE1 ) {
@@ -178,23 +288,47 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 				}
 			}
 		}
-		session.getTransaction().commit();
+		
+//		}
+			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+		
 		return sendingPortId;
 	}
 
-	@Override
+	//TODO: compare with getSendingPortId() and refactor
 	public int getCallbackPortId(int vehicleConfigId, int sendingEcu) {
 		int callbackPortId = -1;
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Query query = session
-				.createQuery("from VehicleConfig vc where vc.id = ?");
-		query.setInteger(0, vehicleConfigId);
-		query.setMaxResults(1);
+		
+//		List<VehicleConfig> configs = db.getAllResults("FROM VehicleConfig vc WHERE vc.id = " + vehicleConfigId);
+		
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		
+//		try {
+//			Query query = session.
+//					createQuery("FROM VehicleConfig vc WHERE vc.id = " + vehicleConfigId);
+//
+//			@SuppressWarnings("unchecked")
+//			List<VehicleConfig> configs = query.list();
+//			if (!configs.isEmpty()) {
+//				System.out.println("WARNING: NO VEHICLE CONFIGURATION WAS FOUND FOR VEHICLE_CONFIG_ID " + 
+//									vehicleConfigId + " in the database");
+//			} 
+//			else {
+//				Set<Link> links = configs.get(0).getLinks();
+		
 		@SuppressWarnings("unchecked")
-		List<VehicleConfig> vehicleConfigs = query.list();
-		VehicleConfig vehicleConfig = vehicleConfigs.get(0);
-		Set<Link> links = vehicleConfig.getLinks();
+		List<Link> links = (List<Link>)db.getAllResults(
+				"FROM Link l WHERE l.vehicleConfig = " + vehicleConfigId);
+		
 		for (Link link : links) {
 			int type = link.getType();
 			if(type == GlobalVariables.SWC_PORT_TYPE1 ) {
@@ -202,17 +336,26 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 				if(fromEcuId == sendingEcu) {
 					int toEcuId = link.getToEcuId();
 					if(toEcuId == GlobalVariables.ECM) {
-						callbackPortId = link.getFromPortId();
+						callbackPortId = link.getFromPortId(); //TODO: Is this really correct???
 						break;
 					}
 				}
 			}
 		}
-		session.getTransaction().commit();
+//			}
+			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+		
 		return callbackPortId;
 	}
 
-	@Override
 	public void saveLink(Link link) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -220,7 +363,6 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public int[] getType2PortId(String vehicle, String brand, int fromEcuId, int toEcuId) {
 		int[] result = new int[2];
 		Session session = sessionFactory.getCurrentSession();
@@ -251,7 +393,6 @@ public class VehicleConfigDaoImpl implements VehicleConfigDao {
 		return null;
 	}
 /*
-	@Override
 	public int getType2RPortId(String vehicle, String brand, int remoteEcuId) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

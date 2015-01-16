@@ -1,20 +1,29 @@
 <?php	
+	$webServiceAddress = "http://appz-ext.sics.se:9990/moped/pws?wsdl";
+// 	$webServiceAddress = "http://localhost:9990/moped/pws?wsdl";
+	
+	try {
+		$client = new SoapClient($webServiceAddress,
+					array('cache_wsdl' => WSDL_CACHE_NONE));
+	} catch (Exception $ex) {}
+
 	function getWebServiceAddress()
 	{
-		$webServiceAddress = "http://localhost:8080/server/pluginWebServices?wsdl";
+		global $webServiceAddress;
+// 		$webServiceAddress = "http://localhost:8080/server/pluginWebServices?wsdl";
 		//$webServiceAddress = "http://appz.i.sics.se:8080/server/pluginWebServices?wsdl";
 // 		$webServiceAddress = "http://appz-ext.sics.se:8080/server/pluginWebServices?wsdl";
 		return $webServiceAddress;
 	}
 	
-	function getVIN()
-	{
+	function getVIN() {
 		global $wpdb;
-		$wpdb->show_errors();
-		$current_user = wp_get_current_user();
-		$user_id = $current_user->ID;
-		$sql = "select v.VIN from User_vehicle_association a JOIN Vehicle v ON a.vehicleID = v.id where a.userID = $user_id and a.defaultVehicle = 1";
+	
+		$user_id = wp_get_current_user()->ID;
+		$sql = "select v.VIN from User_vehicle_association a JOIN Vehicle v ON a.vehicleID = v.id
+		where a.userID = $user_id and a.defaultVehicle = 1";
 		$vin = $wpdb->get_var($sql);
+	
 		return $vin;
 	}
 ?>

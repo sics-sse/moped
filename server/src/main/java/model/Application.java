@@ -69,9 +69,7 @@ public class Application implements Serializable {
 		this.version = version;
 	}
 
-	@OneToMany(mappedBy = "application", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER
-
-	)
+	@OneToMany(mappedBy = "application", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	public Set<DatabasePlugin> getDatabasePlugins() {
 		return databasePlugins;
 	}

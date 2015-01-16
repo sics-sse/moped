@@ -30,10 +30,10 @@ public class PluginConfig implements Serializable {
 
 	}
 
-	public PluginConfig(String name, byte ecuId, AppConfig appConfig) {
+	public PluginConfig(String name, byte ecuId) { //, AppConfig appConfig) {
 		this.name = name;
 		this.ecuId = ecuId;
-		this.appConfig = appConfig;
+//		this.appConfig = appConfig;
 	}
 
 	@Id

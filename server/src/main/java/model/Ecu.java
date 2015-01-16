@@ -29,6 +29,10 @@ public class Ecu implements Serializable {
 	
 	public Ecu() {
 	}
+	
+	public Ecu(String name) {
+		this.name = name;
+	}
 
 	public Ecu(int ecuId, String name, String function, String manufactory,
 			String description) {

@@ -38,9 +38,9 @@ public class AutoBrake extends PlugInComponent {
 
 	public void doFunction() {
 		String data;
+		
+		VM.println("[AutoBrake is running]");
 		while (true) {
-			VM.println("[AutoBrake is running]");
-
 			Object obj = ab.receive();
 			if(obj != null) {
 				String distanceStr = (String)obj;
@@ -55,10 +55,17 @@ public class AutoBrake extends PlugInComponent {
 					brakeLight.write("1|0"); // "pin_nr (red/yellow_1/yellow_2) | on/off (0/1)" // Turn on red light
 				}
 				else {
+					brake.write(0);
 					VM.jnaSetSelect(0);
 					
 					brakeLight.write("1|1"); // "pin_nr (red/yellow_1/yellow_2) | on/off (0/1)" // Turn off red light
 				}
+			}
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				VM.println("Interrupted.\r\n");
 			}
 		}
 	}

@@ -53,6 +53,7 @@ function upload_install() {
 register_activation_hook( __FILE__, 'upload_install' );
 */
 
+require_once(__DIR__."/../../custom/upload_form_handle.php");
 
 function wptuts_styles_with_the_lot()  
 {  
@@ -101,7 +102,8 @@ add_action( 'wp_enqueue_scripts', 'upload_scripts_with_jquery' );
 function new_app_registration_form(){
 ?>		
 <div id="respond">
-	<form id="upload_application_form" method="post" action="wordpress/custom/upload_form_handle.php" enctype="multipart/form-data">
+<!-- 	<form id="upload_application_form" method="post" action="wordpress/custom/upload_form_handle.php" enctype="multipart/form-data"> -->
+		<form id="upload_application_form" method="post" enctype="multipart/form-data">
 		<p>
 			<label for="applicationName">Application Name <span class="required">*</span></label>
 			<input type="text" name="applicationName" id="applicationName" value="" required />
@@ -129,4 +131,8 @@ function new_app_registration_form(){
 <?php
 }
 add_shortcode('new_app_registration_form', 'new_app_registration_form');
+
+if (isset($_POST['submit_upload_app'])) {
+	insert_new_app($_POST['applicationName'], $_POST['publisher'], $_POST['version'], $_POST['numOfPlugin']);
+}
 ?>

@@ -2459,12 +2459,12 @@ NOINLINE int VM_lookup_s(int key, Address array) {
 }
 
 Address *ALL_LITERALS[4];
-Address LITERALS_FOR_com_sun_squawk_GC[1] = {NULL};
-Address LITERALS_FOR_com_sun_squawk_VM[2] = {
-    NULL, NULL};
 Address LITERALS_FOR_com_sun_squawk_GarbageCollector[13] = {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
     NULL, NULL, NULL};
+Address LITERALS_FOR_com_sun_squawk_VM[2] = {
+    NULL, NULL};
+Address LITERALS_FOR_com_sun_squawk_GC[1] = {NULL};
 Address LITERALS_FOR_com_sun_squawk_CheneyCollector[72] = {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
@@ -2498,9 +2498,9 @@ Address getObjectForCStringLiteral(int key, int klassIndex, const char *cstr) {
 
     if (!initialized) {
         initialized = true;
-        ALL_LITERALS[3] =  LITERALS_FOR_com_sun_squawk_GC;
-        ALL_LITERALS[0] =  LITERALS_FOR_com_sun_squawk_VM;
         ALL_LITERALS[1] =  LITERALS_FOR_com_sun_squawk_GarbageCollector;
+        ALL_LITERALS[0] =  LITERALS_FOR_com_sun_squawk_VM;
+        ALL_LITERALS[3] =  LITERALS_FOR_com_sun_squawk_GC;
         ALL_LITERALS[2] =  LITERALS_FOR_com_sun_squawk_CheneyCollector;
     }
 

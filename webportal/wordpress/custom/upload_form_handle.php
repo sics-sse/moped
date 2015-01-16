@@ -1,69 +1,70 @@
 <?php
-	require_once($_SERVER['DOCUMENT_ROOT'].'/wordpress/wp-load.php' );
-	require_once(ABSPATH . "custom/globalVariables.php");
-	require_once(ABSPATH . "custom/xml_parser.php");
+// 	require_once($_SERVER['DOCUMENT_ROOT'].'/wordpress/wp-load.php' );
+// 	require_once(ABSPATH . "custom/globalVariables.php");
+// 	require_once(ABSPATH . "custom/xml_parser.php");
 
-	class Plugin {
-		private $pluginName;
-		private $package;
-		private $className;
-		private $reference;
+// 	class Plugin {
+// 		private $pluginName;
+// 		private $package;
+// 		private $className;
+// 		private $reference;
 		
-		public function __construct($plugin_name, $package, $className, $reference) {
-			$this->plugin_name = $plugin_name;
-			$this->package = $package;
-			$this->className = $className;
-			$this->reference = $reference;
-		}
+// 		public function __construct($plugin_name, $package, $className, $reference) {
+// 			$this->plugin_name = $plugin_name;
+// 			$this->package = $package;
+// 			$this->className = $className;
+// 			$this->reference = $reference;
+// 		}
 		
-		public function getPluginName()
-		{
-			return $pluginName;
-		}
+// 		public function getPluginName()
+// 		{
+// 			return $pluginName;
+// 		}
 		
-		public function getPackage()
-		{
-			return $package;
-		}
+// 		public function getPackage()
+// 		{
+// 			return $package;
+// 		}
 		
-		public function getClassName()
-		{
-			return $className;
-		}
+// 		public function getClassName()
+// 		{
+// 			return $className;
+// 		}
 		
-		public function getReference()
-		{
-			return $reference;
-		}
-	}
+// 		public function getReference()
+// 		{
+// 			return $reference;
+// 		}
+// 	}
 	
-	function extractFullClassName($path) {
-                //print("testing...");
-                if(!file_exists($path))
-                {
-                        printf("zip file not found");
-                        return false;
-                } else {
-                        $zip = zip_open($path);
-                        while($zip_entry = zip_read($zip)) {
-                                $filename = zip_entry_name($zip_entry);
-                                if(($dotPos = strpos($filename, '.')) !== false) {
-                                        $j2mePos = strpos($filename, 'j2meclasses');
-                                        if($j2mePos !== false) {
-                                                $j2mePos += 12;
-                                                $res = substr($filename, $j2mePos, $dotPos - $j2mePos);
-                                                return $res;
-                                        }
-                                }
-                        }
-                        return false;
-                }
-        }
+// 	function extractFullClassName($path) {
+//                 //print("testing...");
+//                 if(!file_exists($path))
+//                 {
+//                         printf("zip file not found");
+//                         return false;
+//                 } else {
+//                         $zip = zip_open($path);
+//                         while($zip_entry = zip_read($zip)) {
+//                                 $filename = zip_entry_name($zip_entry);
+//                                 if(($dotPos = strpos($filename, '.')) !== false) {
+//                                         $j2mePos = strpos($filename, 'j2meclasses');
+//                                         if($j2mePos !== false) {
+//                                                 $j2mePos += 12;
+//                                                 $res = substr($filename, $j2mePos, $dotPos - $j2mePos);
+//                                                 return $res;
+//                                         }
+//                                 }
+//                         }
+//                         return false;
+//                 }
+//         }
 	
 	function insert_new_app($applicationName, $publisher, $version, $numOfPlugin)
 	{
-		$reply = "";
 		global $wpdb;
+		
+		$reply = "";
 		$wpdb->show_errors();
 		$is_exist = $wpdb->get_var($wpdb->prepare("SELECT COUNT(applicationId) from Application where applicationName = %s AND version = %s", $applicationName, $version));
 		if($is_exist == 0)
@@ -172,108 +173,105 @@
 			return "<font color='red'>$reply<br />Error! The version ($version) of your application ($applicationName) existed.</font>";
 	}
 	
-	function invoke_upgrade_webservice($old_app_id) {
-		$webServiceAddress = getWebServiceAddress();
-		ini_set("soap.wsdl_cache_enabled", "0");  
-		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
-		try  
-		{  
-			$param = array('arg0' => $old_app_id);  
-			$client->setUpgradeFlag($param);  
-		} catch (SoapFault $exception) {  
-			print $exception;
-		}
-	}
+// 	function invoke_upgrade_webservice($old_app_id) {
+// 		$webServiceAddress = getWebServiceAddress();
+// 		ini_set("soap.wsdl_cache_enabled", "0");  
+// 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
+// 		try  
+// 		{  
+// 			$param = array('arg0' => $old_app_id);  
+// 			$client->setUpgradeFlag($param);  
+// 		} catch (SoapFault $exception) {  
+// 			print $exception;
+// 		}
+// 	}
 	
-	function invoke_generateSuite_webservice($zipFile, $fullClassName) {
-		$reply = "";
-		$webServiceAddress = getWebServiceAddress();
-		ini_set("soap.wsdl_cache_enabled", "0");  
-		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
-		try  
-		{  
-			$param = array('arg0' => $zipFile, 'arg1' => $fullClassName);  
-			$reply = $client->generateSuite($param);
-		} catch (SoapFault $exception) {  
-			print $exception;
-		}
-		return $reply->return;
-	}
+// 	function invoke_generateSuite_webservice($zipFile, $fullClassName) {
+// 		$reply = "";
+// 		$webServiceAddress = getWebServiceAddress();
+// 		ini_set("soap.wsdl_cache_enabled", "0");  
+// 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
+// 		try  
+// 		{  
+// 			$param = array('arg0' => $zipFile, 'arg1' => $fullClassName);  
+// 			$reply = $client->generateSuite($param);
+// 		} catch (SoapFault $exception) {  
+// 			print $exception;
+// 		}
+// 		return $reply->return;
+// 	}
 	
-	function read_full_classname($file_path) {
-		if (eregi(".zip$",$file_path)){ 
-			$zip = zip_open($file_path);
-			if($zip) {
-				while($zip_entry = zip_read($zip)) {
-					$file = zip_entry_name($zip_entry);
-					if(strpos($file, '$') == false) {
-						$file = substr($file, 0, strlen($file)-6);
-						$file = str_replace("/", ".", $file);
-						return $file;
-					}
+// 	function read_full_classname($file_path) {
+// 		if (eregi(".zip$",$file_path)){ 
+// 			$zip = zip_open($file_path);
+// 			if($zip) {
+// 				while($zip_entry = zip_read($zip)) {
+// 					$file = zip_entry_name($zip_entry);
+// 					if(strpos($file, '$') == false) {
+// 						$file = substr($file, 0, strlen($file)-6);
+// 						$file = str_replace("/", ".", $file);
+// 						return $file;
+// 					}
 					
-				}
-			}
-		 }else{ 
-			return "";
-		 }
-		
-	}
+// 				}
+// 			}
+// 		 }else{ 
+// 			return "";
+// 		 }
+// 	}
 	
-	function creat_path_for_new_app($applicationName, $version)
-	{
-		$basedir = dirname(__FILE__) . DIRECTORY_SEPARATOR . "uploaded" . DIRECTORY_SEPARATOR . $applicationName . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
-		mkdirs($basedir);
-	}
+// 	function creat_path_for_new_app($applicationName, $version)
+// 	{
+// 		$basedir = dirname(__FILE__) . DIRECTORY_SEPARATOR . "uploaded" . DIRECTORY_SEPARATOR . $applicationName . DIRECTORY_SEPARATOR . $version . DIRECTORY_SEPARATOR;
+// 		mkdirs($basedir);
+// 	}
 	
-	function mkdirs($dir)
-	{
-		if(!is_dir($dir))
-		{
-			if(!mkdirs(dirname($dir))){
-				return false;
-			}
-			if(!mkdir($dir,0777)){
-				return false;
-			}
-		}
-		return true;
-	}
+// 	function mkdirs($dir)
+// 	{
+// 		if(!is_dir($dir))
+// 		{
+// 			if(!mkdirs(dirname($dir))){
+// 				return false;
+// 			}
+// 			if(!mkdir($dir,0777)){
+// 				return false;
+// 			}
+// 		}
+// 		return true;
+// 	}
 
-	function pluginConfigParser($appId, $path) {
-		$webServiceAddress = getWebServiceAddress();
-		//ini_set("soap.wsdl_cache_enabled", "1");  
-		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
-		try  
-		{  
-			$param = array('arg0' => $appId,'arg1' => $path);  
-			$ret = $client->parsePluginConfiguration($param);
-			return $ret;
-		} catch (SoapFault $exception) {  
-			print $exception;
-			return false;
-		}
-	}
+// 	function pluginConfigParser($appId, $path) {
+// 		$webServiceAddress = getWebServiceAddress();
+// 		//ini_set("soap.wsdl_cache_enabled", "1");  
+// 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
+// 		try  
+// 		{  
+// 			$param = array('arg0' => $appId,'arg1' => $path);  
+// 			$ret = $client->parsePluginConfiguration($param);
+// 			return $ret;
+// 		} catch (SoapFault $exception) {  
+// 			print $exception;
+// 			return false;
+// 		}
+// 	}
 	
 	
-	
-	if($_POST['applicationName'] !="" && $_POST['version'] != "" ) {
-		$applicationName = $_POST['applicationName'];
-		$publisher = $_POST['publisher'];
-		$version = $_POST['version'];
+// 	if($_POST['applicationName'] !="" && $_POST['version'] != "" ) {
+// 		$applicationName = $_POST['applicationName'];
+// 		$publisher = $_POST['publisher'];
+// 		$version = $_POST['version'];
 		
-		$plugins = array();
-		$numOfPlugin = intval($_POST['numOfPlugin']);
+// 		$plugins = array();
+// 		$numOfPlugin = intval($_POST['numOfPlugin']);
 	
 	
 	
-		$reply = insert_new_app($applicationName, $publisher, $version, $numOfPlugin);
+// 		$reply = insert_new_app($applicationName, $publisher, $version, $numOfPlugin);
 ?>
-    <?php echo $reply; ?><br />
-	<button onclick="history.go(-1);">Back </button>
+
 <?php
-}
+// }
 	
 //creat_path_for_new_app($applicationName, $version);
-    die();
+//     die();
 ?>

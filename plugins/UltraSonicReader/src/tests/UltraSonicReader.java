@@ -36,15 +36,21 @@ public class UltraSonicReader extends PlugInComponent {
 
 	public void doFunction() {
 		String data;
-		for (int i = 0; i < 1000; i++) {
-			VM.println("[UltraSonicReader is running]");
-
+		int cnt = 0;
+		
+		VM.println("[UltraSonicReader is running]");
+		while (true) {
 			int ultraSonicData = ff.readInt();
-			VM.print("UltraSonicData:");
-			VM.println(ultraSonicData);
 			fs.send(String.valueOf(ultraSonicData));
+
+			cnt++;
+			if (cnt >= 10) {
+				VM.println("UltraSonicData:" + ultraSonicData);
+				cnt = 0;
+			}
+			
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				VM.println("Interrupted.\r\n");
 			}

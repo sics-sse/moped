@@ -1,15 +1,27 @@
 package dao;
 
 import java.util.List;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
+
+import service.PluginWebServicePublisher;
+import model.AppConfig;
 import model.Application;
 
 @Repository
 public class ApplicationDaoImpl implements ApplicationDao {
 	private SessionFactory sessionFactory;
+	
+	private DBConnection db;
+	
+	public ApplicationDaoImpl(DBConnection db) {
+		this.db = db;
+	}
 
 	public SessionFactory getSessionFactory() {
 		return sessionFactory;
@@ -19,7 +31,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	@Override
 	public void saveApplication(Application application) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -27,7 +38,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public String getVersion(String applicationName) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -41,21 +51,39 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		return version;
 	}
 
-	@Override
+	//TODO: Encapsulate
 	public Application getApplication(int appID) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		Query query = session
-				.createQuery("from Application a where a.applicationId = :appID");
-		query.setInteger("appID", appID);
-		query.setMaxResults(1);
-		@SuppressWarnings("unchecked")
-		List<Application> apps = query.list();
-		session.getTransaction().commit();
-		return apps.get(0);
+		Application app = (Application)db.getSingleResult(
+				"FROM Application a WHERE a.applicationId = " + appID);
+		
+//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
+//		Transaction tx = session.beginTransaction();
+//		
+//		try {
+//			Query query = session.
+//					createQuery("FROM Application a WHERE a.applicationId = " + appID);
+//
+//			@SuppressWarnings("unchecked")
+//			List<Application> apps = query.list();
+//			if (apps.isEmpty()) {
+//				System.out.println("WARNING: NO APPLICATION WAS FOUND FOR APP_ID " + appID + " in the database");
+//			} 
+//			else {
+//				app = apps.get(0);
+//			}
+//			
+//			tx.commit();
+//		} catch (HibernateException ex) {
+//			if (tx != null) 
+//				tx.rollback();
+//			ex.printStackTrace(); 
+//		} finally {
+//			session.close();
+//		}
+
+		return app;
 	}
 
-	@Override
 	public void setHasNewVersionFlag(int oldAppID) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -69,7 +97,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		session.getTransaction().commit();
 	}
 
-	@Override
 	public int getNewestApplication(int oldAppID) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -79,6 +106,10 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		query.setMaxResults(1);
 		@SuppressWarnings("unchecked")
 		List<Application> apps = query.list();
+		
+		if (apps.isEmpty())
+			return -1;
+		
 		Application app = apps.get(0);
 		String name = app.getApplicationName();
 		query = session
@@ -92,7 +123,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		return appId;
 	}
 
-	@Override
 	public boolean hasApplication(String name, String version) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();
@@ -109,7 +139,6 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		}
 	}
 
-	@Override
 	public void updateApplicationVersion(String applicationName, String version) {
 		Session session = sessionFactory.getCurrentSession();
 		session.beginTransaction();

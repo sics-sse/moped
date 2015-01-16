@@ -629,19 +629,19 @@ public abstract class ObjectMemoryLoader {
             }
         }
 
-        if (parent.getHash() != hash) {
-        	String helpText = "";
-      	
-
+//        if (parent.getHash() != hash) {
+//        	String helpText = "";
+//      	
+///*if[FLASH_MEMORY]*/
 //        	if ("spotsuite://library".equals(parent.getURI())) {
 //        		helpText += "The application you are trying to run was not built against the library that is installed\n";
 //        		helpText += "Either rebuild your application and re-deploy, or install the correct library\n";
 //        	} else if ("memory:bootstrap".equals(parent.getURI())) {
 //        		helpText += "The installed library was not built against the installed version of the Java VM\n";
 //        	}
-
-            throw new Error(helpText + "invalid hash for parent (" + parent.getURI() + "): expected " + hash + ", received " + parent.getHash());           
-        }
+///*end[FLASH_MEMORY]*/
+//            throw new Error(helpText + "invalid hash for parent (" + parent.getURI() + "): expected " + hash + ", received " + parent.getHash());           
+//        }
         
         return parent;
     }
