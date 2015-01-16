@@ -181,7 +181,7 @@ public class ClientHandler extends IoHandlerAdapter {
 					.getPortLinkingContext();
 			if(portLinkingContext == null) {
 				System.out.println("portLinkingContext is null");
-				System.exit(-1);
+//				System.exit(-1);
 			} else {
 				System.out.println("portLinkingContext is not null");
 				//TEMP_DBG
