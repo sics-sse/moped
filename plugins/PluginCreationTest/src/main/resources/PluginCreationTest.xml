@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	
+	<plugins>
+		<plugin>
+			<name>PluginCreationTest</name>
+			<ecu>2</ecu>  <!-- Allocation to Vehicle Control Unit (VCU) -->
+
+			<ports>
+			</ports>
+		</plugin>
+	</plugins>
+	
+	<links>
+	</links>
+</app>

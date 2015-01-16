@@ -1,9 +1,11 @@
 package dao;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import model.AppConfig;
 import model.DatabasePlugin;
 
 @Repository
@@ -27,26 +29,37 @@ public class DatabasePluginDaoImpl implements DatabasePluginDao {
 	public DatabasePlugin getDatabasePlugin(int databasePluginId) {
 		DatabasePlugin plugin = (DatabasePlugin)db.getSingleResult(
 				"FROM DatabasePlugin d WHERE d.id = " + databasePluginId);
-		
-//		Session session = sessionFactory.getCurrentSession();
-//		session.beginTransaction();
-//		Query query = session.createQuery("from DatabasePlugin d where d.id = :databasePluginId");
-//		query.setInteger("databasePluginId", databasePluginId);
-//		query.setMaxResults(1);
-//		@SuppressWarnings("unchecked")
-//		List<DatabasePlugin> dps = query.list();
-//		DatabasePlugin databasePlugin = dps.get(0);
-//		session.getTransaction().commit();  
-//		return databasePlugin;
+
+		return plugin;
+	}
+	
+	public DatabasePlugin getDatabasePlugin(DatabasePlugin dbPlugin) {
+		//TODO: Perhaps we should have fewer entries here...
+		DatabasePlugin plugin = (DatabasePlugin)db.getSingleResult(
+				"FROM DatabasePlugin d WHERE d.fullClassName = '" + dbPlugin.getFullClassName() + "'" + 
+				" AND d.location = '" + dbPlugin.getLocation() + "'" +
+				" AND d.name = '" + dbPlugin.getName() + "'" +
+				" AND d.zipLocation = '" + dbPlugin.getZipLocation() + "'" +
+				" AND d.zipName = '" + dbPlugin.getZipName() + "'" +
+				" AND d.reference = " + dbPlugin.getReference()
+				);
 		
 		return plugin;
 	}
 
-	public void saveDatabasePlugin(DatabasePlugin databasePlugin) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(databasePlugin);
-		session.getTransaction().commit();  
+	public int saveDatabasePlugin(DatabasePlugin databasePlugin) {
+//		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
+//		session.save(databasePlugin);
+//		session.getTransaction().commit();  
+		
+		DatabasePlugin storedPlugin = getDatabasePlugin(databasePlugin);
+		if (storedPlugin != null) {
+			return storedPlugin.getId();
+		}
+		else {
+			return db.addEntry(databasePlugin);
+		}
 	}
 
 }

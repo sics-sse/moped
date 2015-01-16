@@ -35,7 +35,7 @@ public class DatabasePlugin implements Serializable {
 	public DatabasePlugin(String name, String zipName, String fullClassName,
 			String strategy, int reference, String location, String zipLocation) {
 		this.name = name;
-		this.name = name;
+		this.zipName = zipName;
 		this.fullClassName = fullClassName;
 		this.strategy = strategy;
 		this.reference = reference;

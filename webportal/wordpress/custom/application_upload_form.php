@@ -23,24 +23,25 @@ License: GPL
 */
 
 // require_once("upload_form_handle.php");
+require_once("globalVariables.php");
 
 function application_upload_form(){
 ?>		
 <div id="respond">
 		<form id="upload_application_form" method="post" enctype="multipart/form-data">
-		<p>
-			<label for="applicationName">Application Name</label>
-			<input type="text" name="applicationName" id="applicationName" value="" /> <!-- required /> --> 
-		</p>
-		<p>
-			<label for="version">Version</label>
-			<input type="text" name="version" id="version" value="" /> <!-- required /> --> 
-		</p>
-		<p>
-			<label for="publisher">Publisher </label>
-			<input type="text" name="publisher" id="publisher" value="" />
-		</p>
-		<input type="hidden" name="numOfPlugin" id="numOfPlugin" value="0">
+<!-- 		<p> -->
+<!-- 			<label for="applicationName">Application Name</label> -->
+<!--			<input type="text" name="applicationName" id="applicationName" value="" /> <!-- required /> --> 
+<!-- 		</p> -->
+<!-- 		<p> -->
+<!-- 			<label for="version">Version</label> -->
+<!--			<input type="text" name="version" id="version" value="" /> <!-- required /> --> 
+<!-- 		</p> -->
+<!-- 		<p> -->
+<!-- 			<label for="publisher">Publisher </label> -->
+<!-- 			<input type="text" name="publisher" id="publisher" value="" /> -->
+<!-- 		</p> -->
+<!-- 		<input type="hidden" name="numOfPlugin" id="numOfPlugin" value="0"> -->
 		<hr>
 		<p>
 			<label for="app_files">Application files *</label>
@@ -61,20 +62,18 @@ if (isset($_POST['submit_app'])) {
 }
 
 function application_upload_handler() {
-	$res = true;
-	$targetDir = __DIR__.'/../../moped_plugins/'.$_POST['applicationName'].'/'.$_POST['version'].'/';
-	$localDir = $_POST['applicationName'].'/j2meclasses/';
+	global $client;
+	
+// 	$res = true;
+// 	$targetDir = __DIR__.'/../../moped_plugins/'.$_POST['applicationName'].'/'.$_POST['version'].'/';
+// 	$localDir = $_POST['applicationName'].'/j2meclasses/';
 
-	/* Create a directory for the new application */
-	if (!file_exists($targetDir)) {
-		$res &= mkdir($targetDir, 0777, true);
-	}
-	
-	/* Create a zip archive */
-	$zip = new ZipArchive();
-	$res &= $zip->open($targetDir.$_POST['applicationName'].'.zip', ZipArchive::OVERWRITE);
-	
-	$res &= $zip->addEmptyDir($localDir);
+// 	/* Create a zip archive */
+// 	$zip = new ZipArchive();
+// 	$res &= $zip->open($targetDir.$_POST['applicationName'].'.zip', ZipArchive::OVERWRITE);
+// 	$res &= $zip->addEmptyDir($localDir);
+// 	$zip->addFile($_FILES['app_files']['tmp_name'][$i],
+// 				  $shortName.'/j2meclasses/'.$shortName);
 	
 	/* Store files in the application directory */ 
 	for($i=0; $i<count($_FILES['app_files']['name']); $i++) {
@@ -108,18 +107,9 @@ function application_upload_handler() {
 		}
 		
 		$res &= move_uploaded_file($_FILES['app_files']['tmp_name'][$i],
-							   	   $targetDir.$shortName.'.zip');
+							   	   $targetDir.$shortName.'.jar'); //.zip???
+		$res &= copy($targetDir.$shortName.'.jar', $targetDir.$shortName.'.zip'); //TEMP
 	
-		/* Create a zip archive */
-// 		$zip = new ZipArchive();
-// 		$res &= $zip->open($targetDir.$shortName.'.zip', ZipArchive::OVERWRITE);
-// 		$res &= $zip->addEmptyDir($shortName.'/j2meclasses/');
-// 		$zip->addFile($_FILES['app_files']['tmp_name'][$i], 
-// 					  $shortName.'/j2meclasses/'.$shortName);
-		
-// 		$res &= move_uploaded_file($_FILES['app_files']['tmp_name'][$i], 
-// 					   	   		   $targetDir.$_FILES['app_files']['name'][$i]);
-
 		/* Report the result */
 		if ($res) {
 			echo "<font color='green'>$fname was successfully submitted...</font><br/>";
@@ -129,10 +119,12 @@ function application_upload_handler() {
 		}
 	}
 	
-	$zip->close();
+// 	$zip->close();
+
+	$client->__soapCall("insertPluginInDb",
+			array('location' => $targetDir,
+					'name' => $shortName));
 	
-	
-		
 	// 	insert_new_app($_POST['applicationName'], $_POST['publisher'], $_POST['version'], $_POST['numOfPlugin']);
 }
 ?>

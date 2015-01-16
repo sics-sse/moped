@@ -67,4 +67,23 @@ public class DBConnection {
 		else
 			return results.get(0);
 	}
+	
+	public <T> int addEntry(T entry) {
+		Session session = sqlSessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		
+		Integer id = (Integer)session.save(entry);
+		
+		try {
+			tx.commit();
+		} catch (HibernateException ex) {
+			if (tx != null) 
+				tx.rollback();
+			ex.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return id.intValue();
+	}
 }

@@ -11,6 +11,10 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
 	@WebMethod
+	public void insertPluginInDb(String location, String name) 
+			throws PluginWebServicesException;
+	
+	@WebMethod
 	public boolean get_ack_status(String vin, int appId)
 			throws PluginWebServicesException;
 	

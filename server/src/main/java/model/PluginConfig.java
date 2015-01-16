@@ -26,11 +26,9 @@ public class PluginConfig implements Serializable {
 	private Set<PluginLinkConfig> pluginLinkConfigs;
 	private AppConfig appConfig;
 
-	public PluginConfig() {
-
-	}
-
-	public PluginConfig(String name, byte ecuId) { //, AppConfig appConfig) {
+	public PluginConfig() {}
+	
+	public PluginConfig(String name, int ecuId) { //, AppConfig appConfig) {
 		this.name = name;
 		this.ecuId = ecuId;
 //		this.appConfig = appConfig;

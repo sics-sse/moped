@@ -1502,3 +1502,336 @@ java.io.FileNotFoundException: /home/avenir/Documents/dev/eclipse_ws/moped/plugi
 
 !ENTRY com.android.ide.eclipse.adt 4 0 2015-01-16 12:24:25.824
 !MESSAGE Failed to load properties file for project 'test'
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 13:49:18.139
+!MESSAGE No valid Android XML Editor Delegate found for file /PluginCreationTest/src/main/resources/plugin_config.xml [Res null, type null]
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2015-01-16 13:50:05.770
+!MESSAGE No projects found for [/home/avenir/Documents/dev/eclipse_ws/moped/plugins/PluginCreationTest/src/main/resources/plugin_config.xml]
+
+!ENTRY com.android.ide.eclipse.adt 2 0 2015-01-16 13:50:37.326
+!MESSAGE No projects found for [/home/avenir/Documents/dev/eclipse_ws/moped/plugins/PluginCreationTest/src/main/resources/plugin_config.xml]
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 13:51:44.498
+!MESSAGE No valid Android XML Editor Delegate found for file /PluginCreationTest/src/main/resources/PluginCreationTest.xml [Res null, type null]
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:53:57.964
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -20
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:12.085
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -14
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:13.916
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -6
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:14.930
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -6
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:16.524
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -10
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:17.583
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -12
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:19.142
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -10
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:28.273
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -10
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:54:28.979
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -10
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:678)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:85)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelect(AbstractSourceModule.java:76)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.getSelectionModelElement(OpenTypeHierarchyAction.java:216)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.isEnabled(OpenTypeHierarchyAction.java:166)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction.access$0(OpenTypeHierarchyAction.java:160)
+	at org.eclipse.php.internal.ui.actions.OpenTypeHierarchyAction$1.run(OpenTypeHierarchyAction.java:122)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+
+!ENTRY org.eclipse.php.core 4 10001 2015-01-16 13:55:04.441
+!MESSAGE PHPCore plugin internal error
+!STACK 0
+java.lang.StringIndexOutOfBoundsException: String index out of range: -20
+	at java.lang.String.<init>(String.java:192)
+	at org.eclipse.php.internal.core.util.text.TextSequenceUtilities$SimpleTextSequence.toString(TextSequenceUtilities.java:159)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.internalResolve(PHPSelectionEngine.java:758)
+	at org.eclipse.php.internal.core.codeassist.PHPSelectionEngine.select(PHPSelectionEngine.java:159)
+	at org.eclipse.dltk.internal.core.Openable.codeSelect(Openable.java:662)
+	at org.eclipse.dltk.internal.core.Openable.codeSelectAll(Openable.java:686)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelectAll(AbstractSourceModule.java:96)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelectAll(AbstractSourceModule.java:90)
+	at org.eclipse.dltk.internal.core.AbstractSourceModule.codeSelectAll(AbstractSourceModule.java:1)
+	at org.eclipse.dltk.internal.ui.text.hover.AbstractScriptEditorTextHover.getHoverInfo(AbstractScriptEditorTextHover.java:142)
+	at org.eclipse.php.internal.ui.editor.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:139)
+	at org.eclipse.php.internal.ui.editor.hover.PHPTextHoverProxy.getHoverInfo2(PHPTextHoverProxy.java:77)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 15:07:05.003
+!MESSAGE No valid Android XML Editor Delegate found for file /SemiAutomaticReverseParking/src/main/resources/SemiAutomaticReverseParking.xml [Res null, type null]
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 15:09:03.720
+!MESSAGE No valid Android XML Editor Delegate found for file /SemiAutomaticReverseParking/src/main/resources/SemiAutomaticReverseParking.xml [Res null, type null]
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2015-01-16 15:25:09.079
+!MESSAGE Failed to load properties file for project 'test'
+
+!ENTRY org.eclipse.php.debug.core 4 4 2015-01-16 15:57:32.989
+!MESSAGE The debug port 9000 is in use. Please select a different port for the debugger.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:04.986
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:05.009
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:05.824
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:05.833
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.jdt.core 4 4 2015-01-16 16:48:05.853
+!MESSAGE JavaBuilder handling ImageBuilderInternalException while building: ecm-linux
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:816)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:115)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.build(BatchImageBuilder.java:47)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.buildAll(JavaBuilder.java:256)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.build(JavaBuilder.java:175)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:734)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:206)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:246)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:299)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:302)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:358)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:381)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:496)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:405)
+	at org.eclipse.ui.actions.GlobalBuildAction$1.run(GlobalBuildAction.java:180)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Contains: Could not delete '/ecm-linux/target/classes/main'.
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.delete(FileSystemResourceManager.java:351)
+	at org.eclipse.core.internal.resources.ResourceTree.internalDeleteFolder(ResourceTree.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.standardDeleteFolder(ResourceTree.java:798)
+	at org.eclipse.core.internal.resources.Resource.unprotectedDelete(Resource.java:1983)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:803)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:115)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.build(BatchImageBuilder.java:47)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.buildAll(JavaBuilder.java:256)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.build(JavaBuilder.java:175)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:734)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:206)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:246)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:299)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:302)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:358)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:381)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:496)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:405)
+	at org.eclipse.ui.actions.GlobalBuildAction$1.run(GlobalBuildAction.java:180)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Contains: Problems encountered while deleting files.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/CanConfigParser.class.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/Main.class.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main.
+!SUBENTRY 1 org.eclipse.core.resources 4 273 2015-01-16 16:48:05.853
+!MESSAGE Problems encountered while deleting resources.
+!SUBENTRY 2 org.eclipse.core.resources 4 273 2015-01-16 16:48:05.853
+!MESSAGE Could not delete '/ecm-linux/target/classes/main'.
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Problems encountered while deleting resources.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.delete(FileSystemResourceManager.java:351)
+	at org.eclipse.core.internal.resources.ResourceTree.internalDeleteFolder(ResourceTree.java:352)
+	at org.eclipse.core.internal.resources.ResourceTree.standardDeleteFolder(ResourceTree.java:798)
+	at org.eclipse.core.internal.resources.Resource.unprotectedDelete(Resource.java:1983)
+	at org.eclipse.core.internal.resources.Resource.delete(Resource.java:803)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.cleanOutputFolders(BatchImageBuilder.java:115)
+	at org.eclipse.jdt.internal.core.builder.BatchImageBuilder.build(BatchImageBuilder.java:47)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.buildAll(JavaBuilder.java:256)
+	at org.eclipse.jdt.internal.core.builder.JavaBuilder.build(JavaBuilder.java:175)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:734)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:206)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:246)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:299)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:42)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:302)
+	at org.eclipse.core.internal.events.BuildManager.basicBuildLoop(BuildManager.java:358)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:381)
+	at org.eclipse.core.internal.resources.Workspace.buildInternal(Workspace.java:496)
+	at org.eclipse.core.internal.resources.Workspace.build(Workspace.java:405)
+	at org.eclipse.ui.actions.GlobalBuildAction$1.run(GlobalBuildAction.java:180)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Contains: Problems encountered while deleting files.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/CanConfigParser.class.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/Main.class.
+Contains: Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main.
+!SUBENTRY 3 org.eclipse.core.resources 4 273 2015-01-16 16:48:05.854
+!MESSAGE Problems encountered while deleting resources.
+!SUBENTRY 4 org.eclipse.core.filesystem 4 273 2015-01-16 16:48:05.854
+!MESSAGE Problems encountered while deleting files.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2015-01-16 16:48:05.854
+!MESSAGE Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/CanConfigParser.class.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2015-01-16 16:48:05.854
+!MESSAGE Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main/Main.class.
+!SUBENTRY 5 org.eclipse.core.filesystem 4 273 2015-01-16 16:48:05.854
+!MESSAGE Could not delete: /home/avenir/Documents/dev/eclipse_ws/moped/ecm-linux/target/classes/main.
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:05.913
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:05.917
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:07.047
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY org.eclipse.m2e.logback.appender 2 0 2015-01-16 16:48:07.052
+!MESSAGE Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2015-01-16 17:12:10.448
+!MESSAGE Failed to load properties file for project 'test'
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2015-01-16 17:29:35.040
+!MESSAGE Failed to load properties file for project 'test'
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 17:54:54.517
+!MESSAGE No valid Android XML Editor Delegate found for file /SemiAutomaticReverseParking/src/main/resources/SemiAutomaticReverseParking.xml [Res null, type null]
+
+!ENTRY com.android.ide.eclipse.adt 1 0 2015-01-16 17:58:43.535
+!MESSAGE No valid Android XML Editor Delegate found for file /server/src/main/webapp/WEB-INF/beans.xml [Res null, type null]

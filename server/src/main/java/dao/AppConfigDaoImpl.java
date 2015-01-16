@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import service.PluginWebServicePublisher;
 import model.AppConfig;
+import model.Application;
 import model.PluginConfig;
 import model.PluginLinkConfig;
 import model.PluginPortConfig;
@@ -34,46 +35,29 @@ public class AppConfigDaoImpl implements AppConfigDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void saveAppConfig(AppConfig appConfig) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(appConfig);
-		session.getTransaction().commit();
+	public int saveAppConfig(AppConfig appConfig) {
+		AppConfig storedConfig = getAppConfig(appConfig.getAppId(),  
+			 	   appConfig.getVehicleName(), appConfig.getBrand());
+		if (storedConfig != null) {
+			return storedConfig.getId();
+		}
+		else {
+			return db.addEntry(appConfig);
+		}
+	}
+	
+	public AppConfig getAppConfig(int id) {
+		AppConfig config = (AppConfig)db.getSingleResult(
+				"FROM AppConfig ac WHERE ac.id = " + id);
+
+		return config;
 	}
 
-	//TODO: Encapsulate
 	public AppConfig getAppConfig(int appId, String vehicleName, String vehicleBrand) {
 		AppConfig config = (AppConfig)db.getSingleResult(
 				"FROM AppConfig ac WHERE ac.appId = " + appId + 
 				" AND ac.vehicleName = '" + vehicleName + "'" +  
 				" AND ac.brand = '" + vehicleBrand + "'");
-		
-//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
-//		Transaction tx = session.beginTransaction();
-//		
-//		try {
-//			Query query = session.
-//					createQuery("FROM AppConfig ac WHERE ac.appId = " + appId + 
-//							" AND ac.vehicleName = '" + vehicleName + "'" +  
-//							" AND ac.brand = '" + vehicleBrand + "'");
-//
-//			@SuppressWarnings("unchecked")
-//			List<AppConfig> configs = query.list();
-//			if (configs.isEmpty()) {
-//				System.out.println("WARNING: NO CONFIGURATION WAS FOUND FOR APP WITH ID " + appId + " in the database");
-//			} 
-//			else {
-//				config = configs.get(0);
-//			}
-//			
-//			tx.commit();
-//		} catch (HibernateException ex) {
-//			if (tx != null) 
-//				tx.rollback();
-//			ex.printStackTrace(); 
-//		} finally {
-//			session.close();
-//		}
 
 		return config;
 	}
@@ -96,12 +80,28 @@ public class AppConfigDaoImpl implements AppConfigDao {
 		session.save(pluginPortConfig);
 		session.getTransaction().commit();
 	}
+	
+	private PluginConfig getPluginConfig(PluginConfig config) {
+		PluginConfig storedConfig = (PluginConfig)db.getSingleResult(
+				"FROM PluginConfig pc WHERE pc.name = '" + config.getName() + "'" +  
+				" AND pc.ecuId = " + config.getEcuId());
 
-	public void savePluginConfig(PluginConfig pluginConfig) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(pluginConfig);
-		session.getTransaction().commit();
+		return storedConfig;
+	}
+
+	public int savePluginConfig(PluginConfig pluginConfig) {
+//		Session session = sessionFactory.getCurrentSession();
+//		session.beginTransaction();
+//		session.save(pluginConfig);
+//		session.getTransaction().commit();
+		
+		PluginConfig storedPluginConfig = getPluginConfig(pluginConfig); 
+		if (storedPluginConfig != null) {
+			return storedPluginConfig.getId();
+		}
+		else {
+			return db.addEntry(pluginConfig);
+		}
 	}
 
 	public void savePluginLinkConfig(PluginLinkConfig pluginLinkConfig) {

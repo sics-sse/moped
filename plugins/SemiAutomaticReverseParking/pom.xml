@@ -6,4 +6,23 @@
     <version>1.0</version>
   </parent>
   <artifactId>SemiAutomaticReverseParking</artifactId>
+  
+    <build>
+	  <plugins>
+		  <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-jar-plugin</artifactId>
+		    <configuration>
+		        <archive>
+		            <addMavenDescriptor>false</addMavenDescriptor>
+		            <manifestEntries>
+		                <Vehicle-Brand>SICS</Vehicle-Brand>
+		                <Vehicle-Name>MOPED</Vehicle-Name>
+		                <Ecu>2</Ecu>
+		            </manifestEntries>
+		        </archive>
+		    </configuration>
+		  </plugin>
+	  </plugins>
+  </build>
 </project>

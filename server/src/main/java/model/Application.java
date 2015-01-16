@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import test.Ecu;
 
 @Entity
 @Table(name="Application")
@@ -85,4 +88,19 @@ public class Application implements Serializable {
 	public void setHasNewVersion(boolean hasNewVersion) {
 		this.hasNewVersion = hasNewVersion;
 	}
+	
+	public boolean equals(Object obj) {
+		if ((obj == null) || 
+				(!this.getClass().equals(obj.getClass()))) { 
+			return false;
+		}
+
+		Application app = (Application)obj;
+		if((this.applicationName.equals(app.getApplicationName())) && 
+				(this.version.equals(app.getVersion()))) {
+			return true;
+		}
+		 
+		return false;
+   }
 }

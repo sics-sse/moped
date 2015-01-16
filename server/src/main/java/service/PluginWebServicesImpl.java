@@ -7,12 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -40,6 +46,8 @@ import dao.ApplicationDao;
 import dao.ApplicationDaoImpl;
 import dao.DBConnection;
 import dao.DatabasePluginDao;
+import dao.DatabasePluginDaoImpl;
+import dao.PluginConfigDaoImpl;
 import dao.VehicleConfigDao;
 import dao.VehicleConfigDaoImpl;
 import dao.VehicleDao;
@@ -78,6 +86,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	private VehicleConfigDao vehicleConfigDao;
 	private DatabasePluginDao databasePluginDao;
 	private AppConfigDao appConfigDao;
+//	private PluginConfigDaoImpl pluginConfigDao;
 	private SuiteGen suiteGen = new SuiteGen("/lhome/zeni/squawk");
 	
 	private DBConnection db = null;
@@ -92,6 +101,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		vehicleConfigDao = new VehicleConfigDaoImpl(db);
 		appConfigDao = new AppConfigDaoImpl(db);
 		applicationDao = new ApplicationDaoImpl(db);
+		databasePluginDao = new DatabasePluginDaoImpl(db);
+//		pluginConfigDao = new PluginConfigDaoImpl(db);
 	}
 
 	public ApplicationDao getApplicationDao() {
@@ -148,6 +159,68 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	public void setSuiteGen(SuiteGen suiteGen) {
 		this.suiteGen = suiteGen;
+	}
+	
+	@Override
+	public void insertPluginInDb(String location, String name) 
+			throws PluginWebServicesException {
+		try {
+			File loc = new File(location);
+			location = loc.getCanonicalPath();
+		
+			JarFile jar = new JarFile(new File(location + File.separator + name + ".jar"));
+			Manifest mf = jar.getManifest();
+			if (mf != null) {		
+				Attributes attributes = mf.getMainAttributes();
+				
+				String publisher = attributes.getValue("Built-By");
+				if (publisher == null)
+					publisher = "unknown";
+				String version = attributes.getValue("Manifest-Version");
+				if (version == null)
+					version = "1.0";
+				String brand = attributes.getValue("Vehicle-Brand");
+				if (brand == null)
+					brand = "SICS";
+				String vehicleName = attributes.getValue("Vehicle-Name");
+				if (vehicleName == null)
+					vehicleName = "MOPED";
+				String ecuRef = attributes.getValue("Ecu");
+				if (ecuRef == null)
+					ecuRef = "0";
+				//TODO: UGLY HACK (only allows one .class file)
+				String fullClassName = "";
+				for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements(); ) {
+					String fileName = entries.nextElement().getName();
+					if (fileName.endsWith(".class")) {
+						fullClassName = fileName.substring(0, fileName.length() - 6);
+					}
+				}
+				
+				Application application = new Application(name, publisher, version);
+				int appId = applicationDao.saveApplication(application);
+				int appConfigId = appConfigDao.saveAppConfig(
+						new AppConfig(appId, vehicleName, brand));	
+				DatabasePlugin dbPlugin = new DatabasePlugin(
+						name, name + ".zip", fullClassName, 
+						"", Integer.parseInt(ecuRef), 
+						location + File.separator + name, location);
+				dbPlugin.setApplication(applicationDao.getApplication(appId));
+				databasePluginDao.saveDatabasePlugin(dbPlugin);
+				//TODO: Why + .suite???
+				PluginConfig pluginConfig = new PluginConfig(name + ".suite", Integer.parseInt(ecuRef));
+				pluginConfig.setAppConfig(appConfigDao.getAppConfig(appConfigId));
+				//TODO: Inconsequence
+				appConfigDao.savePluginConfig(pluginConfig);
+			}
+			else {
+				System.out.println("MF is NULL");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		
+		System.out.println("insertPluginInDb done");
 	}
 	
 	@Override

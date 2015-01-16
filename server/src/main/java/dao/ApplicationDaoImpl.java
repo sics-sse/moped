@@ -31,11 +31,15 @@ public class ApplicationDaoImpl implements ApplicationDao {
 		this.sessionFactory = sessionFactory;
 	}
 
-	public void saveApplication(Application application) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(application);
-		session.getTransaction().commit();
+	public int saveApplication(Application application) {
+		Application storedApp = getApplication(application.getApplicationName(), 
+										 	   application.getVersion());
+		if (storedApp != null) {
+			return storedApp.getApplicationId();
+		}
+		else {
+			return db.addEntry(application);
+		}
 	}
 
 	public String getVersion(String applicationName) {
@@ -55,32 +59,13 @@ public class ApplicationDaoImpl implements ApplicationDao {
 	public Application getApplication(int appID) {
 		Application app = (Application)db.getSingleResult(
 				"FROM Application a WHERE a.applicationId = " + appID);
-		
-//		Session session = PluginWebServicePublisher.sqlSessionFactory.openSession();
-//		Transaction tx = session.beginTransaction();
-//		
-//		try {
-//			Query query = session.
-//					createQuery("FROM Application a WHERE a.applicationId = " + appID);
-//
-//			@SuppressWarnings("unchecked")
-//			List<Application> apps = query.list();
-//			if (apps.isEmpty()) {
-//				System.out.println("WARNING: NO APPLICATION WAS FOUND FOR APP_ID " + appID + " in the database");
-//			} 
-//			else {
-//				app = apps.get(0);
-//			}
-//			
-//			tx.commit();
-//		} catch (HibernateException ex) {
-//			if (tx != null) 
-//				tx.rollback();
-//			ex.printStackTrace(); 
-//		} finally {
-//			session.close();
-//		}
-
+		return app;
+	}
+	
+	public Application getApplication(String name, String version) {
+		Application app = (Application)db.getSingleResult(
+				"FROM Application a WHERE a.applicationName = '" + name + "' AND " + 
+				" version = '" + version + "'");
 		return app;
 	}
 
