@@ -44,6 +44,9 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 	/** The steering angle. */
 	public static double steeringAngle; // Current steering angle, as -1 .. 1 of
 	// maxSteeringAngle
+	
+	/** Lamps */
+	public static boolean lamp[]; // True when lamp is on, False otherwise
 
 	// Variables calculated by the simulation.
 	/** The vehicle speed. */
@@ -77,9 +80,19 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 	// hazardLightOn
 	public static boolean hazardLightOn;
 	
+	// battery voltage
+	public static double voltage;
+	
 	/** The limited speed. */
 	static double limitedSpeed;
 
+	public CarModel() {
+		lamp = new boolean[3];
+		lamp[0] = false;
+		lamp[1] = false;
+		lamp[2] = false;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

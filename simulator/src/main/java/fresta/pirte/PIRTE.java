@@ -23,6 +23,8 @@ import fresta.port.instances.VirtualRearWheelPPort;
 import fresta.port.instances.VirtualPublishRPort;
 import fresta.port.instances.VirtualLEDRPort;
 import fresta.port.instances.VirtualVoltagePPort;
+import fresta.port.instances.VirtualAcceleratorRPort;
+import fresta.port.instances.VirtualSteeringRPort;
 import autosar.RTE;
 import sics.plugin.PlugInComponent;
 import sics.port.EcuVirtualPPort;
@@ -56,6 +58,8 @@ public class PIRTE implements Runnable {
 		this.id = id;
 		
 		vrports.put(0, new VirtualPublishRPort(0));
+		vpports.put(new Integer(3), new VirtualAcceleratorRPort(3));
+		vpports.put(new Integer(4), new VirtualSteeringRPort(4));
 		vpports.put(new Integer(5), new VirtualFrontWheelPPort(5));
 		vpports.put(new Integer(6), new VirtualRearWheelPPort(6));
 		vpports.put(new Integer(7), new VirtualVoltagePPort(7));

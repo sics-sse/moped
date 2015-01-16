@@ -1,5 +1,6 @@
 package fresta.port.instances;
 
+import gui.CarModel;
 import sics.port.EcuVirtualRPort;
 
 public class VirtualLEDRPort extends EcuVirtualRPort {
@@ -14,6 +15,8 @@ public class VirtualLEDRPort extends EcuVirtualRPort {
 		int barIndex = dataStr.indexOf('|');
 		String pin = dataStr.substring(0, barIndex);
 		String value = dataStr.substring(barIndex+1);
+		
+		CarModel.lamp[Integer.parseInt(pin)] = (value == "1");
 		
 		// Currently, this method just prints the value of the LED pin.
 		// TODO: Show the LEDs in the graphical GUI.

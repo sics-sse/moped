@@ -5,7 +5,7 @@
 	<vin>default</vin-->
 	<name>MOPED</name>
 	<brand>SICS</brand>
-	<vin>20UYA31581L000000</vin>
+	<vin>20JAX31581L000000</vin>
 	<ecm>
 		<server>
 			<!--<ip>localhost</ip>-->
