@@ -5,7 +5,7 @@
 	<vin>default</vin-->
 	<name>MOPED</name>
 	<brand>SICS</brand>
-	<vin>20UYA31581L000000</vin>
+	<vin>20JAX31581L000000</vin>
 	<ecm>
 		<server>
 			<!--<ip>localhost</ip>-->
@@ -71,15 +71,6 @@
 						</port>
 					</ports>
 				</sensor>
-				<!-- write data to LED -->
-				<sensor>
-					<name>writeLED</name>
-					<ports>
-						<port>
-							<id>9</id>
-						</port>
-					</ports>
-				</sensor>
 			</sensors>
 			<actuators>
 			     <!-- PUB port -->
@@ -106,6 +97,15 @@
 					<ports>
 						<port>
 							<id>4</id>
+						</port>
+					</ports>
+				</actuator>
+				<!-- write data to LED -->
+				<actuator>
+					<name>writeLED</name>
+					<ports>
+						<port>
+							<id>9</id>
 						</port>
 					</ports>
 				</actuator>

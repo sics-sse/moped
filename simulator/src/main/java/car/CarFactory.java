@@ -54,6 +54,33 @@ public class CarFactory {
 	}
 
 	public Car generateCar(String carConfigPath) {
+		/*
+		The function generateCar creates a new Car by reading in the XML file located in the carConfigPath. 
+		The name and brand fields of the Car instance is read from the tags <name> and <brand>.
+		The ecm field of the Car instance is set to a newly created Ecm (from the ecm-core package). 
+		This Ecm consists of a new FakeEcuManager, SocketCommunicationManager, CarDriver and IotManager,
+		all based on the data in the <server> part of the XML file.
+		The RTE instance is also provided with this ECM.
+		
+		When reading the <ecus> part of the XML file, the following occurs for each <ecu>.
+		A new directory is created ecus/ecuX, where X is the <id> tag of the <ecu>.
+		An Ecu instance is also created, but it is never used for anything.
+		
+		If there are items under <swcs>, then for each <swcs> an SWC instance is created.
+		If the <hasPirte> tag of that <swc> contains the value "true", a new PIRTE instance
+		is also created, and associated with this ECU's id. The pirte attribute of the SWC
+		is set to this new PIRTE, and the SWC is added to the RTE's list of SWCs with PIRTEs.
+		If the SWC did not have a PIRTE, the SWC instance is discarded.
+		The <ports> part of the <swc> is read, but ignored.
+		The <sensors> part of the <ecu> is read, but ignored.
+		The <actuators> part of the <ecu> is read, and for each actuator, a SWCPPort is created and
+		added to the RTE's list of pports.
+		
+		When reading the <links> part of the XML file, for each link a pair of SWCPPort and SWCRport
+		are created, and added to the RTE's pports and rports lists. In addition, a link is added
+		to the RTE's links list.
+		*/
+		
 		// Empty files in ECUs
 		File ecusDir = new File("ecus");
 		try {
