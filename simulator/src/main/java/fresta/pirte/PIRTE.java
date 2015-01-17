@@ -45,6 +45,7 @@ public class PIRTE implements Runnable {
 	private int id;
 	private final Object lock = new Object();
 	private List<Message> manageMsgs = new ArrayList<Message>();
+	private List<Message> msgBuffer = new ArrayList<Message>(); //TODO: Is there a better way to avoid java.util.ConcurrentModificationException???
 	private HashMap<Integer, Message> pluginMessages = new HashMap<Integer, Message>();
 	
 	private HashMap<String, Thread> runnablePlugins = new HashMap<String, Thread>();
@@ -58,12 +59,12 @@ public class PIRTE implements Runnable {
 		this.id = id;
 		
 		vrports.put(0, new VirtualPublishRPort(0));
-		vpports.put(new Integer(3), new VirtualAcceleratorRPort(3));
-		vpports.put(new Integer(4), new VirtualSteeringRPort(4));
+		vrports.put(new Integer(3), new VirtualAcceleratorRPort(3));
+		vrports.put(new Integer(4), new VirtualSteeringRPort(4));
 		vpports.put(new Integer(5), new VirtualFrontWheelPPort(5));
 		vpports.put(new Integer(6), new VirtualRearWheelPPort(6));
 		vpports.put(new Integer(7), new VirtualVoltagePPort(7));
-		vpports.put(new Integer(9), new VirtualLEDRPort(9));
+		vrports.put(new Integer(9), new VirtualLEDRPort(9));
 	}
 	
 	/**
@@ -162,11 +163,20 @@ public class PIRTE implements Runnable {
 			}
 			
 			// forward message
-			for(Message message:manageMsgs) {
+//			ArrayList<Message> ackMessages = new ArrayList<Message>();
+			//TODO: Is there a better way to avoid java.util.ConcurrentModificationException???
+			synchronized(this) {
+				manageMsgs = new ArrayList<Message>();
+				for (Message msg : msgBuffer) {
+					manageMsgs.add(msg);
+				}
+				msgBuffer.clear();
+			}
+			
+			for(Message message : manageMsgs) {
 				int messageType = message.getMessageType();
 				switch(messageType) {
 				case MessageType.INSTALL:
-					System.out.println("Gonna try to install: ");
 					InstallMessage installMessage = (InstallMessage) message;
 					byte pluginId = installMessage.getPluginId();
 					HashMap<String, Integer> portInitialContext = installMessage.getPortInitialContext();
@@ -204,8 +214,8 @@ public class PIRTE implements Runnable {
 						
 						Thread runnablePlugin = new Thread(loadPlugIn);
 						runnablePlugin.start();
-						InstallAckMessage installAckMessage = new InstallAckMessage(pluginId, pluginName);
-						RTE.getInstance().addRteMessage(installAckMessage);
+						RTE.getInstance().addRteMessage(
+								new InstallAckMessage(pluginId, pluginName));
 						
 						// Register PlugIn in pirte
 						runnablePlugins.put(pluginName, runnablePlugin);
@@ -226,8 +236,8 @@ public class PIRTE implements Runnable {
 					System.out.println("uninstall: pluginname:"+pluginName4Uninstall);
 					Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
 					runnablePlugin.stop();
-					UninstallAckMessage uninstallAckMessage = new UninstallAckMessage(pluginName4Uninstall);
-					RTE.getInstance().addRteMessage(uninstallAckMessage);
+					RTE.getInstance().addRteMessage(
+							new UninstallAckMessage(pluginName4Uninstall));
 					break;
 				case MessageType.LOAD:
 					LoadMessage loadMessage = (LoadMessage) message;
@@ -279,7 +289,7 @@ public class PIRTE implements Runnable {
 					System.out.println("Error: wrong message type when PIRTE handles management messages");
 				}
 			}
-			manageMsgs.clear();
+//			manageMsgs.clear();
 		}
 	}
 
@@ -289,8 +299,9 @@ public class PIRTE implements Runnable {
 		case MessageType.INSTALL:
 		case MessageType.UNINSTALL:
 		case MessageType.LOAD:
-			System.out.println("package arrives in PIRTE");
-			manageMsgs.add(message);
+//			System.out.println("package arrives in PIRTE");
+//			manageMsgs.add(message);
+			msgBuffer.add(message);
 			wakeup();
 			break;
 		case MessageType.PLUGIN_MESSAGE:

@@ -1,10 +1,14 @@
 package service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -24,7 +28,10 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.apache.mina.core.session.IoSession;
 import org.hibernate.HibernateException;
@@ -164,6 +171,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	@Override
 	public void insertPluginInDb(String location, String name) 
 			throws PluginWebServicesException {
+		File configFile = null;
+		
 		try {
 			File loc = new File(location);
 			location = loc.getCanonicalPath();
@@ -188,14 +197,30 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				String ecuRef = attributes.getValue("Ecu");
 				if (ecuRef == null)
 					ecuRef = "0";
+				String configFileName = attributes.getValue("Pirte-Config");
+				if (configFileName == null)
+					configFileName = name + ".xml";
 				//TODO: UGLY HACK (only allows one .class file)
 				String fullClassName = "";
 				for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements(); ) {
-					String fileName = entries.nextElement().getName();
+					JarEntry entry = entries.nextElement();
+					String fileName = entry.getName();
 					if (fileName.endsWith(".class")) {
 						fullClassName = fileName.substring(0, fileName.length() - 6);
+					} else if (fileName.equals(configFileName)) {
+						configFile = File.createTempFile("tempxml.xml", null);
+				        BufferedReader reader = new BufferedReader(new InputStreamReader(
+				        		jar.getInputStream(entry)));
+				        BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
+				        String line;
+				        while ((line = reader.readLine()) != null) {
+				        	writer.write(line);
+				        }
+				        reader.close();
+				        writer.close();
 					}
 				}
+				
 				
 				Application application = new Application(name, publisher, version);
 				int appId = applicationDao.saveApplication(application);
@@ -212,11 +237,55 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				pluginConfig.setAppConfig(appConfigDao.getAppConfig(appConfigId));
 				//TODO: Inconsequence
 				appConfigDao.savePluginConfig(pluginConfig);
+				
+				//TODO: Refactor
+				// Xml-parsing
+				Document doc = DocumentBuilderFactory.newInstance().
+						newDocumentBuilder().parse(configFile);
+				doc.getDocumentElement().normalize();
+				
+				NodeList ports = doc.getElementsByTagName("port");
+				for (int i = 0; i < ports.getLength(); i++) {
+					Element port = (Element)ports.item(i);
+					String portName = port.getElementsByTagName("name").item(0).getTextContent();
+					
+					PluginPortConfig portConfig = new PluginPortConfig(portName);
+					portConfig.setPluginConfig(appConfigDao.getPluginConfig(pluginConfig));
+					appConfigDao.savePluginPortConfig(portConfig);
+				}
+				
+				NodeList links = doc.getElementsByTagName("link");
+				for (int i = 0; i < ports.getLength(); i++) {
+					Element link = (Element)links.item(i);
+					String linkSource = link.getElementsByTagName("from").item(0).getTextContent();
+					String linkTarget = link.getElementsByTagName("to").item(0).getTextContent();
+
+					int connectionType = GlobalVariables.PPORT2PPORT;
+					if (linkSource.matches("(\\d+)")) {
+						connectionType = GlobalVariables.VPORT2PORT;
+					}
+					if (linkTarget.matches("(\\d+)")) {
+						connectionType = GlobalVariables.PPORT2VPORT;
+					}
+					
+					PluginLinkConfig linkConfig = new PluginLinkConfig(linkSource, linkTarget, connectionType);
+					linkConfig.setPluginConfig(appConfigDao.getPluginConfig(pluginConfig));
+					appConfigDao.savePluginLinkConfig(linkConfig);
+				}
 			}
 			else {
 				System.out.println("MF is NULL");
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FactoryConfigurationError e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		

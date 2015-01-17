@@ -10,10 +10,12 @@ import model.PluginPortConfig;
 public interface AppConfigDao {
 	public int saveAppConfig(AppConfig appConfig);
 	public int savePluginConfig(PluginConfig pluginConfig);
-	public void savePluginPortConfig(PluginPortConfig pluginPortConfig);
-	public void savePluginLinkConfig(PluginLinkConfig pluginLinkConfig);
+	public int savePluginPortConfig(PluginPortConfig pluginPortConfig);
+	public int savePluginLinkConfig(PluginLinkConfig pluginLinkConfig);
 	public AppConfig getAppConfig(int id);
 	public AppConfig getAppConfig(int appId, String vehicleName, String vehicleBrand);
+	public PluginConfig getPluginConfig(PluginConfig config);
+	public PluginPortConfig getPluginPortConfig(PluginPortConfig config);
 	public List<AppConfig> getAppConfigs(int appId);
 }
 

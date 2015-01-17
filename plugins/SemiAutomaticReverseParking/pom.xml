@@ -19,6 +19,7 @@
 		                <Vehicle-Brand>SICS</Vehicle-Brand>
 		                <Vehicle-Name>MOPED</Vehicle-Name>
 		                <Ecu>2</Ecu>
+		                <Pirte-Config>SemiAutomaticReverseParking.xml</Pirte-Config>
 		            </manifestEntries>
 		        </archive>
 		    </configuration>

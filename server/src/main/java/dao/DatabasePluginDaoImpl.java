@@ -41,8 +41,8 @@ public class DatabasePluginDaoImpl implements DatabasePluginDao {
 				" AND d.name = '" + dbPlugin.getName() + "'" +
 				" AND d.zipLocation = '" + dbPlugin.getZipLocation() + "'" +
 				" AND d.zipName = '" + dbPlugin.getZipName() + "'" +
-				" AND d.reference = " + dbPlugin.getReference()
-				);
+				" AND d.reference = " + dbPlugin.getReference() + 
+				" AND d.application = " + dbPlugin.getApplication().getApplicationId());
 		
 		return plugin;
 	}

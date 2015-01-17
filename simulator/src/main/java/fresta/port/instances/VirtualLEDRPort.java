@@ -20,7 +20,7 @@ public class VirtualLEDRPort extends EcuVirtualRPort {
 		
 		// Currently, this method just prints the value of the LED pin.
 		// TODO: Show the LEDs in the graphical GUI.
-		System.out.println("LED + " + pin + " = " + value);
+		System.out.println("LED " + pin + " = " + value);
 	}
 	
 }

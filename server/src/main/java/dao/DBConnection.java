@@ -2,8 +2,6 @@ package dao;
 
 import java.util.List;
 
-import model.Vehicle;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;

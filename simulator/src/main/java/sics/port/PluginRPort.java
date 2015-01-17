@@ -9,6 +9,10 @@ public class PluginRPort implements PluginPort {
 	private PlugInComponent plugin;
 	private Object data;
 	
+	public PluginRPort(PlugInComponent plugin, String name) {
+		this(plugin, name, null);
+	}
+	
 	public PluginRPort(PlugInComponent plugin, String name, Object data) {
 		this.plugin = plugin;
 		this.name = name;
@@ -36,12 +40,10 @@ public class PluginRPort implements PluginPort {
 	}
 	
 	public Object read() {
-		System.out.println("PluginRPort id:"+id);
 		return plugin.getPirte().fetchVal(id);
 	}
 	
 	public int readInt() {
-		System.out.println("PluginRPort id:"+id);
 		return plugin.getPirte().fetchIntVal(id);
 	}
 

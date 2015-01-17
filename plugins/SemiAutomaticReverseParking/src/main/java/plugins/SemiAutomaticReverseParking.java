@@ -4,6 +4,8 @@ import sics.plugin.PlugInComponent;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 
+import com.sun.squawk.VM;
+
 public class SemiAutomaticReverseParking extends PlugInComponent {
 	
 	// SemiAutomaticReverseParking is a PlugInComponent which takes control of steering during a reverse parking operation.
@@ -52,7 +54,7 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 	
 	public void init() {
 		// Initialize interface ports
-		wheelSpeed = new PluginRPort(this, "wheelSpeed", 0);
+		wheelSpeed = new PluginRPort(this, "wheelSpeed"); //, 0);
 		steeringAngle = new PluginPPort(this, "steeringAngle");
 		parkingState = new PluginPPort(this, "parkingState");
 		light = new PluginPPort(this, "light");
@@ -74,11 +76,16 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 	public void run() {
 		init();
 		
+		VM.println("SemiAutomaticReverseParking is running");
+		System.out.println("SemiAutomaticReverseParking is running");
+		
 		distance = 0;
 //		while (state != State.FINISHED) {
 		while (state != FINISHED) {
-			double speed = (double)((Integer) wheelSpeed.read());
-			distance += Math.round((speed * TIME_STEP) / 1000.0);
+//			double speed = (double)((Integer) wheelSpeed.read()); 	//read() is not implemented in Squawk.PIRTE
+			double speed = (double)((Integer) wheelSpeed.readInt());
+//			distance += Math.round((speed * TIME_STEP) / 1000.0);
+			distance += round(speed * TIME_STEP / 1000.0);			//Math.round() is not included in basic Squawk (however MathUtils.round exists)
 			
 			switch (state) {
 			case STARTING:
@@ -124,6 +131,10 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 				;
 			}
 		}
+	}
+	
+	private int round(double val) {
+		return (int)Math.floor(val + 0.5);
 	}
 	
 	// Constructors etc.

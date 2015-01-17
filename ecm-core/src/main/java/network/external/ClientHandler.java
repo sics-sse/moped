@@ -197,7 +197,6 @@ public class ClientHandler extends IoHandlerAdapter {
 					portLinkingContext);
 			manager.getEcm().insertTmpDBRecord(pluginIdAllocator, dataRecord);
 			
-			System.out.println("tmpDBRecord allocated");
 
 			byte[] binaryFile = installPacketData.getBinaryFile();
 			System.out.println("binaryFile.length = " + binaryFile.length);
@@ -209,7 +208,6 @@ public class ClientHandler extends IoHandlerAdapter {
 			InstallMessage installMessage = new InstallMessage(reference, pluginIdAllocator++, executablePluginName,
 					callbackPortID, portInitialContext, portLinkingContext, binaryFile);
 
-			System.out.println("Before go into manager process");
 			manager.getEcm().process(installMessage);
 
 			System.out.println("Package installed");

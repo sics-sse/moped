@@ -115,14 +115,14 @@ int select = 0;
 
 void autosarSendSpeedPwmData(int speed) {
 //#if VCU
-	printf("[autosarSendPwmData][speed: %d]",speed);
+//	printf("[autosarSendPwmData][speed: %d]",speed);
 	PirteWriteSpeedPwmData(speed);
 //#endif
 }
 
 void autosarSendSteerPwmData(int servo) {
 #if VCU
-	printf("[autosarSendPwmData][servo: %d]",servo);
+//	printf("[autosarSendPwmData][servo: %d]",servo);
 	PirteWriteSteerPwmData(servo);
 #endif
 }

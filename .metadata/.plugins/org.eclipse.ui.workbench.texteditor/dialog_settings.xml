@@ -6,20 +6,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="file" key="selection"/>
+		<item value="round" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="file"/>
-			<item value="File"/>
-			<item value="zip"/>
-			<item value="install("/>
-			<item value="instal("/>
-			<item value="Done with "/>
-			<item value="VM.print"/>
-			<item value="VM.println"/>
+			<item value="round"/>
+			<item value="distance"/>
+			<item value="Distance"/>
+			<item value="TIME_STEP"/>
+			<item value="wheelSpeed"/>
+			<item value="Data"/>
+			<item value="data"/>
+			<item value="added"/>
 		</list>
 		<list key="replacehistory">
 		</list>
@@ -27,7 +27,7 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="289" key="DIALOG_WIDTH"/>
 		<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
-		<item value="544" key="DIALOG_HEIGHT"/>
+		<item value="432" key="DIALOG_HEIGHT"/>
 		<item value="118" key="DIALOG_Y_ORIGIN"/>
 		<item value="150" key="DIALOG_X_ORIGIN"/>
 	</section>

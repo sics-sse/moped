@@ -73,28 +73,17 @@ public class AppConfigDaoImpl implements AppConfigDao {
 		session.getTransaction().commit();
 		return appConfigs;
 	}
-
-	public void savePluginPortConfig(PluginPortConfig pluginPortConfig) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(pluginPortConfig);
-		session.getTransaction().commit();
-	}
-	
-	private PluginConfig getPluginConfig(PluginConfig config) {
+		
+	public PluginConfig getPluginConfig(PluginConfig config) {
 		PluginConfig storedConfig = (PluginConfig)db.getSingleResult(
 				"FROM PluginConfig pc WHERE pc.name = '" + config.getName() + "'" +  
-				" AND pc.ecuId = " + config.getEcuId());
+				" AND pc.ecuId = " + config.getEcuId() + 
+				" AND pc.appConfig = " + config.getAppConfig().getId());
 
 		return storedConfig;
 	}
 
 	public int savePluginConfig(PluginConfig pluginConfig) {
-//		Session session = sessionFactory.getCurrentSession();
-//		session.beginTransaction();
-//		session.save(pluginConfig);
-//		session.getTransaction().commit();
-		
 		PluginConfig storedPluginConfig = getPluginConfig(pluginConfig); 
 		if (storedPluginConfig != null) {
 			return storedPluginConfig.getId();
@@ -103,11 +92,50 @@ public class AppConfigDaoImpl implements AppConfigDao {
 			return db.addEntry(pluginConfig);
 		}
 	}
+	
+	public PluginPortConfig getPluginPortConfig(PluginPortConfig config) {
+		System.out.println("Searching for PPC with name: " + config.getName() + 
+				" and pluginConfig_id: " + config.getPluginConfig().getId());
+		PluginPortConfig storedConfig = (PluginPortConfig)db.getSingleResult(
+				"FROM PluginPortConfig pc WHERE pc.name = '" + config.getName() + "'" +  
+				" AND pc.pluginConfig = " + config.getPluginConfig().getId());
 
-	public void savePluginLinkConfig(PluginLinkConfig pluginLinkConfig) {
-		Session session = sessionFactory.getCurrentSession();
-		session.beginTransaction();
-		session.save(pluginLinkConfig);
-		session.getTransaction().commit();
+		return storedConfig;
+	}
+
+	public int savePluginPortConfig(PluginPortConfig pluginPortConfig) {	
+		PluginPortConfig storedConfig = getPluginPortConfig(pluginPortConfig); 
+		if (storedConfig != null) {
+//			System.out.println("Found port: " + pluginPortConfig.getName() + ", id: " + storedConfig.getId());
+			return storedConfig.getId();
+		}
+		else {
+//			System.out.println("Inserting port: " + pluginPortConfig.getName());
+			return db.addEntry(pluginPortConfig);
+		}
+	}
+	
+	public PluginLinkConfig getPluginLinkConfig(PluginLinkConfig config) {
+		PluginLinkConfig storedConfig = (PluginLinkConfig)db.getSingleResult(
+				"FROM PluginLinkConfig pc WHERE pc.fromStr = '" + config.getFromStr() + "'" + 
+				" AND pc.toStr = '" + config.getToStr() + "'" +
+				" AND pc.remote = '" + config.getRemote() + "'" + 
+				" AND pc.pluginConfig = " + config.getPluginConfig().getId());
+
+		return storedConfig;
+	}
+
+	public int savePluginLinkConfig(PluginLinkConfig pluginLinkConfig) {
+		PluginLinkConfig storedConfig = getPluginLinkConfig(pluginLinkConfig); 
+		if (storedConfig != null) {
+//			System.out.println("Found link from " + storedConfig.getFromStr() + 
+//					" to " + storedConfig.getToStr() + " with id: "+ storedConfig.getId());
+			return storedConfig.getId();
+		}
+		else {
+//			System.out.println("Inserting link from " + storedConfig.getFromStr() + 
+//					" to " + storedConfig.getToStr());
+			return db.addEntry(pluginLinkConfig);
+		}
 	}
 }

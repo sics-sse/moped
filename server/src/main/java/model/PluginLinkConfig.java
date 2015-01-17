@@ -28,6 +28,10 @@ public class PluginLinkConfig implements Serializable {
 		this.toStr = toStr;
 		this.remote = remote;
 	}
+	
+	public PluginLinkConfig(String fromStr, String toStr, int connectionType) {
+		this(fromStr, toStr, ""+connectionType);
+	}
 
 	@Id
 	@GeneratedValue

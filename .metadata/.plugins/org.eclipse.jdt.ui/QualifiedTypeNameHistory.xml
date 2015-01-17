@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="java.io.File"/>
-<fullyQualifiedTypeName name="java.io.FileFilter"/>
-<fullyQualifiedTypeName name="org.apache.commons.lang3.SerializationUtils"/>
-<fullyQualifiedTypeName name="java.io.ByteArrayOutputStream"/>
-<fullyQualifiedTypeName name="java.io.ObjectOutput"/>
-<fullyQualifiedTypeName name="java.io.ObjectOutputStream"/>
-<fullyQualifiedTypeName name="messages.Packet"/>
-<fullyQualifiedTypeName name="javax.jws.soap.SOAPBinding"/>
-<fullyQualifiedTypeName name="javax.jws.soap.SOAPBinding.Style"/>
-<fullyQualifiedTypeName name="javax.jws.WebMethod"/>
-<fullyQualifiedTypeName name="javax.jws.WebService"/>
 <fullyQualifiedTypeName name="soapTest.SoapTest"/>
 <fullyQualifiedTypeName name="javax.xml.ws.Endpoint"/>
 <fullyQualifiedTypeName name="org.apache.mina.filter.codec.ProtocolCodecFilter"/>
@@ -47,8 +36,28 @@
 <fullyQualifiedTypeName name="messages.InitPacket"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="dao.DBConnection"/>
-<fullyQualifiedTypeName name="model.DatabasePlugin"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="messages.LinkContextEntry"/>
 <fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.util.jar.Manifest"/>
+<fullyQualifiedTypeName name="java.util.jar.JarFile"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.jar.Attributes"/>
+<fullyQualifiedTypeName name="model.AppConfig"/>
+<fullyQualifiedTypeName name="model.DatabasePlugin"/>
+<fullyQualifiedTypeName name="java.util.jar.JarEntry"/>
+<fullyQualifiedTypeName name="java.util.Enumeration"/>
+<fullyQualifiedTypeName name="dao.DatabasePluginDao"/>
+<fullyQualifiedTypeName name="dao.DatabasePluginDaoImpl"/>
+<fullyQualifiedTypeName name="org.hibernate.Query"/>
+<fullyQualifiedTypeName name="dao.PluginConfigDaoImpl"/>
+<fullyQualifiedTypeName name="model.PluginConfig"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.SAXParserFactory"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.SAXParser"/>
+<fullyQualifiedTypeName name="java.io.BufferedReader"/>
+<fullyQualifiedTypeName name="java.io.BufferedWriter"/>
+<fullyQualifiedTypeName name="java.io.FileWriter"/>
+<fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+<fullyQualifiedTypeName name="model.PluginPortConfig"/>
+<fullyQualifiedTypeName name="model.PluginLinkConfig"/>
 </qualifiedTypeNameHistroy>

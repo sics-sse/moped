@@ -44,8 +44,8 @@ public class DataTableDao {
 	public void insertRecord(String pluginName, DataRecord dataRecord) {
 		// to check if application exists
 		if (pluginDataTable.containsKey(pluginName)) {
-			System.out.println("@ Plugin (" + pluginName
-					+ " has been installed before");
+//			System.out.println("@ Plugin (" + pluginName
+//					+ " has been installed before");
 			return;
 		} else {
 			pluginDataTable.put(pluginName, dataRecord);
@@ -124,8 +124,8 @@ public class DataTableDao {
 	 *            the object
 	 */
 	public void object2File(Object object) {
-		logger.debug("To convert object(" + object.toString() + ") to file ("
-				+ DB_PATH + ")");
+//		logger.debug("To convert object(" + object.toString() + ") to file ("
+//				+ DB_PATH + ")");
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
 		try {
@@ -135,8 +135,8 @@ public class DataTableDao {
 			fos = new FileOutputStream(DB_PATH + "plugin.DB");
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(object);
-			logger.debug("Object(" + object.toString() + ") convered to file ("
-					+ DB_PATH + ")");
+//			logger.debug("Object(" + object.toString() + ") convered to file ("
+//					+ DB_PATH + ")");
 		} catch (FileNotFoundException e) {
 			logger.debug(e.toString());
 		} catch (IOException e) {
