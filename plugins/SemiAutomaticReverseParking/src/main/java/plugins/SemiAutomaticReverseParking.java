@@ -4,7 +4,7 @@ import sics.plugin.PlugInComponent;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 
-import com.sun.squawk.VM;
+//import com.sun.squawk.VM;
 
 public class SemiAutomaticReverseParking extends PlugInComponent {
 	
@@ -76,7 +76,7 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 	public void run() {
 		init();
 		
-		VM.println("SemiAutomaticReverseParking is running");
+//		VM.println("SemiAutomaticReverseParking is running");
 		System.out.println("SemiAutomaticReverseParking is running");
 		
 		distance = 0;
@@ -86,6 +86,7 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 			double speed = (double)((Integer) wheelSpeed.readInt());
 //			distance += Math.round((speed * TIME_STEP) / 1000.0);
 			distance += round(speed * TIME_STEP / 1000.0);			//Math.round() is not included in basic Squawk (however MathUtils.round exists)
+			System.out.println("SARP: state = " + state + ", distance = " + distance + " at speed = " + speed);
 			
 			switch (state) {
 			case STARTING:
@@ -112,8 +113,8 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 			    // Turn the wheels left (-100) and wait until the distance TURN_LEFT_DIST has been moved
 				steeringAngle.write(-100);
 				if (distance > TURN_LEFT_DIST)
-//					gotoState(State.GOING_STRAIGHT);
-					gotoState(GOING_STRAIGHT);
+//					gotoState(State.ALIGNING);
+					gotoState(ALIGNING);
 				break;
 			case ALIGNING:
 			    // Turn the wheels straight (0) 
