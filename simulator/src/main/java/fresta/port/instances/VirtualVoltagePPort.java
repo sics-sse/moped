@@ -4,7 +4,6 @@ import sics.port.EcuVirtualPPort;
 import gui.CarModel;
 
 public class VirtualVoltagePPort extends EcuVirtualPPort {
-	private int id;
 	
 	public VirtualVoltagePPort(int id) {
 		super(id);

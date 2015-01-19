@@ -4,7 +4,6 @@ import sics.port.EcuVirtualPPort;
 import gui.CarModel;
 
 public class VirtualRearWheelPPort extends EcuVirtualPPort {
-	private int id;
 	
 	public VirtualRearWheelPPort(int id) {
 		super(id);
@@ -17,7 +16,7 @@ public class VirtualRearWheelPPort extends EcuVirtualPPort {
 
 	@Override
 	public Object deliver(int portId) {
-		return new Integer((int)(100.0 * CarModel.vehicleSpeed));  // Unit: cm/s
+		return new Integer(Math.abs((int)(100.0 * CarModel.vehicleSpeed)));  // Unit: cm/s, absolute value
 	}
 
 }
