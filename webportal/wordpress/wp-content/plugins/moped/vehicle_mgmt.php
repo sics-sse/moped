@@ -1,65 +1,274 @@
 <?php
-/**
- * @package vehicle-configuration-for-fresta
- * @version 1.0
-*/
 
-/*
-Plugin Name: vehicle configuration for fresta
-Plugin URI: 
-Description: This is used for engineers to configure vehicles.
-Version: 1.0
-Author: Ze Ni
-Author URI: https://www.sics.se/people/ze-ni
-License: GPL
-*/
+require_once("globalVariables.php");
 
-/*  Copyright 2013  vehicle configuration for fresta  (email : zeni@sics.se)
+/************************************************************/
+/* 						Forms 								*/
+/************************************************************/
 
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 2, as 
-    published by the Free Software Foundation.
+function vehicle_configuration_upload_form() {
+	?>
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+<form method="post"
+enctype="multipart/form-data">
+<label for="file">Filename:</label>
+<input type="file" name="file" id="file" /> 
+<br />
+<input type="submit" name="submitConfig" value="Submit" />
+</form>
+<?php
+}
+add_shortcode('vehicle_configuration_upload_form', 'vehicle_configuration_upload_form');
 
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
+if (isset($_POST['submitConfig'])) {
+	if ((($_FILES["file"]["type"] == "text/xml"))
+			&& ($_FILES["file"]["size"] < 2000000)) {
+				if ($_FILES["file"]["error"] > 0) {
+					echo "Return Code: " . $_FILES["file"]["error"] . "<br />";
+				}
+				else
+				{
+					if (file_exists(ABSPATH."/custom/uploaded/" . $_FILES["file"]["name"])) {
+						echo "<br/><font color='red'>".$_FILES["file"]["name"] . " already exists. </font><br />";
+					}
+					else {
+						move_uploaded_file($_FILES["file"]["tmp_name"],
+						ABSPATH."/custom/uploaded/" . $_FILES["file"]["name"]);
+						ws_parseVehicleConfig(ABSPATH."/custom/uploaded/" . $_FILES["file"]["name"]);
+					}
+				}
+			}
+			else {
+				echo "Invalid file";
+			}
+}
 
-//require_once('../wp-load.php');
+function vehicle_build_form(){
+	?>
+	
+	<h3>Add a new Vehicle</h3>
+	<form method="post" action="" id="vehicle_config_form">
+		<p>
+			<label for="vehicle_name" required>Vehicle Name</label><br/>
+			<input type="text" name="vehicle_name" value=""  />
+		</p>
+		<p>
+			<label for="vehicle_vin" required>VIN</label><br/>
+			<input type="text" name="vehicle_vin" value=""  />
+		</p>
+		<p>
+			<label for="vehicle_type" required>Vehicle Type</label><br/>
+			<select name="vehicle_type">
+				<option value="-1" selected>Select Vehicle Type: </option>
+				<?php
+					$vehicleTypes =  fetch_vehicleTypes();
+					foreach ($vehicleTypes as $vehicleType) {
+						$id = $vehicleType->id;
+						$name = $vehicleType->name;
+						echo "<option value=".$id.">".$name."</option>";
+					}
+				?>
+			</select>
+		</p>
+		<input type="submit" name="add_vehicle" value="Submit">
+	</form>
+	
+	<h3>Browse Vehicles</h3>
+	<table>
+		<thead>
+			<tr>
+				<th width="8%">Name</th>
+				<th width="8%">VIN</th>
+				<th width="3%">Remove</th>
+				<th width="81%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+				$myrows = fetch_my_vehicles();
+				foreach ($myrows as $myrow) {
+					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->VIN</td>";
+					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
+					$link = add_query_arg($link_arr_paras);
+					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+					$output .= $edit;*/
+					$link_arr_paras = array('actionForVehicle' => 'remove', 'vehicleid' => $myrow->id);
+					$link = add_query_arg($link_arr_paras);
+					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+					$output .= $remove;
+					$output .= "</tr>";
+					echo $output;
+				}	
+			?>
+		</tbody>
+		<tfoot>
+			<tr>
+				<th>Name</th>
+				<th>VIN</th>
+				<th>Remove</th>
+			</tr>
+		</tfoot>
+	</table>
+<?php	
+}
+add_shortcode('vehicle_build_form', 'vehicle_build_form');
+
+function vehicle_configuration_form() {
+?>
+<h2>Vehicle Configuration</h2>
+<h3>Add a new Vehicle Configuration</h3>
+<form method="post" >
+	<p>
+		<label for="vehicle" required">Vehicle</label><br/>
+		<select id="vehicle" name="vehicle">
+			<?php
+				$myrows = fetch_vehicles();
+				foreach ($myrows as $myrow) {
+					$output = "<option value=$myrow->id>$myrow->VIN</option>";
+					echo $output;
+				}
+			?>
+		</select>
+	</p>
+	<p>
+		<label for="name-field" required>Name</label><br/>
+		<input id="name-field" name="name-field" type="text" value=""/>
+	</p>
+	<p>
+		<label for="ecuID" required>ECU Reference</label><br/>
+		<input id="ecuID" name="ecuID" type="text" value=""/>
+	</p>
+	<p>
+		<label for="description">Description</label><br/>
+		<input id="description" name="description" type="text" value=""/>
+	</p>
+	<p>
+		<label for="function">Function</label><br/>
+		<input id="function" name="function" type="text" value=""/>
+	</p>
+	<p>
+		<label for="manufactory">Manufactory</label><br/>
+		<input id="manufactory" name="manufactory" type="text" value=""/>
+	</p>
+	<input type="submit" name="Add_configuration" value="Add"/>
+</form>
+<h3>Browse Vehicle Configuration</h3>
+<table>
+	<thead>
+		<tr>
+			<th width="10%">Name</th>
+			<th width="10%">ECU</th>
+			<th width="35%">Description</th>
+			<th width="20%">Function</th>
+			<th width="20%">Manufactory</th>
+			<th width="5%">Remove</th>
+
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+			$myrows = fetch_configurations();
+			if($myrows != NULL)
+			{
+				foreach ($myrows as $myrow) {
+					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->ecuId</td><td align='center'>$myrow->description</td><td align='center'>$myrow->function</td><td align='center'>$myrow->manufactory</td>";
+					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
+					$link = add_query_arg($link_arr_paras);
+					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+					$output .= $edit;*/
+					$link_arr_paras = array('action' => 'remove', 'configid' => $myrow->id);
+					$link = add_query_arg($link_arr_paras);
+					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+					$output .= $remove;
+					$output .= "</tr>";
+					echo $output;
+				}	
+			}
+			
+		?>
+	</tbody>
+	<tfoot>
+		<tr>
+			<th>Name</th>
+			<th>ECU</th>
+			<th>Description</th>
+			<th>Function</th>
+			<th>Manufactory</th>
+			<th>Remove</th>
+		</tr>
+	</tfoot>
+</table>
+<?php
+}
+add_shortcode('vehicle_configuration_form', 'vehicle_configuration_form');
+
+if (isset($_POST['Add_configuration'])) {
+	$ecu_id = $_POST['ecuID'];
+	$name = $_POST['name-field'];
+	$description = $_POST['description'];
+	$function = $_POST['function'];
+	$manufactory = $_POST['manufactory'];
+	$vehicle_id = $_POST['vehicle'];
+	add_new_configuration($ecu_id, $name, $description, $function, $manufactory, $vehicle_id);
+} else if( isset ( $_GET['action'] ) ) {
+		// handle action request - show form
+		switch( $_GET['action'] ) {
+			case 'remove' :
+				if ( isset( $_GET['configid'] ) ) {
+					remove_configuration( $_GET['configid'] );
+				}
+				break;
+			case 'restore' :
+				if ( isset( $_GET['configid'] ) ) {
+					echo restore_configuration( $_GET['configid'] );
+				}
+				break;
+		}
+} else if ( isset( $_POST['add_vehicle'] )) {
+	$vehicle_name = $_POST['vehicle_name'];
+	$vehicle_vin = $_POST['vehicle_vin'];
+	$vehicle_type= $_POST['vehicle_type'];
+	if($vehicle_type == "-1")
+		echo "<font color='red'>Please select one vehicle type</font>";
+	else {
+		add_vehicles($vehicle_name, $vehicle_vin, $vehicle_type);
+	}
+} else if( isset ( $_GET['actionForVehicle'] ) ) {
+		// handle action request - show form
+		switch( $_GET['actionForVehicle'] ) {
+			case 'remove' :
+				if ( isset( $_GET['vehicleid'] ) ) {
+					remove_vehicle( $_GET['vehicleid'] );
+				}
+				break;
+		}
+} else if ( isset( $_POST['add_vehicle_to_association'])) {
+	$user = wp_get_current_user();
+	$vehicle_id = $_POST['selected_vehicle'];
+	add_user_vehicle_association($user->ID, $vehicle_id);
+} else if ( isset( $_GET['actionForAssociation']) ) {
+	switch( $_GET['actionForAssociation'] ) {
+			case 'remove' :
+				if ( isset( $_GET['associationID'] ) ) {
+					remove_association( $_GET['associationID'] );
+				}
+				break;
+		}
+} else if ( isset( $_POST['bind_default_vehicle'])) {
+	$oldDefaultVehicleRowId = $_POST['oldDefaultVehicle'];
+	reset_not_default_vehicle($oldDefaultVehicleRowId);
+	$newDefaultVehileRowId = $_POST['defaultVehicle'];
+	reset_default_vehicle($newDefaultVehileRowId);
+}
+
+/************************************************************/
+/* 					Calls to Web Services (TODO)			*/
+/************************************************************/
 
 // create tables with plugins
 function vehicle_install() {
 	global $wpdb;
 
-	/*
-	$table_name = "vehicle_configuration";
-	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		name text NOT NULL,
-		value text NOT NULL,
-		PRIMARY KEY  (id)
-	)ENGINE=InnoDB DEFAULT COLLATE utf8_general_ci;";
-	
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( $sql );
-	*/
-	/*
-	$table_name = "vehicle";
-	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		name text NOT NULL,
-		VIN varchar(17) NOT NULL,
-		value text NOT NULL,
-		PRIMARY KEY  (id)
-	)ENGINE=InnoDB DEFAULT COLLATE utf8_general_ci;";
-	
-	dbDelta( $sql );
-	*/
 	$table_name = "User_vehicle_association";
 	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
 		id int(11) NOT NULL AUTO_INCREMENT,
@@ -77,7 +286,6 @@ function vehicle_install() {
 	
 	add_option( "vehicle_configuration_version", "1.0" );
 }
-
 register_activation_hook( __FILE__, 'vehicle_install' );
 
 // add css
@@ -457,222 +665,26 @@ function change_vehicle_configuration() {
 <?php
 }
 
-function vehicle_build_form(){
-?>
-	
-	<h3>Add a new Vehicle</h3>
-	<form method="post" action="" id="vehicle_config_form">
-		<p>
-			<label for="vehicle_name" required>Vehicle Name</label><br/>
-			<input type="text" name="vehicle_name" value=""  />
-		</p>
-		<p>
-			<label for="vehicle_vin" required>VIN</label><br/>
-			<input type="text" name="vehicle_vin" value=""  />
-		</p>
-		<p>
-			<label for="vehicle_type" required>Vehicle Type</label><br/>
-			<select name="vehicle_type">
-				<option value="-1" selected>Select Vehicle Type: </option>
-				<?php
-					$vehicleTypes =  fetch_vehicleTypes();
-					foreach ($vehicleTypes as $vehicleType) {
-						$id = $vehicleType->id;
-						$name = $vehicleType->name;
-						echo "<option value=".$id.">".$name."</option>";
-					}
-				?>
-			</select>
-		</p>
-		<input type="submit" name="add_vehicle" value="Submit">
-	</form>
-	
-	<h3>Browse Vehicles</h3>
-	<table>
-		<thead>
-			<tr>
-				<th width="8%">Name</th>
-				<th width="8%">VIN</th>
-				<th width="3%">Remove</th>
-				<th width="81%"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php
-				$myrows = fetch_my_vehicles();
-				foreach ($myrows as $myrow) {
-					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->VIN</td>";
-					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
-					$link = add_query_arg($link_arr_paras);
-					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
-					$output .= $edit;*/
-					$link_arr_paras = array('actionForVehicle' => 'remove', 'vehicleid' => $myrow->id);
-					$link = add_query_arg($link_arr_paras);
-					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
-					$output .= $remove;
-					$output .= "</tr>";
-					echo $output;
-				}	
-			?>
-		</tbody>
-		<tfoot>
-			<tr>
-				<th>Name</th>
-				<th>VIN</th>
-				<th>Remove</th>
-			</tr>
-		</tfoot>
-	</table>
-<?php	
-}
-add_shortcode('vehicle_build_form', 'vehicle_build_form');
+function ws_parseVehicleConfig($path) {
+	$webServiceAddress = getWebServiceAddress();
+	//ini_set("soap.wsdl_cache_enabled", "1");
+	$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
+	try
+	{
+		$param = array('arg0' => $path);
+		$ret = $client->parseVehicleConfiguration($param);
 
-function vehicle_configuration_form() {
-?>
-<h2>Vehicle Configuration</h2>
-<h3>Add a new Vehicle Configuration</h3>
-<form method="post" >
-	<p>
-		<label for="vehicle" required">Vehicle</label><br/>
-		<select id="vehicle" name="vehicle">
-			<?php
-				$myrows = fetch_vehicles();
-				foreach ($myrows as $myrow) {
-					$output = "<option value=$myrow->id>$myrow->VIN</option>";
-					echo $output;
-				}
-			?>
-		</select>
-	</p>
-	<p>
-		<label for="name-field" required>Name</label><br/>
-		<input id="name-field" name="name-field" type="text" value=""/>
-	</p>
-	<p>
-		<label for="ecuID" required>ECU Reference</label><br/>
-		<input id="ecuID" name="ecuID" type="text" value=""/>
-	</p>
-	<p>
-		<label for="description">Description</label><br/>
-		<input id="description" name="description" type="text" value=""/>
-	</p>
-	<p>
-		<label for="function">Function</label><br/>
-		<input id="function" name="function" type="text" value=""/>
-	</p>
-	<p>
-		<label for="manufactory">Manufactory</label><br/>
-		<input id="manufactory" name="manufactory" type="text" value=""/>
-	</p>
-	<input type="submit" name="Add_configuration" value="Add"/>
-</form>
-<h3>Browse Vehicle Configuration</h3>
-<table>
-	<thead>
-		<tr>
-			<th width="10%">Name</th>
-			<th width="10%">ECU</th>
-			<th width="35%">Description</th>
-			<th width="20%">Function</th>
-			<th width="20%">Manufactory</th>
-			<th width="5%">Remove</th>
+		// delete vehicle config file
+		unlink($path);
 
-		</tr>
-	</thead>
-	<tbody>
-		<?php
-			$myrows = fetch_configurations();
-			if($myrows != NULL)
-			{
-				foreach ($myrows as $myrow) {
-					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->ecuId</td><td align='center'>$myrow->description</td><td align='center'>$myrow->function</td><td align='center'>$myrow->manufactory</td>";
-					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
-					$link = add_query_arg($link_arr_paras);
-					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
-					$output .= $edit;*/
-					$link_arr_paras = array('action' => 'remove', 'configid' => $myrow->id);
-					$link = add_query_arg($link_arr_paras);
-					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
-					$output .= $remove;
-					$output .= "</tr>";
-					echo $output;
-				}	
-			}
-			
-		?>
-	</tbody>
-	<tfoot>
-		<tr>
-			<th>Name</th>
-			<th>ECU</th>
-			<th>Description</th>
-			<th>Function</th>
-			<th>Manufactory</th>
-			<th>Remove</th>
-		</tr>
-	</tfoot>
-</table>
-<?php
-}
-
-add_shortcode('vehicle_configuration_form', 'vehicle_configuration_form');
-
-if (isset($_POST['Add_configuration'])) {
-	$ecu_id = $_POST['ecuID'];
-	$name = $_POST['name-field'];
-	$description = $_POST['description'];
-	$function = $_POST['function'];
-	$manufactory = $_POST['manufactory'];
-	$vehicle_id = $_POST['vehicle'];
-	add_new_configuration($ecu_id, $name, $description, $function, $manufactory, $vehicle_id);
-} else if( isset ( $_GET['action'] ) ) {
-		// handle action request - show form
-		switch( $_GET['action'] ) {
-			case 'remove' :
-				if ( isset( $_GET['configid'] ) ) {
-					remove_configuration( $_GET['configid'] );
-				}
-				break;
-			case 'restore' :
-				if ( isset( $_GET['configid'] ) ) {
-					echo restore_configuration( $_GET['configid'] );
-				}
-				break;
-		}
-} else if ( isset( $_POST['add_vehicle'] )) {
-	$vehicle_name = $_POST['vehicle_name'];
-	$vehicle_vin = $_POST['vehicle_vin'];
-	$vehicle_type= $_POST['vehicle_type'];
-	if($vehicle_type == "-1")
-		echo "<font color='red'>Please select one vehicle type</font>";
-	else {
-		add_vehicles($vehicle_name, $vehicle_vin, $vehicle_type);
+		if($ret->return == "true")
+			echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
+		else
+			echo "<br/><font color='red'>".$ret->return."</font><br />";
+		return $ret;
+	} catch (SoapFault $exception) {
+		print $exception;
+		return false;
 	}
-} else if( isset ( $_GET['actionForVehicle'] ) ) {
-		// handle action request - show form
-		switch( $_GET['actionForVehicle'] ) {
-			case 'remove' :
-				if ( isset( $_GET['vehicleid'] ) ) {
-					remove_vehicle( $_GET['vehicleid'] );
-				}
-				break;
-		}
-} else if ( isset( $_POST['add_vehicle_to_association'])) {
-	$user = wp_get_current_user();
-	$vehicle_id = $_POST['selected_vehicle'];
-	add_user_vehicle_association($user->ID, $vehicle_id);
-} else if ( isset( $_GET['actionForAssociation']) ) {
-	switch( $_GET['actionForAssociation'] ) {
-			case 'remove' :
-				if ( isset( $_GET['associationID'] ) ) {
-					remove_association( $_GET['associationID'] );
-				}
-				break;
-		}
-} else if ( isset( $_POST['bind_default_vehicle'])) {
-	$oldDefaultVehicleRowId = $_POST['oldDefaultVehicle'];
-	reset_not_default_vehicle($oldDefaultVehicleRowId);
-	$newDefaultVehileRowId = $_POST['defaultVehicle'];
-	reset_default_vehicle($newDefaultVehileRowId);
 }
 ?>

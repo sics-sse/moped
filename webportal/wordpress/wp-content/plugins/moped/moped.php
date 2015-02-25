@@ -1,10 +1,15 @@
 <?php
 /**
  * Plugin Name: Mobile Open Platform for Experimental Development (MOPED) 
- * Plugin URI: http://mypluginuri.com/
- * Description: A brief description about your plugin.
- * Version: 1.0 or whatever version of the plugin (pretty self explanatory)
- * Author: Plugin Author's Name
- * Author URI: Author's website
- * License: A "Slug" license name e.g. GPL12
+ * Plugin URI: https://moped.sics.se/
+ * Description: Web portal for app upload and installation in MOPED platforms. 
+ * Version: 1.0 
+ * Author: Avenir Kobetski
  */
+
+global $plugin_dir;
+$plugin_dir = plugin_dir_path(__FILE__);
+
+require_once($plugin_dir.'/application_mgmt.php');
+require_once($plugin_dir.'/vehicle_mgmt.php');
+?>
