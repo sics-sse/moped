@@ -94,7 +94,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	private DatabasePluginDao databasePluginDao;
 	private AppConfigDao appConfigDao;
 //	private PluginConfigDaoImpl pluginConfigDao;
-	private SuiteGen suiteGen = new SuiteGen("/lhome/zeni/squawk");
+	private SuiteGen suiteGen = new SuiteGen("/lhome/sse/squawk");
 	
 	private DBConnection db = null;
 	private ServerHandler handler = null;
@@ -1201,6 +1201,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public String generateSuite(String zipFile, String fullClassName)
 			throws PluginWebServicesException {
 		CompressUtils util = new CompressUtils();
+		System.out.println("Calling unzip on " + zipFile);
 		String dest = util.unzip(zipFile);
 		try {
 			Thread.sleep(1000);
@@ -1208,7 +1209,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String reply = suiteGen.generateSuite(dest + "/" + fullClassName);
+		
+		System.out.println("Unzipped into: " + dest); 
+		dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
+		
+		String reply = suiteGen.generateSuite(dest); // + "/" + fullClassName);
 		return reply;
 	}
 

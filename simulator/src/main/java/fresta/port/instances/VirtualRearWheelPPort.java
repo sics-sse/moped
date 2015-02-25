@@ -11,7 +11,7 @@ public class VirtualRearWheelPPort extends EcuVirtualPPort {
 	
 	@Override
 	public Object deliver() {
-		return (int)CarModel.vehicleSpeed;
+		return (int)(Math.abs(100 * CarModel.vehicleSpeed));
 	}
 
 	@Override
