@@ -32,10 +32,13 @@ public class ServerTest {
 	    stat.setQueryTimeout(10);  // set timeout to 30 sec.
 
 	    /* Populate the DB */
-	    stat.executeUpdate("drop table if exists Vehicle");
+	    //TODO: Use a schema file to create tables here (instead of hardcoding it).
 	    stat.executeUpdate("create table Vehicle (id integer, name string, description string, vin string)");
-	    stat.executeUpdate("insert into Vehicle values(1, 'de lux', 'A luxury car', 'a0:88:b4:de:4b:a8')");
-	    stat.executeUpdate("insert into Vehicle values(2, 'simulator', 'Simulator instance', 'a0:88:b4:de:4b:a8:S0')");
+	    
+	    stat.executeUpdate("insert into Vehicle (id, name, description, vin) "
+	    		+ "values(1, 'de lux', 'A luxury car', 'a0:88:b4:de:4b:a8')");
+	    stat.executeUpdate("insert into Vehicle (id, name, description, vin) "
+	    		+ "values(2, 'simulator', 'Simulator instance', 'a0:88:b4:de:4b:a8:S0')");
 	}
 
 	@After
