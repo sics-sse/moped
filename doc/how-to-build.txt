@@ -1,0 +1,264 @@
+Fetching:
+
+git clone https://github.com/sics-sse/moped
+
+api
+autosar
+ecm-core
+ecm-linux
+plugins
+server
+simulator
+squawk
+test
+tools
+webportal
+WirelessIno
+
+squawk is ...
+autosar is ...
+webportal is a modification of https://wordpress.org/download/
+WirelessIno is a modification of https://github.com/MiichaelD/BluIno
+
+
+Building:
+
+make sure that Java is 1.7 or later:
+java -version
+If it isn't, setting JAVA_HOME alone may not work; use
+update-alternatives --config java
+
+cd api
+mvn install
+
+cd ecm-core
+mvn install
+
+cd ecm-linux
+mvn install
+
+cd plugins
+mvn install
+
+cd server
+mvn install
+
+cd simulator
+mvn install
+
+Nothing to do in webportal
+If we want to run it, we may want to at least change the address to the
+trusted server in custom/globalVariables.php
+
+cd squawk
+./startScript.sh
+(it sets JAVA_HOME itself, so remove that first in d.sh)
+
+Exception in thread "main" java.lang.RuntimeException: Problems finding builder
+	at com.sun.squawk.builder.launcher.Launcher.main(Launcher.java:76)
+Caused by: java.lang.ClassNotFoundException: com.sun.squawk.builder.Build
+
+Maybe first
+cd builder
+./bld.sh
+but it doesn't find com.sun.javadoc classes
+
+So we currently don't have a working squawk.
+
+
+
+cd autosar
+A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
+See http://elinux.org/ARMCompilers
+I don't know how to get a new, free, one.
+Change build.sh appropriately, for example
+export CROSS_COMPILE=/home/arndt/moped/arm/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
+In src/examples/Raspberry_Pi/demo_VCU/Actuator_MotorSpeed.c, remove
+    if (select == 1) {
+    	pirte_write_speed = true;
+    }
+./build.sh
+
+cd WirelessIno
+To get a build.xml, do
+export PATH=$PATH:~/android/android-sdk-linux/tools:~/android/android-sdk-linux/platform-tools
+android update project --subprojects --path . --target 9
+Then
+rm -r bin
+ant debug
+
+Put this on an Android phone somehow, via USB cable or a local web server.
+
+
+
+Fetch and install mysql.
+
+sudo /etc/init.d/mysql start
+mysql -u root -proot
+
+create user fresta identified by 'somepasswordxxx';
+
+This password should be used in these files:
+    webportal/wordpress/custom/apps_display_form.php
+    webportal/wordpress/wp-config.php
+    server/src/main/resources/hibernate.cfg.xml
+
+create database fresta;
+    grant all privileges on fresta . * to 'fresta'@'%';
+    flush privileges;
+
+
+Use a saved database dump to create and populate the tables:
+mysql -uroot -proot < dump
+
+
+
+cd server
+java -jar target/server.jar
+
+Error
+at service.PluginWebServicePublisher.main(PluginWebServicePublisher.java:52)
+Caused by: java.net.BindException: Cannot assign requested address
+
+Change this line to use "localhost" instead (in the future this will be
+configurable).
+
+The server should start, and be silent.
+
+If it says
+    org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect
+    at dao.DBConnection.<init>(DBConnection.java:23)
+    Caused by: java.sql.SQLException: Access denied for user 'fresta'@'localhost'
+the local mysql wasn't started or the server doesn't have the right
+access.
+
+
+cd simulator
+In configs/system1.xml, change
+			<ip>appz-ext.sics.se</ip>
+to
+			<ip>localhost</ip>
+
+java -jar target/simulator-1.0.jar
+    Connected to trusted server
+    Opening a session to localhost/127.0.0.1:9999 from vin:20UYA31581L000000
+    Local session address: /127.0.0.1:60570
+
+and the server says
+    Message received on server...
+    Vehicle 20UYA31581L000000 joins the connection
+
+
+Start the WirelessIno app on your Android. Under the settings, set the
+correct host address, and fill in the port number 9000 that is
+suggested. Press Connect and it should say Connected. Use the controls
+to set speed and angle, and see that the car moves in the
+simulator. They revert to zero when let go.
+
+
+Fetch a simple SOAP client for Python:
+https://fedorahosted.org/suds/wiki/Documentation
+Install using "python setup.py install"
+
+Start python, and do
+    from suds.client import Client
+    url='http://localhost:9990/moped/pws?wsdl'
+    client = Client(url)
+
+Test the server:
+    client.service.install("88", 2, "jdk")
+returns false and the server says
+    vin in install(): 88
+    appID in install(): 2
+    IoSession is NULL
+
+With a saved mysql dump already containing apps, we first make sure the
+app paths refer to something: copy the moped_plugins directory, and
+create links to make /lhome/sse/moped_plugins work (but changing the database
+is probably better)
+
+and then in python, we can do
+client.service.install("20UYA31581L000000", 25, "jdk")
+
+Now the server said this:
+    Found plugin with name: AutoBrake
+    READY FOR INSTALLATION WRITING!!!!!!!!!!!!!!!!!!!!
+    SUCCESSFULLY INSTALLED SOME STUFF!!!!!!!!!!!!!!!!!!!!
+    Found plugin with name: UltraSonicReader
+    Message sent from server...
+    READY FOR INSTALLATION WRITING!!!!!!!!!!!!!!!!!!!!
+    Message sent from server...
+    SUCCESSFULLY INSTALLED SOME STUFF!!!!!!!!!!!!!!!!!!!!
+    Message received on server...
+    [VIN = 20UYA31581L000000]AutoBrake.zip arrived in the Linux
+    Message received on server...
+    [VIN = 20UYA31581L000000]AutoBrake.zip arrived in the Linux
+    Message received on server...
+    [VIN = 20UYA31581L000000]UltraSonicReader.zip arrived in the Linux
+
+The simulator prints the bytes (in decimal) of the whole app and then may
+give an error due to the app having been compiled for the actual car and
+not the simulator.
+
+One case that works better:
+    client.service.insertPluginInDb("/home/arndt/moped/moped_plugins/PluginCreationTest/1.0/", "PluginCreationTest")
+Server says
+    WARNING: NO RESULTS WERE FOUND FOR QUERY: "FROM DatabasePlugin d WHERE d.fullClassName = 'plugins/PluginCreationTest' AND d.location = '/home/arndt/moped/moped_plugins/PluginCreationTest/1.0/PluginCreationTest' AND d.name = 'PluginCreationTest' AND d.zipLocation = '/home/arndt/moped/moped_plugins/PluginCreationTest/1.0' AND d.zipName = 'PluginCreationTest.zip' AND d.reference = 2 AND d.application = 32"
+    configfile /tmp/tempxml.xml3320370971674522082.tmp
+The "warning" means it wasn't there yet.
+
+From the above, the app id is 32,
+    client.service.install("20UYA31581L000000", 32, "jdk")
+This seemed to work.
+
+We can also see it from looking at this mysql table:
+select * from Application;
+
+
+Modify an existing app slightly, copy it to the proper place in the
+file system and install it and see that it runs. Add this line to
+PluginCreationTest.java, as the last line in init():
+		System.out.println("Hooray!");
+
+cd plugins
+cd PluginCreationTest
+mvn clean install
+ (I needed to remove a dependency from ../pom.xml)
+cp target/PluginCreationTest-1.0.jar /lhome/sse/moped_plugins/PluginCreationTest/1.0/PluginCreationTest.zip
+cp target/PluginCreationTest-1.0.jar /lhome/sse/moped_plugins/PluginCreationTest/1.0/PluginCreationTest.jar
+
+In the python shell, 
+>>> client.service.insertPluginInDb("/lhome/sse/moped_plugins/PluginCreationTest/1.0/", "PluginCreationTest")
+
+and then
+
+client.service.install("20UYA31581L000000", 32, "jdk")
+
+A lot of numbers are shown in the simulator, along with some error backtrace,
+but in the middle of it, we see the Hooray.
+
+Modify Hooray to Howdy, and do the above again. I think the app does not
+run this time, only gets installed, but kill the simulator and start it again.
+Now it says Howdy.
+
+
+Modify the simulator to have some motor speed, and see that the car
+moves.
+Add the following lines to the constructor in simulator/src/main/java/gui/CarModel.java:
+		steeringAngle = 50.0;
+		motorPower = 0.001;
+
+Build and restart the simulator. The car now goes in narrow lefthand circles.
+
+
+Next: define the steering port for an app, let the code set the
+steering angle to 50% to the right, and install it, and see that the
+car now turns right instead. (The two numbers 50 don't seem to mean
+the same thing.)
+New app
+PluginCreationTest2
+We then need to add it to the database:
+insert into VehiclePlugin (appId,vin) values (38,"20JAX31581L000000");
+
+
+Next: use two cars in the simulator
