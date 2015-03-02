@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:soap="http://cxf.apache.org/bindings/soap"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                           http://www.springframework.org/schema/aop 
+                           http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context-3.2.xsd
+                           http://www.springframework.org/schema/tx 
+                           http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+						   http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
+	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
+
+	<!-- database configuration -->
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/> 
+		<property name="url" value="jdbc:mysql://localhost:3306/fresta?characterEncoding=utf8"/> 
+		<property name="username" value="fresta"/> 
+		<property name="password" value="turbine_r4d4r_pLOw"/>
+	</bean>
+
+ 	<!-- 
+		<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/fresta?characterEncoding=utf8" />
+		<property name="username" value="root" />
+		<property name="password" value="fresta" />
+	</bean>
+	 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="model"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- dao API -->
+
+	<bean id="applicationDao" class="dao.ApplicationDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="vehiclePluginDao" class="dao.VehiclePluginDaoImpl">
+		<property name="currentMaxPluginId" value="-1" />
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="vehicleDao" class="dao.VehicleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="vehicleConfigDao" class="dao.VehicleConfigDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="databasePluginDao" class="dao.DatabasePluginDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="appConfigDao" class="dao.AppConfigDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- <bean id="sessionManagement" class="mina.SessionManagement"></bean> -->
+	<!-- cxf configuration -->
+	<jaxws:server id="pluginWebServices" serviceClass="service.PluginWebServices"
+		address="/pluginWebServices">
+		<jaxws:serviceBean>
+			<bean class="service.PluginWebServicesImpl">
+				<property name="applicationDao" ref="applicationDao" />
+				<property name="vehiclePluginDao" ref="vehiclePluginDao" />
+				<property name="vehicleDao" ref="vehicleDao" />
+				<property name="databasePluginDao" ref="databasePluginDao" />
+				<property name="vehicleConfigDao" ref="vehicleConfigDao" />
+				<property name="appConfigDao" ref="appConfigDao"></property>
+			</bean>
+		</jaxws:serviceBean>
+		<jaxws:inInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingInInterceptor" />
+			<!-- <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor"> 
+				<constructor-arg> <map> <entry key="action" value="UsernameToken" /> <entry 
+				key="passwordType" value="PasswordText" /> <entry key="passwordCallbackRef"> 
+				<ref bean="serverUsernamePasswordHandler" /> </entry> </map> </constructor-arg> 
+				</bean> -->
+		</jaxws:inInterceptors>
+		<jaxws:outInterceptors>
+			<bean class="org.apache.cxf.interceptor.LoggingOutInterceptor" />
+		</jaxws:outInterceptors>
+	</jaxws:server>
+
+	<!-- mina configuration -->
+	<bean id="serverHandler" class="mina.ServerHandler">
+		<property name="vehiclePluginDao" ref="vehiclePluginDao" />
+		<property name="vehicleDao" ref="vehicleDao" />
+	</bean>
+
+	<!-- executorFilter multiple thread handler -->
+	<bean id="executorFilter" class="org.apache.mina.filter.executor.ExecutorFilter" />
+	<bean id="mdcInjectionFilter" class="org.apache.mina.filter.logging.MdcInjectionFilter">
+		<constructor-arg value="remoteAddress" />
+	</bean>
+
+	<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.net.SocketAddress">
+					<bean class="org.apache.mina.integration.beans.InetSocketAddressEditor" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- The IoAcceptor which binds to port 9999 -->
+	<bean id="ioAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
+		init-method="bind" destroy-method="unbind">
+		<property name="defaultLocalAddress" value=":9999" />
+		<property name="handler" ref="serverHandler" />
+		<property name="reuseAddress" value="true" />
+		<property name="filterChainBuilder" ref="filterChainBuilder" />
+	</bean>
+
+	<!-- filter -->
+	<bean id="codecFilter" class="org.apache.mina.filter.codec.ProtocolCodecFilter">
+		<constructor-arg>
+			<!-- <bean class="org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory" 
+				/> -->
+			<!-- <bean class="org.apache.mina.filter.codec.textline.TextLineCodecFactory" 
+				/> -->
+			<bean
+				class="org.apache.mina.filter.codec.serialization.ObjectSerializationCodecFactory" />
+		</constructor-arg>
+	</bean>
+	<bean id="loggingFilter" class="org.apache.mina.filter.logging.LoggingFilter" />
+	<bean id="filterChainBuilder"
+		class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">
+		<property name="filters">
+			<map>
+			    <entry key="executor" value-ref="executorFilter" />
+				<entry key="mdcInjectionFilter" value-ref="mdcInjectionFilter" />
+				<entry key="codecFilter" value-ref="codecFilter" />
+				<entry key="loggingFilter" value-ref="loggingFilter" />
+			</map>
+		</property>
+	</bean>
+</beans>

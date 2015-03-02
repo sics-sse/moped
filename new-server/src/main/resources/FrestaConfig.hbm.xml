@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="model.VehicleConfig" table="VehicleConfig">
+	 	<meta attribute="class-description">
+	 		Vehicle configurations
+	 	</meta>
+	 	<id name="id" type="int" column="id"><generator class="native"/></id>
+	 	<property name="name" column="name" type="string"/>
+	 	<property name="brand" column="brand" type="string"/>
+	 	<set name="ecus" cascade="save-update" table="Ecu">
+			<key column="vehicleConfig_id"/>
+	        <one-to-many class="model.Ecu"/>
+	    </set>
+	    <set name="links" cascade="save-update" table="Link">
+			<key column="vehicleConfig_id"/>
+	        <one-to-many class="model.Link"/>
+	    </set>
+ 	</class>
+ 	
+	<class name="model.Ecu" table="Ecu">
+	    <meta attribute="class-description">
+	        Ecu descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="ecuId" column="ecuID" type="int"/>
+	    <property name="name" column="name" type="string"/>
+	    <property name="function" column="function" type="string"/>
+	    <property name="manufactory" column="manufactory" type="string"/>
+	    <property name="description" column="description" type="string"/>  
+	    <set name="ports" cascade="save-update" table="Port">
+			<key column="ecu_id"/>
+	        <one-to-many class="model.Port"/>
+	    </set>  
+	    <many-to-one name="vehicleConfig" class="model.VehicleConfig">
+            <column name="vehicleConfig_id"/>
+        </many-to-one>
+	</class>
+	
+	<class name="model.Link" table="Link">
+	    <meta attribute="class-description">
+	        Port-to-port link descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="type" column="type" type="int"/>
+	    <property name="fromEcuId" column="fromEcuId" type="int"/>
+	    <property name="toEcuId" column="toEcuId" type="int"/>
+	    <property name="fromPortId" column="fromPortId" type="int"/>
+	    <property name="toPortId" column="toPortId" type="int"/>  
+	    <many-to-one name="vehicleConfig" class="model.VehicleConfig">
+            <column name="vehicleConfig_id"/>
+        </many-to-one>
+	</class>
+
+	<class name="model.Port" table="Port">
+	    <meta attribute="class-description">
+	        Port descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="portId" column="portId" type="int"/>
+	    <property name="direction" column="direction" type="string"/>
+	    <many-to-one name="ecu" class="model.Ecu">
+            <column name="ecu_id"/>
+        </many-to-one>
+	</class>	
+	
+	<class name="model.Vehicle" table="Vehicle">
+	    <meta attribute="class-description">
+	        Vehicle descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="VIN" column="VIN" type="string"/>
+	    <property name="name" column="name" type="string"/>
+	    <property name="INSTALLED_APPS" column="INSTALLED_APPS" type="string"/>
+	    <property name="vehicleConfigId" column="vehicleConfigId" type="int"/>
+	</class>
+	
+	<class name="model.AppConfig" table="AppConfig">
+	    <meta attribute="class-description">
+	        App configuration descriptions (what?)
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="appId" column="appId" type="int"/>
+	    <property name="vehicleName" column="vehicleName" type="string"/>
+	    <property name="brand" column="brand" type="string"/>
+	    <set name="pluginConfigs" cascade="save-update" table="PluginConfig">
+			<key column="appConfig_id"/>
+	        <one-to-many class="model.PluginConfig"/>
+	    </set>  
+	</class>
+	
+	<class name="model.PluginConfig" table="PluginConfig">
+	    <meta attribute="class-description">
+	        Plugin configuration descriptions (what?)
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="ecuId" column="ecuId" type="int"/>
+	    <property name="name" column="name" type="string"/>
+	    <many-to-one name="appConfig" class="model.AppConfig">
+            <column name="appConfig_id"/>
+        </many-to-one>
+	    <set name="pluginPortConfigs" cascade="save-update" table="PluginPortConfig">
+			<key column="pluginConfig_id"/>
+	        <one-to-many class="model.PluginPortConfig"/>
+	    </set>  
+	    <set name="pluginLinkConfigs" cascade="save-update" table="PluginLinkConfig">
+			<key column="pluginConfig_id"/>
+	        <one-to-many class="model.PluginLinkConfig"/>
+	    </set>
+	</class>
+
+	<class name="model.PluginPortConfig" table="PluginPortConfig">
+	    <meta attribute="class-description">
+	        Plugin port configuration descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="name" column="name" type="string"/>
+	    <many-to-one name="pluginConfig" class="model.PluginConfig">
+            <column name="pluginConfig_id"/>
+        </many-to-one>
+	</class>
+	
+	<class name="model.PluginLinkConfig" table="PluginLinkConfig">
+	    <meta attribute="class-description">
+	        Plugin link configuration descriptions
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="fromStr" column="fromStr" type="string"/>
+	    <property name="toStr" column="toStr" type="string"/>
+	    <property name="remote" column="remote" type="string"/>
+	    <many-to-one name="pluginConfig" class="model.PluginConfig">
+            <column name="pluginConfig_id"/>
+        </many-to-one>
+	</class>
+	
+	<class name="model.VehiclePlugin" table="VehiclePlugin">
+	    <meta attribute="class-description">
+	        VehiclePlugin
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="vin" column="vin" type="string"/>
+	    <property name="ecuId" column="ecuId" type="int"/>
+	    <property name="appId" column="appId" type="int"/>
+	    <property name="name" column="name" type="string"/>
+	    <property name="sendingPortId" column="sendingPortId" type="int"/>
+	    <property name="callbackPortId" column="callbackPortId" type="int"/>
+	</class>
+	
+	<class name="model.Application" table="Application">
+	    <meta attribute="class-description">
+	        Application descriptions
+	    </meta>
+	    <id name="applicationId" type="int" column="applicationId"><generator class="native"/></id>
+	    <property name="applicationName" column="applicationName" type="string"/>
+	    <property name="publisher" column="publisher" type="string"/>
+	    <property name="version" column="version" type="string"/>
+	    <property name="hasNewVersion" column="hasNewVersion" type="boolean"/>
+	    <set name="databasePlugins" cascade="save-update" table="DatabasePlugin">
+			<key column="application_applicationId"/>
+	        <one-to-many class="model.DatabasePlugin"/>
+	    </set>
+	</class>
+	
+	<class name="model.DatabasePlugin" table="DatabasePlugin">
+	    <meta attribute="class-description">
+	        Database plugin descriptions
+	    </meta>
+	    <id name="id" type="int" column="pluginID"><generator class="native"/></id>
+	    <property name="name" column="name" type="string"/>
+	    <property name="zipName" column="zipName" type="string"/>
+	    <property name="fullClassName" column="fullClassName" type="string"/>
+	    <property name="strategy" column="strategy" type="string"/>
+	    <property name="location" column="location" type="string"/>
+	    <property name="zipLocation" column="zipLocation" type="string"/>
+	    <property name="reference" column="reference" type="int"/>
+	    <many-to-one name="application" class="model.Application">
+            <column name="application_applicationId"/>
+        </many-to-one>
+	</class>
+			
+	<!-- class name="test.Ecu" table="ECU">
+      <meta attribute="class-description">
+         This class contains the ECU records. 
+      </meta>
+      <id name="id" type="int" column="id"><generator class="native"/></id>
+      <property name="name" column="name" type="string"/>
+   </class-->
+</hibernate-mapping>
