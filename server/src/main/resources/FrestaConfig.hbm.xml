@@ -134,6 +134,19 @@
         </many-to-one>
 	</class>
 	
+	<class name="model.VehiclePlugin" table="VehiclePlugin">
+	    <meta attribute="class-description">
+	        VehiclePlugin
+	    </meta>
+	    <id name="id" type="int" column="id"><generator class="native"/></id>
+	    <property name="vin" column="vin" type="string"/>
+	    <property name="ecuId" column="ecuId" type="int"/>
+	    <property name="appId" column="appId" type="int"/>
+	    <property name="name" column="name" type="string"/>
+	    <property name="sendingPortId" column="sendingPortId" type="int"/>
+	    <property name="callbackPortId" column="callbackPortId" type="int"/>
+	</class>
+	
 	<class name="model.Application" table="Application">
 	    <meta attribute="class-description">
 	        Application descriptions
