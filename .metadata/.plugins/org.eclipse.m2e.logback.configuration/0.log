@@ -5220,3 +5220,19 @@ Caused by: java.io.EOFException: input contained no data
 2015-01-20 09:34:02,006 [Worker-9] INFO  o.e.m.i.launch.MavenLaunchDelegate - /home/avenir/Documents/dev/eclipse_ws/moped/plugins
 2015-01-20 09:34:02,006 [Worker-9] INFO  o.e.m.i.launch.MavenLaunchDelegate -  mvn  -B clean install
 2015-02-25 10:57:16,058 [Worker-12] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: se.sics.sse.fresta:server:0.0.1-SNAPSHOT @ /home/avenir/Documents/dev/eclipse_ws/moped/server/pom.xml.
+2015-02-26 13:35:12,242 [Worker-42] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: se.sics.sse.fresta:server:0.0.1-SNAPSHOT @ /home/avenir/Documents/dev/eclipse_ws/moped/server/pom.xml.
+2015-02-26 13:35:12,768 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading http://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.8.7/sqlite-jdbc-3.8.7.pom
+2015-02-26 13:35:12,845 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded http://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.8.7/sqlite-jdbc-3.8.7.pom
+2015-02-26 13:35:12,891 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading http://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom
+2015-02-26 13:35:12,960 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded http://repo.maven.apache.org/maven2/org/sonatype/oss/oss-parent/9/oss-parent-9.pom
+2015-02-26 13:35:13,030 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloading http://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.8.7/sqlite-jdbc-3.8.7.jar
+2015-02-26 13:35:14,399 [Worker-42] INFO  o.e.m.c.i.e.AbstractTransferListenerAdapter - Downloaded http://repo.maven.apache.org/maven2/org/xerial/sqlite-jdbc/3.8.7/sqlite-jdbc-3.8.7.jar
+2015-02-26 13:35:53,470 [Worker-42] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: se.sics.sse.fresta:server:0.0.1-SNAPSHOT @ /home/avenir/Documents/dev/eclipse_ws/moped/server/pom.xml.
+2015-02-26 13:54:15,394 [Worker-47] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-02-26 13:54:15,408 [Worker-47] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2015-02-26 13:54:15,420 [Worker-47] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-02-26 13:54:15,421 [Worker-47] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2015-02-26 13:54:15,498 [Worker-47] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-02-26 13:54:15,499 [Worker-47] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
+2015-02-26 13:54:15,502 [Worker-47] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!
+2015-02-26 13:54:15,503 [Worker-47] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
