@@ -64,7 +64,6 @@ import dao.VehiclePluginDaoImpl;
 import messages.InstallPacket;
 import messages.InstallPacketData;
 import messages.LinkContextEntry;
-import messages.DebugPacket;
 import messages.RestorePacket;
 import messages.UninstallPacket;
 import messages.UninstallPacketData;
@@ -111,6 +110,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		
 		vehicleDao = new VehicleDaoImpl(db);
 		vehicleConfigDao = new VehicleConfigDaoImpl(db);
+		vehiclePluginDao = new VehiclePluginDaoImpl(db);
 		appConfigDao = new AppConfigDaoImpl(db);
 		applicationDao = new ApplicationDaoImpl(db);
 		databasePluginDao = new DatabasePluginDaoImpl(db);
@@ -601,8 +601,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			// Save pluginname into array list cache for uninstallation
 			ArrayList<String> uninstallCacheName = new ArrayList<String>();
 
-			List<VehiclePlugin> vehiclePlugins = vehiclePluginDao
-					.getVehilePlugins(vin, appID);
+			@SuppressWarnings("unchecked")
+			List<VehiclePlugin> vehiclePlugins = (List<VehiclePlugin>)db.getAllResults("FROM VehiclePlugin vp WHERE vp.appId = " + appID + " AND vp.vin = '" + vin + "'");
+
 			for (VehiclePlugin vehiclePlugin : vehiclePlugins) {
 				String pluginName = vehiclePlugin.getName();
 				int sendingPortId = vehiclePlugin.getSendingPortId();
