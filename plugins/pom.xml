@@ -16,6 +16,13 @@
   		<artifactId>simulator</artifactId> <!-- TODO: This should be referencing "api", not "simulator" -->
   		<version>1.0</version>
   	</dependency>
+  <dependency>
+    <groupId>squawk</groupId>
+    <artifactId>squawk</artifactId>
+    <version>1.0</version>
+    <scope>system</scope>
+    <systemPath>/home/avenir/Documents/dev/eclipse_ws/squawk/squawk_classes.jar</systemPath>
+  </dependency>
   </dependencies>
   
   <build>

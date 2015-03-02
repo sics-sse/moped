@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	
+	<plugins>
+		<plugin>
+			<name>SemiAutomaticReverseParking.suite</name>
+			<ecu>2</ecu>  <!-- Allocation to Vehicle Control Unit (VCU) -->
+
+			<ports>
+				<!-- Port declarations in Java:
+					public PluginRPort wheelSpeed;     // Input: Integer encoding cm/s
+					public PluginPPort steeringAngle;  // Output: Steering angle between -100..100% of maximum
+					public PluginPPort parkingState;   // Output: String showing the state
+					public PluginPPort light;          // Output: String indicating state of the light
+				-->
+				<port>
+					<name>wheelSpeed</name>
+				</port>
+				<port>
+					<name>steeringAngle</name>
+				</port>
+				<port>
+					<name>parkingState</name>
+				</port>
+				<port>
+					<name>light</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	
+	<links>
+		<link>
+			<from>5</from>  <!-- Front wheel speed sensor. Alternatively, 6 can be used for rear wheel. -->
+			<to>wheelSpeed</to>
+		</link>
+		<link>
+			<from>steeringAngle</from>
+			<to>4</to>  <!-- Steering servo setting -->
+		</link>
+		<link>
+			<from>parkingState</from>
+			<to>0</to>  <!-- MQTT output -->
+		</link>
+		<link>
+			<from>light</from>
+			<to>9</to>  <!-- LED output -->
+		</link>
+	</links>
+</app>

@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
-<fullyQualifiedTypeName name="soapTest.SoapTest"/>
-<fullyQualifiedTypeName name="javax.xml.ws.Endpoint"/>
-<fullyQualifiedTypeName name="org.apache.mina.filter.codec.ProtocolCodecFilter"/>
-<fullyQualifiedTypeName name="java.net.InetSocketAddress"/>
-<fullyQualifiedTypeName name="org.apache.mina.filter.codec.textline.TextLineCodecFactory"/>
-<fullyQualifiedTypeName name="java.nio.charset.Charset"/>
 <fullyQualifiedTypeName name="org.apache.mina.filter.logging.LoggingFilter"/>
 <fullyQualifiedTypeName name="org.apache.mina.transport.socket.SocketAcceptor"/>
 <fullyQualifiedTypeName name="service.PluginWebServicesImpl"/>
@@ -60,4 +54,10 @@
 <fullyQualifiedTypeName name="java.io.InputStreamReader"/>
 <fullyQualifiedTypeName name="model.PluginPortConfig"/>
 <fullyQualifiedTypeName name="model.PluginLinkConfig"/>
+<fullyQualifiedTypeName name="java.nio.file.Files"/>
+<fullyQualifiedTypeName name="java.nio.file.Path"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="java.io.FileInputStream"/>
+<fullyQualifiedTypeName name="java.io.FileOutputStream"/>
 </qualifiedTypeNameHistroy>

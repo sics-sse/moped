@@ -1,5 +1,7 @@
 package service;
 
+import java.sql.Connection;
+
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
@@ -10,6 +12,18 @@ import service.exception.PluginWebServicesException;
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
+	@WebMethod 
+	public void setDBConnection(Connection conn)
+			throws PluginWebServicesException;
+	
+	@WebMethod
+	public String getVehicleName(int id) 
+			throws PluginWebServicesException;
+	
+	@WebMethod
+	public String getVehicleVin(String vehicleName) 
+			throws PluginWebServicesException;
+
 	@WebMethod
 	public void insertPluginInDb(String location, String name) 
 			throws PluginWebServicesException;

@@ -7,7 +7,7 @@
   </parent>
   <artifactId>SemiAutomaticReverseParking</artifactId>
   
-    <build>
+  <build>
 	  <plugins>
 		  <plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
@@ -19,11 +19,11 @@
 		                <Vehicle-Brand>SICS</Vehicle-Brand>
 		                <Vehicle-Name>MOPED</Vehicle-Name>
 		                <Ecu>2</Ecu>
-		                <Pirte-Config>SemiAutomaticReverseParking.xml</Pirte-Config>
 		            </manifestEntries>
 		        </archive>
 		    </configuration>
 		  </plugin>
 	  </plugins>
   </build>
+  
 </project>

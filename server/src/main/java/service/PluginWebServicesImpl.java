@@ -85,6 +85,8 @@ import service.exception.PluginWebServicesException;
 import utils.CompressUtils;
 import utils.SuiteGen;
 
+import java.sql.*;
+
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
 	private ApplicationDao applicationDao;
@@ -94,10 +96,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	private DatabasePluginDao databasePluginDao;
 	private AppConfigDao appConfigDao;
 //	private PluginConfigDaoImpl pluginConfigDao;
-	private SuiteGen suiteGen = new SuiteGen("/lhome/zeni/squawk");
+	private SuiteGen suiteGen = new SuiteGen("/lhome/sse/squawk");
 	
 	private DBConnection db = null;
 	private ServerHandler handler = null;
+	
+	private Connection dbLite = null;
+	private Statement stat = null;
 	
 	public PluginWebServicesImpl(ServerHandler handler) {
 		this.handler = handler;
@@ -110,6 +115,19 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		applicationDao = new ApplicationDaoImpl(db);
 		databasePluginDao = new DatabasePluginDaoImpl(db);
 //		pluginConfigDao = new PluginConfigDaoImpl(db);
+	}
+	
+	@Override
+	public void setDBConnection(Connection conn) 
+			throws PluginWebServicesException {
+		dbLite = conn;
+		
+		try {
+			stat = conn.createStatement();
+			stat.setQueryTimeout(10);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ApplicationDao getApplicationDao() {
@@ -166,6 +184,38 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	public void setSuiteGen(SuiteGen suiteGen) {
 		this.suiteGen = suiteGen;
+	}
+	
+	@Override
+	public String getVehicleName(int id) 
+			throws PluginWebServicesException {
+		ResultSet rs;
+		String vehicleName = "unknown";
+		
+		try {
+			rs = stat.executeQuery("select * from Vehicle where id = " + id);
+			vehicleName = rs.getString("name");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+			
+		return vehicleName;
+	}
+	
+	@Override
+	public String getVehicleVin(String vehicleName) 
+			throws PluginWebServicesException {
+		ResultSet rs;
+		String vin = "unknown";
+		
+		try {
+			rs = stat.executeQuery("select * from Vehicle where name = '" + vehicleName + "'");
+			vin = rs.getString("vin");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+			
+		return vin;
 	}
 	
 	@Override
@@ -1201,6 +1251,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public String generateSuite(String zipFile, String fullClassName)
 			throws PluginWebServicesException {
 		CompressUtils util = new CompressUtils();
+		System.out.println("Calling unzip on " + zipFile);
 		String dest = util.unzip(zipFile);
 		try {
 			Thread.sleep(1000);
@@ -1208,7 +1259,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String reply = suiteGen.generateSuite(dest + "/" + fullClassName);
+		
+		System.out.println("Unzipped into: " + dest); 
+		dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
+		
+		String reply = suiteGen.generateSuite(dest); // + "/" + fullClassName);
 		return reply;
 	}
 

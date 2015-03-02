@@ -231,9 +231,21 @@ function fetch_vehicles() {
 	return $myrows;
 }
 
+function fetch_my_vehicles() {
+	global $wpdb;
+	
+	$userId = wp_get_current_user()->ID;
+	$sql = "SELECT v.* 
+			FROM Vehicle v, User_vehicle_association a 
+			WHERE v.id = a.vehicleID AND a.userID = $userId";
+	$myrows = $wpdb->get_results($sql);
+
+	return $myrows;
+}
+
 function fetch_vehicleTypes() {
 	global $wpdb;
-	$table_name = "vehicleconfig";
+	$table_name = "VehicleConfig";
 	$sql = "SELECT * FROM $table_name";
 	$myrows = $wpdb->get_results($sql);
 	return $myrows;
@@ -461,14 +473,13 @@ function vehicle_build_form(){
 		<p>
 			<label for="vehicle_type" required>Vehicle Type</label><br/>
 			<select name="vehicle_type">
-				<option value="-1" selected>Select Veihcle Type: </option>
+				<option value="-1" selected>Select Vehicle Type: </option>
 				<?php
 					$vehicleTypes =  fetch_vehicleTypes();
 					foreach ($vehicleTypes as $vehicleType) {
 						$id = $vehicleType->id;
-						$brand = $vehicleType->brand;
 						$name = $vehicleType->name;
-						echo "<option value=".$id.">Brand: ".$brand.", Name: ".$name."</option>";
+						echo "<option value=".$id.">".$name."</option>";
 					}
 				?>
 			</select>
@@ -488,7 +499,7 @@ function vehicle_build_form(){
 		</thead>
 		<tbody>
 			<?php
-				$myrows = fetch_vehicles();
+				$myrows = fetch_my_vehicles();
 				foreach ($myrows as $myrow) {
 					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->VIN</td>";
 					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);

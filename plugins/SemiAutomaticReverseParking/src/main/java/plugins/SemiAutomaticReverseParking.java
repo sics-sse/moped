@@ -4,7 +4,7 @@ import sics.plugin.PlugInComponent;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 
-//import com.sun.squawk.VM;
+import com.sun.squawk.VM;
 
 public class SemiAutomaticReverseParking extends PlugInComponent {
 	
@@ -76,17 +76,20 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 	public void run() {
 		init();
 		
-//		VM.println("SemiAutomaticReverseParking is running");
-		System.out.println("SemiAutomaticReverseParking is running");
+		VM.println("SemiAutomaticReverseParking is running");
+//		System.out.println("SemiAutomaticReverseParking is running");
 		
 		distance = 0;
 //		while (state != State.FINISHED) {
 		while (state != FINISHED) {
-//			double speed = (double)((Integer) wheelSpeed.read()); 	//read() is not implemented in Squawk.PIRTE
+//			double speed = (double)((Integer) wheelSpeed.read()); 									//read() is not implemented in Squawk.PIRTE
 			double speed = (double)((Integer) wheelSpeed.readInt());
 //			distance += Math.round((speed * TIME_STEP) / 1000.0);
-			distance += round(speed * TIME_STEP / 1000.0);			//Math.round() is not included in basic Squawk (however MathUtils.round exists)
-			System.out.println("SARP: state = " + state + ", distance = " + distance + " at speed = " + speed);
+			distance += round(speed * TIME_STEP / 1000.0);											//Math.round() is not included in basic Squawk (however MathUtils.round exists)
+//			System.out.println("SARP: state = " + state + ", distance = " + distance + " at speed = " + speed);
+			VM.print("SARP: state = " + state + ", distance = " + distance + " at speed = ");		// VM doesn't seem to be able to cast from double to String, instead casting error: "Internal error: stack sim error on"
+			VM.print(speed); 
+			VM.println();
 			
 			switch (state) {
 			case STARTING:

@@ -186,20 +186,27 @@
 // 		}
 // 	}
 	
-// 	function invoke_generateSuite_webservice($zipFile, $fullClassName) {
-// 		$reply = "";
+	function invoke_generateSuite_webservice($zipFile, $fullClassName) {
+		global $client;
+		$reply = "";
+		
 // 		$webServiceAddress = getWebServiceAddress();
 // 		ini_set("soap.wsdl_cache_enabled", "0");  
 // 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
-// 		try  
-// 		{  
+		
+		try  
+		{  
 // 			$param = array('arg0' => $zipFile, 'arg1' => $fullClassName);  
 // 			$reply = $client->generateSuite($param);
-// 		} catch (SoapFault $exception) {  
-// 			print $exception;
-// 		}
-// 		return $reply->return;
-// 	}
+			
+			$reply = $client->__soapCall("generateSuite", 
+					array('arg0' => $zipFile, 
+							'name' => $fullClassName));
+		} catch (SoapFault $exception) {  
+			print $exception;
+		}
+		return $reply->return;
+	}
 	
 // 	function read_full_classname($file_path) {
 // 		if (eregi(".zip$",$file_path)){ 

@@ -6,20 +6,20 @@
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="round" key="selection"/>
+		<item value="VehicleConfig" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="round"/>
-			<item value="distance"/>
-			<item value="Distance"/>
-			<item value="TIME_STEP"/>
-			<item value="wheelSpeed"/>
-			<item value="Data"/>
-			<item value="data"/>
-			<item value="added"/>
+			<item value="VehicleConfig"/>
+			<item value="vehicleConfig"/>
+			<item value="submit"/>
+			<item value="Submit"/>
+			<item value="Add_configuration"/>
+			<item value="_form"/>
+			<item value="form"/>
+			<item value="invoke_generateSuite"/>
 		</list>
 		<list key="replacehistory">
 		</list>

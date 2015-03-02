@@ -20,6 +20,25 @@
 <entry path="/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/endorsed"/>
 </endorsedDirs>
 </libraryInfo>
+<libraryInfo home="/usr/local/lib/java/jdk1.7.0_71" version="1.7.0_71">
+<bootpath>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/resources.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/rt.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/sunrsasign.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/jsse.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/jce.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/charsets.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/jfr.jar"/>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/classes"/>
+</bootpath>
+<extensionDirs>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/ext"/>
+<entry path="/usr/java/packages/lib/ext"/>
+</extensionDirs>
+<endorsedDirs>
+<entry path="/usr/local/lib/java/jdk1.7.0_71/jre/lib/endorsed"/>
+</endorsedDirs>
+</libraryInfo>
 <libraryInfo home="/usr/local/lib/java/jdk1.8.0_25/jre" version="1.8.0_25">
 <bootpath>
 <entry path="/usr/local/lib/java/jdk1.8.0_25/jre/lib/resources.jar"/>

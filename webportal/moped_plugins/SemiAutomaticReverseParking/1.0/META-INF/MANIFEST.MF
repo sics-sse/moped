@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: avenir
+Build-Jdk: 1.8.0_25
+Ecu: 2
+Pirte-Config: SemiAutomaticReverseParking.xml
+Vehicle-Brand: SICS
+Vehicle-Name: MOPED
+

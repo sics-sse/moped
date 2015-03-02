@@ -2,14 +2,11 @@ package dao;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import service.PluginWebServicePublisher;
 import common.AllocationStrategy;
 import model.Vehicle;
 
