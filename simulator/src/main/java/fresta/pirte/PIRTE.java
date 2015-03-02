@@ -208,7 +208,7 @@ public class PIRTE implements Runnable {
 						// Register Link Context
 						if(linkContext != null) {
 							for(LinkContextEntry entry:linkContext) {
-								linker. (entry);
+								linker.link(entry);
 							}
 						}
 						
