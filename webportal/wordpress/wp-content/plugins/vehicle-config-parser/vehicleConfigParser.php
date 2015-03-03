@@ -40,8 +40,8 @@ function vehicleConfigParser($path) {
 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
 		try  
 		{  
-			$param = array('arg0' => $path);  
-			$ret = $client->parseVehicleConfiguration($param);
+		  //$param = array('arg0' => $path);  
+			$ret = $client->parseVehicleConfiguration($path);
 
 			// delete vehicle config file
 			unlink($path);
