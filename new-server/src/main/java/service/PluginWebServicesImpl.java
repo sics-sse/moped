@@ -1,5 +1,7 @@
 package service;
 
+//import service.CallMySql;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -80,6 +82,7 @@ import utils.SuiteGen;
 
 import java.sql.*;
 
+
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
 	private ApplicationDao applicationDao;
@@ -94,7 +97,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	private DBConnection db = null;
 	private ServerHandler handler = null;
 	
-	private Connection dbLite = null;
+    private Connection dbLite = null;
 	private Statement stat = null;
 	
 	public PluginWebServicesImpl(ServerHandler handler) {
@@ -111,19 +114,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 //		pluginConfigDao = new PluginConfigDaoImpl(db);
 	}
 	
-	@Override
-	public void setDBConnection(Connection conn) 
-			throws PluginWebServicesException {
-		dbLite = conn;
-		
-		try {
-			stat = conn.createStatement();
-			stat.setQueryTimeout(10);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public ApplicationDao getApplicationDao() {
 		return applicationDao;
 	}
@@ -336,12 +326,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("insertPluginInDb done");
 	}
 	
+
 	@Override
 	public boolean get_ack_status(String vin, int appId)
 			throws PluginWebServicesException {
 		Application app = (Application)db.getSingleResult(
 				"FROM Application a WHERE a.applicationId = " + appId);
 		
+
 		if (app == null)
 			return false;
 		
