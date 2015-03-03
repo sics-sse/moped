@@ -51,6 +51,8 @@ public class PluginWebServicePublisher {
 		PluginWebServicesImpl pws = new PluginWebServicesImpl(handler);
 		Endpoint.publish(PUB_ADDRESS, pws);
 		
+		System.out.println("published");
+
 //		try {
 //			Configuration config = new Configuration();
 //			config.configure();
