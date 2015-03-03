@@ -1,6 +1,6 @@
 package service;
 
-//import service.CallMySql;
+import service.CallMySql;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -330,14 +330,19 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	@Override
 	public boolean get_ack_status(String vin, int appId)
 			throws PluginWebServicesException {
-		Application app = (Application)db.getSingleResult(
-				"FROM Application a WHERE a.applicationId = " + appId);
-		
 
-		if (app == null)
-			return false;
-		
-		if (handler.existsAckMessage(vin + "_" + app.getApplicationName()))
+		String x = CallMySql.getOne("select * FROM Application a WHERE a.applicationId = " + appId);
+		System.out.println("sql: " + x);
+
+		if (x == "none") {
+		    System.out.println("no app " + appId);
+		    return false;
+		}
+
+		String name = CallMySql.getOne("select applicationName from Application where applicationId = " + appId);
+		System.out.println("name " + name);
+
+		if (handler.existsAckMessage(vin + "_" + name))
 			return true;
 		
 		return false;
