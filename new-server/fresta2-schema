@@ -1,0 +1,268 @@
+use fresta2;
+-- MySQL dump 10.13  Distrib 5.5.41, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: fresta2
+-- ------------------------------------------------------
+-- Server version	5.5.41-0ubuntu0.12.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `AppConfig`
+--
+
+DROP TABLE IF EXISTS `AppConfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `AppConfig` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `appId` int(11) NOT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `vehicleName` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Application`
+--
+
+DROP TABLE IF EXISTS `Application`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Application` (
+  `applicationId` int(11) NOT NULL AUTO_INCREMENT,
+  `applicationName` varchar(255) DEFAULT NULL,
+  `hasNewVersion` tinyint(1) NOT NULL,
+  `publisher` varchar(255) DEFAULT NULL,
+  `version` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`applicationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `DatabasePlugin`
+--
+
+DROP TABLE IF EXISTS `DatabasePlugin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DatabasePlugin` (
+  `pluginID` int(11) NOT NULL AUTO_INCREMENT,
+  `fullClassName` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `strategy` varchar(255) DEFAULT NULL,
+  `zipLocation` varchar(255) DEFAULT NULL,
+  `zipName` varchar(255) DEFAULT NULL,
+  `application_applicationId` int(11) DEFAULT NULL,
+  `reference` int(11) NOT NULL,
+  PRIMARY KEY (`pluginID`),
+  KEY `FKF69F0AE7E5733A7` (`application_applicationId`),
+  CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_applicationId`) REFERENCES `Application` (`applicationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Ecu`
+--
+
+DROP TABLE IF EXISTS `Ecu`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Ecu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(255) DEFAULT NULL,
+  `ecuID` tinyint(4) NOT NULL,
+  `function` varchar(255) DEFAULT NULL,
+  `manufactory` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `vehicle_id` int(11) DEFAULT NULL,
+  `vehicleConfig_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK10F77CAE47C55` (`vehicle_id`),
+  KEY `FK10F77230AE8F5` (`vehicleConfig_id`),
+  CONSTRAINT `FK10F77230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`),
+  CONSTRAINT `FK10F77CAE47C55` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Link`
+--
+
+DROP TABLE IF EXISTS `Link`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Link` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fromEcuId` int(11) NOT NULL,
+  `fromPortId` int(11) NOT NULL,
+  `toEcuId` int(11) NOT NULL,
+  `toPortId` int(11) NOT NULL,
+  `type` int(11) NOT NULL,
+  `vehicleConfig_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK24241A230AE8F5` (`vehicleConfig_id`),
+  CONSTRAINT `FK24241A230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `PluginConfig`
+--
+
+DROP TABLE IF EXISTS `PluginConfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PluginConfig` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ecuId` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `appConfig_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK5405C0758F57C655` (`appConfig_id`),
+  CONSTRAINT `FK5405C0758F57C655` FOREIGN KEY (`appConfig_id`) REFERENCES `AppConfig` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `PluginLinkConfig`
+--
+
+DROP TABLE IF EXISTS `PluginLinkConfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PluginLinkConfig` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fromStr` varchar(255) DEFAULT NULL,
+  `remote` varchar(255) DEFAULT NULL,
+  `toStr` varchar(255) DEFAULT NULL,
+  `pluginConfig_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK46DC278F42C6247F` (`pluginConfig_id`),
+  CONSTRAINT `FK46DC278F42C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `PluginPortConfig`
+--
+
+DROP TABLE IF EXISTS `PluginPortConfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PluginPortConfig` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `pluginConfig_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKD394ED642C6247F` (`pluginConfig_id`),
+  CONSTRAINT `FKD394ED642C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Port`
+--
+
+DROP TABLE IF EXISTS `Port`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Port` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `direction` varchar(255) DEFAULT NULL,
+  `portId` int(11) NOT NULL,
+  `ecu_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK260CA13A1965F5` (`ecu_id`),
+  CONSTRAINT `FK260CA13A1965F5` FOREIGN KEY (`ecu_id`) REFERENCES `Ecu` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `User_vehicle_association`
+--
+
+DROP TABLE IF EXISTS `User_vehicle_association`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User_vehicle_association` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userID` bigint(20) unsigned NOT NULL,
+  `vehicleID` int(11) NOT NULL,
+  `vehicleConfigID` int(11) NOT NULL,
+  `defaultVehicle` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `userID` (`userID`),
+  KEY `vehicleID` (`vehicleID`),
+  CONSTRAINT `User_vehicle_association_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `wp_users` (`ID`),
+  CONSTRAINT `User_vehicle_association_ibfk_2` FOREIGN KEY (`vehicleID`) REFERENCES `Vehicle` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Vehicle`
+--
+
+DROP TABLE IF EXISTS `Vehicle`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Vehicle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `INSTALLED_APPS` varchar(255) DEFAULT NULL,
+  `VIN` varchar(17) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `vehicleConfigId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `VehicleConfig`
+--
+
+DROP TABLE IF EXISTS `VehicleConfig`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `VehicleConfig` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `VehiclePlugin`
+--
+
+DROP TABLE IF EXISTS `VehiclePlugin`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `VehiclePlugin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `appId` int(11) NOT NULL,
+  `callbackPortId` int(11) NOT NULL,
+  `ecuId` int(11) NOT NULL,
+  `executablePluginName` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `portInitialContext` longblob,
+  `portLinkingContext` longblob,
+  `sendingPortId` int(11) NOT NULL,
+  `vin` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Dump completed on 2015-02-27 10:36:15

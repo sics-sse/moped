@@ -19,7 +19,7 @@ import java.sql.Statement;
 	 if (init_done)
 	     return;
 
-	 String url = "jdbc:mysql://localhost:3306/fresta";
+	 String url = "jdbc:mysql://localhost:3306/fresta2";
 	 String user = "root";
 	 String password = "root";
 
