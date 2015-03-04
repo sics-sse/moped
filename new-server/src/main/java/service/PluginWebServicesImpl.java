@@ -170,19 +170,25 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			}
 		    }
 				
-				
-		    //Application application = new Application(name, publisher, version);
 		    int appId;
-		    // appId = applicationDao.saveApplication(application);
 
-		    String q1 = "select applicationId from Application where applicationName = '" + name + "' and publisher = '" + publisher + "' and version = '" + version + "'";
+		    String q1 = "select applicationId from Application where " +
+			"applicationName = '" + name +
+			"' and publisher = '" + publisher +
+			"' and version = '" + version + "'";
 		    String c1 = CallMySql.getOne(q1);
 		    if (c1 == "none") {
-			
-			String q2 = "insert into Application (applicationName,publisher,version,hasNewVersion) values ('" + name + "','" + publisher + "','" + version + "',0)";
+			String q2 = "insert into Application " +
+			    "(applicationName,publisher,version,hasNewVersion) values ('" +
+			    name + "','" +
+			    publisher + "','" +
+			    version + "',0)";
 			int rows = CallMySql.update(q2);
 
-			String q3 = "select applicationId from Application where applicationName = '" + name + "' and publisher = '" + publisher + "' and version = '" + version + "'";
+			String q3 = "select applicationId from Application " +
+			    "where applicationName = '" + name +
+			    "' and publisher = '" + publisher +
+			    "' and version = '" + version + "'";
 			String c3 = CallMySql.getOne(q3);
 			appId = Integer.parseInt(c3);
 		    } else {
@@ -195,40 +201,57 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			appId = Integer.parseInt(c1);
 		    }
 
-
 		    System.out.println("new appId " + appId);
-		    int appConfigId = appConfigDao.saveAppConfig
-			(
-			 new AppConfig(appId, vehicleName, brand)
-			 );
-		    DatabasePlugin dbPlugin = new DatabasePlugin
-			(
-			 name, name + ".zip", fullClassName, 
-			 "", Integer.parseInt(ecuRef), 
-			 location + File.separator + name, location
-			 );
-		    dbPlugin.setApplication(applicationDao.getApplication(appId));
-		    databasePluginDao.saveDatabasePlugin(dbPlugin);
+
+		    String q4 = "insert into AppConfig (appId,brand,vehicleName) values (" +
+			appId + "," +
+			"'" + brand +"'" + "," +
+			"'" + vehicleName + "'" + ")";
+		    int x4 = CallMySql.update(q4);
+
+		    String q41 = "select id from AppConfig where appId = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
+		    String x41 = CallMySql.getOne(q41);
+		    int appConfigId = Integer.parseInt(x41);
+
+		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_applicationId) values (" +
+			"'" + name + "'" + "," +
+			"'" + name + ".zip" + "'" + "," +
+			"'" + fullClassName + "'" + "," +
+			Integer.parseInt(ecuRef) + "," +
+			"'" + location + File.separator + name + "'" + "," +
+			"'" + location + "'" + "," +
+			appId + ")";
+		    int x5 = CallMySql.update(q5);
+
+
 		    //TODO: Why + .suite???
-		    PluginConfig pluginConfig = new PluginConfig(name + ".suite", Integer.parseInt(ecuRef));
-		    pluginConfig.setAppConfig(appConfigDao.getAppConfig(appConfigId));
+
 		    //TODO: Inconsequence
-		    appConfigDao.savePluginConfig(pluginConfig);
 				
 		    String q3 = "select * from PluginConfig where ecuId = " +
 			Integer.parseInt(ecuRef) + " and " +
-			"name = " + "'" + name + ".suite7" +"'" + " and " +
+			"name = " + "'" + name + ".suite" +"'" + " and " +
 			"appConfig_id = " + appConfigId;
 		    String c3 = CallMySql.getOne(q3);
 		    System.out.println(c3);
 
+		    int pluginConfig;
 		    if (c3 == "none") {
 			String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
 			    Integer.parseInt(ecuRef) + "," +
-			    "'" + name + ".suite7" +"'" + "," +
+			    "'" + name + ".suite" +"'" + "," +
 			    appConfigId + ")";
 			int x3 = CallMySql.update(q31);
 			System.out.println("updated rows " + x3);
+
+			String q32 = "select * from PluginConfig where ecuId = " +
+			    Integer.parseInt(ecuRef) + " and " +
+			    "name = " + "'" + name + ".suite" +"'" + " and " +
+			    "appConfig_id = " + appConfigId;
+			String c32 = CallMySql.getOne(q32);
+			pluginConfig = Integer.parseInt(c32);
+		    } else {
+			pluginConfig = Integer.parseInt(c3);
 		    }
 
 		    //TODO: Refactor
@@ -242,9 +265,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			Element port = (Element)ports.item(i);
 			String portName = port.getElementsByTagName("name").item(0).getTextContent();
 					
-			PluginPortConfig portConfig = new PluginPortConfig(portName);
-			portConfig.setPluginConfig(appConfigDao.getPluginConfig(pluginConfig));
-			appConfigDao.savePluginPortConfig(portConfig);
+			String q6 = "insert into PluginPortConfig (name,pluginConfig_id) values ('" + portName + "'," + pluginConfig + ")";
+			int rows6 = CallMySql.update(q6);
+
 		    }
 				
 		    NodeList links = doc.getElementsByTagName("link");
@@ -260,10 +283,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			if (linkTarget.matches("(\\d+)")) {
 			    connectionType = GlobalVariables.PPORT2VPORT;
 			}
-					
-			PluginLinkConfig linkConfig = new PluginLinkConfig(linkSource, linkTarget, connectionType);
-			linkConfig.setPluginConfig(appConfigDao.getPluginConfig(pluginConfig));
-			appConfigDao.savePluginLinkConfig(linkConfig);
+
+			String q6 = "insert into PluginLinkConfig (fromStr,toStr,remote,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
+			int rows6 = CallMySql.update(q6);
 		    }
 		}
 		else {
@@ -364,27 +386,29 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("VehicleConfig found: " + vehicleConfig);
 			
 		// AppConfig
-		String vehicleName = vehicleConfig.getName();
-		String brand = vehicleConfig.getBrand();
+		String vehicleName = c2[0];
+		String brand = c2[1];
+
 		System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
+		// what's this "next step"?
+
 		AppConfig appConfig = appConfigDao.getAppConfig(appID, vehicleName, brand);
-		System.out.println("AppConfig found, id: " + appConfig.getId());
 			
 		String q3 = "select id from AppConfig where appId = " + appID
 		    + " and brand = '" + brand + "' and vehicleName = '" +
 		    vehicleName + "'";
 		String c3 = CallMySql.getOne(q3);
 		System.out.println("appconfig id " + c3);
+		int appConfigId = Integer.parseInt(c3);
 
-		String q4 = "select id from PluginConfig where appConfig_id = " + c3;
-		String c4 = CallMySql.getOne(q4);
-		System.out.println("pluginconfig id " + c4);
+		System.out.println("AppConfig found, id: " + appConfigId);
 
 		// PluginConfig
 		//TODO: Move it to a warmer place
-		if (appConfig != null) {
+		if (c3 != "none") {
+		    // can it happen that there is no AppConfig?
 		    List<PluginConfig> pluginConfigs = (List<PluginConfig>)db.getAllResults(
-											    "FROM PluginConfig pc WHERE pc.appConfig = " + appConfig.getId());
+											    "FROM PluginConfig pc WHERE pc.appConfig = " + appConfigId);
 		    for (PluginConfig pluginConfig : pluginConfigs) {
 			System.out.println("pluginConfig.id: " + pluginConfig.getId());
 					
@@ -393,78 +417,139 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			for (PluginPortConfig pluginPortConfig : pluginPortConfigs) {
 			    int pluginPortId = pluginPortConfig.getId();
 			    String pluginPortName = pluginPortConfig.getName();
-			    portInitialContext.put(pluginPortName, pluginPortId);
+			    //portInitialContext.put(pluginPortName, pluginPortId);
 			}
 		    }
 				
+		    int pluginConfigId;
+
+		    String q4 = "select id,name from PluginConfig where appConfig_id = " + c3;
+		    ResultSet rs = CallMySql.getResults(q4);
+		    try {
+			while (rs.next()) {
+			    String c4 = rs.getString(1);
+			    System.out.println("rs: " + c4);
+			    pluginConfigId = Integer.parseInt(c4);
+			    System.out.println("again pluginConfig.id: " + pluginConfigId);
+
+			    String q41 = "select id,name from PluginPortConfig where pluginConfig_id = " + pluginConfigId;
+
+			    ResultSet rs2 = CallMySql.getResults(q41);
+			    try {
+				while (rs2.next()) {
+				    int pluginPortId = Integer.parseInt
+					(rs2.getString(1));
+				    String pluginPortName = rs2.getString(2);
+				    portInitialContext.put(pluginPortName, pluginPortId);
+				}
+				rs2.close();
+			    } catch (SQLException ex) {
+				System.out.println("db error 1");
+				System.out.println(ex.getMessage());
+			    } 
+			}
+			// are they closed automatically?
+			rs.close();
+
+		    } catch (SQLException ex) {
+			System.out.println("db error 2");
+			System.out.println(ex.getMessage());
+		    } 
+
+
 		    //TEMP_DEBUG
 		    System.out.println("PORT INITIAL CONTEXTS: ");
 		    for (String ctxt : portInitialContext.keySet()) {
 			System.out.println("PIC: <" + ctxt + ", " + portInitialContext.get(ctxt) + ">");
 		    }
 					
-		    for (PluginConfig pluginConfig : pluginConfigs) {
-			// Plugin Link Config
-			String pluginName = pluginConfig.getName();
-			// Initiate LinkingContext
-			ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
+		    ResultSet rs3 = CallMySql.getResults(q4);
+		    try {
+			while (rs3.next()) {
+			    String c4 = rs3.getString(1);
+			    System.out.println("rs: " + c4);
+			    pluginConfigId = Integer.parseInt(c4);
+
+			    // Plugin Link Config
+			    String pluginName = rs3.getString(2);
+			    // Initiate LinkingContext
+			    ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
 				
-			List<PluginLinkConfig> pluginLinkConfigs = db.getAllResults(
-										    "FROM PluginLinkConfig plc WHERE plc.pluginConfig = " + pluginConfig.getId());
-			for (PluginLinkConfig pluginLinkConfig : pluginLinkConfigs) {
-			    String from = pluginLinkConfig.getFromStr();
-			    String to = pluginLinkConfig.getToStr();
-			    String remote = pluginLinkConfig.getRemote();
+			    List<PluginLinkConfig> pluginLinkConfigs = db.getAllResults(
+											"FROM PluginLinkConfig plc WHERE plc.pluginConfig = " + pluginConfigId);
+			    try {
 
-			    int fromPortId = 0;
-			    int toPortId = 0;
-			    int remoteId = 0;
 
-			    Scanner scanner = new Scanner(remote);
-			    boolean remoteTag = scanner.hasNextInt();
+				String q42 = "select id,fromStr,toStr,remote from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
 
-			    if (remoteTag) {
-				remoteId = scanner.nextInt();
-				switch (remoteId) {
-				case GlobalVariables.PPORT2PPORT:
-				    fromPortId = portInitialContext.get(from);
-				    toPortId = portInitialContext.get(to);
-				    break;
-				case GlobalVariables.PPORT2VPORT:
-				    fromPortId = portInitialContext.get(from);
-				    toPortId = Integer.parseInt(to);
-				    break;
-				case GlobalVariables.VPORT2PORT:
-				    fromPortId = Integer.parseInt(from);
-				    toPortId = portInitialContext.get(to);
-				    break;
-				default:
-				    System.out.println("Error: Wrong link type in GlobalVariables");
-				    System.exit(-1);
-				}
-			    } else {
-				// Plug-In -> VRPort
-				// remote represents the name of remote port
-				remoteId = portInitialContext.get(remote);
-				fromPortId = portInitialContext.get(from);
-				toPortId = Integer.parseInt(to);
-			    }
+				ResultSet rs4 = CallMySql.getResults(q42);
+				rs4.next();
+
+				while (rs4.next()) {
+				    String from = rs4.getString(2);
+				    String to = rs4.getString(3);
+				    String remote = rs4.getString(4);
+
+				    int fromPortId = 0;
+				    int toPortId = 0;
+				    int remoteId = 0;
+
+				    Scanner scanner = new Scanner(remote);
+				    boolean remoteTag = scanner.hasNextInt();
+
+				    if (remoteTag) {
+					remoteId = scanner.nextInt();
+					switch (remoteId) {
+					case GlobalVariables.PPORT2PPORT:
+					    fromPortId = portInitialContext.get(from);
+					    toPortId = portInitialContext.get(to);
+					    break;
+					case GlobalVariables.PPORT2VPORT:
+					    fromPortId = portInitialContext.get(from);
+					    toPortId = Integer.parseInt(to);
+					    break;
+					case GlobalVariables.VPORT2PORT:
+					    fromPortId = Integer.parseInt(from);
+					    toPortId = portInitialContext.get(to);
+					    break;
+					default:
+					    System.out.println("Error: Wrong link type in GlobalVariables");
+					    System.exit(-1);
+					}
+				    } else {
+					// Plug-In -> VRPort
+					// remote represents the name of remote port
+					remoteId = portInitialContext.get(remote);
+					fromPortId = portInitialContext.get(from);
+					toPortId = Integer.parseInt(to);
+				    }
 						
-			    scanner.close();
+				    scanner.close();
 
-			    LinkContextEntry entry = new LinkContextEntry(fromPortId,
-									  toPortId, remoteId);
-			    linkingContext.add(entry);
-			}
+				    LinkContextEntry entry = new LinkContextEntry(fromPortId,
+										  toPortId, remoteId);
+				    linkingContext.add(entry);
+				}
+				rs4.close();
+			    
+			    } catch (SQLException ex) {
+				System.out.println("db error 3");
+				System.out.println(ex.getMessage());
+			    }
 				
-			linkingContexts.put(pluginName, linkingContext);
+			    linkingContexts.put(pluginName, linkingContext);
 					
-			//TEMP_DEBUG
-			System.out.println("PORT LINKING CONTEXTS (" + pluginName + "): ");
-			for (Iterator<LinkContextEntry> ctxtIter = linkingContext.iterator(); ctxtIter.hasNext(); ) {
-			    LinkContextEntry ctxt = ctxtIter.next();
-			    System.out.println("PLC: <" + ctxt.getFromPortId() + ", " + ctxt.getToPortId() + "> via " + ctxt.getRemotePortId());
+			    //TEMP_DEBUG
+			    System.out.println("PORT LINKING CONTEXTS (" + pluginName + "): ");
+			    for (Iterator<LinkContextEntry> ctxtIter = linkingContext.iterator(); ctxtIter.hasNext(); ) {
+				LinkContextEntry ctxt = ctxtIter.next();
+				System.out.println("PLC: <" + ctxt.getFromPortId() + ", " + ctxt.getToPortId() + "> via " + ctxt.getRemotePortId());
+			    }
 			}
+			rs3.close();
+		    } catch (SQLException ex) {
+			System.out.println("db error 4");
+			System.out.println(ex.getMessage());
 		    }
 		}
 
@@ -487,100 +572,99 @@ public class PluginWebServicesImpl implements PluginWebServices {
 											  "FROM DatabasePlugin dp WHERE dp.application = " + application.getApplicationId());
 		//			Set<DatabasePlugin> plugins = application.getDatabasePlugins();
 
-		String q11 =
-		    "select name from DatabasePlugin where application_applicationId = " + appID;
-		String c11 = CallMySql.getOne(q11);
-		System.out.println("plugin name " + c11);
+		String q12 =
+		    "select name,reference,location,fullClassName " +
+		    "from DatabasePlugin where application_applicationId = " + appID;
+		ResultSet rs12 = CallMySql.getResults(q12);
 
-		// We must loop over the solutions to q11
-
-
-		System.out.println("Found plugins, size: " + plugins.size());
-		for (DatabasePlugin plugin : plugins) {
-		    String pluginName = plugin.getName();
-		    System.out.println("Found plugin with name: " + pluginName);
+		try {
+		    //System.out.println("Found plugins, size: " + plugins.size());
+		    while (rs12.next()) {
+			String pluginName = rs12.getString(1);
+			System.out.println("Found plugin with name: " + pluginName);
 				
-		    String q12 =
-			"select reference,location,fullClassName " +
-			"from DatabasePlugin where application_applicationId = " + appID;
-		    String [] c12 = CallMySql.getOneSet(q12);
-		    System.out.println(c12[0]);
-		    System.out.println(c12[1]);
-		    System.out.println(c12[2]);
+			System.out.println(rs12.getString(2));
+			System.out.println(rs12.getString(3));
+			System.out.println(rs12.getString(4));
 
-		    int remoteEcuId = plugin.getReference();
-		    int sendingPortId = vehicleConfigDao.getSendingPortId
-			(
-			 vehicleConfigId, remoteEcuId
-			 );
-		    int callbackPortId = vehicleConfigDao.getCallbackPortId
-			(
-			 vehicleConfigId, remoteEcuId
-			 );
-		    System.out.println("sendingPortId " + sendingPortId);
-		    System.out.println("callbackPortId " + callbackPortId);
-
-		    String executablePluginName = "plugin://"
-			+ plugin.getFullClassName() + "/" + pluginName;
-		    String pluginSuiteName = pluginName + ".suite"; //TODO: Come on...
-		    // Find PlugIn location. For instance,
-		    // some_dir/uploaded/app_name/version/kdkdks.zip
-		    String location = /*
-				       * GlobalVariables.APPS_DIR +
-				       */plugin.getLocation();
-				
-		    String fileType = ".zip";
-		    if (jvm.equals("Squawk")) {
-			fileType = ".suite";
-			location += File.separator + pluginName;
-		    }
-				
-		    location += fileType;
-		    pluginName += fileType;
-		    executablePluginName += fileType;
-				
-		    File file = new File(location);
-		    byte[] fileBytes;
-		    try {
-			// ArrayList<LinkingContextEntry> linkingContext =
-			// linkingContexts
-			// .get(pluginName);
-			ArrayList<LinkContextEntry> linkingContext = (ArrayList<LinkContextEntry>) linkingContexts
-			    .get(pluginSuiteName);
-			fileBytes = readBytesFromFile(file);
-			InstallPacketData installPacketData =
-			    new InstallPacketData
+			int remoteEcuId = Integer.parseInt(rs12.getString(2));
+			int sendingPortId = vehicleConfigDao.getSendingPortId
 			    (
-			     appID, pluginName/* +".zip" */, sendingPortId,
-			     callbackPortId, remoteEcuId, portInitialContext,
-			     linkingContext, executablePluginName, fileBytes
+			     vehicleConfigId, remoteEcuId
 			     );
-			installPackageDataList.add(installPacketData);
-
-			// Store it temporarily to cache and will be used after the
-			// arrival of acknowledge messages
-			VehiclePluginRecord record =
-			    new VehiclePluginRecord
+			int callbackPortId = vehicleConfigDao.getCallbackPortId
 			    (
-			     pluginName, remoteEcuId, sendingPortId,
-			     callbackPortId, portInitialContext, linkingContext,
-			     location, executablePluginName
+			     vehicleConfigId, remoteEcuId
 			     );
+			System.out.println("sendingPortId " + sendingPortId);
+			System.out.println("callbackPortId " + callbackPortId);
 
-			installCachePlugins.add(record);
-					
-			System.out.println("READY FOR INSTALLATION WRITING!!!!!!!!!!!!!!!!!!!!");
-					
-			Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
-			InstallPacket installPacket = new InstallPacket(vin,
-									installPackageDataList);
-			session.write(installPacket);
-					
-			System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!!!!!!!!!!!!!!!!!!!!");
+			String executablePluginName = "plugin://"
+			    + rs12.getString(4) + "/" + pluginName;
+			String pluginSuiteName = pluginName + ".suite"; //TODO: Come on...
+			// Find PlugIn location. For instance,
+			// some_dir/uploaded/app_name/version/kdkdks.zip
+			String location = /*
+					   * GlobalVariables.APPS_DIR +
+					   */rs12.getString(3);
+				
+			String fileType = ".zip";
+			if (jvm.equals("Squawk")) {
+			    fileType = ".suite";
+			    location += File.separator + pluginName;
+			}
+				
+			location += fileType;
+			pluginName += fileType;
+			executablePluginName += fileType;
+				
+			File file = new File(location);
+			byte[] fileBytes;
+			try {
+			    // ArrayList<LinkingContextEntry> linkingContext =
+			    // linkingContexts
+			    // .get(pluginName);
+			    ArrayList<LinkContextEntry> linkingContext = (ArrayList<LinkContextEntry>) linkingContexts
+				.get(pluginSuiteName);
+			    fileBytes = readBytesFromFile(file);
+			    InstallPacketData installPacketData =
+				new InstallPacketData
+				(
+				 appID, pluginName/* +".zip" */, sendingPortId,
+				 callbackPortId, remoteEcuId, portInitialContext,
+				 linkingContext, executablePluginName, fileBytes
+				 );
+			    installPackageDataList.add(installPacketData);
 
-		    } catch (IOException e) {
-			e.printStackTrace();
+			    // Store it temporarily to cache and will be used after the
+			    // arrival of acknowledge messages
+			    VehiclePluginRecord record =
+				new VehiclePluginRecord
+				(
+				 pluginName, remoteEcuId, sendingPortId,
+				 callbackPortId, portInitialContext, linkingContext,
+				 location, executablePluginName
+				 );
+
+			    installCachePlugins.add(record);
+					
+			    System.out.println("READY FOR INSTALLATION WRITING!!!!!!!!!!!!!!!!!!!!");
+					
+			    Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
+			    InstallPacket installPacket = new InstallPacket(vin,
+									    installPackageDataList);
+			    session.write(installPacket);
+					
+			    System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!!!!!!!!!!!!!!!!!!!!");
+
+			} catch (IOException e) {
+			    e.printStackTrace();
+			}
 		    }
+		    rs12.close();
+		} catch (SQLException ex) {
+		    System.out.println("db error 5");
+		    System.out.println(ex.getMessage());
 		}
 
 		return "true";
@@ -641,7 +725,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			throws PluginWebServicesException {
 		IoSession session = ServerHandler.getSession(vin);
 
-		// Do a transaction around q1 and q2.
+		// We should do a transaction around q1 and q2.
 
 		String q1 = "select applicationName from Application where applicationId = " + oldAppID;
 		String c1 = CallMySql.getOne(q1);
@@ -765,6 +849,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    portInitialContext = null;
 		} else {
 		    try {
+			// deprecated; find what the modern way is
 			StringBufferInputStream fileIn = new StringBufferInputStream
 			    (portInitialContext_blob);
 
@@ -921,6 +1006,8 @@ delete b from VehicleConfig b where name='_deleted_';
 		}
 		String vinStr = vinElement.getTextContent();
 			
+		// Arndt: this was commented out before already. Does it
+		// mean we should create a Vehicle here?
 		//			Vehicle vehicle = new Vehicle();
 		//			vehicle.setName(vehicleNameStr);
 		//			vehicle.setVIN(vinStr);

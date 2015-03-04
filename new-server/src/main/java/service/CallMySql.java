@@ -10,11 +10,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
  class CallMySql {
-     public static String getOne(String query) {
-	
-	 Connection con = null;
-	 Statement st = null;
-	 ResultSet rs = null;
+     public static Connection con = null;
+     public static Statement st = null;
+
+     private static boolean init_done = false;
+
+     private static void init() {
+	 if (init_done)
+	     return;
 
 	 String url = "jdbc:mysql://localhost:3306/fresta";
 	 String user = "root";
@@ -23,6 +26,23 @@ import java.sql.Statement;
 	 try {
 	     con = DriverManager.getConnection(url, user, password);
 	     st = con.createStatement();
+
+	     init_done = true;
+
+	 } catch (SQLException ex) {
+	     System.out.println("db error 0");
+	     System.out.println(ex.getMessage());
+	 }
+     }
+
+     public static String getOne(String query) {
+	
+	 ResultSet rs = null;
+
+	 try {
+	     init();
+	     //con = DriverManager.getConnection(url, user, password);
+	     //st = con.createStatement();
 	     rs = st.executeQuery(query);
 
 	     if (rs.next()) {
@@ -42,12 +62,6 @@ import java.sql.Statement;
 		 if (rs != null) {
 		     rs.close();
 		 }
-		 if (st != null) {
-		     st.close();
-		 }
-		 if (con != null) {
-		     con.close();
-		 }
 
 	     } catch (SQLException ex) {
 		 System.out.println("db error for " + query);
@@ -61,18 +75,9 @@ import java.sql.Statement;
      }
 
      public static int update(String query) {
-	
-	 Connection con = null;
-	 Statement st = null;
-	 ResultSet rs = null;
-
-	 String url = "jdbc:mysql://localhost:3306/fresta";
-	 String user = "root";
-	 String password = "root";
 
 	 try {
-	     con = DriverManager.getConnection(url, user, password);
-	     st = con.createStatement();
+	     init();
 	     int count = st.executeUpdate(query);
 
 	     return count;
@@ -83,24 +88,6 @@ import java.sql.Statement;
 	     //Logger lgr = Logger.getLogger(Test.class.getName());
 	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
 
-	 } finally {
-	     try {
-		 if (rs != null) {
-		     rs.close();
-		 }
-		 if (st != null) {
-		     st.close();
-		 }
-		 if (con != null) {
-		     con.close();
-		 }
-
-	     } catch (SQLException ex) {
-		 System.out.println("db error for " + query);
-		 System.out.println(ex.getMessage());
-		 //Logger lgr = Logger.getLogger(Test.class.getName());
-		 //lgr.log(Level.WARNING, ex.getMessage(), ex);
-	     }
 	 }
 	 return 0;
 
@@ -108,17 +95,10 @@ import java.sql.Statement;
 
      public static String [] getOneSet(String query) {
 	
-	 Connection con = null;
-	 Statement st = null;
 	 ResultSet rs = null;
 
-	 String url = "jdbc:mysql://localhost:3306/fresta";
-	 String user = "root";
-	 String password = "root";
-
 	 try {
-	     con = DriverManager.getConnection(url, user, password);
-	     st = con.createStatement();
+	     init();
 	     rs = st.executeQuery(query);
 
 	     ResultSetMetaData rsmd = rs.getMetaData();
@@ -144,12 +124,6 @@ import java.sql.Statement;
 		 if (rs != null) {
 		     rs.close();
 		 }
-		 if (st != null) {
-		     st.close();
-		 }
-		 if (con != null) {
-		     con.close();
-		 }
 
 	     } catch (SQLException ex) {
 		 System.out.println("db error for " + query);
@@ -161,4 +135,29 @@ import java.sql.Statement;
 	 return null;
 
      }
+
+     public static ResultSet getResults(String query) {
+	
+	 ResultSet rs = null;
+
+	 try {
+	     init();
+	     // we need a local Statement, otherwise we are not
+	     // reentrant.
+	     Statement st = con.createStatement();
+
+	     rs = st.executeQuery(query);
+
+	     return rs;
+
+	 } catch (SQLException ex) {
+	     System.out.println("db error for " + query);
+	     System.out.println(ex.getMessage());
+	     //Logger lgr = Logger.getLogger(Test.class.getName());
+	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+	 }
+	 return null;
+
+     }
+
 }
