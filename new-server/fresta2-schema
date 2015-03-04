@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `AppConfig`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AppConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `appId` int(11) NOT NULL,
+  `application_id` int(11) NOT NULL,
   `brand` varchar(255) DEFAULT NULL,
   `vehicleName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -40,12 +40,12 @@ DROP TABLE IF EXISTS `Application`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Application` (
-  `applicationId` int(11) NOT NULL AUTO_INCREMENT,
-  `applicationName` varchar(255) DEFAULT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   `hasNewVersion` tinyint(1) NOT NULL,
   `publisher` varchar(255) DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`applicationId`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -64,11 +64,11 @@ CREATE TABLE `DatabasePlugin` (
   `strategy` varchar(255) DEFAULT NULL,
   `zipLocation` varchar(255) DEFAULT NULL,
   `zipName` varchar(255) DEFAULT NULL,
-  `application_applicationId` int(11) DEFAULT NULL,
+  `application_id` int(11) DEFAULT NULL,
   `reference` int(11) NOT NULL,
   PRIMARY KEY (`pluginID`),
-  KEY `FKF69F0AE7E5733A7` (`application_applicationId`),
-  CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_applicationId`) REFERENCES `Application` (`applicationId`)
+  KEY `FKF69F0AE7E5733A7` (`application_id`),
+  CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -82,7 +82,7 @@ DROP TABLE IF EXISTS `Ecu`;
 CREATE TABLE `Ecu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `description` varchar(255) DEFAULT NULL,
-  `ecuID` tinyint(4) NOT NULL,
+  `ecuId` tinyint(4) NOT NULL,
   `function` varchar(255) DEFAULT NULL,
   `manufactory` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -190,23 +190,23 @@ CREATE TABLE `Port` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `User_vehicle_association`
+-- Table structure for table `UserVehicleAssociation`
 --
 
-DROP TABLE IF EXISTS `User_vehicle_association`;
+DROP TABLE IF EXISTS `UserVehicleAssociation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `User_vehicle_association` (
+CREATE TABLE `UserVehicleAssociation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userID` bigint(20) unsigned NOT NULL,
-  `vehicleID` int(11) NOT NULL,
-  `vehicleConfigID` int(11) NOT NULL,
+  `user_id` bigint(20) unsigned NOT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `vehicleConfig_id` int(11) NOT NULL,
   `defaultVehicle` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `userID` (`userID`),
-  KEY `vehicleID` (`vehicleID`),
-  CONSTRAINT `User_vehicle_association_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `wp_users` (`ID`),
-  CONSTRAINT `User_vehicle_association_ibfk_2` FOREIGN KEY (`vehicleID`) REFERENCES `Vehicle` (`id`)
+  KEY `user_id` (`user_id`),
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `UserVehicleAssociation_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `wp_users` (`ID`),
+  CONSTRAINT `UserVehicleAssociation_ibfk_2` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -220,9 +220,9 @@ DROP TABLE IF EXISTS `Vehicle`;
 CREATE TABLE `Vehicle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `INSTALLED_APPS` varchar(255) DEFAULT NULL,
-  `VIN` varchar(17) DEFAULT NULL,
+  `vin` varchar(17) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `vehicleConfigId` int(11) NOT NULL,
+  `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -251,7 +251,7 @@ DROP TABLE IF EXISTS `VehiclePlugin`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `VehiclePlugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `appId` int(11) NOT NULL,
+  `application_id` int(11) NOT NULL,
   `callbackPortId` int(11) NOT NULL,
   `ecuId` int(11) NOT NULL,
   `executablePluginName` varchar(255) DEFAULT NULL,

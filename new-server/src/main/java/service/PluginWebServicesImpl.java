@@ -74,7 +74,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 	
 	@Override
-	public void insertPluginInDb(String location, String name) 
+	public boolean insertPluginInDb(String location, String name) 
 			throws PluginWebServicesException {
 	    File configFile = null;
 		
@@ -131,21 +131,21 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				
 		    int appId;
 
-		    String q1 = "select applicationId from Application where " +
-			"applicationName = '" + name +
+		    String q1 = "select id from Application where " +
+			"name = '" + name +
 			"' and publisher = '" + publisher +
 			"' and version = '" + version + "'";
 		    String c1 = CallMySql.getOne(q1);
 		    if (c1 == "none") {
 			String q2 = "insert into Application " +
-			    "(applicationName,publisher,version,hasNewVersion) values ('" +
+			    "(name,publisher,version,hasNewVersion) values ('" +
 			    name + "','" +
 			    publisher + "','" +
 			    version + "',0)";
 			rows = CallMySql.update(q2);
 
-			String q3 = "select applicationId from Application " +
-			    "where applicationName = '" + name +
+			String q3 = "select id from Application " +
+			    "where name = '" + name +
 			    "' and publisher = '" + publisher +
 			    "' and version = '" + version + "'";
 			String c3 = CallMySql.getOne(q3);
@@ -162,17 +162,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		    System.out.println("new appId " + appId);
 
-		    String q4 = "insert into AppConfig (appId,brand,vehicleName) values (" +
+		    String q4 = "insert into AppConfig (application_id,brand,vehicleName) values (" +
 			appId + "," +
 			"'" + brand +"'" + "," +
 			"'" + vehicleName + "'" + ")";
 		    int x4 = CallMySql.update(q4);
 
-		    String q41 = "select id from AppConfig where appId = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
+		    String q41 = "select id from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
 		    String x41 = CallMySql.getOne(q41);
 		    int appConfigId = Integer.parseInt(x41);
 
-		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_applicationId) values (" +
+		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_id) values (" +
 			"'" + name + "'" + "," +
 			"'" + name + ".zip" + "'" + "," +
 			"'" + fullClassName + "'" + "," +
@@ -252,18 +252,23 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		}
 	    } catch (IOException e) {
 		e.printStackTrace();
+		return false;
 	    } catch (SAXException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return false;
 	    } catch (ParserConfigurationException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return false;
 	    } catch (FactoryConfigurationError e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		return false;
 	    } 
 		
 	    System.out.println("insertPluginInDb done");
+	    return true;
 	}
 	
 
@@ -272,8 +277,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    throws PluginWebServicesException {
 
 	    String q1 =
-		"select * FROM Application a " +
-		"WHERE a.applicationId = " + appId;
+		"select * FROM Application " +
+		"WHERE id = " + appId;
 	    String x = CallMySql.getOne(q1);
 
 	    if (x == "none") {
@@ -281,8 +286,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    }
 
 	    String q2 =
-		"select applicationName from Application " + 
-		"where applicationId = " + appId;
+		"select name from Application " + 
+		"where id = " + appId;
 	    String name = CallMySql.getOne(q2);
 
 	    if (handler.existsAckMessage(vin + "_" + name))
@@ -293,7 +298,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public String install(String vin, int appID, String jvm) 
+	public boolean install(String vin, int appID, String jvm) 
 			throws PluginWebServicesException {
 	    System.out.println("vin in install(): " + vin);
 	    System.out.println("appID in install(): " + appID);
@@ -303,7 +308,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    if (session == null) {
 		// If null, there is no connection between the server and the vehicle
 		System.out.println("IoSession is NULL");
-		return "false";
+		return false;
 	    } else {
 		System.out.println("IoSession.address: " + session.getLocalAddress());
 			
@@ -319,7 +324,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
 
 		String q1 =
-		    "select vehicleConfigId from Vehicle where VIN = '" + vin
+		    "select vehicleConfig_id from Vehicle where vin = '" + vin
 		    + "'";
 		String c = CallMySql.getOne(q1);
 		System.out.println("vehicle " + c);
@@ -332,7 +337,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    System.out.println("vehicleconf brand " + c2[1]);
 		}
 
-		String q7 = "select vehicleConfigId from Vehicle where vin = '" + vin + "'";
+		String q7 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
 		String c7 = CallMySql.getOne(q7);
 
 		// VehicleConfig
@@ -345,7 +350,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
 		// what's this "next step"?
 
-		String q3 = "select id from AppConfig where appId = " + appID
+		String q3 = "select id from AppConfig where application_id = " + appID
 		    + " and brand = '" + brand + "' and vehicleName = '" +
 		    vehicleName + "'";
 		String c3 = CallMySql.getOne(q3);
@@ -383,6 +388,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    } catch (SQLException ex) {
 				System.out.println("db error 1");
 				System.out.println(ex.getMessage());
+				return false;
 			    } 
 			}
 			// are they closed automatically?
@@ -391,6 +397,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    } catch (SQLException ex) {
 			System.out.println("db error 2");
 			System.out.println(ex.getMessage());
+			return false;
 		    } 
 
 
@@ -416,15 +423,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 
 				String q42 = "select id,fromStr,toStr,remote from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
-
+				System.out.println(q42);
 				ResultSet rs4 = CallMySql.getResults(q42);
-				rs4.next();
 
 				while (rs4.next()) {
 				    String from = rs4.getString(2);
 				    String to = rs4.getString(3);
 				    String remote = rs4.getString(4);
-
+				    System.out.println("port " + from + " " + to + " " + remote);
 				    int fromPortId = 0;
 				    int toPortId = 0;
 				    int remoteId = 0;
@@ -470,6 +476,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    } catch (SQLException ex) {
 				System.out.println("db error 3");
 				System.out.println(ex.getMessage());
+				return false;
 			    }
 				
 			    linkingContexts.put(pluginName, linkingContext);
@@ -485,6 +492,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    } catch (SQLException ex) {
 			System.out.println("db error 4");
 			System.out.println(ex.getMessage());
+			return false;
 		    }
 		}
 
@@ -493,7 +501,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 			
 		String q10 =
-		    "select applicationName from Application where applicationId = " + appID;
+		    "select name from Application where id = " + appID;
 		String c10 = CallMySql.getOne(q10);
 		System.out.println("application name " + c10);
 
@@ -503,7 +511,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		String q12 =
 		    "select name,reference,location,fullClassName " +
-		    "from DatabasePlugin where application_applicationId = " + appID;
+		    "from DatabasePlugin where application_id = " + appID;
 		ResultSet rs12 = CallMySql.getResults(q12);
 
 		try {
@@ -594,15 +602,18 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 			} catch (IOException e) {
 			    e.printStackTrace();
+			    // will rs12 not be closed now?
+			    return false;
 			}
 		    }
 		    rs12.close();
 		} catch (SQLException ex) {
 		    System.out.println("db error 5");
 		    System.out.println(ex.getMessage());
+		    return false;
 		}
 
-		return "true";
+		return true;
 	    }
 	}
 
@@ -620,7 +631,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		// Save pluginname into array list cache for uninstallation
 		ArrayList<String> uninstallCacheName = new ArrayList<String>();
 
-		String q1 = "select name,sendingPortId,callbackPortId,ecuId from VehiclePlugin where appId = " + appID + " and vin = '" + vin + "'";
+		String q1 = "select name,sendingPortId,callbackPortId,ecuId from VehiclePlugin where application_id = " + appID + " and vin = '" + vin + "'";
 		ResultSet rs = CallMySql.getResults(q1);
 
 		// We should fetch all rows, but we don't expect there to
@@ -660,7 +671,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		// We should do a transaction around q1 and q2.
 
-		String q1 = "select applicationName from Application where applicationId = " + oldAppID;
+		String q1 = "select name from Application where id = " + oldAppID;
 		String c1 = CallMySql.getOne(q1);
 
 		System.out.println("upgrade " + c1);
@@ -670,7 +681,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    return false;
 		}
 
-		String q2 = "select max(applicationId) from Application where applicationName = '" + c1 + "'";
+		String q2 = "select max(id) from Application where name = '" + c1 + "'";
 		String c2 = CallMySql.getOne(q2);
 
 		System.out.println("old " + oldAppID + " new " + c2);
@@ -753,7 +764,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    } else {
 
 		ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
-		String q1 = "select appId,name,sendingPortId,callbackPortId,ecuId,executablePluginName,portInitialContext,portLinkingContext,location from VehiclePlugin where vin = '" +
+		String q1 = "select application_id,name,sendingPortId,callbackPortId,ecuId,executablePluginName,portInitialContext,portLinkingContext,location from VehiclePlugin where vin = '" +
 		    vin + "' and ecuId = " + ecuReference;
 		String [] c1 = CallMySql.getOneSet(q1);
 
@@ -867,8 +878,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 
 	@Override
-	public String parseVehicleConfiguration(String path) 
-			throws PluginWebServicesException {
+	public boolean parseVehicleConfiguration(String path) 
+	    throws PluginWebServicesException {
+	    boolean status = false;
 	    System.out.println("In parseVehicleConfiguration");
 	    System.out.println("pwd: " + java.nio.file.Paths.get(".").toAbsolutePath().normalize().toString());
 	    System.out.println("config path: " + path);
@@ -939,10 +951,10 @@ delete b from VehicleConfig b where name='_deleted_';
 		}
 		String vinStr = vinElement.getTextContent();
 			
-		String q10 = "select * from Vehicle where VIN = '" + vinStr + "'";
+		String q10 = "select * from Vehicle where vin = '" + vinStr + "'";
 		String c10 = CallMySql.getOne(q10);
 		if (c10 == "none") {
-		    String q11 = "insert into Vehicle (name,VIN,vehicleConfigId) values ('" + vehicleNameStr + "','" + vinStr + "'," + c3;
+		    String q11 = "insert into Vehicle (name,vin,vehicleConfig_id) values ('" + vehicleNameStr + "','" + vinStr + "'," + c3 + ")";
 		    rows = CallMySql.update(q11);
 		    System.out.println("vehicle created " + vinStr);
 		} else {
@@ -950,7 +962,7 @@ delete b from VehicleConfig b where name='_deleted_';
 		}
 
 		// Arndt: this was commented out before already. Does it
-		// mean we should create a Vehicle here?
+		// mean we should create a Vehicle here? Now I do, above.
 		//			Vehicle vehicle = new Vehicle();
 		//			vehicle.setName(vehicleNameStr);
 		//			vehicle.setVIN(vinStr);
@@ -990,7 +1002,7 @@ delete b from VehicleConfig b where name='_deleted_';
 		    System.out.println("  <id>" + ecuIdStr + "</id>");
 		    int ecuId = Integer.parseInt(ecuIdStr);
 
-		    String q4 = "insert into Ecu (ecuID,vehicleConfig_id) values (" + ecuId + "," + c3 + ")";
+		    String q4 = "insert into Ecu (ecuId,vehicleConfig_id) values (" + ecuId + "," + c3 + ")";
 		    rows = CallMySql.update(q4);
 
 		    String q41 = "select id from Ecu where vehicleConfig_id = " + c3;
@@ -1133,6 +1145,7 @@ delete b from VehicleConfig b where name='_deleted_';
 			"," + c3 + ")";
 		    rows = CallMySql.update(q7);
 
+		    status = true;
 		    System.out.println("Done saving config!!!!!!");
 		}
 
@@ -1150,7 +1163,7 @@ delete b from VehicleConfig b where name='_deleted_';
 		e.printStackTrace();
 	    }
 
-	    return "true";
+	    return status;
 
 	}
 

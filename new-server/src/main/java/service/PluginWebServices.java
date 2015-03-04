@@ -11,7 +11,7 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
 	@WebMethod
-	public void insertPluginInDb(String location, String name) 
+	public boolean insertPluginInDb(String location, String name) 
 			throws PluginWebServicesException;
 	
 	@WebMethod
@@ -19,7 +19,7 @@ public interface PluginWebServices {
 			throws PluginWebServicesException;
 	
 	@WebMethod
-	public String install(String vin, int appID, String jvm)
+	public boolean install(String vin, int appID, String jvm)
 			throws PluginWebServicesException;
 	
 	@WebMethod
@@ -35,7 +35,7 @@ public interface PluginWebServices {
 			throws PluginWebServicesException;
 
 	@WebMethod
-	public String parseVehicleConfiguration(String path)
+	public boolean parseVehicleConfiguration(String path)
 			throws PluginWebServicesException;
 
 	@WebMethod
