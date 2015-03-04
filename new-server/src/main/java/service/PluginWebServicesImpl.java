@@ -78,6 +78,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			throws PluginWebServicesException {
 	    File configFile = null;
 		
+	    int rows;
+
 	    try {
 		File loc = new File(location);
 		location = loc.getCanonicalPath();
@@ -140,7 +142,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    name + "','" +
 			    publisher + "','" +
 			    version + "',0)";
-			int rows = CallMySql.update(q2);
+			rows = CallMySql.update(q2);
 
 			String q3 = "select applicationId from Application " +
 			    "where applicationName = '" + name +
@@ -937,6 +939,16 @@ delete b from VehicleConfig b where name='_deleted_';
 		}
 		String vinStr = vinElement.getTextContent();
 			
+		String q10 = "select * from Vehicle where VIN = '" + vinStr + "'";
+		String c10 = CallMySql.getOne(q10);
+		if (c10 == "none") {
+		    String q11 = "insert into Vehicle (name,VIN,vehicleConfigId) values ('" + vehicleNameStr + "','" + vinStr + "'," + c3;
+		    rows = CallMySql.update(q11);
+		    System.out.println("vehicle created " + vinStr);
+		} else {
+		    System.out.println("vehicle exists " + vinStr);
+		}
+
 		// Arndt: this was commented out before already. Does it
 		// mean we should create a Vehicle here?
 		//			Vehicle vehicle = new Vehicle();

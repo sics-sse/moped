@@ -21,12 +21,8 @@ import org.apache.mina.filter.logging.MdcInjectionFilter;
 
 import cache.Cache;
 import cache.VehiclePluginRecord;
-import dao.VehicleDao;
-import dao.VehiclePluginDao;
 
 public class ServerHandler extends IoHandlerAdapter {
-	private VehiclePluginDao vehiclePluginDao;
-	private VehicleDao vehicleDao;
 	
 	// session sets
 	private final Set<IoSession> sessions = Collections  
@@ -37,22 +33,6 @@ public class ServerHandler extends IoHandlerAdapter {
     
     private ArrayList<String> ackMessages = new ArrayList<String>();
 	
-	public VehiclePluginDao getVehiclePluginDao() {
-		return vehiclePluginDao;
-	}
-
-	public void setVehiclePluginDao(VehiclePluginDao vehiclePluginDao) {
-		this.vehiclePluginDao = vehiclePluginDao;
-	}
-
-	public VehicleDao getVehicleDao() {
-		return vehicleDao;
-	}
-
-	public void setVehicleDao(VehicleDao vehicleDao) {
-		this.vehicleDao = vehicleDao;
-	}
-
 	public void sessionClosed(IoSession session) {
 		String vin = (String) session.getAttribute("vehicle");
 		vehicles.remove(vin);
@@ -74,7 +54,7 @@ public class ServerHandler extends IoHandlerAdapter {
 		
 		if (packageMessage instanceof Packet) {
 			Packet p = (Packet) packageMessage;
-			String vin;
+			String vin, pluginName;
 			switch (p.getMessageType()) {
 			case MessageType.INIT:
 				InitPacket initPackageMessage = (InitPacket) packageMessage;
@@ -88,17 +68,18 @@ public class ServerHandler extends IoHandlerAdapter {
 				break;
 			case MessageType.INSTALL_LINUX_ACK:
 				InstallLinuxAckPacket installLinuxAckPacket = (InstallLinuxAckPacket) packageMessage;
-				String linux_ack_vin = installLinuxAckPacket.getVin();
-				String linux_ack_pluginName = installLinuxAckPacket.getPluginName();
-				System.out.println("[VIN = "+linux_ack_vin+"]" + linux_ack_pluginName + " arrived in the Linux");
-				ackMessages.add(linux_ack_vin + "_" + 
-						linux_ack_pluginName.substring(0, linux_ack_pluginName.lastIndexOf(".")));
+				vin = installLinuxAckPacket.getVin();
+				pluginName = installLinuxAckPacket.getPluginName();
+				System.out.println("[VIN = "+vin+"]" + pluginName + " arrived in the Linux");
+				ackMessages.add(vin + "_" + 
+						pluginName.substring(0, pluginName.lastIndexOf(".")));
+
 				break;
 			case MessageType.INSTALL_ACK:
 				InstallAckPacket installAckPacket = (InstallAckPacket) packageMessage;
 				vin = installAckPacket.getVin();
 				int installAppId = installAckPacket.getAppId();
-				String pluginName = installAckPacket.getPluginName();
+				pluginName = installAckPacket.getPluginName();
 				
 				System.out.println("[VIN = "+vin+"]" + pluginName + " arrived in the Autosar");
 				
@@ -110,31 +91,35 @@ public class ServerHandler extends IoHandlerAdapter {
 					System.out.println("[ Fail to fetch vehicle plugin record!!!]");
 				} else {
 					System.out.println("111");
-					vehiclePluginDao.saveVehiclePlugin(vin, installAppId, vehiclePluginRecord);
+					//vehiclePluginDao.saveVehiclePlugin(vin, installAppId, vehiclePluginRecord);
 					System.out.println("222");
 					boolean isInstalled = Cache.getCache().IsAllPluginInstalled(vin, installAppId);
 					if(isInstalled) {
 						System.out.println("333");
-						vehicleDao.addApp(vin, installAppId);
+						//vehicleDao.addApp(vin, installAppId);
 					}
 				}
 				
 				break;
 			case MessageType.UNINSTALL_ACK:
+			    System.out.println("UNINSTALL_ACK not converted");
 				UninstallAckPacket uninstallAckPackage = (UninstallAckPacket) packageMessage;
 				vin = uninstallAckPackage.getVin();
 				String vehiclePluginNameForUninstallAck = uninstallAckPackage
 						.getPluginName();
 				
-				int uninstallAppId = vehiclePluginDao.getApplicationId(vin, vehiclePluginNameForUninstallAck);
+				//				int uninstallAppId = vehiclePluginDao.getApplicationId(vin, vehiclePluginNameForUninstallAck);
+				//				
+				//				vehiclePluginDao.removeVehiclePlugin(vin,
+				//						vehiclePluginNameForUninstallAck);
 				
-				vehiclePluginDao.removeVehiclePlugin(vin,
-						vehiclePluginNameForUninstallAck);
-				
-				boolean isDelete = Cache.getCache().updateUninstallCacheAndCheckIfRemovable(vin, uninstallAppId, vehiclePluginNameForUninstallAck);
-				if(isDelete) {
-					vehicleDao.removeOneAppId(vin, uninstallAppId);
-				}
+				System.out.println("  " + vin + " " + vehiclePluginNameForUninstallAck);
+
+				//boolean isDelete = Cache.getCache().updateUninstallCacheAndCheckIfRemovable(vin, uninstallAppId, vehiclePluginNameForUninstallAck);
+				//if(isDelete) {
+				    //					vehicleDao.removeOneAppId(vin, uninstallAppId);
+				//  System.out.println("  should be deleted");
+				//}
 				
 				break;
 			case MessageType.RESTORE_ACK:
