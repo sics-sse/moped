@@ -45,20 +45,6 @@ import org.xml.sax.SAXException;
 import cache.Cache;
 import cache.VehiclePluginRecord;
 import common.GlobalVariables;
-import dao.AppConfigDao;
-import dao.AppConfigDaoImpl;
-import dao.ApplicationDao;
-import dao.ApplicationDaoImpl;
-import dao.DBConnection;
-import dao.DatabasePluginDao;
-import dao.DatabasePluginDaoImpl;
-import dao.PluginConfigDaoImpl;
-import dao.VehicleConfigDao;
-import dao.VehicleConfigDaoImpl;
-import dao.VehicleDao;
-import dao.VehicleDaoImpl;
-import dao.VehiclePluginDao;
-import dao.VehiclePluginDaoImpl;
 import messages.InstallPacket;
 import messages.InstallPacketData;
 import messages.LinkContextEntry;
@@ -66,18 +52,6 @@ import messages.RestorePacket;
 import messages.UninstallPacket;
 import messages.UninstallPacketData;
 import mina.ServerHandler;
-import model.AppConfig;
-import model.Application;
-import model.DatabasePlugin;
-import model.Ecu;
-import model.Link;
-import model.PluginConfig;
-import model.PluginLinkConfig;
-import model.PluginPortConfig;
-import model.Port;
-import model.Vehicle;
-import model.VehicleConfig;
-import model.VehiclePlugin;
 import service.exception.PluginWebServicesException;
 import utils.CompressUtils;
 import utils.SuiteGen;
@@ -87,16 +61,8 @@ import java.sql.*;
 
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
-	private ApplicationDao applicationDao;
-	private VehiclePluginDao vehiclePluginDao;
-	private VehicleDao vehicleDao;
-	private VehicleConfigDao vehicleConfigDao;
-	private DatabasePluginDao databasePluginDao;
-	private AppConfigDao appConfigDao;
-//	private PluginConfigDaoImpl pluginConfigDao;
 	private SuiteGen suiteGen = new SuiteGen("/lhome/sse/squawk");
 	
-	private DBConnection db = null;
 	private ServerHandler handler = null;
 	
     private Connection dbLite = null;
@@ -105,15 +71,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public PluginWebServicesImpl(ServerHandler handler) {
 		this.handler = handler;
 		
-		db = new DBConnection();
-		
-		vehicleDao = new VehicleDaoImpl(db);
-		vehicleConfigDao = new VehicleConfigDaoImpl(db);
-		vehiclePluginDao = new VehiclePluginDaoImpl(db);
-		appConfigDao = new AppConfigDaoImpl(db);
-		applicationDao = new ApplicationDaoImpl(db);
-		databasePluginDao = new DatabasePluginDaoImpl(db);
-//		pluginConfigDao = new PluginConfigDaoImpl(db);
 	}
 	
 	@Override
@@ -359,9 +316,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		// Create an array list for cache
 		ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
 
-		System.out.println("Fetching vehicle, vehicleDao: " + vehicleDao);
-			
-
 		String q1 =
 		    "select vehicleConfigId from Vehicle where VIN = '" + vin
 		    + "'";
@@ -376,14 +330,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    System.out.println("vehicleconf brand " + c2[1]);
 		}
 
-		Vehicle vehicle = vehicleDao.getVehicle(vin);
-		System.out.println("Vehicle found: " + vehicle);
+		String q7 = "select vehicleConfigId from Vehicle where vin = '" + vin + "'";
+		String c7 = CallMySql.getOne(q7);
 
 		// VehicleConfig
-		int vehicleConfigId = vehicle.getVehicleConfigId();
-		VehicleConfig vehicleConfig = vehicleConfigDao
-		    .getVehicleConfig(vehicleConfigId);
-		System.out.println("VehicleConfig found: " + vehicleConfig);
+		int vehicleConfigId = Integer.parseInt(c7);
 			
 		// AppConfig
 		String vehicleName = c2[0];
@@ -392,8 +343,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
 		// what's this "next step"?
 
-		AppConfig appConfig = appConfigDao.getAppConfig(appID, vehicleName, brand);
-			
 		String q3 = "select id from AppConfig where appId = " + appID
 		    + " and brand = '" + brand + "' and vehicleName = '" +
 		    vehicleName + "'";
@@ -407,20 +356,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		//TODO: Move it to a warmer place
 		if (c3 != "none") {
 		    // can it happen that there is no AppConfig?
-		    List<PluginConfig> pluginConfigs = (List<PluginConfig>)db.getAllResults(
-											    "FROM PluginConfig pc WHERE pc.appConfig = " + appConfigId);
-		    for (PluginConfig pluginConfig : pluginConfigs) {
-			System.out.println("pluginConfig.id: " + pluginConfig.getId());
-					
-			List<PluginPortConfig> pluginPortConfigs = db.getAllResults(
-										    "FROM PluginPortConfig ppc WHERE ppc.pluginConfig = " + pluginConfig.getId());
-			for (PluginPortConfig pluginPortConfig : pluginPortConfigs) {
-			    int pluginPortId = pluginPortConfig.getId();
-			    String pluginPortName = pluginPortConfig.getName();
-			    //portInitialContext.put(pluginPortName, pluginPortId);
-			}
-		    }
-				
 		    int pluginConfigId;
 
 		    String q4 = "select id,name from PluginConfig where appConfig_id = " + c3;
@@ -475,8 +410,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    // Initiate LinkingContext
 			    ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
 				
-			    List<PluginLinkConfig> pluginLinkConfigs = db.getAllResults(
-											"FROM PluginLinkConfig plc WHERE plc.pluginConfig = " + pluginConfigId);
 			    try {
 
 
@@ -556,9 +489,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		// Achieve jars
 		ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
 
-		// Fetch application data from DB
-		Application application = applicationDao.getApplication(appID);
-		System.out.println("Found application: " + application.getApplicationName());
 			
 		String q10 =
 		    "select applicationName from Application where applicationId = " + appID;
@@ -568,9 +498,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		// Fetch PlugIns from DB
 		// HashMap<String, Byte> contexts = new HashMap<String, Byte>();
 		@SuppressWarnings("unchecked")
-		    List<DatabasePlugin> plugins = (List<DatabasePlugin>)db.getAllResults(
-											  "FROM DatabasePlugin dp WHERE dp.application = " + application.getApplicationId());
-		//			Set<DatabasePlugin> plugins = application.getDatabasePlugins();
 
 		String q12 =
 		    "select name,reference,location,fullClassName " +
@@ -588,16 +515,22 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			System.out.println(rs12.getString(4));
 
 			int remoteEcuId = Integer.parseInt(rs12.getString(2));
-			int sendingPortId = vehicleConfigDao.getSendingPortId
-			    (
-			     vehicleConfigId, remoteEcuId
-			     );
-			int callbackPortId = vehicleConfigDao.getCallbackPortId
-			    (
-			     vehicleConfigId, remoteEcuId
-			     );
-			System.out.println("sendingPortId " + sendingPortId);
-			System.out.println("callbackPortId " + callbackPortId);
+			//			int sendingPortId = vehicleConfigDao.getSendingPortId
+			//			    (
+			//			     vehicleConfigId, remoteEcuId
+			//			     );
+			//			int callbackPortId = vehicleConfigDao.getCallbackPortId
+			//			    (
+			//			     vehicleConfigId, remoteEcuId
+			//			     );
+			//			System.out.println("sendingPortId " + sendingPortId);
+			//			System.out.println("callbackPortId " + callbackPortId);
+
+			// there is code in VehicleConfigDao which looks these up,
+			// but they seem to always be -1 in the database right now,
+			// and it's not clear that it does it right way.
+			int sendingPortId = -1;
+			int callbackPortId = -1;
 
 			String executablePluginName = "plugin://"
 			    + rs12.getString(4) + "/" + pluginName;
@@ -685,31 +618,29 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		// Save pluginname into array list cache for uninstallation
 		ArrayList<String> uninstallCacheName = new ArrayList<String>();
 
-		@SuppressWarnings("unchecked")
-		    List<VehiclePlugin> vehiclePlugins = (List<VehiclePlugin>)db.getAllResults("FROM VehiclePlugin vp WHERE vp.appId = " + appID + " AND vp.vin = '" + vin + "'");
-
 		String q1 = "select name,sendingPortId,callbackPortId,ecuId from VehiclePlugin where appId = " + appID + " and vin = '" + vin + "'";
-		String [] c1 = CallMySql.getOneSet(q1);
-
-		System.out.println(c1[0]);
-		System.out.println(c1[1]);
-		System.out.println(c1[2]);
-		System.out.println(c1[3]);
+		ResultSet rs = CallMySql.getResults(q1);
 
 		// We should fetch all rows, but we don't expect there to
 		// be more than one.
 
-		for (VehiclePlugin vehiclePlugin : vehiclePlugins) {
-		    String pluginName = vehiclePlugin.getName();
-		    int sendingPortId = vehiclePlugin.getSendingPortId();
-		    int callbackPortId = vehiclePlugin.getCallbackPortId();
-		    int reference = vehiclePlugin.getEcuId();
+		try {
+		    while (rs.next()) {
+			String pluginName = rs.getString(1);
+			int sendingPortId = Integer.parseInt(rs.getString(2));
+			int callbackPortId = Integer.parseInt(rs.getString(3));
+			int reference = Integer.parseInt(rs.getString(4));
 
-		    UninstallPacketData uninstallPackageData = new UninstallPacketData(
-										       sendingPortId, callbackPortId, reference, pluginName);
-		    uninstallPackageDataList.add(uninstallPackageData);
+			UninstallPacketData uninstallPackageData = new UninstallPacketData(
+											   sendingPortId, callbackPortId, reference, pluginName);
+			uninstallPackageDataList.add(uninstallPackageData);
 
-		    uninstallCacheName.add(pluginName);
+			uninstallCacheName.add(pluginName);
+		    }
+		    rs.close();
+		} catch (SQLException ex) {
+		    System.out.println("db error 6");
+		    System.out.println(ex.getMessage());
 		}
 
 		Cache.getCache().addUninstallCache(vin, appID, uninstallCacheName);
@@ -1209,11 +1140,6 @@ delete b from VehicleConfig b where name='_deleted_';
 
 	    return "true";
 
-	}
-
-	private boolean isPluginPort(String portName,
-			HashMap<String, PluginConfig> portName2PluginConfigs) {
-		return portName2PluginConfigs.containsKey(portName);
 	}
 
 	@WebMethod
