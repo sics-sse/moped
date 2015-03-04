@@ -5,6 +5,8 @@ import service.CallMySql;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.StringBufferInputStream;
+import java.io.ObjectInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -114,94 +116,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 //		pluginConfigDao = new PluginConfigDaoImpl(db);
 	}
 	
-	public ApplicationDao getApplicationDao() {
-		return applicationDao;
-	}
-
-	public void setApplicationDao(ApplicationDao applicationDao) {
-		this.applicationDao = applicationDao;
-	}
-
-	public VehiclePluginDao getVehiclePluginDao() {
-		return vehiclePluginDao;
-	}
-
-	public void setVehiclePluginDao(VehiclePluginDao vehiclePluginDao) {
-		this.vehiclePluginDao = vehiclePluginDao;
-	}
-
-	public VehicleDao getVehicleDao() {
-		return vehicleDao;
-	}
-
-	public void setVehicleDao(VehicleDao vehicleDao) {
-		this.vehicleDao = vehicleDao;
-	}
-
-	public VehicleConfigDao getVehicleConfigDao() {
-		return vehicleConfigDao;
-	}
-
-	public void setVehicleConfigDao(VehicleConfigDao vehicleConfigDao) {
-		this.vehicleConfigDao = vehicleConfigDao;
-	}
-
-	public DatabasePluginDao getDatabasePluginDao() {
-		return databasePluginDao;
-	}
-
-	public void setDatabasePluginDao(DatabasePluginDao databasePluginDao) {
-		this.databasePluginDao = databasePluginDao;
-	}
-
-	public AppConfigDao getAppConfigDao() {
-		return appConfigDao;
-	}
-
-	public void setAppConfigDao(AppConfigDao appConfigDao) {
-		this.appConfigDao = appConfigDao;
-	}
-
-	public SuiteGen getSuiteGen() {
-		return suiteGen;
-	}
-
-	public void setSuiteGen(SuiteGen suiteGen) {
-		this.suiteGen = suiteGen;
-	}
-	
-	@Override
-	public String getVehicleName(int id) 
-			throws PluginWebServicesException {
-		ResultSet rs;
-		String vehicleName = "unknown";
-		
-		try {
-			rs = stat.executeQuery("select * from Vehicle where id = " + id);
-			vehicleName = rs.getString("name");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
-			
-		return vehicleName;
-	}
-	
-	@Override
-	public String getVehicleVin(String vehicleName) 
-			throws PluginWebServicesException {
-		ResultSet rs;
-		String vin = "unknown";
-		
-		try {
-			rs = stat.executeQuery("select * from Vehicle where name = '" + vehicleName + "'");
-			vin = rs.getString("vin");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} 
-			
-		return vin;
-	}
-	
 	@Override
 	public void insertPluginInDb(String location, String name) 
 			throws PluginWebServicesException {
@@ -236,6 +150,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			configFileName = name + ".xml";
 		    //TODO: UGLY HACK (only allows one .class file)
 		    String fullClassName = "";
+
 		    for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements(); ) {
 			JarEntry entry = entries.nextElement();
 			String fileName = entry.getName();
@@ -256,8 +171,32 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    }
 				
 				
-		    Application application = new Application(name, publisher, version);
-		    int appId = applicationDao.saveApplication(application);
+		    //Application application = new Application(name, publisher, version);
+		    int appId;
+		    // appId = applicationDao.saveApplication(application);
+
+		    String q1 = "select applicationId from Application where applicationName = '" + name + "' and publisher = '" + publisher + "' and version = '" + version + "'";
+		    String c1 = CallMySql.getOne(q1);
+		    if (c1 == "none") {
+			
+			String q2 = "insert into Application (applicationName,publisher,version,hasNewVersion) values ('" + name + "','" + publisher + "','" + version + "',0)";
+			int rows = CallMySql.update(q2);
+
+			String q3 = "select applicationId from Application where applicationName = '" + name + "' and publisher = '" + publisher + "' and version = '" + version + "'";
+			String c3 = CallMySql.getOne(q3);
+			appId = Integer.parseInt(c3);
+		    } else {
+			// should it be allowed to insert a new copy into an
+			// existing version?
+			// then we should also delete the old one
+			// for the time being we make an unwarranted assumption,
+			// namely that the old entries don't hurt (that the new ones
+			// are the same)
+			appId = Integer.parseInt(c1);
+		    }
+
+
+		    System.out.println("new appId " + appId);
 		    int appConfigId = appConfigDao.saveAppConfig
 			(
 			 new AppConfig(appId, vehicleName, brand)
@@ -278,7 +217,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				
 		    String q3 = "select * from PluginConfig where ecuId = " +
 			Integer.parseInt(ecuRef) + " and " +
-			"name = " + "'" + name + ".suite" +"'" + " and " +
+			"name = " + "'" + name + ".suite7" +"'" + " and " +
 			"appConfig_id = " + appConfigId;
 		    String c3 = CallMySql.getOne(q3);
 		    System.out.println(c3);
@@ -286,7 +225,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    if (c3 == "none") {
 			String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
 			    Integer.parseInt(ecuRef) + "," +
-			    "'" + name + ".suite" +"'" + "," +
+			    "'" + name + ".suite7" +"'" + "," +
 			    appConfigId + ")";
 			int x3 = CallMySql.update(q31);
 			System.out.println("updated rows " + x3);
@@ -371,19 +310,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    return false;
 	}
 	
-	@Override
-	public void register_vehicle(String name, String vin, String type)
-			throws PluginWebServicesException {
-		System.out.println("VEHICLE NAME: " + name);
-		System.out.println("VIN: " + vin);		
-		System.out.println("VEHICLE TYPE: " + type);
-		
-		if (type.startsWith("moped_3rpi_v")) {
-			List<String> ecuNames =  Arrays.asList("moped_tcu", "moped_vcu", "moped_scu");
-//			vehicleConfigDao.newSaveVehicleConfig(type.substring(0, 10), type.substring(12), ecuNames);
-		}
-	}
-
 	@Override
 	@SuppressWarnings("unchecked")
 	public String install(String vin, int appID, String jvm) 
@@ -714,15 +640,39 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public boolean upgrade(String vin, int oldAppID)
 			throws PluginWebServicesException {
 		IoSession session = ServerHandler.getSession(vin);
+
+		// Do a transaction around q1 and q2.
+
+		String q1 = "select applicationName from Application where applicationId = " + oldAppID;
+		String c1 = CallMySql.getOne(q1);
+
+		System.out.println("upgrade " + c1);
+
+		if (c1 == "none") {
+		    System.out.println("no such appid");
+		    return false;
+		}
+
+		String q2 = "select max(applicationId) from Application where applicationName = '" + c1 + "'";
+		String c2 = CallMySql.getOne(q2);
+
+		System.out.println("old " + oldAppID + " new " + c2);
+		int newAppId = Integer.parseInt(c2);
+		// upgrade only if this is newer?
+		// use date or version instead?
+
+		if (oldAppID == newAppId)
+		    return false;
+
 		if (session == null) {
 			// If null, response user about the disconnection between Sever and
 			// Vehicle
+		    System.out.println("upgrade: no session");
 			return false;
 		} else {
 			uninstall(vin, oldAppID);
 			try {
 				Thread.sleep(2000);
-				int newAppId = applicationDao.getNewestApplication(oldAppID);
 				if (newAppId > -1) {
 					install(vin, newAppId, "Squawk"); //TODO: This should also be implemented for JDK (all the way to the upgrade button in the php-interface)
 					return true;
@@ -776,60 +726,125 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 
 	@WebMethod
-	public void setUpgradeFlag(int oldAppID) throws PluginWebServicesException {
-		applicationDao.setHasNewVersionFlag(oldAppID);
-	}
-
-	@WebMethod
 	public boolean restoreEcu(String vin, int ecuReference)
 			throws PluginWebServicesException {
-		IoSession session = ServerHandler.getSession(vin);
-		if (session == null) {
-			// If null, response user about the disconnection between Sever and
-			// Vehicle
-			return false;
-		} else {
+	    IoSession session = ServerHandler.getSession(vin);
+	    if (session == null) {
+		// If null, response user about the disconnection between Sever and
+		// Vehicle
+		return false;
+	    } else {
 
-			ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
-			List<VehiclePlugin> vehiclePlugins = vehiclePluginDao
-					.getPluginsInSpecificEcu(vin, ecuReference);
-			for (VehiclePlugin vehiclePlugin : vehiclePlugins) {
-				int appId = vehiclePlugin.getAppId();
-				String pluginName = vehiclePlugin.getName();
-				int sendingPortId = vehiclePlugin.getSendingPortId();
-				int callbackPortId = vehiclePlugin.getCallbackPortId();
-				int reference = vehiclePlugin.getEcuId();
-				String executablePluginName = vehiclePlugin
-						.getExecutablePluginName();
-				HashMap<String, Integer> portInitialContext = vehiclePlugin
-						.getPortInitialContext();
-				ArrayList<LinkContextEntry> portLinkingContext = vehiclePlugin
-						.getPortLinkingContext();
-				// String location = GlobalVariables.APPS_DIR +
-				// dp.getLocation();
-				String location = vehiclePlugin.getLocation();
-				File file = new File(location);
-				byte[] fileBytes;
-				try {
-					fileBytes = readBytesFromFile(file);
-					InstallPacketData installPackageData = new InstallPacketData(
-							appId, pluginName, sendingPortId, callbackPortId,
-							reference, portInitialContext, portLinkingContext,
-							executablePluginName, fileBytes);
-					installPackageDataList.add(installPackageData);
-				} catch (IOException e) {
-					System.out
-							.println("Error! Fail to read PlugIn file from Server.");
-					return false;
-				}
+		ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
+		String q1 = "select appId,name,sendingPortId,callbackPortId,ecuId,executablePluginName,portInitialContext,portLinkingContext,location from VehiclePlugin where vin = '" +
+		    vin + "' and ecuId = " + ecuReference;
+		String [] c1 = CallMySql.getOneSet(q1);
 
-			}
-
-			RestorePacket restorePackage = new RestorePacket(vin,
-					installPackageDataList);
-			session.write(restorePackage);
-			return true;
+		if (c1 == null) {
+		    System.out.println("nothing in db");
+		    return false;
 		}
+
+		String appId = c1[0];
+		String pluginName = c1[1];
+		String sendingPortId = c1[2];
+		String callbackPortId = c1[3];
+		String reference = c1[4];
+		String executablePluginName = c1[5];
+		String portInitialContext_blob = c1[6];
+		String portLinkingContext_blob = c1[7];
+		String location = c1[8];
+
+		System.out.println("blob " + portInitialContext_blob);
+		System.out.println("blob " + portLinkingContext_blob);
+
+		HashMap<String, Integer> portInitialContext;
+		ArrayList<LinkContextEntry> portLinkingContext;
+
+		if (portInitialContext_blob == null) {
+		    portInitialContext = null;
+		} else {
+		    try {
+			StringBufferInputStream fileIn = new StringBufferInputStream
+			    (portInitialContext_blob);
+
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			portInitialContext =
+			    (HashMap<String, Integer>)
+			    in.readObject();
+			in.close();
+			fileIn.close();
+		    } catch(IOException e) {
+			System.out.println("reading from object");
+			e.printStackTrace();
+			throw new PluginWebServicesException();
+		    } catch(ClassNotFoundException e) {
+			System.out.println("class not found");
+			e.printStackTrace();
+			throw new PluginWebServicesException();
+		    }
+		}
+
+		if (portLinkingContext_blob == null) {
+		    portLinkingContext = null;
+		} else {
+		    try {
+			StringBufferInputStream fileIn = new StringBufferInputStream
+			    (portLinkingContext_blob);
+
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			portLinkingContext =
+			    (ArrayList<LinkContextEntry>)
+			    in.readObject();
+			in.close();
+			fileIn.close();
+		    } catch(IOException e) {
+			System.out.println("reading from object");
+			e.printStackTrace();
+			throw new PluginWebServicesException();
+		    } catch(ClassNotFoundException e) {
+			System.out.println("class not found");
+			e.printStackTrace();
+			throw new PluginWebServicesException();
+		    }
+		}
+
+		//HashMap<String, Integer> portInitialContext;
+		//ArrayList<LinkContextEntry> portLinkingContext;
+
+		System.out.println("restoreEcu 1");
+
+		File file = new File(location);
+		byte[] fileBytes;
+		try {
+		    fileBytes = readBytesFromFile(file);
+		    InstallPacketData installPackageData =
+			new InstallPacketData
+			(
+			 Integer.parseInt(appId),
+			 pluginName,
+			 Integer.parseInt(sendingPortId),
+			 Integer.parseInt(callbackPortId),
+			 Integer.parseInt(reference),
+			 portInitialContext,
+			 portLinkingContext,
+			 executablePluginName,
+			 fileBytes
+			 );
+		    installPackageDataList.add(installPackageData);
+		} catch (IOException e) {
+		    System.out
+			.println("Error! Fail to read PlugIn file from Server.");
+		    return false;
+		}
+
+		System.out.println("restoreEcu 2");
+		RestorePacket restorePackage = new RestorePacket
+		    (vin,
+		     installPackageDataList);
+		session.write(restorePackage);
+		return true;
+	    }
 
 	}
 
@@ -1109,248 +1124,6 @@ delete b from VehicleConfig b where name='_deleted_';
 
 	}
 
-	@WebMethod
-	public String parsePluginConfiguration(int appId, String path)
-			throws PluginWebServicesException {
-	    AppConfig appConfig = new AppConfig();
-	    // key: portName, PluginPortConfig
-	    HashMap<String, PluginConfig> portName2PluginConfigs = new HashMap<String, PluginConfig>();
-
-	    DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder dombuilder;
-	    try {
-		dombuilder = domfac.newDocumentBuilder();
-		InputStream is = new FileInputStream(path);
-		Document doc = dombuilder.parse(is);
-		// vehicle
-		Element root = doc.getDocumentElement();
-		System.out.println("Start parsing XML");
-
-		appConfig.setAppId(appId);
-
-		// vehicle name
-		Element vehicleNameElement = (Element) root.getElementsByTagName(
-										 "vehicleName").item(0);
-		String vehicleNameStr = vehicleNameElement.getTextContent();
-		appConfig.setVehicleName(vehicleNameStr);
-		System.out.println("vehicle name: " + vehicleNameStr);
-
-		// brand
-		Element brandElement = (Element) root.getElementsByTagName("brand")
-		    .item(0);
-		String brandStr = brandElement.getTextContent();
-		appConfig.setBrand(brandStr);
-		System.out.println("brand:" + brandStr);
-
-		appConfigDao.saveAppConfig(appConfig);
-
-		// list of plug-in
-		Element plugins = (Element) root.getElementsByTagName("plugins")
-		    .item(0);
-		Set<PluginConfig> pluginConfigs = new HashSet<PluginConfig>();
-
-		NodeList pluginList = plugins.getElementsByTagName("plugin");
-		for (int i = 0; i < pluginList.getLength(); i++) {
-		    PluginConfig pluginConfig = new PluginConfig();
-
-		    // get plug-in
-		    Element plugin = (Element) pluginList.item(i);
-
-		    // get name
-		    Element pluginNameElement = (Element) plugin
-			.getElementsByTagName("name").item(0);
-		    String pluginNameStr = pluginNameElement.getTextContent();
-		    pluginConfig.setName(pluginNameStr);
-		    System.out.println("plugin name: " + pluginNameStr);
-
-		    // get ECU id
-		    Element ecuElement = (Element) plugin.getElementsByTagName(
-									       "ecu").item(0);
-		    int ecuId = Integer.parseInt(ecuElement.getTextContent());
-		    pluginConfig.setEcuId(ecuId);
-		    System.out.println("ecu id:" + ecuId);
-
-		    // get ports
-		    Element portsElement = (Element) plugin.getElementsByTagName(
-										 "ports").item(0);
-		    // LinkedList<ExperimentalPluginPortConfig> ports = new
-		    // LinkedList<ExperimentalPluginPortConfig>();
-
-		    // get list of ports
-		    NodeList portList = portsElement.getElementsByTagName("port");
-
-		    pluginConfig.setAppConfig(appConfig);
-		    appConfigDao.savePluginConfig(pluginConfig);
-
-		    // get port
-		    for (int j = 0; j < portList.getLength(); j++) {
-			Element port = (Element) portList.item(j);
-
-			// get name
-			Element portNameElement = (Element) port
-			    .getElementsByTagName("name").item(0);
-			String portNameStr = portNameElement.getTextContent();
-			PluginPortConfig pluginPortConfig = new PluginPortConfig();
-			pluginPortConfig.setName(portNameStr);
-			portName2PluginConfigs.put(portNameStr, pluginConfig);
-			System.out.println("port name:" + portNameStr);
-
-			pluginPortConfig.setPluginConfig(pluginConfig);
-			appConfigDao.savePluginPortConfig(pluginPortConfig);
-		    }
-
-		    pluginConfigs.add(pluginConfig);
-		}
-
-		appConfig.setPluginConfigs(pluginConfigs);
-
-		// get links
-		Element links = (Element) root.getElementsByTagName("links")
-		    .item(0);
-
-		// get list of links
-		NodeList linkList = links.getElementsByTagName("link");
-		for (int k = 0; k < linkList.getLength(); k++) {
-		    // get link
-		    Element linkElement = (Element) linkList.item(k);
-
-		    // get from
-		    Element fromElement = (Element) linkElement
-			.getElementsByTagName("from").item(0);
-		    // Element fromTypeElement = (Element) fromElement
-		    // .getElementsByTagName("type").item(0);
-		    // String fromTypeStr = fromTypeElement.getTextContent();
-		    // Element fromNameElement = (Element) fromElement
-		    // .getElementsByTagName("name").item(0);
-		    String fromNameStr = fromElement.getTextContent();
-		    boolean fromType = isPluginPort(fromNameStr,
-						    portName2PluginConfigs);
-		    // get to
-		    Element toElement = (Element) linkElement.getElementsByTagName(
-										   "to").item(0);
-		    // Element toTypeElement = (Element) toElement
-		    // .getElementsByTagName("type").item(0);
-		    // String toTypeStr = toTypeElement.getTextContent();
-		    // Element toNameElement = (Element) toElement
-		    // .getElementsByTagName("name").item(0);
-		    String toNameStr = toElement.getTextContent();
-		    boolean toType = isPluginPort(toNameStr, portName2PluginConfigs);
-
-		    if (fromType && toType) {
-			// fromType = PluginPort, toType = PluginPort
-
-			// judge whether these two PlugIns are located in the same
-			// ECU or different ECUs.
-			int fromEcuId = portName2PluginConfigs.get(fromNameStr)
-			    .getEcuId();
-			int toEcuId = portName2PluginConfigs.get(toNameStr)
-			    .getEcuId();
-			if (fromEcuId != toEcuId) {
-			    // different ECUs
-			    int[] link = vehicleConfigDao.getType2PortId(
-									 vehicleNameStr, brandStr, fromEcuId, toEcuId);
-			    if (link == null) {
-				System.out
-				    .println("Error: "
-					     + fromNameStr
-					     + " - "
-					     + toNameStr
-					     + " is allocated to wrong virtual port for link");
-				System.exit(-1);
-			    }
-
-			    // int type2rPortId =
-			    // vehicleConfigDao.getType2PortId(vehicleNameStr,
-			    // brandStr, fromEcuId);
-			    // if(type2rPortId == -1 ) {
-			    // System.out.println("Error: "+ toNameStr+
-			    // " is allocated to wrong virtual port for link, toEcuId:"+fromEcuId);
-			    // System.exit(-1);
-			    // }
-
-			    PluginLinkConfig p2vEntry = new PluginLinkConfig(
-									     fromNameStr, link[0] + "", toNameStr);
-
-			    PluginConfig pluginConfig = portName2PluginConfigs
-				.get(fromNameStr);
-
-			    p2vEntry.setPluginConfig(pluginConfig);
-			    appConfigDao.savePluginLinkConfig(p2vEntry);
-
-			    PluginLinkConfig v2pEntry = new PluginLinkConfig(
-									     link[1] + "", toNameStr,
-									     GlobalVariables.VPORT2PORT + "");
-
-			    PluginConfig pluginConfig2 = portName2PluginConfigs
-				.get(toNameStr);
-
-			    v2pEntry.setPluginConfig(pluginConfig2);
-
-			    appConfigDao.savePluginLinkConfig(v2pEntry);
-			} else {
-			    // same ECU
-			    PluginLinkConfig pluginLinkConfig = new PluginLinkConfig(
-										     fromNameStr, toNameStr,
-										     GlobalVariables.PPORT2PPORT + "");
-
-			    PluginConfig pluginConfig = portName2PluginConfigs
-				.get(fromNameStr);
-			    pluginLinkConfig.setPluginConfig(pluginConfig);
-
-			    appConfigDao.savePluginLinkConfig(pluginLinkConfig);
-			}
-		    } else if (fromType && !toType) {
-			// fromType = PluginPort, toType = VirtualPort
-			// Plug-In accesses to sensor
-			PluginLinkConfig p2vEntry = new PluginLinkConfig(
-									 fromNameStr, toNameStr, GlobalVariables.PPORT2VPORT
-									 + "");
-
-			PluginConfig pluginConfig = portName2PluginConfigs
-			    .get(fromNameStr);
-
-			p2vEntry.setPluginConfig(pluginConfig);
-
-			appConfigDao.savePluginLinkConfig(p2vEntry);
-		    } else if (!fromType && toType) {
-			// fromType = VirtualPort, toType = PluginPort
-
-			// Sensor accesses to Plug-In
-			PluginLinkConfig v2pEntry = new PluginLinkConfig(
-									 fromNameStr, toNameStr, GlobalVariables.VPORT2PORT
-									 + "");
-
-			PluginConfig pluginConfig = portName2PluginConfigs
-			    .get(toNameStr);
-
-			v2pEntry.setPluginConfig(pluginConfig);
-
-			appConfigDao.savePluginLinkConfig(v2pEntry);
-		    } else {
-			System.out
-			    .println("Error: wrong port type in plugin configuration file.");
-			return "Error: wrong port type in plugin configuration file.";
-		    }
-
-		}
-
-	    } catch (ParserConfigurationException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    } catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    } catch (SAXException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    } catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	    }
-
-	    return "true";
-	}
-
 	private boolean isPluginPort(String portName,
 			HashMap<String, PluginConfig> portName2PluginConfigs) {
 		return portName2PluginConfigs.containsKey(portName);
@@ -1374,231 +1147,6 @@ delete b from VehicleConfig b where name='_deleted_';
 		
 		String reply = suiteGen.generateSuite(dest); // + "/" + fullClassName);
 		return reply;
-	}
-
-	public String install4Jdk(String vin, int appID)
-			throws PluginWebServicesException {
-		// Fetch the connection session between Server and Vehicle
-		IoSession session = ServerHandler.getSession(vin);
-		if (session == null) {
-			// If null, response user about the disconnection between Sever and
-			// Vehicle
-			return "false";
-		} else {
-			// Achieve contexts
-			// key: portName(String), value:
-			// portId(Integer)>
-			HashMap<String, Integer> portInitialContext = new HashMap<String, Integer>();
-			// HashMap<String, ArrayList<LinkingContextEntry>> linkingContexts =
-			// new HashMap<String, ArrayList<LinkingContextEntry>>();
-			HashMap<String, ArrayList<LinkContextEntry>> linkingContexts = new HashMap<String, ArrayList<LinkContextEntry>>();
-
-			// Create an array list for cache
-			ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
-
-			Vehicle vehicle = vehicleDao.getVehicle(vin);
-
-			// VehicleConfig
-			int vehicleConfigId = vehicle.getVehicleConfigId();
-			VehicleConfig vehicleConfig = vehicleConfigDao
-					.getVehicleConfig(vehicleConfigId);
-
-			// AppConfig
-			String vehicleName = vehicleConfig.getName();
-			String brand = vehicleConfig.getBrand();
-			AppConfig appConfig = appConfigDao.getAppConfig(appID, vehicleName,
-					brand);
-			// PluginConfig
-			Set<PluginConfig> pluginConfigs = appConfig.getPluginConfigs();
-
-			// Plugin Port Config
-			// Build lookup table (PlugIn port name, PlugIn port ID)
-			// HashMap<Integer, Integer> pluginId2EcuId = new HashMap<Integer,
-			// Integer>();
-
-			for (PluginConfig pluginConfig : pluginConfigs) {
-				Set<PluginPortConfig> pluginPortConfigs = pluginConfig
-						.getPluginPortConfigs();
-				for (PluginPortConfig pluginPortConfig : pluginPortConfigs) {
-					int pluginPortId = pluginPortConfig.getId();
-					String pluginPortName = pluginPortConfig.getName();
-					portInitialContext.put(pluginPortName, pluginPortId);
-				}
-
-			}
-
-			// Plugin Link Config
-			for (PluginConfig pluginConfig : pluginConfigs) {
-				String pluginName = pluginConfig.getName();
-				// Initiate LinkingContext
-				ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
-
-				Set<PluginLinkConfig> pluginLinkConfigs = pluginConfig
-						.getPluginLinkConfigs();
-				for (PluginLinkConfig pluginLinkConfig : pluginLinkConfigs) {
-					String from = pluginLinkConfig.getFromStr();
-					String to = pluginLinkConfig.getToStr();
-					String remote = pluginLinkConfig.getRemote();
-
-					int fromPortId = 0;
-					int toPortId = 0;
-					int remoteId = 0;
-
-					Scanner scanner = new Scanner(remote);
-					boolean remoteTag = scanner.hasNextInt();
-
-					if (remoteTag) {
-						remoteId = scanner.nextInt();
-						switch (remoteId) {
-						case GlobalVariables.PPORT2PPORT:
-							fromPortId = portInitialContext.get(from);
-							toPortId = portInitialContext.get(to);
-							break;
-						case GlobalVariables.PPORT2VPORT:
-							fromPortId = portInitialContext.get(from);
-							toPortId = Integer.parseInt(to);
-							break;
-						case GlobalVariables.VPORT2PORT:
-							fromPortId = Integer.parseInt(from);
-							toPortId = portInitialContext.get(to);
-							break;
-						default:
-							System.out
-									.println("Error: Wrong link type in GlobalVariables");
-							System.exit(-1);
-						}
-					} else {
-						// Plug-In -> VRPort
-						// remote represents the name of remote port
-						remoteId = portInitialContext.get(remote);
-						fromPortId = portInitialContext.get(from);
-						toPortId = Integer.parseInt(to);
-
-					}
-
-					scanner.close();
-
-					// remoteTag: -1(PPORT2PPORT), -2(PPORT2VPORT),
-					// -3(VPORT2PORT)
-					// int remoteTag = Integer.parseInt(remote);
-					// switch(remoteTag) {
-					// case GlobalVariables.PPORT2PPORT:
-					// fromPortId = portInitialContext.get(from);
-					// toPortId = portInitialContext.get(to);
-					// // judge whether they are in the same ECU or different
-					// ECUs
-					//
-					// break;
-					// case GlobalVariables.PPORT2VPORT:
-					// fromPortId = portInitialContext.get(from);
-					// toPortId = Integer.parseInt(to);
-					// break;
-					// case GlobalVariables.VPORT2PORT:
-					// fromPortId = Integer.parseInt(from);
-					// toPortId = portInitialContext.get(to);
-					// break;
-					// default:
-					// System.out
-					// .println("Error: Wrong link type in GlobalVariables");
-					// System.exit(-1);
-					// }
-
-					LinkContextEntry entry = new LinkContextEntry(fromPortId,
-							toPortId, remoteId);
-					linkingContext.add(entry);
-
-				}
-				linkingContexts.put(pluginName, linkingContext);
-			}
-
-			// Achieve jars
-			ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
-
-			// Fetch application data from DB
-			Application application = applicationDao.getApplication(appID);
-			// Fetch PlugIns from DB
-			// HashMap<String, Byte> contexts = new HashMap<String, Byte>();
-			Set<DatabasePlugin> plugins = application.getDatabasePlugins();
-			for (DatabasePlugin plugin : plugins) {
-				// // Generate vehicle PlugIn ID
-				// short vehiclePluginID = vehiclePluginDao
-				// .generateVehiclePluginID(vin);
-
-				String pluginName = plugin.getZipName();
-				int dotIndex = pluginName.lastIndexOf('.');
-				String pluginSuiteName = pluginName.substring(0, dotIndex) + ".suite";
-				int remoteEcuId = plugin.getReference();
-				int sendingPortId = vehicleConfigDao.getSendingPortId(
-						vehicleConfigId, remoteEcuId);
-				int callbackPortId = vehicleConfigDao.getCallbackPortId(
-						vehicleConfigId, remoteEcuId);
-				String executablePluginName = "plugin://"
-						+ plugin.getFullClassName() + "/" + pluginName;
-				// Find PlugIn location. For instance,
-				// some_dir/uploaded/app_name/version/kdkdks.zip
-				String location = plugin.getZipLocation();
-				File file = new File(location);
-				byte[] fileBytes;
-				try {
-					// ArrayList<LinkingContextEntry> linkingContext =
-					// linkingContexts
-					// .get(pluginName);
-					ArrayList<LinkContextEntry> linkingContext = (ArrayList<LinkContextEntry>) linkingContexts
-							.get(pluginSuiteName);
-					fileBytes = readBytesFromFile(file);
-					InstallPacketData installPacketData = new InstallPacketData(
-							appID, pluginName/* +".zip" */, sendingPortId,
-							callbackPortId, remoteEcuId, portInitialContext,
-							linkingContext, executablePluginName, fileBytes); // NOTE:
-																				// the
-																				// portIntialContext
-																				// includes
-																				// all
-																				// the
-																				// ports
-																				// of
-																				// all
-																				// the
-																				// PlugIns.
-																				// In
-																				// the
-																				// future,
-																				// it
-																				// should
-																				// only
-																				// include
-																				// all
-																				// the
-																				// port
-																				// of
-																				// the
-																				// specific
-																				// PlugIn.
-
-					installPackageDataList.add(installPacketData);
-
-					// Store it temporarily to cache and will be used after the
-					// arrival of acknowledge messages
-					VehiclePluginRecord record = new VehiclePluginRecord(
-							pluginName, remoteEcuId, sendingPortId,
-							callbackPortId, portInitialContext, linkingContext,
-							location, executablePluginName);
-
-					installCachePlugins.add(record);
-
-				} catch (IOException e) {
-//					System.out.println("This application has already been installed.");
-//					return "false2";
-					e.printStackTrace();
-				}
-			}
-
-			Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
-			InstallPacket installPacket = new InstallPacket(vin,
-					installPackageDataList);
-			session.write(installPacket);
-			return "true";
-		}
 	}
 
 }
