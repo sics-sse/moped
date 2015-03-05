@@ -223,6 +223,7 @@ CREATE TABLE `Vehicle` (
   `INSTALLED_APPS` varchar(255) DEFAULT NULL,
   `vin` varchar(17) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `Vehicle_vehicleConfig_id` (`vehicleConfig_id`),
