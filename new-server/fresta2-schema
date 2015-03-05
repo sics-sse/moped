@@ -180,7 +180,6 @@ DROP TABLE IF EXISTS `Port`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Port` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `direction` varchar(255) DEFAULT NULL,
   `portId` int(11) NOT NULL,
   `ecu_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
