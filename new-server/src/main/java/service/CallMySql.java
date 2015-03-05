@@ -30,7 +30,7 @@ public class CallMySql {
 	     init_done = true;
 
 	 } catch (SQLException ex) {
-	     System.out.println("db error 0");
+	     System.out.println("DB ERROR 0");
 	     System.out.println(ex.getMessage());
 	 }
      }
@@ -52,7 +52,7 @@ public class CallMySql {
 	     }
 
 	 } catch (SQLException ex) {
-	     System.out.println("db error for " + query);
+	     System.out.println("DB ERROR for " + query);
 	     System.out.println(ex.getMessage());
 	     //Logger lgr = Logger.getLogger(Test.class.getName());
 	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -60,11 +60,14 @@ public class CallMySql {
 	 } finally {
 	     try {
 		 if (rs != null) {
+		     if (rs.next()) {
+			 System.out.println("DB WARNING; more than one solution for: " + query);
+		     }
 		     rs.close();
 		 }
 
 	     } catch (SQLException ex) {
-		 System.out.println("db error for " + query);
+		 System.out.println("DB ERROR for " + query);
 		 System.out.println(ex.getMessage());
 		 //Logger lgr = Logger.getLogger(Test.class.getName());
 		 //lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -83,7 +86,7 @@ public class CallMySql {
 	     return count;
 
 	 } catch (SQLException ex) {
-	     System.out.println("db error for " + query);
+	     System.out.println("DB ERROR for " + query);
 	     System.out.println(ex.getMessage());
 	     //Logger lgr = Logger.getLogger(Test.class.getName());
 	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -114,7 +117,7 @@ public class CallMySql {
 	     }
 
 	 } catch (SQLException ex) {
-	     System.out.println("db error for " + query);
+	     System.out.println("DB ERROR for " + query);
 	     System.out.println(ex.getMessage());
 	     //Logger lgr = Logger.getLogger(Test.class.getName());
 	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
@@ -122,11 +125,14 @@ public class CallMySql {
 	 } finally {
 	     try {
 		 if (rs != null) {
+		     if (rs.next()) {
+			 System.out.println("DB WARNING; more than one solution for: " + query);
+		     }
 		     rs.close();
 		 }
 
 	     } catch (SQLException ex) {
-		 System.out.println("db error for " + query);
+		 System.out.println("DB ERROR for " + query);
 		 System.out.println(ex.getMessage());
 		 //Logger lgr = Logger.getLogger(Test.class.getName());
 		 //lgr.log(Level.WARNING, ex.getMessage(), ex);
@@ -151,7 +157,7 @@ public class CallMySql {
 	     return rs;
 
 	 } catch (SQLException ex) {
-	     System.out.println("db error for " + query);
+	     System.out.println("DB ERROR for " + query);
 	     System.out.println(ex.getMessage());
 	     //Logger lgr = Logger.getLogger(Test.class.getName());
 	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
