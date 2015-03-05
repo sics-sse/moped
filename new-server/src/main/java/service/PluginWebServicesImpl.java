@@ -346,7 +346,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String vehicleName = c2[0];
 		String brand = c2[1];
 
-		System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
+		//System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
 		// what's this "next step"?
 
 		String q3 = "select id from AppConfig where application_id = " + appID
@@ -422,7 +422,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 
 				String q42 = "select id,fromStr,toStr,remote from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
-				System.out.println(q42);
 				ResultSet rs4 = CallMySql.getResults(q42);
 
 				while (rs4.next()) {
@@ -1004,8 +1003,8 @@ delete b from VehicleConfig b where name='_deleted_';
 		    String q4 = "insert into Ecu (ecuId,vehicleConfig_id) values (" + ecuId + "," + c3 + ")";
 		    rows = CallMySql.update(q4);
 
-		    String q41 = "select id from Ecu where vehicleConfig_id = " + c3;
-		    String c41 = CallMySql.getOne(q41);
+		    String q41 = "select id from Ecu where vehicleConfig_id = " + c3 + " and ecuId = " + ecuId;
+		    String ecu_id = CallMySql.getOne(q41);
 
 		    // swcs
 		    Element swcsElement = (Element) ecuElement
@@ -1065,7 +1064,7 @@ delete b from VehicleConfig b where name='_deleted_';
 						   + "</id>");
 				System.out.println("    </port>");
 
-				String q5 = "insert into Port (portId,ecu_id) values (" + portId + "," + c41 + ")";
+				String q5 = "insert into Port (portId,ecu_id) values (" + portId + "," + ecu_id + ")";
 				rows = CallMySql.update(q5);
 			    }
 
