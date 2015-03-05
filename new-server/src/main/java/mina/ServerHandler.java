@@ -96,7 +96,6 @@ public class ServerHandler extends IoHandlerAdapter {
 				if(vehiclePluginRecord == null) {
 					System.out.println("[ Fail to fetch vehicle plugin record!!!]");
 				} else {
-					//vehiclePluginDao.saveVehiclePlugin(vin, installAppId, vehiclePluginRecord);
 				    String q1 = "insert into VehiclePlugin (vin,name,application_id,ecuId,sendingPortId,callbackPortId,location,executablePluginName) values ('" +
 					vin + "','" +
 					pluginName + "'," +
@@ -108,11 +107,23 @@ public class ServerHandler extends IoHandlerAdapter {
 					vehiclePluginRecord.getExecutablePluginName() + "')";
 				    int rows = CallMySql.update(q1);
 
-					System.out.println("222");
 					boolean isInstalled = Cache.getCache().IsAllPluginInstalled(vin, installAppId);
 					if(isInstalled) {
-						System.out.println("333");
-						//vehicleDao.addApp(vin, installAppId);
+					    String q2 = "select INSTALLED_APPS from Vehicle where vin = '" + vin + "'";
+					    String c2 = CallMySql.getOne(q2);
+
+					    // check that appId is not
+					    // already present
+
+					    System.out.println("INSTALLED (" + c2 + ")");
+					    if(c2 == null || c2.equals("")) {
+						c2 = "" + installAppId;
+					    } else {
+						c2 += ",";
+						c2 += installAppId;
+					    }
+					    String q3 = "update Vehicle set INSTALLED_APPS = '" + c2 + "' where vin = '" + vin + "'";
+					    int rows3 = CallMySql.update(q3);
 					}
 				}
 				
