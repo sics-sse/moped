@@ -1,5 +1,7 @@
 package mina;
 
+import service.CallMySql;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,10 +44,11 @@ public class ServerHandler extends IoHandlerAdapter {
 	}
 
 	public void messageSent(IoSession session, Object message) throws Exception {
-		System.out.println("Message sent from server...");
+		System.out.println("Message sent from server... " + message);
 	}
 	
 	public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+		System.out.println("IoSession exception... " + cause);
 	}
 
 	public void messageReceived(IoSession session, Object packageMessage)
@@ -85,13 +88,26 @@ public class ServerHandler extends IoHandlerAdapter {
 				
 				System.out.println("AppId:"+installAppId);
 				VehiclePluginRecord vehiclePluginRecord = Cache.getCache().getVehiclePluginRecord(vin, installAppId, pluginName);
+				if (vehiclePluginRecord == null) {
+				    System.out.println("INSTALL_ACK: couldn't find VehiclePlugin for " + pluginName + " in cache!");
+				}
 				System.out.println("EcuId:"+vehiclePluginRecord.getEcuId());
 				System.out.println("PluginName:"+vehiclePluginRecord.getPluginName());
 				if(vehiclePluginRecord == null) {
 					System.out.println("[ Fail to fetch vehicle plugin record!!!]");
 				} else {
-					System.out.println("111");
 					//vehiclePluginDao.saveVehiclePlugin(vin, installAppId, vehiclePluginRecord);
+				    String q1 = "insert into VehiclePlugin (vin,name,application_id,ecuId,sendingPortId,callbackPortId,location,executablePluginName) values ('" +
+					vin + "','" +
+					pluginName + "'," +
+					installAppId + "," +
+					vehiclePluginRecord.getEcuId() + "," +
+					vehiclePluginRecord.getSendingPortId() + "," +
+					vehiclePluginRecord.getCallbackPortId() + ",'" +
+					vehiclePluginRecord.getLocation() + "','" +
+					vehiclePluginRecord.getExecutablePluginName() + "')";
+				    int rows = CallMySql.update(q1);
+
 					System.out.println("222");
 					boolean isInstalled = Cache.getCache().IsAllPluginInstalled(vin, installAppId);
 					if(isInstalled) {
