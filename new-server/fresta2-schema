@@ -86,7 +86,7 @@ CREATE TABLE `Ecu` (
   `function` varchar(255) DEFAULT NULL,
   `manufactory` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `vehicle_id` int(11) NOT NULL,
+  `vehicle_id` int(11) DEFAULT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK10F77CAE47C55` (`vehicle_id`),
