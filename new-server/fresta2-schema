@@ -64,7 +64,7 @@ CREATE TABLE `DatabasePlugin` (
   `strategy` varchar(255) DEFAULT NULL,
   `zipLocation` varchar(255) DEFAULT NULL,
   `zipName` varchar(255) DEFAULT NULL,
-  `application_id` int(11) DEFAULT NULL,
+  `application_id` int(11) NOT NULL,
   `reference` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKF69F0AE7E5733A7` (`application_id`),
@@ -86,8 +86,8 @@ CREATE TABLE `Ecu` (
   `function` varchar(255) DEFAULT NULL,
   `manufactory` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `vehicle_id` int(11) DEFAULT NULL,
-  `vehicleConfig_id` int(11) DEFAULT NULL,
+  `vehicle_id` int(11) NOT NULL,
+  `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK10F77CAE47C55` (`vehicle_id`),
   KEY `FK10F77230AE8F5` (`vehicleConfig_id`),
@@ -110,7 +110,7 @@ CREATE TABLE `Link` (
   `toEcuId` int(11) NOT NULL,
   `toPortId` int(11) NOT NULL,
   `type` int(11) NOT NULL,
-  `vehicleConfig_id` int(11) DEFAULT NULL,
+  `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK24241A230AE8F5` (`vehicleConfig_id`),
   CONSTRAINT `FK24241A230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
@@ -128,7 +128,7 @@ CREATE TABLE `PluginConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ecuId` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `appConfig_id` int(11) DEFAULT NULL,
+  `appConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK5405C0758F57C655` (`appConfig_id`),
   CONSTRAINT `FK5405C0758F57C655` FOREIGN KEY (`appConfig_id`) REFERENCES `AppConfig` (`id`)
@@ -147,7 +147,7 @@ CREATE TABLE `PluginLinkConfig` (
   `fromStr` varchar(255) DEFAULT NULL,
   `remote` varchar(255) DEFAULT NULL,
   `toStr` varchar(255) DEFAULT NULL,
-  `pluginConfig_id` int(11) DEFAULT NULL,
+  `pluginConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK46DC278F42C6247F` (`pluginConfig_id`),
   CONSTRAINT `FK46DC278F42C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
@@ -164,7 +164,7 @@ DROP TABLE IF EXISTS `PluginPortConfig`;
 CREATE TABLE `PluginPortConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
-  `pluginConfig_id` int(11) DEFAULT NULL,
+  `pluginConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKD394ED642C6247F` (`pluginConfig_id`),
   CONSTRAINT `FKD394ED642C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
@@ -181,7 +181,7 @@ DROP TABLE IF EXISTS `Port`;
 CREATE TABLE `Port` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `portId` int(11) NOT NULL,
-  `ecu_id` int(11) DEFAULT NULL,
+  `ecu_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK260CA13A1965F5` (`ecu_id`),
   CONSTRAINT `FK260CA13A1965F5` FOREIGN KEY (`ecu_id`) REFERENCES `Ecu` (`id`)
@@ -197,7 +197,7 @@ DROP TABLE IF EXISTS `UserVehicleAssociation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `UserVehicleAssociation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) unsigned NOT NULL,
+  `user_ID` bigint(20) unsigned NOT NULL,
   `vehicle_id` int(11) NOT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
   `defaultVehicle` tinyint(1) NOT NULL DEFAULT '0',
