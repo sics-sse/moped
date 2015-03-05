@@ -28,7 +28,9 @@ CREATE TABLE `AppConfig` (
   `application_id` int(11) NOT NULL,
   `brand` varchar(255) DEFAULT NULL,
   `vehicleName` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `AppConfig_application_id` (`application_id`),
+  CONSTRAINT `AppConfig_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -222,7 +224,9 @@ CREATE TABLE `Vehicle` (
   `vin` varchar(17) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `Vehicle_vehicleConfig_id` (`vehicleConfig_id`),
+  CONSTRAINT `Vehicle_vehicleConfig_id` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -260,7 +264,9 @@ CREATE TABLE `VehiclePlugin` (
   `executablePluginName` varchar(255) DEFAULT NULL,
   `portInitialContext` longblob,
   `portLinkingContext` longblob,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `VehiclePlugin_application_id` (`application_id`),
+  CONSTRAINT `VehiclePlugin_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
