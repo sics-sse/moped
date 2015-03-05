@@ -201,7 +201,6 @@ CREATE TABLE `UserVehicleAssociation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_ID` bigint(20) unsigned NOT NULL,
   `vehicle_id` int(11) NOT NULL,
-  `vehicleConfig_id` int(11) NOT NULL,
   `defaultVehicle` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
