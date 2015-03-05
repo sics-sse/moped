@@ -115,7 +115,7 @@ public class ServerHandler extends IoHandlerAdapter {
 					    // check that appId is not
 					    // already present
 
-					    System.out.println("INSTALLED (" + c2 + ")");
+					    System.out.println("installed before: " + c2);
 					    if(c2 == null || c2.equals("")) {
 						c2 = "" + installAppId;
 					    } else {
