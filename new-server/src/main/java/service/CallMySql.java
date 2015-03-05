@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
- class CallMySql {
+public class CallMySql {
      public static Connection con = null;
      public static Statement st = null;
 
