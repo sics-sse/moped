@@ -1,0 +1,10 @@
+Expected:
+
+True
+True
+True
+printout of db tables; none should be empty
+
+If the simulator isn't running, there will be two True, a False and
+then the script hangs because it waits for a True.
+
