@@ -591,14 +591,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 			    installCachePlugins.add(record);
 					
-			    System.out.println("READY FOR INSTALLATION WRITING!!!!!!!!!!!!!!!!!!!!");
+			    System.out.println("READY FOR INSTALLATION WRITING!");
 					
 			    Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
 			    InstallPacket installPacket = new InstallPacket(vin,
 									    installPackageDataList);
 			    session.write(installPacket);
 					
-			    System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!!!!!!!!!!!!!!!!!!!!");
+			    System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!");
 
 			} catch (IOException e) {
 			    e.printStackTrace();
