@@ -154,6 +154,7 @@ public class ServerHandler extends IoHandlerAdapter {
 	}
 	
 	public boolean existsAckMessage(String msg) {
+	    System.out.println(ackMessages);
 		if (ackMessages.contains(msg)) {
 			ackMessages.remove(msg);
 			return true;
