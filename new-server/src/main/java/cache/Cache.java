@@ -65,9 +65,20 @@ public class Cache {
 			String pluginName) {
 		HashMap<Integer, ArrayList<VehiclePluginRecord>> appList = installCache
 				.get(vin);
+		System.out.println("getVehiclePluginRecord " + appList);
+		String s2 = pluginName;
+		int i2 = s2.indexOf('.');
+		s2 = s2.substring(0,i2);
 		ArrayList<VehiclePluginRecord> records = appList.get(appId);
 		for (VehiclePluginRecord record : records) {
-			if (record.getPluginName().equals(pluginName)) {
+		    System.out.println(" " + record.getPluginName() +
+				       " " + pluginName);
+		    String s1 = record.getPluginName();
+		    int i1 = s1.indexOf('.');
+		    s1 = s1.substring(0,i1);
+		    System.out.println(" " + s1 +
+				       " " + s2);
+			if (s1.equals(s2)) {
 				records.remove(record);
 				return record;
 			}
