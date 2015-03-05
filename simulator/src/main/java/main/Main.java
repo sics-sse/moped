@@ -28,7 +28,16 @@ public class Main {
 		CarModel car1 = new CarModel();
 		sim.addModel(car1);
 		
-		sim.addView(new CarSimulatorView(sim));
+		for (int i = 0; i < args.length; i++) {
+		    System.out.println("arg " + i + ": " + args[i]);
+		}
+
+		boolean show_window = true;
+		if (args.length > 0 && args[0].equals("--nowindow"))
+		    show_window = false;
+
+		if (show_window)
+		    sim.addView(new CarSimulatorView(sim));
  		sim.start();
  		
  		Car simulatorCar = CarFactory.getCarFactory().generateCar("configs/system1.xml");
