@@ -57,7 +57,7 @@ DROP TABLE IF EXISTS `DatabasePlugin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `DatabasePlugin` (
-  `pluginID` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `fullClassName` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE `DatabasePlugin` (
   `zipName` varchar(255) DEFAULT NULL,
   `application_id` int(11) DEFAULT NULL,
   `reference` int(11) NOT NULL,
-  PRIMARY KEY (`pluginID`),
+  PRIMARY KEY (`id`),
   KEY `FKF69F0AE7E5733A7` (`application_id`),
   CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
 ) ENGINE=InnoDB;
@@ -251,16 +251,16 @@ DROP TABLE IF EXISTS `VehiclePlugin`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `VehiclePlugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ecuId` int(11) NOT NULL,
   `application_id` int(11) NOT NULL,
   `callbackPortId` int(11) NOT NULL,
-  `ecuId` int(11) NOT NULL,
-  `executablePluginName` varchar(255) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `portInitialContext` longblob,
-  `portLinkingContext` longblob,
   `sendingPortId` int(11) NOT NULL,
   `vin` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `executablePluginName` varchar(255) DEFAULT NULL,
+  `portInitialContext` longblob,
+  `portLinkingContext` longblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
