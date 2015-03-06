@@ -1,6 +1,7 @@
 package service;
 
 import service.CallMySql;
+import service.MySqlIterator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -796,9 +797,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    (portInitialContext_blob);
 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			portInitialContext =
+			@SuppressWarnings("unchecked")
+			HashMap<String, Integer> portInitialContextW =
 			    (HashMap<String, Integer>)
 			    in.readObject();
+			portInitialContext = portInitialContextW;
 			in.close();
 			fileIn.close();
 		    } catch(IOException e) {
@@ -820,9 +823,12 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    (portLinkingContext_blob);
 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			portLinkingContext =
+
+			@SuppressWarnings("unchecked")
+			ArrayList<LinkContextEntry> portLinkingContextW =
 			    (ArrayList<LinkContextEntry>)
 			    in.readObject();
+			portLinkingContext = portLinkingContextW;
 			in.close();
 			fileIn.close();
 		    } catch(IOException e) {
@@ -1185,4 +1191,127 @@ delete b from VehicleConfig b where name='_deleted_';
 		return reply;
 	}
 
+
+	@WebMethod
+	public String [] infoVehicle(String vin)
+			throws PluginWebServicesException {
+	    String q1 = "select * from Vehicle where vin = '" + vin + "'";
+	    String [] row = CallMySql.getOneSet(q1);
+	    if (row == null) {
+		row = new String[1];
+		row[0] = "error";
+	    }
+	    return row;
+	}
+
+	@WebMethod
+	public String [] listVehicles()
+			throws PluginWebServicesException {
+	    String q1 = "select VIN from Vehicle";
+	    ArrayList<String> a = new ArrayList<String>();
+
+	    MySqlIterator it = CallMySql.getIterator(q1);
+
+	    if (it == null) {
+		String [] res = new String[1];
+		res[0] = "error";
+		return res;
+	    }
+
+	    while (it.next()) {
+		String s = it.getString(1);
+
+		a.add(s);
+	    }
+
+	    String [] res = new String[a.size()];
+	    for (int i = 0; i < a.size(); i++) {
+		res[i] = a.get(i);
+	    }
+	    return res;
+	}
+
+	@WebMethod
+	public String [] listApps()
+			throws PluginWebServicesException {
+	    String q1 = "select id from Application ORDER BY name, version";
+	    ArrayList<String> a = new ArrayList<String>();
+
+	    MySqlIterator it = CallMySql.getIterator(q1);
+
+	    if (it == null) {
+		String [] res = new String[1];
+		res[0] = "error";
+		return res;
+	    }
+
+	    while (it.next()) {
+		String s = it.getString(1);
+
+		a.add(s);
+	    }
+
+	    String [] res = new String[a.size()];
+	    for (int i = 0; i < a.size(); i++) {
+		res[i] = a.get(i);
+	    }
+	    return res;
+	}
+
+	@WebMethod
+	public String [] listUserVehicleAssociations(int user_id)
+			throws PluginWebServicesException {
+	    String q1 = "select v.vin,a.defaultVehicle from UserVehicleAssociation a,Vehicle v where a.user_ID = " + user_id + " and a.vehicle_id = v.id";
+	    ArrayList<String> a = new ArrayList<String>();
+
+	    MySqlIterator it = CallMySql.getIterator(q1);
+
+	    if (it == null) {
+		String [] res = new String[1];
+		res[0] = "error";
+		return res;
+	    }
+
+	    while (it.next()) {
+		String s1 = it.getString(1);
+		String s2 = it.getString(2);
+
+		a.add(s1 + " " + s2);
+	    }
+
+	    String [] res = new String[a.size()];
+	    for (int i = 0; i < a.size(); i++) {
+		res[i] = a.get(i);
+	    }
+	    return res;
+	}
+
+	@WebMethod
+	    public boolean addUserVehicleAssociation(int user_id, String vin,
+						       boolean defaultVehicle)
+			throws PluginWebServicesException {
+	    String q1 = "insert into UserVehicleAssociation (user_ID,vehicle_id,defaultVehicle) select " + user_id + ",v.id," + defaultVehicle + " from Vehicle v where v.vin = '" + vin + "'";
+	    int rows = CallMySql.update(q1);
+	    if (rows == 0)
+		return false;
+	    else
+		return true;
+	}
+
+	@WebMethod
+	    public boolean deleteUserVehicleAssociation(int user_id, String vin)
+			throws PluginWebServicesException {
+	    String q1 = "select id from Vehicle where vin = '" + vin + "'";
+	    String c1 = CallMySql.getOne(q1);
+
+	    if (c1 == "none")
+		return false;
+
+	    String q2 = "delete from UserVehicleAssociation where user_ID = " + user_id + " and vehicle_id = " + c1;
+	    int rows = CallMySql.update(q2);
+	    if (rows == 0)
+		return false;
+	    else
+		return true;
+	}
 }

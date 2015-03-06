@@ -19,14 +19,18 @@ EOF
     grant all privileges on fresta2 . * to 'fresta'@'%';
     flush privileges;
 EOF
-fi
 
-$SQL < ../fresta2-schema
+    $SQL < ../fresta2-schema
+
+    (echo "use fresta2";cat ~/moped/wp_users.dump) | mysql -uroot -proot
+
+fi
 
 PYTHONPATH=~/moped python <<EOF
 from suds.client import Client
 url='http://localhost:9990/moped/pws?wsdl'
 client = Client(url)
+client.options.cache.clear()
 
 import testmoped
 

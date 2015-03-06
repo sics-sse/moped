@@ -1,5 +1,7 @@
 package service;
 
+import java.util.ArrayList;
+
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
@@ -10,34 +12,55 @@ import service.exception.PluginWebServicesException;
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
-	@WebMethod
+    @WebMethod
 	public boolean insertPluginInDb(String location, String name) 
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 	
-	@WebMethod
+    @WebMethod
 	public boolean get_ack_status(String vin, int appId)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 	
-	@WebMethod
+    @WebMethod
 	public boolean install(String vin, int appID, String jvm)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 	
-	@WebMethod
+    @WebMethod
 	public boolean uninstall(String vin, int appID)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 
-	@WebMethod
+    @WebMethod
 	public boolean upgrade(String vin, int oldAppID)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 
-	@WebMethod
+    @WebMethod
 	public boolean restoreEcu(String vin, int ecuReference)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 
-	@WebMethod
+    @WebMethod
 	public boolean parseVehicleConfiguration(String path)
-			throws PluginWebServicesException;
+	throws PluginWebServicesException;
 
-	@WebMethod
+    @WebMethod
 	public String generateSuite(String zipFile, String fullClassName) throws PluginWebServicesException;
+
+    @WebMethod
+	public String [] infoVehicle(String vin) throws PluginWebServicesException;
+    @WebMethod
+	public String [] listVehicles() throws PluginWebServicesException;
+
+    @WebMethod
+	public String [] listApps() throws PluginWebServicesException;
+
+    @WebMethod
+	public String [] listUserVehicleAssociations(int user_id)
+	throws PluginWebServicesException;
+
+    @WebMethod
+	public boolean addUserVehicleAssociation(int user_id, String vin,
+						 boolean defaultVehicle)
+	throws PluginWebServicesException;
+
+    @WebMethod
+	public boolean deleteUserVehicleAssociation(int user_id, String vin)
+	throws PluginWebServicesException;
 }
