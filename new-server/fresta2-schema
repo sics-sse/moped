@@ -203,10 +203,11 @@ CREATE TABLE `UserVehicleAssociation` (
   `vehicle_id` int(11) NOT NULL,
   `defaultVehicle` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
+  KEY `user_ID` (`user_ID`),
   KEY `vehicle_id` (`vehicle_id`),
   CONSTRAINT `UserVehicleAssociation_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `wp_users` (`ID`),
-  CONSTRAINT `UserVehicleAssociation_ibfk_2` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`)
+  CONSTRAINT `UserVehicleAssociation_ibfk_2` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`),
+  CONSTRAINT `UserVehicleAssociation_unique_1` UNIQUE (user_ID, vehicle_id)
 ) ENGINE=InnoDB;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
