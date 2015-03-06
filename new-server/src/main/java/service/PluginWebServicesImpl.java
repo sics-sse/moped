@@ -168,7 +168,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			"'" + vehicleName + "'" + ")";
 		    int x4 = CallMySql.update(q4);
 
-		    String q41 = "select id from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
+		    String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
 		    String x41 = CallMySql.getOne(q41);
 		    int appConfigId = Integer.parseInt(x41);
 
@@ -192,7 +192,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			"name = " + "'" + name + ".suite" +"'" + " and " +
 			"appConfig_id = " + appConfigId;
 		    String c3 = CallMySql.getOne(q3);
-		    System.out.println(c3);
+		    System.out.println("existing PluginConfig: " + c3);
 
 		    int pluginConfig;
 		    if (c3 == "none") {
@@ -340,6 +340,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String q7 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
 		String c7 = CallMySql.getOne(q7);
 
+		if (c7 == "none") {
+		    System.out.println("no appropriate Vehicle/VehicleConfig combination");
+		    return false;
+		}
+
 		// VehicleConfig
 		int vehicleConfigId = Integer.parseInt(c7);
 			
@@ -355,6 +360,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    vehicleName + "'";
 		String c3 = CallMySql.getOne(q3);
 		System.out.println("appconfig id " + c3);
+		if (c3 == "none") {
+		    System.out.println("no appropriate AppConfig exists");
+		    return false;
+		}
 		int appConfigId = Integer.parseInt(c3);
 
 		System.out.println("AppConfig found, id: " + appConfigId);
