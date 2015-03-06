@@ -27,7 +27,7 @@ CREATE TABLE `AppConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `application_id` int(11) NOT NULL,
   `brand` varchar(255) DEFAULT NULL,
-  `vehicleName` varchar(255) DEFAULT NULL,
+  `vehicleConfigName` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `AppConfig_application_id` (`application_id`),
   CONSTRAINT `AppConfig_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)

@@ -98,9 +98,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    String brand = attributes.getValue("Vehicle-Brand");
 		    if (brand == null)
 			brand = "SICS";
-		    String vehicleName = attributes.getValue("Vehicle-Name");
-		    if (vehicleName == null)
-			vehicleName = "MOPED";
+		    String vehicleConfigName = attributes.getValue("Vehicle-Name");
+		    if (vehicleConfigName == null)
+			vehicleConfigName = "MOPED";
 		    String ecuRef = attributes.getValue("Ecu");
 		    if (ecuRef == null)
 			ecuRef = "0";
@@ -162,13 +162,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		    System.out.println("new appId " + appId);
 
-		    String q4 = "insert into AppConfig (application_id,brand,vehicleName) values (" +
+		    String q4 = "insert into AppConfig (application_id,brand,vehicleConfigName) values (" +
 			appId + "," +
 			"'" + brand +"'" + "," +
-			"'" + vehicleName + "'" + ")";
+			"'" + vehicleConfigName + "'" + ")";
 		    int x4 = CallMySql.update(q4);
 
-		    String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleName = '" + vehicleName + "'";
+		    String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleConfigName = '" + vehicleConfigName + "'";
 		    String x41 = CallMySql.getOne(q41);
 		    int appConfigId = Integer.parseInt(x41);
 
@@ -349,15 +349,15 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		int vehicleConfigId = Integer.parseInt(c7);
 			
 		// AppConfig
-		String vehicleName = c2[0];
+		String vehicleConfigName = c2[0];
 		String brand = c2[1];
 
 		//System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
 		// what's this "next step"?
 
 		String q3 = "select id from AppConfig where application_id = " + appID
-		    + " and brand = '" + brand + "' and vehicleName = '" +
-		    vehicleName + "'";
+		    + " and brand = '" + brand + "' and vehicleConfigName = '" +
+		    vehicleConfigName + "'";
 		String c3 = CallMySql.getOne(q3);
 		System.out.println("appconfig id " + c3);
 		if (c3 == "none") {
