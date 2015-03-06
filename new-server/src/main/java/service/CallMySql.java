@@ -166,4 +166,31 @@ public class CallMySql {
 
      }
 
+
+     public static MySqlIterator getIterator(String query) {
+	
+	 ResultSet rs = null;
+
+	 try {
+	     init();
+
+	     // we need a local Statement, otherwise we are not
+	     // reentrant.
+	     Statement st = con.createStatement();
+
+	     rs = st.executeQuery(query);
+
+	     MySqlIterator it = new MySqlIterator(rs);
+
+	     return it;
+
+	 } catch (SQLException ex) {
+	     System.out.println("DB ERROR for " + query);
+	     System.out.println(ex.getMessage());
+	     //Logger lgr = Logger.getLogger(Test.class.getName());
+	     //lgr.log(Level.SEVERE, ex.getMessage(), ex);
+	 }
+	 return null;
+
+     }
 }
