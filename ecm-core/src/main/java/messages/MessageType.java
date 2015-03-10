@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 public class MessageType extends Enum implements Serializable {
 	/**
-	 * TODO: I don't think that all these types are needed/used. Clean up 
+	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final byte INIT = 0;
