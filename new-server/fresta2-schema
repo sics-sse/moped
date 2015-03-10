@@ -63,7 +63,6 @@ CREATE TABLE `DatabasePlugin` (
   `fullClassName` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `strategy` varchar(255) DEFAULT NULL,
   `zipLocation` varchar(255) DEFAULT NULL,
   `zipName` varchar(255) DEFAULT NULL,
   `application_id` int(11) NOT NULL,
