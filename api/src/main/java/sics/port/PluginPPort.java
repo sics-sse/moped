@@ -32,11 +32,11 @@ public class PluginPPort implements PluginPort {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public void setPlugInComponent(PlugInComponent plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	public void write(int value) {
 	}
 
