@@ -11,7 +11,7 @@ public class PluginRPort implements PluginPort {
 	public PluginRPort(PlugInComponent plugin, String name) {
 		this(plugin, name, null);
 	}
-	
+
 	public PluginRPort(PlugInComponent plugin, String name, Object data) {
 		this.plugin = plugin;
 		this.name = name;
