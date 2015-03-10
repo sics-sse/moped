@@ -16,7 +16,7 @@ public class MessageType extends Enum implements Serializable {
 	public static final byte UNINSTALL_ACK = 2;
 	public static final byte PUBLISH = 3;
 	public static final byte INSTALL = 4;
-	public static final byte UNINSTALL= 5;
+	public static final byte UNINSTALL = 5;
 	public static final byte RESTORE = 6;
 	public static final byte PLUGIN_MESSAGE = 7;
 	public static final byte PORT_LINK_CONTEXT_MESSAGE = 8;
