@@ -22,8 +22,6 @@ public abstract class EcuVirtualPPort implements VirtualPPort {
 		this.id = id;
 	}
 
-	
-
 	@Override
 	public void setPirte(PIRTE pirte) {
 		this.pirte = pirte;
@@ -33,5 +31,4 @@ public abstract class EcuVirtualPPort implements VirtualPPort {
 	public void addConnectedRPort(PluginRPort rport) {
 		pluginRPorts.add(rport);
 	}
-
 }
