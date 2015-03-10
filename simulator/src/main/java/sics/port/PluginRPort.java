@@ -1,6 +1,5 @@
 package sics.port;
 
-import fresta.pirte.PIRTE;
 import sics.plugin.PlugInComponent;
 
 public class PluginRPort implements PluginPort {
@@ -8,18 +7,18 @@ public class PluginRPort implements PluginPort {
 	private String name;
 	private PlugInComponent plugin;
 	private Object data;
-	
+
 	public PluginRPort(PlugInComponent plugin, String name) {
 		this(plugin, name, null);
 	}
-	
+
 	public PluginRPort(PlugInComponent plugin, String name, Object data) {
 		this.plugin = plugin;
 		this.name = name;
 		this.data = data;
 		id = plugin.getPortId(name);
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
@@ -34,15 +33,15 @@ public class PluginRPort implements PluginPort {
 	public String getName() {
 		return name;
 	}
-	
+
 	public Object readData() {
 		return data;
 	}
-	
+
 	public Object read() {
 		return plugin.getPirte().fetchVal(id);
 	}
-	
+
 	public int readInt() {
 		return plugin.getPirte().fetchIntVal(id);
 	}
