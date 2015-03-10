@@ -5,11 +5,11 @@ import java.util.ArrayList;
 public abstract class EcuVirtualRPort implements VirtualRPort {
 	private int id;
 	private ArrayList<Integer> connectedPluginPorts = new ArrayList<Integer>();
-	
+
 	public EcuVirtualRPort(int id) {
 		this.id = id;
 	}
-	
+
 	@Override
 	public int getId() {
 		return id;
@@ -22,12 +22,11 @@ public abstract class EcuVirtualRPort implements VirtualRPort {
 
 	@Override
 	public ArrayList<Integer> getConnectedPluginPorts() {
-		return connectedPluginPorts;
+	    return connectedPluginPorts;
 	}
 
 	@Override
 	public void addConnectedPluginPort(int portId) {
-		connectedPluginPorts.add(portId);
+	    connectedPluginPorts.add(portId);
 	}
-
 }
