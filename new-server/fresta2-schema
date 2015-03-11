@@ -31,7 +31,7 @@ CREATE TABLE `AppConfig` (
   PRIMARY KEY (`id`),
   KEY `AppConfig_application_id` (`application_id`),
   CONSTRAINT `AppConfig_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=100;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `Application` (
   `publisher` varchar(255) DEFAULT NULL,
   `version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=200;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +70,7 @@ CREATE TABLE `DatabasePlugin` (
   PRIMARY KEY (`id`),
   KEY `FKF69F0AE7E5733A7` (`application_id`),
   CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=300;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +94,7 @@ CREATE TABLE `Ecu` (
   KEY `FK10F77230AE8F5` (`vehicleConfig_id`),
   CONSTRAINT `FK10F77230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`),
   CONSTRAINT `FK10F77CAE47C55` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=400;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,7 +115,7 @@ CREATE TABLE `Link` (
   PRIMARY KEY (`id`),
   KEY `FK24241A230AE8F5` (`vehicleConfig_id`),
   CONSTRAINT `FK24241A230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=500;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +133,7 @@ CREATE TABLE `PluginConfig` (
   PRIMARY KEY (`id`),
   KEY `FK5405C0758F57C655` (`appConfig_id`),
   CONSTRAINT `FK5405C0758F57C655` FOREIGN KEY (`appConfig_id`) REFERENCES `AppConfig` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=600;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +152,7 @@ CREATE TABLE `PluginLinkConfig` (
   PRIMARY KEY (`id`),
   KEY `FK46DC278F42C6247F` (`pluginConfig_id`),
   CONSTRAINT `FK46DC278F42C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=700;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +169,7 @@ CREATE TABLE `PluginPortConfig` (
   PRIMARY KEY (`id`),
   KEY `FKD394ED642C6247F` (`pluginConfig_id`),
   CONSTRAINT `FKD394ED642C6247F` FOREIGN KEY (`pluginConfig_id`) REFERENCES `PluginConfig` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=800;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -186,7 +186,7 @@ CREATE TABLE `Port` (
   PRIMARY KEY (`id`),
   KEY `FK260CA13A1965F5` (`ecu_id`),
   CONSTRAINT `FK260CA13A1965F5` FOREIGN KEY (`ecu_id`) REFERENCES `Ecu` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=900;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -207,7 +207,7 @@ CREATE TABLE `UserVehicleAssociation` (
   CONSTRAINT `UserVehicleAssociation_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `wp_users` (`ID`),
   CONSTRAINT `UserVehicleAssociation_ibfk_2` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`),
   CONSTRAINT `UserVehicleAssociation_unique_1` UNIQUE (user_ID, vehicle_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=1000;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,7 +227,7 @@ CREATE TABLE `Vehicle` (
   PRIMARY KEY (`id`),
   KEY `Vehicle_vehicleConfig_id` (`vehicleConfig_id`),
   CONSTRAINT `Vehicle_vehicleConfig_id` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=1100;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,7 +242,7 @@ CREATE TABLE `VehicleConfig` (
   `brand` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=1200;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,7 +267,7 @@ CREATE TABLE `VehiclePlugin` (
   PRIMARY KEY (`id`),
   KEY `VehiclePlugin_application_id` (`application_id`),
   CONSTRAINT `VehiclePlugin_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB AUTO_INCREMENT=1300;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Dump completed on 2015-02-27 10:36:15
