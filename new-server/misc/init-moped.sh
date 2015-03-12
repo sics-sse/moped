@@ -34,20 +34,33 @@ client.options.cache.clear()
 
 import testmoped
 
-x = client.service.insertPluginInDb("/lhome/sse/moped_plugins/PluginCreationTest2/1.7/", "PluginCreationTest2")
+#x = client.service.insertPluginInDb("/lhome/sse/moped_plugins/PluginCreationTest2/1.8/", "PluginCreationTest2")
+x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest3/1.0/", "PluginCreationTest3")
 print x
 
 x = client.service.parseVehicleConfiguration("/home/arndt/moped/system1.xml")
 print x
 
-x = client.service.install("20UYA31581L000000", 1, "jdk")
+x = client.service.install("20UYA31581L000000", 200, "jdk")
 print x
 
-testmoped.ack(client)
+testmoped.ack(client, 200)
+
+x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest2/1.8/", "PluginCreationTest2")
+print x
+
+x = client.service.install("20UYA31581L000000", 201, "jdk")
+print x
+
+testmoped.ack(client, 201)
+
+
+#x = client.service.uninstall("20UYA31581L000000", 200)
+#print x
 
 EOF
 
-for t in Vehicle VehiclePlugin Ecu Port Link PluginPortConfig PluginLinkConfig AppConfig; do
+for t in Vehicle VehiclePlugin VehicleConfig Ecu Port Link PluginPortConfig PluginLinkConfig AppConfig; do
     echo "*** $t *******"
     echo "use fresta2; select * from $t;" | mysql -uroot -proot
 done
