@@ -67,72 +67,46 @@ if (isset($_POST['test_comp'])) {
 }
 
 function application_upload_handler() {
-	global $client;
+  global $client;
 	
-// 	$res = true;
-// 	$targetDir = __DIR__.'/../../moped_plugins/'.$_POST['applicationName'].'/'.$_POST['version'].'/';
-// 	$localDir = $_POST['applicationName'].'/j2meclasses/';
-
-// 	/* Create a zip archive */
-// 	$zip = new ZipArchive();
-// 	$res &= $zip->open($targetDir.$_POST['applicationName'].'.zip', ZipArchive::OVERWRITE);
-// 	$res &= $zip->addEmptyDir($localDir);
-// 	$zip->addFile($_FILES['app_files']['tmp_name'][$i],
-// 				  $shortName.'/j2meclasses/'.$shortName);
-	
-	/* Store files in the application directory */ 
-	for($i=0; $i<count($_FILES['app_files']['name']); $i++) {
-		$res = true; 
+  /* Store files in the application directory */ 
+  for($i=0; $i<count($_FILES['app_files']['name']); $i++) {
+    $res = true; 
 		
-		$fname = $_FILES['app_files']['name'][$i];
-		$versionIndex = strrpos($fname, "-");
+    $fname = $_FILES['app_files']['name'][$i];
+    $versionIndex = strrpos($fname, "-");
 
-		/* Check that this is a *.jar-file */
-		if (substr($fname, -4) != '.jar') {
-			echo "<font color='red'>Only *.jar files are currently supported, skipping over $fname</font><br/>";
-			continue;
-		}
+    /* Check that this is a *.jar-file */
+    if (substr($fname, -4) != '.jar') {
+      echo "<font color='red'>Only *.jar files are currently supported, skipping over $fname</font><br/>";
+      continue;
+    }
 		
-		/* Extract the application name (file name without its class type) 
-		 * and its version (use 1.0 as default) */
-		if ($versionIndex !== false) {
-			$version = substr($fname, $versionIndex+1, -4);
-			$shortName = substr($fname, 0, $versionIndex);
-		}
-		else {
-			$version = "1.0";
-			$shortName = substr($fname, 0, -4);
-			echo "<font color='orange'>No version information was detected in $fname (e.g. name-ver.jar), setting default version (1.0)</font><br/>";
-		}
+    /* Extract the application name (file name without its class type) 
+     * and its version (use 1.0 as default) */
+    if ($versionIndex !== false) {
+      $version = substr($fname, $versionIndex+1, -4);
+      $shortName = substr($fname, 0, $versionIndex);
+    }
+    else {
+      $version = "1.0";
+      $shortName = substr($fname, 0, -4);
+      echo "<font color='orange'>No version information was detected in $fname (e.g. name-ver.jar), setting default version (1.0)</font><br/>";
+    }
 		
-		/* Create a directory for the new application */
-		$targetDir = __DIR__.'/../../moped_plugins/'.$shortName.'/'.$version.'/';
-		echo "en rad ($targetDir)</br>";
+    $path = $_FILES['app_files']['tmp_name'][$i];
+    $myfile = fopen($path, "r");
+    $data = fread($myfile, filesize($path));
+    fclose($myfile);
+    $res = $client->transferBytes($data, $shortName, $version);
 
-		if (!file_exists($targetDir)) {
-			$res &= mkdir($targetDir, 0777, true);
-		}
-		
-		$res &= move_uploaded_file($_FILES['app_files']['tmp_name'][$i],
-							   	   $targetDir.$shortName.'.jar'); //.zip???
-		$res &= copy($targetDir.$shortName.'.jar', $targetDir.$shortName.'.zip'); //TEMP
-	
-		/* Report the result */
-		if ($res) {
-			echo "<font color='green'>$fname was successfully submitted...</font><br/>";
-		}
-		else {
-			echo "<font color='red'>Submission of $fname failed...</font><br/>";
-		}
-	}
-	
-// 	$zip->close();
-
-	$client->__soapCall("insertPluginInDb",
-			array('location' => $targetDir,
-					'name' => $shortName));
-	
-	// 	insert_new_app($_POST['applicationName'], $_POST['publisher'], $_POST['version'], $_POST['numOfPlugin']);
+    if ($res) {
+      echo "<font color='green'>$fname was successfully submitted...</font><br/>";
+    }
+    else {
+      echo "<font color='red'>Submission of $fname failed...</font><br/>";
+    }
+  }
 }
 
 function test_compilation() {

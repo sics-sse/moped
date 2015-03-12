@@ -13,7 +13,8 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
     @WebMethod
-	public boolean transferBytes(byte [] data)
+	public boolean transferBytes(byte [] data,
+				     String filename, String version)
 	throws PluginWebServicesException;
 
     @WebMethod

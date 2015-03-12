@@ -32,11 +32,17 @@ url='http://localhost:9990/moped/pws?wsdl'
 client = Client(url)
 client.options.cache.clear()
 
-import testmoped
+s = client.service
+
+from testmoped import *
+import base64
 
 #x = client.service.insertPluginInDb("/lhome/sse/moped_plugins/PluginCreationTest2/1.8/", "PluginCreationTest2")
-x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest3/1.0/", "PluginCreationTest3")
-print x
+#x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest3/1.0/", "PluginCreationTest3")
+#print x
+
+x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest3/target/PluginCreationTest3-1.0.jar"))
+s.transferBytes(x, "PluginCreationTest3", "1.0")
 
 x = client.service.parseVehicleConfiguration("/home/arndt/moped/system1.xml")
 print x
@@ -44,15 +50,15 @@ print x
 x = client.service.install("20UYA31581L000000", 200, "jdk")
 print x
 
-testmoped.ack(client, 200)
+ack(client, 200)
 
-x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest2/1.8/", "PluginCreationTest2")
-print x
+x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest2/target/PluginCreationTest2-1.8.jar"))
+s.transferBytes(x, "PluginCreationTest2", "1.8")
 
 x = client.service.install("20UYA31581L000000", 201, "jdk")
 print x
 
-testmoped.ack(client, 201)
+ack(client, 201)
 
 
 #x = client.service.uninstall("20UYA31581L000000", 200)

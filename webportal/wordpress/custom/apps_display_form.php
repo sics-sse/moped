@@ -42,13 +42,19 @@ ini_set("soap.wsdl_cache_enabled", "0");
 	} catch (Exception $ex) {}
 
 function apps_display_form(){
-	global $wpdb;
 	global $client;
 	
 	// we should look at the error value, too
 	$apps = $client->listApplications();
 	$apps = json_decode($apps);
 	$apps = $apps->result;
+
+	$myvin = getVIN();
+	if (!$myvin) {
+	  print "<font color='red'>No active vehicle</font>";
+	} else {
+	  print "Active vehicle: $myvin";
+	}
 
 	?>
 		

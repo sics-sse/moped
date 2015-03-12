@@ -2,6 +2,10 @@ package service;
 
 import org.json.*;
 
+import static java.nio.file.StandardOpenOption.*;
+import java.nio.file.*;
+import java.io.*;
+
 import service.CallMySql;
 import service.MySqlIterator;
 
@@ -87,25 +91,43 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 	
 	@Override
-	    public boolean transferBytes(byte [] data)
+	    public boolean transferBytes(byte [] data, String appname,
+					 String fversion)
 			throws PluginWebServicesException {
+	    int rows;
+
 	    System.out.println(data.length);
+	    System.out.println("filename " + appname + " " + fversion);
 	    File configFile = null;
+
+	    String location;
+	    String name;
 
 	    try {
 	    
-		File jarFile = File.createTempFile("apptemp.jar", null);
-		//		BufferedWriter writer = new BufferedWriter(new FileWriter(jarFile));
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(jarFile));
-		bos.write(data);
-		bos.close();
+		//File jarFile = File.createTempFile("apptemp.jar", null);
 
-		// store somewhere
-		// unpack somewhere, or traverse like insertPluginInDb does
+		String dir = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname
+		    + "/" + fversion;
+		new File(dir).mkdirs();
+		String p = dir + "/" + appname + ".jar";
+		OutputStream out = new BufferedOutputStream
+		    (Files.newOutputStream(Paths.get(p), CREATE));
+		out.write(data, 0, data.length);
+		out.close();
+
+		location = dir + "/";
+		name = appname;
+
+		File jarFile = new File(p);
+		//		BufferedWriter writer = new BufferedWriter(new FileWriter(jarFile));
+		//BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(jarFile));
+		//bos.write(data);
+		//bos.close();
 
 		JarFile jar = new JarFile(jarFile);
 		Manifest mf = jar.getManifest();
-		if (mf != null) {		
+		if (mf != null) {
 		    Attributes attributes = mf.getMainAttributes();
 				
 		    String publisher = attributes.getValue("Built-By");
@@ -125,7 +147,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			ecuRef = "0";
 		    String configFileName = attributes.getValue("Pirte-Config");
 		    if (configFileName == null)
-			configFileName = "unknown.xml";
+			configFileName = name + ".xml";
 		    //TODO: UGLY HACK (only allows one .class file)
 		    String fullClassName = "";
 
@@ -150,8 +172,141 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    System.out.println("class name " + fullClassName);
 		    System.out.println("config file " + configFileName);
 
+				
+		    int appId;
+
+		    String q1 = "select id from Application where " +
+			"name = '" + name +
+			"' and publisher = '" + publisher +
+			"' and version = '" + version + "'";
+		    String c1 = mysql.getOne(q1);
+		    if (c1 == "none") {
+			String q2 = "insert into Application " +
+			    "(name,publisher,version,hasNewVersion) values ('" +
+			    name + "','" +
+			    publisher + "','" +
+			    version + "',0)";
+			rows = mysql.update(q2);
+
+			String q3 = "select id from Application " +
+			    "where name = '" + name +
+			    "' and publisher = '" + publisher +
+			    "' and version = '" + version + "'";
+			String c3 = mysql.getOne(q3);
+			appId = Integer.parseInt(c3);
+		    } else {
+			// should it be allowed to insert a new copy into an
+			// existing version?
+			// then we should also delete the old one
+			// for the time being we make an unwarranted assumption,
+			// namely that the old entries don't hurt (that the new ones
+			// are the same)
+			appId = Integer.parseInt(c1);
+		    }
+
+		    System.out.println("new appId " + appId);
+
+		    String q4 = "insert into AppConfig (application_id,brand,vehicleConfigName) values (" +
+			appId + "," +
+			"'" + brand +"'" + "," +
+			"'" + vehicleConfigName + "'" + ")";
+		    int x4 = mysql.update(q4);
+
+		    String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleConfigName = '" + vehicleConfigName + "'";
+		    String x41 = mysql.getOne(q41);
+		    int appConfigId = Integer.parseInt(x41);
+
+		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_id) values (" +
+			"'" + name + "'" + "," +
+			"'" + name + ".jar" + "'" + "," +
+			"'" + fullClassName + "'" + "," +
+			Integer.parseInt(ecuRef) + "," +
+			"'" + location + File.separator + name + "'" + "," +
+			"'" + location + "'" + "," +
+			appId + ")";
+		    int x5 = mysql.update(q5);
+
+
+		    //TODO: Why + .suite???
+
+		    //TODO: Inconsequence
+				
+		    String q3 = "select * from PluginConfig where ecuId = " +
+			Integer.parseInt(ecuRef) + " and " +
+			"name = " + "'" + name + ".suite" +"'" + " and " +
+			"appConfig_id = " + appConfigId;
+		    String c3 = mysql.getOne(q3);
+		    System.out.println("existing PluginConfig: " + c3);
+
+		    int pluginConfig;
+		    if (c3 == "none") {
+			String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
+			    Integer.parseInt(ecuRef) + "," +
+			    "'" + name + ".suite" +"'" + "," +
+			    appConfigId + ")";
+			int x3 = mysql.update(q31);
+			System.out.println("updated rows " + x3);
+
+			String q32 = "select * from PluginConfig where ecuId = " +
+			    Integer.parseInt(ecuRef) + " and " +
+			    "name = " + "'" + name + ".suite" +"'" + " and " +
+			    "appConfig_id = " + appConfigId;
+			String c32 = mysql.getOne(q32);
+			pluginConfig = Integer.parseInt(c32);
+		    } else {
+			pluginConfig = Integer.parseInt(c3);
+		    }
+
+		    //TODO: Refactor
+		    // Xml-parsing
+		    Document doc = DocumentBuilderFactory.newInstance().
+			newDocumentBuilder().parse(configFile);
+		    doc.getDocumentElement().normalize();
+				
+		    NodeList ports = doc.getElementsByTagName("port");
+		    for (int i = 0; i < ports.getLength(); i++) {
+			Element port = (Element)ports.item(i);
+			String portName = port.getElementsByTagName("name").item(0).getTextContent();
+					
+			String q6 = "insert into PluginPortConfig (name,pluginConfig_id) values ('" + portName + "'," + pluginConfig + ")";
+			int rows6 = mysql.update(q6);
+
+		    }
+				
+		    NodeList links = doc.getElementsByTagName("link");
+		    for (int i = 0; i < ports.getLength(); i++) {
+			Element link = (Element)links.item(i);
+			String linkSource = link.getElementsByTagName("from").item(0).getTextContent();
+			String linkTarget = link.getElementsByTagName("to").item(0).getTextContent();
+
+			int connectionType = GlobalVariables.PPORT2PPORT;
+			if (linkSource.matches("(\\d+)")) {
+			    connectionType = GlobalVariables.VPORT2PORT;
+			}
+			if (linkTarget.matches("(\\d+)")) {
+			    connectionType = GlobalVariables.PPORT2VPORT;
+			}
+
+			String q6 = "insert into PluginLinkConfig (fromStr,toStr,remote,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
+			int rows6 = mysql.update(q6);
+		    }
+		}
+		else {
+		    System.out.println("MF is NULL");
 		}
 	    } catch (IOException e) {
+		e.printStackTrace();
+		return false;
+	    } catch (SAXException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	    } catch (ParserConfigurationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		return false;
+	    } catch (FactoryConfigurationError e) {
+		// TODO Auto-generated catch block
 		e.printStackTrace();
 		return false;
 	    } 
@@ -260,7 +415,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_id) values (" +
 			"'" + name + "'" + "," +
-			"'" + name + ".zip" + "'" + "," +
+			"'" + name + ".jar" + "'" + "," +
 			"'" + fullClassName + "'" + "," +
 			Integer.parseInt(ecuRef) + "," +
 			"'" + location + File.separator + name + "'" + "," +
@@ -645,7 +800,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 					   * GlobalVariables.APPS_DIR +
 					   */rs12.getString(3);
 				
-			String fileType = ".zip";
+			String fileType = ".jar";
 			if (jvm.equals("Squawk")) {
 			    fileType = ".suite";
 			    location += File.separator + pluginName;
