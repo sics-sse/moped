@@ -32,48 +32,18 @@ License: GPL
 
 //require_once('../wp-load.php');
 
+   ini_set("soap.wsdl_cache_enabled", "0");
+ 	$webServiceAddress = "http://localhost:9990/moped/pws?wsdl";
+	  $client = new SoapClient
+	    ($webServiceAddress,
+	     array('cache_wsdl' => WSDL_CACHE_NONE,
+		   'features' => SOAP_SINGLE_ELEMENT_ARRAYS));
+
 // create tables with plugins
 function vehicle_install() {
 	global $wpdb;
 
-	/*
-	$table_name = "vehicle_configuration";
-	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		name text NOT NULL,
-		value text NOT NULL,
-		PRIMARY KEY  (id)
-	)ENGINE=InnoDB DEFAULT COLLATE utf8_general_ci;";
-	
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( $sql );
-	*/
-	/*
-	$table_name = "vehicle";
-	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		name text NOT NULL,
-		VIN varchar(17) NOT NULL,
-		value text NOT NULL,
-		PRIMARY KEY  (id)
-	)ENGINE=InnoDB DEFAULT COLLATE utf8_general_ci;";
-	
-	dbDelta( $sql );
-	*/
-	$table_name = "User_vehicle_association";
-	$sql = "CREATE TABLE IF NOT EXISTS $table_name (
-		id int(11) NOT NULL AUTO_INCREMENT,
-		userID BIGINT(20) UNSIGNED NOT NULL,
-		vehicleID int(11) NOT NULL,
-		vehicleConfigID int(11) NOT NULL,
-		defaultVehicle boolean NOT NULL default 0,
-		PRIMARY KEY  (id),
-		FOREIGN KEY (userID) REFERENCES wp_users(ID),
-		FOREIGN KEY (vehicleID) REFERENCES Vehicle(id)
-	)ENGINE=InnoDB DEFAULT COLLATE utf8_general_ci;";
-	
-	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-	dbDelta( $sql );
 	
 	add_option( "vehicle_configuration_version", "1.0" );
 }
@@ -154,28 +124,22 @@ function set_default_vehicle($vehicleID) {
 	));
 }
 
-function reset_default_vehicle($id) {
-	global $wpdb;
-	$table_name = "User_vehicle_association";
-	$wpdb->show_errors();
-	$wpdb->query($wpdb->prepare(
-	"
-		UPDATE $table_name SET defaultVehicle = 1 WHERE id = %d
-	", intval($id)
-	));
+function reset_default_vehicle($vin) {
+  global $client;
+
+  $userId = wp_get_current_user()->ID;
+
+  return $client->setUserVehicleAssociationActive($userId, $vin, true);
 }
 
-function reset_not_default_vehicle($id) {
-	global $wpdb;
-	$table_name = "User_vehicle_association";
-	$wpdb->show_errors();
-	$wpdb->query($wpdb->prepare(
-	"
-		UPDATE $table_name SET defaultVehicle = 0 WHERE id = %d
-	", intval($id)
-	));
+function reset_not_default_vehicle($vin) {
+  global $client;
+
+  $userId = wp_get_current_user()->ID;
+
+  return $client->setUserVehicleAssociationActive($userId, $vin, false);
 }
- 
+
 function remove_configuration($id) {
 	global $wpdb;
 	$table_name = "Ecu";
@@ -189,9 +153,7 @@ function remove_configuration($id) {
 function restore_configuration($id)  {
 	// invoke webservice of restore ecu
 	// Invoke Web Services
-	$webServiceAddress = getWebServiceAddress();
-	ini_set("soap.wsdl_cache_enabled", "0");   
-	$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));  
+  global $client;
 	try  
 	{  
 		$vin = getVIN();
@@ -224,23 +186,18 @@ function add_vehicles($vehicle_name, $vehicle_vin, $vehicle_type) {
 }
 
 function fetch_vehicles() {
-	global $wpdb;
-	$table_name = "Vehicle";
-	$sql = "SELECT * FROM $table_name";
-	$myrows = $wpdb->get_results($sql);
-	return $myrows;
+  global $client;
+
+  $myrows = $client->listVehicles();
+  return $myrows->item;
 }
 
 function fetch_my_vehicles() {
-	global $wpdb;
-	
-	$userId = wp_get_current_user()->ID;
-	$sql = "SELECT v.* 
-			FROM Vehicle v, User_vehicle_association a 
-			WHERE v.id = a.vehicleID AND a.userID = $userId";
-	$myrows = $wpdb->get_results($sql);
+  global $client;
 
-	return $myrows;
+  $userId = wp_get_current_user()->ID;
+  $myrows = $client->listVehicles($userId);
+  return $myrows;
 }
 
 function fetch_vehicleTypes() {
@@ -252,13 +209,13 @@ function fetch_vehicleTypes() {
 }
 
 function fetch_VIN_by_id($vehicle_id) {
-	global $wpdb;
-	$table_name = "Vehicle";
-	$result = $wpdb->get_var($wpdb->prepare(
-	"
+  global $wpdb;
+  $table_name = "Vehicle";
+  $result = $wpdb->get_var($wpdb->prepare(
+					  "
 		SELECT VIN FROM $table_name WHERE id = %d
 	", intval($vehicle_id)));
-	return $result;
+  return $result;
 }
 
 function remove_vehicle($vehicle_id) {
@@ -271,42 +228,28 @@ function remove_vehicle($vehicle_id) {
 			WHERE id = %s", $vehicle_id));
 }
 
-function add_user_vehicle_association($userID, $vehicleID) {
-	global $wpdb;
-	// get vehicleConfig ID
-	$table_name = "Vehicle";
-	$sql = "SELECT vehicleConfigId FROM $table_name where id = $vehicleID";
-	$vehicleConfigId = $wpdb->get_var($sql);
-	
-	$table_name = "User_vehicle_association";
-	$result = $wpdb->query($wpdb->prepare(
-	"
-		INSERT INTO $table_name
-		(userID, vehicleID, vehicleConfigID) 
-		VALUES(%d, %d, %d)
-	", intval($userID), intval($vehicleID), intval($vehicleConfigId)
-	));
-	return $result;
+function add_user_vehicle_association($userID, $vin) {
+  global $client;
+
+  $r = $client->addUserVehicleAssociation($userID, $vin, false);
+  return $r;
 }
 
 function fetch_associations() {
-	global $wpdb;
-	$table_name = "User_vehicle_association";
-	$user = wp_get_current_user();
-	$user_id = $user->ID;
-	$sql = "SELECT * FROM $table_name WHERE userID = $user_id";
-	$myrows = $wpdb->get_results($sql);
-	return $myrows;
+  global $client;
+
+  $userId = wp_get_current_user()->ID;
+  $myrows = $client->listUserVehicleAssociations($userId);
+  return json_decode($myrows)->result;
 }
 
-function remove_association($association_id) {
-	global $wpdb;
-	$table_name = "User_vehicle_association";
-	$wpdb->query(
-		$wpdb->prepare(
-			"
-			DELETE FROM $table_name
-			WHERE id = %d", intval($association_id)));
+function remove_association($vin) {
+  global $client;
+
+  $user = wp_get_current_user();
+  $user_id = $user->ID;
+  $r = $client->deleteUserVehicleAssociation($user_id, $vin);
+  return $r;
 }
 
 // append setting menu
@@ -326,7 +269,7 @@ function operate_user_vehicle_association() {
 			<?php
 				$rows = fetch_vehicles();
 				foreach ($rows as $row) {
-					$output = "<option value=$row->id>$row->VIN</option>";
+					$output = "<option value=$row>$row</option>";
 					echo $output;
 				}
 			?>
@@ -350,8 +293,8 @@ function operate_user_vehicle_association() {
 			$myrows = fetch_associations();
 			$oldDefaultVehicle = 0;
 			foreach ($myrows as $myrow) {
-				$vin = fetch_VIN_by_id($myrow->vehicleID);
-				$isDefault = $myrow->defaultVehicle;
+				$vin = $myrow->vin;
+				$isDefault = $myrow->active;
 				//$output = "<tr><td align='center'>$vehcile_name</td>";
 				$output = "<tr><td align='center'>$vin</td>";
 				/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
@@ -359,12 +302,12 @@ function operate_user_vehicle_association() {
 				$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 				$output .= $edit;*/
 				if($isDefault == true) {
-					$output .= "<td align='center'><input type=radio name=defaultVehicle value=$myrow->id checked=yes /></td>";
-					$oldDefaultVehicle = $myrow->id;
+					$output .= "<td align='center'><input type='radio' name='defaultVehicle' value='$myrow->vin' checked /></td>";
+					$oldDefaultVehicle = $myrow->vin;
 				} else {
-					$output .= "<td align='center'><input type=radio name=defaultVehicle value=$myrow->id /></td>";
+					$output .= "<td align='center'><input type=radio name=defaultVehicle value=$myrow->vin /></td>";
 				}
-				$link_arr_paras = array('actionForAssociation' => 'remove', 'associationID' => $myrow->id);
+				$link_arr_paras = array('actionForAssociation' => 'remove', 'vin' => $myrow->vin);
 				$link = add_query_arg($link_arr_paras);
 				$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 				$output .= $remove;
@@ -659,20 +602,20 @@ if (isset($_POST['Add_configuration'])) {
 		}
 } else if ( isset( $_POST['add_vehicle_to_association'])) {
 	$user = wp_get_current_user();
-	$vehicle_id = $_POST['selected_vehicle'];
-	add_user_vehicle_association($user->ID, $vehicle_id);
-} else if ( isset( $_GET['actionForAssociation']) ) {
-	switch( $_GET['actionForAssociation'] ) {
-			case 'remove' :
-				if ( isset( $_GET['associationID'] ) ) {
-					remove_association( $_GET['associationID'] );
-				}
-				break;
-		}
+	$vehicle_vin = $_POST['selected_vehicle'];
+	add_user_vehicle_association($user->ID, $vehicle_vin);
 } else if ( isset( $_POST['bind_default_vehicle'])) {
 	$oldDefaultVehicleRowId = $_POST['oldDefaultVehicle'];
 	reset_not_default_vehicle($oldDefaultVehicleRowId);
 	$newDefaultVehileRowId = $_POST['defaultVehicle'];
 	reset_default_vehicle($newDefaultVehileRowId);
+} else if ( isset( $_GET['actionForAssociation']) ) {
+	switch( $_GET['actionForAssociation'] ) {
+			case 'remove' :
+				if ( isset( $_GET['vin'] ) ) {
+					remove_association( $_GET['vin'] );
+				}
+				break;
+		}
 }
 ?>

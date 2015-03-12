@@ -31,24 +31,34 @@ require_once("install_handle.php");
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+ini_set("soap.wsdl_cache_enabled", "0");
+ 	$webServiceAddress = "http://localhost:9990/moped/pws?wsdl";
+	
+	try {
+	  $client = new SoapClient
+	    ($webServiceAddress,
+	     array('cache_wsdl' => WSDL_CACHE_NONE,
+		   'features' => SOAP_SINGLE_ELEMENT_ARRAYS));
+	} catch (Exception $ex) {}
 
 function apps_display_form(){
 	global $wpdb;
+	global $client;
 	
-// 	$conn = mysql_connect("localhost:3306", "fresta", "turbine_r4d4r_pLOw");
-// 	echo "conn: $conn";
-	
-	$apps = $wpdb->get_results("SELECT * FROM Application ORDER BY applicationName, version");
+	// we should look at the error value, too
+	$apps = $client->listApplications();
+	$apps = json_decode($apps);
+	$apps = $apps->result;
+
 	?>
 		
 	<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 		<thead>
 			<tr>
-				<th width="30%">Application</th>
-				<th width="20%">Publisher</th>
-				<th width="20%">Version</th>
-				<th width="15%">Squawk</th>
-				<th width="15%">JDK</th>
+				<th width="35%">Application</th>
+				<th width="25%">Publisher</th>
+				<th width="25%">Version</th>
+				<th width="15%">Install</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -56,16 +66,14 @@ function apps_display_form(){
 			$app_nr = 0;
 			foreach ($apps as $app) {
 				echo "<tr>\r\n";
-				echo "<td>$app->applicationName</td>\r\n";
+				echo "<td>$app->name $xx</td>\r\n";
 				echo "<td>$app->publisher</td>\r\n";
 				echo "<td>$app->version</td>\r\n";
-				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->applicationId'/><input name='Squawk_install' type='image' src='wordpress/custom/images/install.png' alt='Install'/></form></td>\r\n";
-				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->applicationId'/><input name='Jdk_install' type='image' src='wordpress/custom/images/install.png' alt='Install'/></form></td>\r\n";
+				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->id'/><input name='Jdk_install' type='image' src='wordpress/custom/images/install.png' alt='Install'/></form></td>\r\n";
 				echo "</tr>\r\n";
 				$app_nr++;
 			}
 			
-			mysql_close($conn);
 			?>
 	<!-- 		<tr> -->
 	<!-- 			<td colspan=\"6\" class=\"dataTables_empty\">Loading data from server...</td> -->
@@ -76,8 +84,7 @@ function apps_display_form(){
 				<th>Application</th>
 				<th>Publisher</th>
 				<th>Version</th>
-				<th>Squawk</th>
-				<th>JDK</th>
+				<th>Install</th>
 			</tr>
 		</tfoot>
 	</table>
@@ -86,9 +93,6 @@ function apps_display_form(){
 	<?php 
 	if (isset($_POST['Jdk_install_x'])) {
 		$ret = invoke_install_webservice($_POST['app_id'], 'jdk');
-	}
-	else if (isset($_POST['Squawk_install_x'])) {
-		$ret = invoke_install_webservice($_POST['app_id'], 'Squawk');
 	}
 }
 add_shortcode('apps_display_form', 'apps_display_form');

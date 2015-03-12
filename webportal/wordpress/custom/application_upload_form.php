@@ -89,7 +89,7 @@ function application_upload_handler() {
 
 		/* Check that this is a *.jar-file */
 		if (substr($fname, -4) != '.jar') {
-			echo "<font color='red'>Only *.jar files are currently supported, skipping $fname</font><br/>";
+			echo "<font color='red'>Only *.jar files are currently supported, skipping over $fname</font><br/>";
 			continue;
 		}
 		
@@ -107,6 +107,8 @@ function application_upload_handler() {
 		
 		/* Create a directory for the new application */
 		$targetDir = __DIR__.'/../../moped_plugins/'.$shortName.'/'.$version.'/';
+		echo "en rad ($targetDir)</br>";
+
 		if (!file_exists($targetDir)) {
 			$res &= mkdir($targetDir, 0777, true);
 		}

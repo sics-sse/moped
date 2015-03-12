@@ -118,7 +118,7 @@ function ws_uploadApp() {
 			echo "<font color='red'>Only *.jar files are currently supported, skipping $fname</font><br/>";
 			continue;
 		}
-		
+
 		/* Extract the application name (file name without its class type)
 		* and its version (use 1.0 as default) */
 		if ($versionIndex !== false) {
