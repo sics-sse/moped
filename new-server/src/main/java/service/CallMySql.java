@@ -10,14 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class CallMySql {
-     public static Connection con = null;
-     public static Statement st = null;
+     public Connection con = null;
+     public Statement st = null;
 
-     private static boolean init_done = false;
-
-     private static void init() {
-	 if (init_done)
-	     return;
+     public CallMySql() {
 
 	 String url = "jdbc:mysql://localhost:3306/fresta2";
 	 String user = "root";
@@ -27,20 +23,17 @@ public class CallMySql {
 	     con = DriverManager.getConnection(url, user, password);
 	     st = con.createStatement();
 
-	     init_done = true;
-
 	 } catch (SQLException ex) {
 	     System.out.println("DB ERROR 0");
 	     System.out.println(ex.getMessage());
 	 }
      }
 
-     public static String getOne(String query) {
+     public String getOne(String query) {
 	
 	 ResultSet rs = null;
 
 	 try {
-	     init();
 	     //con = DriverManager.getConnection(url, user, password);
 	     //st = con.createStatement();
 	     rs = st.executeQuery(query);
@@ -77,10 +70,9 @@ public class CallMySql {
 
      }
 
-     public static int update(String query) {
+     public int update(String query) {
 
 	 try {
-	     init();
 	     int count = st.executeUpdate(query);
 
 	     return count;
@@ -96,12 +88,11 @@ public class CallMySql {
 
      }
 
-     public static String [] getOneSet(String query) {
+     public String [] getOneSet(String query) {
 	
 	 ResultSet rs = null;
 
 	 try {
-	     init();
 	     rs = st.executeQuery(query);
 
 	     ResultSetMetaData rsmd = rs.getMetaData();
@@ -142,12 +133,11 @@ public class CallMySql {
 
      }
 
-     public static ResultSet getResults(String query) {
+     public ResultSet getResults(String query) {
 	
 	 ResultSet rs = null;
 
 	 try {
-	     init();
 	     // we need a local Statement, otherwise we are not
 	     // reentrant.
 	     Statement st = con.createStatement();
@@ -167,13 +157,11 @@ public class CallMySql {
      }
 
 
-     public static MySqlIterator getIterator(String query) {
+     public MySqlIterator getIterator(String query) {
 	
 	 ResultSet rs = null;
 
 	 try {
-	     init();
-
 	     // we need a local Statement, otherwise we are not
 	     // reentrant.
 	     Statement st = con.createStatement();
