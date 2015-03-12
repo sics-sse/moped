@@ -13,7 +13,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <compilerArgument>-g</compilerArgument>
+          <compilerArgument>-Xlint:unchecked</compilerArgument>
           <source>1.7</source>
           <target>1.7</target>
         </configuration>
@@ -32,6 +32,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3</version>
         <configuration>
           <archive>
             <manifest>
@@ -62,6 +63,7 @@
     <hibernate.version>4.3.7.Final</hibernate.version>
     <slf4j.version>1.7.5</slf4j.version>
     <spring.version>3.2.2.RELEASE</spring.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <cxf.version>2.5.1</cxf.version>
   </properties>
 </project>

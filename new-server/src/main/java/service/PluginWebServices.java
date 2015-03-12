@@ -13,6 +13,10 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
     @WebMethod
+	public boolean transferBytes(byte [] data)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public boolean insertPluginInDb(String location, String name) 
 	throws PluginWebServicesException;
 	
@@ -49,10 +53,11 @@ public interface PluginWebServices {
 	public String [] listVehicles() throws PluginWebServicesException;
 
     @WebMethod
-	public String [] listApps() throws PluginWebServicesException;
+	public String listApplications()
+	throws PluginWebServicesException;
 
     @WebMethod
-	public String [] listUserVehicleAssociations(int user_id)
+	public String listUserVehicleAssociations(int user_id)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -61,6 +66,22 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
+	public boolean setUserVehicleAssociationActive
+	(int user_id, String vin, boolean active)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public boolean deleteUserVehicleAssociation(int user_id, String vin)
+	throws PluginWebServicesException;
+
+    @WebMethod
+	public String jsontest() throws PluginWebServicesException;
+
+    @WebMethod
+	public boolean checkpassword(String pwd, String hash)
+	throws PluginWebServicesException;
+
+    @WebMethod
+	public String [] [] stringtest()
 	throws PluginWebServicesException;
 }

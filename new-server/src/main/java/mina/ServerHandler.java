@@ -35,6 +35,8 @@ public class ServerHandler extends IoHandlerAdapter {
     
     private ArrayList<String> ackMessages = new ArrayList<String>();
 	
+    private CallMySql mysql = new CallMySql();
+
 	public void sessionClosed(IoSession session) {
 		String vin = (String) session.getAttribute("vehicle");
 		vehicles.remove(vin);
@@ -105,12 +107,12 @@ public class ServerHandler extends IoHandlerAdapter {
 					vehiclePluginRecord.getCallbackPortId() + ",'" +
 					vehiclePluginRecord.getLocation() + "','" +
 					vehiclePluginRecord.getExecutablePluginName() + "')";
-				    int rows = CallMySql.update(q1);
+				    int rows = mysql.update(q1);
 
 					boolean isInstalled = Cache.getCache().IsAllPluginInstalled(vin, installAppId);
 					if(isInstalled) {
 					    String q2 = "select INSTALLED_APPS from Vehicle where vin = '" + vin + "'";
-					    String c2 = CallMySql.getOne(q2);
+					    String c2 = mysql.getOne(q2);
 
 					    // check that appId is not
 					    // already present
@@ -123,7 +125,7 @@ public class ServerHandler extends IoHandlerAdapter {
 						c2 += installAppId;
 					    }
 					    String q3 = "update Vehicle set INSTALLED_APPS = '" + c2 + "' where vin = '" + vin + "'";
-					    int rows3 = CallMySql.update(q3);
+					    int rows3 = mysql.update(q3);
 					}
 				}
 				
