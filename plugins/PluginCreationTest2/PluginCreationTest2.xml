@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	
+	<plugins>
+		<plugin>
+			<name>PluginCreationTest2</name>
+			<ecu>2</ecu>  <!-- Allocation to Vehicle Control Unit (VCU) -->
+
+			<ports>
+				<port>
+					<name>steeringAngle</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	
+	<links>
+		<link>
+			<from>steeringAngle</from>
+			<to>4</to>  <!-- Steering servo setting -->
+		</link>
+	</links>
+</app>
