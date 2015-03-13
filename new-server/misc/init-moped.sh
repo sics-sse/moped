@@ -37,14 +37,17 @@ s = client.service
 from testmoped import *
 import base64
 
-#x = client.service.insertPluginInDb("/lhome/sse/moped_plugins/PluginCreationTest2/1.8/", "PluginCreationTest2")
-#x = client.service.insertPluginInDb("/home/arndt/moped/moped/webportal/moped_plugins/PluginCreationTest3/1.0/", "PluginCreationTest3")
-#print x
-
 x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest3/target/PluginCreationTest3-1.0.jar"))
 s.transferBytes(x, "PluginCreationTest3", "1.0")
 
-x = client.service.parseVehicleConfiguration("/home/arndt/moped/system1.xml")
+#x = client.service.parseVehicleConfiguration("/home/arndt/moped/system1.xml")
+#print x
+
+x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.xml"))
+x = client.service.parseVehicleConfigurationFromStr(x)
+print x
+
+x = client.service.addVehicle("MOPED", "20UYA31581L000000", "MOPED")
 print x
 
 x = client.service.install("20UYA31581L000000", 200, "jdk")

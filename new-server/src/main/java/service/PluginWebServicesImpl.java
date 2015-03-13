@@ -315,205 +315,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 
 	@Override
-	public boolean insertPluginInDb(String location, String name) 
-			throws PluginWebServicesException {
-	    File configFile = null;
-		
-	    int rows;
-
-	    try {
-		File loc = new File(location);
-		location = loc.getCanonicalPath();
-		
-		JarFile jar = new JarFile(new File(location + File.separator + name + ".jar"));
-		Manifest mf = jar.getManifest();
-		if (mf != null) {		
-		    Attributes attributes = mf.getMainAttributes();
-				
-		    String publisher = attributes.getValue("Built-By");
-		    if (publisher == null)
-			publisher = "unknown";
-		    String version = attributes.getValue("Manifest-Version");
-		    if (version == null)
-			version = "1.0";
-		    String brand = attributes.getValue("Vehicle-Brand");
-		    if (brand == null)
-			brand = "SICS";
-		    String vehicleConfigName = attributes.getValue("Vehicle-Name");
-		    if (vehicleConfigName == null)
-			vehicleConfigName = "MOPED";
-		    String ecuRef = attributes.getValue("Ecu");
-		    if (ecuRef == null)
-			ecuRef = "0";
-		    String configFileName = attributes.getValue("Pirte-Config");
-		    if (configFileName == null)
-			configFileName = name + ".xml";
-		    //TODO: UGLY HACK (only allows one .class file)
-		    String fullClassName = "";
-
-		    for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements(); ) {
-			JarEntry entry = entries.nextElement();
-			String fileName = entry.getName();
-			if (fileName.endsWith(".class")) {
-			    fullClassName = fileName.substring(0, fileName.length() - 6);
-			} else if (fileName.equals(configFileName)) {
-			    configFile = File.createTempFile("tempxml.xml", null);
-			    BufferedReader reader = new BufferedReader(new InputStreamReader(
-											     jar.getInputStream(entry)));
-			    BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
-			    String line;
-			    while ((line = reader.readLine()) != null) {
-				writer.write(line);
-			    }
-			    reader.close();
-			    writer.close();
-			}
-		    }
-				
-		    int appId;
-
-		    String q1 = "select id from Application where " +
-			"name = '" + name +
-			"' and publisher = '" + publisher +
-			"' and version = '" + version + "'";
-		    String c1 = mysql.getOne(q1);
-		    if (c1 == "none") {
-			String q2 = "insert into Application " +
-			    "(name,publisher,version,hasNewVersion) values ('" +
-			    name + "','" +
-			    publisher + "','" +
-			    version + "',0)";
-			rows = mysql.update(q2);
-
-			String q3 = "select id from Application " +
-			    "where name = '" + name +
-			    "' and publisher = '" + publisher +
-			    "' and version = '" + version + "'";
-			String c3 = mysql.getOne(q3);
-			appId = Integer.parseInt(c3);
-		    } else {
-			// should it be allowed to insert a new copy into an
-			// existing version?
-			// then we should also delete the old one
-			// for the time being we make an unwarranted assumption,
-			// namely that the old entries don't hurt (that the new ones
-			// are the same)
-			appId = Integer.parseInt(c1);
-		    }
-
-		    System.out.println("new appId " + appId);
-
-		    String q4 = "insert into AppConfig (application_id,brand,vehicleConfigName) values (" +
-			appId + "," +
-			"'" + brand +"'" + "," +
-			"'" + vehicleConfigName + "'" + ")";
-		    int x4 = mysql.update(q4);
-
-		    String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleConfigName = '" + vehicleConfigName + "'";
-		    String x41 = mysql.getOne(q41);
-		    int appConfigId = Integer.parseInt(x41);
-
-		    String q5 = "insert into DatabasePlugin (name,zipName,fullClassName,reference,location,zipLocation,application_id) values (" +
-			"'" + name + "'" + "," +
-			"'" + name + ".jar" + "'" + "," +
-			"'" + fullClassName + "'" + "," +
-			Integer.parseInt(ecuRef) + "," +
-			"'" + location + File.separator + name + "'" + "," +
-			"'" + location + "'" + "," +
-			appId + ")";
-		    int x5 = mysql.update(q5);
-
-
-		    //TODO: Why + .suite???
-
-		    //TODO: Inconsequence
-				
-		    String q3 = "select * from PluginConfig where ecuId = " +
-			Integer.parseInt(ecuRef) + " and " +
-			"name = " + "'" + name + ".suite" +"'" + " and " +
-			"appConfig_id = " + appConfigId;
-		    String c3 = mysql.getOne(q3);
-		    System.out.println("existing PluginConfig: " + c3);
-
-		    int pluginConfig;
-		    if (c3 == "none") {
-			String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
-			    Integer.parseInt(ecuRef) + "," +
-			    "'" + name + ".suite" +"'" + "," +
-			    appConfigId + ")";
-			int x3 = mysql.update(q31);
-			System.out.println("updated rows " + x3);
-
-			String q32 = "select * from PluginConfig where ecuId = " +
-			    Integer.parseInt(ecuRef) + " and " +
-			    "name = " + "'" + name + ".suite" +"'" + " and " +
-			    "appConfig_id = " + appConfigId;
-			String c32 = mysql.getOne(q32);
-			pluginConfig = Integer.parseInt(c32);
-		    } else {
-			pluginConfig = Integer.parseInt(c3);
-		    }
-
-		    //TODO: Refactor
-		    // Xml-parsing
-		    Document doc = DocumentBuilderFactory.newInstance().
-			newDocumentBuilder().parse(configFile);
-		    doc.getDocumentElement().normalize();
-				
-		    NodeList ports = doc.getElementsByTagName("port");
-		    for (int i = 0; i < ports.getLength(); i++) {
-			Element port = (Element)ports.item(i);
-			String portName = port.getElementsByTagName("name").item(0).getTextContent();
-					
-			String q6 = "insert into PluginPortConfig (name,pluginConfig_id) values ('" + portName + "'," + pluginConfig + ")";
-			int rows6 = mysql.update(q6);
-
-		    }
-				
-		    NodeList links = doc.getElementsByTagName("link");
-		    for (int i = 0; i < ports.getLength(); i++) {
-			Element link = (Element)links.item(i);
-			String linkSource = link.getElementsByTagName("from").item(0).getTextContent();
-			String linkTarget = link.getElementsByTagName("to").item(0).getTextContent();
-
-			int connectionType = GlobalVariables.PPORT2PPORT;
-			if (linkSource.matches("(\\d+)")) {
-			    connectionType = GlobalVariables.VPORT2PORT;
-			}
-			if (linkTarget.matches("(\\d+)")) {
-			    connectionType = GlobalVariables.PPORT2VPORT;
-			}
-
-			String q6 = "insert into PluginLinkConfig (fromStr,toStr,remote,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
-			int rows6 = mysql.update(q6);
-		    }
-		}
-		else {
-		    System.out.println("MF is NULL");
-		}
-	    } catch (IOException e) {
-		e.printStackTrace();
-		return false;
-	    } catch (SAXException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	    } catch (ParserConfigurationException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	    } catch (FactoryConfigurationError e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	    } 
-		
-	    System.out.println("insertPluginInDb done");
-	    return true;
-	}
-	
-
-	@Override
 	public boolean get_ack_status(String vin, int appId)
 	    throws PluginWebServicesException {
 
@@ -1140,7 +941,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	}
 
-	@Override
+	@WebMethod
 	public boolean parseVehicleConfiguration(String path) 
 	    throws PluginWebServicesException {
 	    boolean status = false;
@@ -1148,13 +949,63 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    System.out.println("pwd: " + java.nio.file.Paths.get(".").toAbsolutePath().normalize().toString());
 	    System.out.println("config path: " + path);
 
+	    try {
+		InputStream is = new FileInputStream(path);
+		return parseVehicleConfiguration2(is);
+
+	    } catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+
+	    return status;
+
+	}
+
+	@WebMethod
+	public boolean parseVehicleConfigurationFromStr(byte [] data) 
+	    throws PluginWebServicesException {
+	    boolean status = false;
+	    System.out.println("In parseVehicleConfigurationFromStr");
+
+	    try {
+		File xmlFile = File.createTempFile("apptemp.jar", null);
+
+		BufferedWriter writer = new BufferedWriter(new FileWriter(xmlFile));
+		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(xmlFile));
+		bos.write(data);
+		bos.close();
+
+		FileInputStream is = new FileInputStream(xmlFile);
+
+		return parseVehicleConfiguration2(is);
+
+	    } catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+
+	    return status;
+
+	}
+
+	public boolean parseVehicleConfiguration2(InputStream is)
+	    throws PluginWebServicesException {
+	    boolean status = false;
+	    System.out.println("In parseVehicleConfiguration2");
+
 	    // key: port ID, value: ECU ID
 	    HashMap<Integer, Integer> portId2EcuId = new HashMap<Integer, Integer>();
 
 	    DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 	    try {
 		DocumentBuilder dombuilder = domfac.newDocumentBuilder();
-		InputStream is = new FileInputStream(path);
 		Document doc = dombuilder.parse(is);
 		// vehicle
 		Element root = doc.getDocumentElement();
@@ -1217,18 +1068,20 @@ delete b from VehicleConfig b where name='_deleted_';
 		}
 		String vinStr = vinElement.getTextContent();
 			
-		String q10 = "select * from Vehicle where vin = '" + vinStr + "'";
-		String c10 = mysql.getOne(q10);
-		if (c10 == "none") {
-		    String q11 = "insert into Vehicle"
-			+ " (name,vin,vehicleConfig_id) values "
-			+ "('" + vehicleNameStr
-			+ "','" + vinStr
-			+ "'," + c3 + ")";
-		    rows = mysql.update(q11);
-		    System.out.println("vehicle created " + vinStr);
-		} else {
-		    System.out.println("vehicle exists " + vinStr);
+		if (false) {
+		    String q10 = "select * from Vehicle where vin = '" + vinStr + "'";
+		    String c10 = mysql.getOne(q10);
+		    if (c10 == "none") {
+			String q11 = "insert into Vehicle"
+			    + " (name,vin,vehicleConfig_id) values "
+			    + "('" + vehicleNameStr
+			    + "','" + vinStr
+			    + "'," + c3 + ")";
+			rows = mysql.update(q11);
+			System.out.println("vehicle created " + vinStr);
+		    } else {
+			System.out.println("vehicle exists " + vinStr);
+		    }
 		}
 
 		// Arndt: this was commented out before already. Does it
@@ -1464,6 +1317,25 @@ delete b from VehicleConfig b where name='_deleted_';
 	}
 
 
+        @WebMethod
+	    public boolean deleteVehicle(String vin)
+	    throws PluginWebServicesException {
+
+	    String q1 = "delete from Vehicle where vin = '" + vin + "'";
+	    int rows = mysql.update(q1);
+	    return (rows != 0);
+	}
+
+        @WebMethod
+	    public boolean addVehicle(String name, String vin, String type)
+	    throws PluginWebServicesException {
+
+	    String q1 = "insert into Vehicle (vin,name,vehicleConfig_id) select '" + vin + "','" + name + "',c.id from VehicleConfig c where c.name = '" + type + "'";
+	    System.out.println("adding vehicle: " + q1);
+	    int rows = mysql.update(q1);
+	    return (rows != 0);
+	}
+
 	@WebMethod
 	public String [] infoVehicle(String vin)
 			throws PluginWebServicesException {
@@ -1501,6 +1373,64 @@ delete b from VehicleConfig b where name='_deleted_';
 		res[i] = a.get(i);
 	    }
 	    return res;
+	}
+
+	@WebMethod
+	public String listUserVehicles(int user_id)
+			throws PluginWebServicesException {
+	    String q1 = "select v.vin,v.name from Vehicle v, UserVehicleAssociation a where a.vehicle_id = v.id and a.user_ID = " + user_id;
+	    ArrayList<String> a = new ArrayList<String>();
+
+	    MySqlIterator it = mysql.getIterator(q1);
+
+	    JSONObject o = new JSONObject();
+	    JSONArray o1 = new JSONArray();
+
+	    if (it == null) {
+		o.put("result", o1);
+		o.put("error", true);
+		return o.toString();
+	    }
+
+	    while (it.next()) {
+		JSONObject o2 = new JSONObject();
+		o2.put("vin", it.getString(1));
+		o2.put("name", it.getString(2));
+		o1.put(o2);
+	    }
+	    o.put("result", o1);
+	    o.put("error", false);
+
+	    return o.toString();
+
+	}
+
+	@WebMethod
+	public String listVehicleConfigs()
+			throws PluginWebServicesException {
+	    String q1 = "select name,brand from VehicleConfig";
+
+	    MySqlIterator it = mysql.getIterator(q1);
+
+	    JSONObject o = new JSONObject();
+	    JSONArray o1 = new JSONArray();
+
+	    if (it == null) {
+		o.put("result", o1);
+		o.put("error", true);
+		return o.toString();
+	    }
+
+	    while (it.next()) {
+		JSONObject o2 = new JSONObject();
+		o2.put("name", it.getString(1));
+		o2.put("brand", it.getString(2));
+		o1.put(o2);
+	    }
+	    o.put("result", o1);
+	    o.put("error", false);
+
+	    return o.toString();
 	}
 
 	@WebMethod

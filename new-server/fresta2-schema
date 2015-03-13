@@ -87,13 +87,10 @@ CREATE TABLE `Ecu` (
   `function` varchar(255) DEFAULT NULL,
   `manufactory` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `vehicle_id` int(11) DEFAULT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK10F77CAE47C55` (`vehicle_id`),
   KEY `FK10F77230AE8F5` (`vehicleConfig_id`),
-  CONSTRAINT `FK10F77230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`),
-  CONSTRAINT `FK10F77CAE47C55` FOREIGN KEY (`vehicle_id`) REFERENCES `Vehicle` (`id`)
+  CONSTRAINT `FK10F77230AE8F5` FOREIGN KEY (`vehicleConfig_id`) REFERENCES `VehicleConfig` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=400;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

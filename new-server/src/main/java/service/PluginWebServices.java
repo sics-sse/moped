@@ -18,10 +18,6 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean insertPluginInDb(String location, String name) 
-	throws PluginWebServicesException;
-	
-    @WebMethod
 	public boolean get_ack_status(String vin, int appId)
 	throws PluginWebServicesException;
 	
@@ -46,15 +42,33 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
+	public boolean parseVehicleConfigurationFromStr(byte [] data) 
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public String generateSuite(String zipFile, String fullClassName) throws PluginWebServicesException;
 
     @WebMethod
 	public String [] infoVehicle(String vin) throws PluginWebServicesException;
     @WebMethod
+	public boolean deleteVehicle(String vin) throws PluginWebServicesException;
+    @WebMethod
+	public boolean addVehicle(String name, String vin, String type)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public String [] listVehicles() throws PluginWebServicesException;
 
     @WebMethod
+	public String listUserVehicles(int user_id)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public String listApplications()
+	throws PluginWebServicesException;
+
+    @WebMethod
+	public String listVehicleConfigs()
 	throws PluginWebServicesException;
 
     @WebMethod
