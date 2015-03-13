@@ -41,8 +41,6 @@ License: GPL
 
 // create tables with plugins
 function vehicle_install() {
-	global $wpdb;
-
 	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	
 	add_option( "vehicle_configuration_version", "1.0" );
@@ -111,19 +109,6 @@ function fetch_configurations() {
 	}
 }
 
-function set_default_vehicle($vehicleID) {
-	global $wpdb;
-	$table_name = "User_vehicle_association";
-	$wpdb->show_errors();
-	$user = wp_get_current_user();
-	$userID = $user->ID;
-	$wpdb->query($wpdb->prepare(
-	"
-		UPDATE $table_name SET defaultVehicle = 1 WHERE userID = %d and vehicleID = %d
-	", $userID, $vehicleID 
-	));
-}
-
 function reset_default_vehicle($vin) {
   global $client;
 
@@ -171,18 +156,10 @@ function restore_configuration($id)  {
 	}  
 }
 
-function add_vehicles($vehicle_name, $vehicle_vin, $vehicle_type) {
-	global $wpdb;
-	$table_name = "Vehicle";
-	$id = intval($vehicle_type);
-	$result = $wpdb->query($wpdb->prepare(
-	"
-		INSERT INTO $table_name
-		(name, VIN, vehicleConfigId) 
-		VALUES(%s, %s, %d)
-	", $vehicle_name, $vehicle_vin, $id
-	));
-	return $result;
+function add_vehicle($vehicle_name, $vehicle_vin, $vehicle_type) {
+  global $client;
+
+  return $client->addVehicle($vehicle_name, $vehicle_vin, $vehicle_type);
 }
 
 function fetch_vehicles() {
@@ -196,36 +173,21 @@ function fetch_my_vehicles() {
   global $client;
 
   $userId = wp_get_current_user()->ID;
-  $myrows = $client->listVehicles($userId);
-  return $myrows;
+  $myrows = $client->listUserVehicles($userId);
+  return json_decode($myrows);
 }
 
 function fetch_vehicleTypes() {
-	global $wpdb;
-	$table_name = "VehicleConfig";
-	$sql = "SELECT * FROM $table_name";
-	$myrows = $wpdb->get_results($sql);
-	return $myrows;
+  global $client;
+
+  $myrows = $client->listVehicleConfigs();
+  return json_decode($myrows);
 }
 
-function fetch_VIN_by_id($vehicle_id) {
-  global $wpdb;
-  $table_name = "Vehicle";
-  $result = $wpdb->get_var($wpdb->prepare(
-					  "
-		SELECT VIN FROM $table_name WHERE id = %d
-	", intval($vehicle_id)));
-  return $result;
-}
+function remove_vehicle($vin) {
+  global $client;
 
-function remove_vehicle($vehicle_id) {
-	global $wpdb;
-	$table_name = "Vehicle";
-	$wpdb->query(
-		$wpdb->prepare(
-			"
-			DELETE FROM $table_name
-			WHERE id = %s", $vehicle_id));
+  return $client->deleteVehicle($vin);
 }
 
 function add_user_vehicle_association($userID, $vin) {
@@ -419,10 +381,10 @@ function vehicle_build_form(){
 				<option value="-1" selected>Select Vehicle Type: </option>
 				<?php
 					$vehicleTypes =  fetch_vehicleTypes();
-					foreach ($vehicleTypes as $vehicleType) {
-						$id = $vehicleType->id;
+					foreach ($vehicleTypes->result as $vehicleType) {
+						//$id = $vehicleType->id;
 						$name = $vehicleType->name;
-						echo "<option value=".$id.">".$name."</option>";
+						echo "<option value='".$name."'>$name</option>";
 					}
 				?>
 			</select>
@@ -443,13 +405,13 @@ function vehicle_build_form(){
 		<tbody>
 			<?php
 				$myrows = fetch_my_vehicles();
-				foreach ($myrows as $myrow) {
-					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->VIN</td>";
+				foreach ($myrows->result as $myrow) {
+					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->vin</td>";
 					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
 					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 					$output .= $edit;*/
-					$link_arr_paras = array('actionForVehicle' => 'remove', 'vehicleid' => $myrow->id);
+					$link_arr_paras = array('actionForVehicle' => 'remove', 'vehicleid' => $myrow->vin);
 					$link = add_query_arg($link_arr_paras);
 					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 					$output .= $remove;
@@ -589,14 +551,18 @@ if (isset($_POST['Add_configuration'])) {
 	if($vehicle_type == "-1")
 		echo "<font color='red'>Please select one vehicle type</font>";
 	else {
-		add_vehicles($vehicle_name, $vehicle_vin, $vehicle_type);
+	  if (!add_vehicle($vehicle_name, $vehicle_vin, $vehicle_type)) {
+	    echo "<font color='red'>Creating failed</font>";
+	  }
 	}
 } else if( isset ( $_GET['actionForVehicle'] ) ) {
 		// handle action request - show form
 		switch( $_GET['actionForVehicle'] ) {
 			case 'remove' :
 				if ( isset( $_GET['vehicleid'] ) ) {
-					remove_vehicle( $_GET['vehicleid'] );
+				  if (!remove_vehicle( $_GET['vehicleid'] )) {
+				    echo "<font color='red'>Removal failed - maybe the vehicle is in a user association</font>";
+				  }
 				}
 				break;
 		}

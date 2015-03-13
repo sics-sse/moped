@@ -34,27 +34,21 @@ License: GPL
 //require_once('wordpress/wp-load.php');
 require_once(ABSPATH . "custom/globalVariables.php");
 
-function vehicleConfigParser($path) {
-	$webServiceAddress = getWebServiceAddress();
-		//ini_set("soap.wsdl_cache_enabled", "1");  
-		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
-		try  
-		{  
-		  //$param = array('arg0' => $path);  
-			$ret = $client->parseVehicleConfiguration($path);
+function vehicleConfigParser($data) {
+  global $client;
+  try  
+    {  
+      $ret = $client->parseVehicleConfigurationFromStr($data);
 
-			// delete vehicle config file
-			unlink($path);
-
-			if($ret->return == "true")
-				echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
-			else
-				echo "<br/><font color='red'>".$ret->return."</font><br />";
-			return $ret;
-		} catch (SoapFault $exception) {  
-			print $exception;
-			return false;
-		}
+      if($ret->return == "true")
+	echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
+      else
+	echo "<br/><font color='red'>".$ret->return."</font><br />";
+      return $ret;
+    } catch (SoapFault $exception) {  
+    print $exception;
+    return false;
+  }
 }
 
 function vehicle_configuration_upload_form() {
@@ -93,10 +87,14 @@ if (isset($_POST['submit'])) {
       }
     else
       {
-      move_uploaded_file($_FILES["file"]["tmp_name"],
-      ABSPATH."/custom/uploaded/" . $_FILES["file"]["name"]);
-      //echo "Stored in: " . "upload/" . $_FILES["file"]["name"];
-	  vehicleConfigParser(ABSPATH."/custom/uploaded/" . $_FILES["file"]["name"]);
+	$path = $_FILES['file']['tmp_name'];
+	$myfile = fopen($path, "r");
+	$data = fread($myfile, filesize($path));
+	fclose($myfile);
+
+	unlink($path);
+
+	vehicleConfigParser($data);
       }
     }
   }
