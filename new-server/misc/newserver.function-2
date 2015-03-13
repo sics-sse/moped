@@ -278,11 +278,16 @@ CURRENTLY: returns boolean for whether the db was changed
 
 --------------------
 ret
-deleteVehicle
+deleteVehicle(vin)
+
+CURRENTLY: returns boolean for whether the db was changed
 
 --------------------
 ret+something
 infoVehicle(VIN)
+
+CURRENTLY: returns an array of strings
+CURRENTLY: not used
 
 --------------------
 ret+binary
@@ -300,4 +305,27 @@ QUESTION: how does the server know which format is wanted? An added
 VIN argument, or does the server know that this is the car calling (or
 the simulator)? In the former case, we can use this in order to retrieve
 the jar file if we want to.
+
+CURRENTLY: doesn't exist - the server still pushes the apps to the car,
+using another protocol than SOAP
+
+--------------------
+
+ret
+listInstalledApps()
+
+Returns a JSON structure
+{
+  result = list of {appid, vin, ecu, name}
+  error = boolean
+}
+
+CURRENTLY: name ends with .jar
+name is unnecessary if we have appid, and if we don't have appid, we
+should get version as well
+CURRENTLY: used to poll for a completed installation
+
+old get_ack_status is not used, so the ack messages will accumulate in
+the server
+
 
