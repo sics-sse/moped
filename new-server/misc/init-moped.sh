@@ -47,7 +47,10 @@ x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.x
 x = client.service.parseVehicleConfigurationFromStr(x)
 print x
 
-x = client.service.addVehicle("MOPED", "20UYA31581L000000", "MOPED")
+x = client.service.addVehicle("minMOPED", "20UYA31581L000000", "MOPED")
+print x
+
+x=client.service.addUserVehicleAssociation(33, "20UYA31581L000000", True)
 print x
 
 x = client.service.install("20UYA31581L000000", 200, "jdk")
@@ -64,8 +67,11 @@ print x
 ack(client, 201)
 
 
-#x = client.service.uninstall("20UYA31581L000000", 200)
-#print x
+x = client.service.uninstall("20UYA31581L000000", 200)
+print x
+
+x = client.service.uninstall("20UYA31581L000000", 201)
+print x
 
 EOF
 

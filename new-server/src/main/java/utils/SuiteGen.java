@@ -44,7 +44,7 @@ public class SuiteGen {
 				Runtime runtime = Runtime.getRuntime();
 				process = runtime.exec("/bin/sh");
 				// In case cmd.exe application is not initiated
-				Thread.sleep(1000);
+				//Thread.sleep(1000);
 
 				// Write command to console
 				bw = new BufferedWriter(new OutputStreamWriter(
@@ -57,12 +57,14 @@ public class SuiteGen {
 				// Achieve output from console
 				Thread runtimeInput = new Thread(new RuntimeInput());
 				runtimeInput.start();
-				Thread.sleep(500);
+				//Thread.sleep(500);
 				
 				bw.write(cmd + source + "\n");
 				bw.close();
 
-				Thread.sleep(500);
+				process.waitFor();
+
+				//Thread.sleep(1000);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -79,18 +81,18 @@ public class SuiteGen {
 
 	public class RuntimeInput implements Runnable {
 
-		public void run() {
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					process.getInputStream()));
-			String content = null;
-			try {
-				while ((content = br.readLine()) != null) {
-					reply += content + "<br \\>";
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	    public void run() {
+		BufferedReader br = new BufferedReader
+		    (new InputStreamReader(process.getInputStream()));
+		String content = null;
+		try {
+		    while ((content = br.readLine()) != null) {
+			reply += content + "\n";
+		    }
+		} catch (IOException e) {
+		    e.printStackTrace();
 		}
+	    }
 
 	}
 }

@@ -11,7 +11,7 @@ public class CompressUtils {
 		try {
 			ZipFile zipFile = new ZipFile(source);
 			if(!zipFile.isValidZipFile()) {
-				throw new ZipException("Compressed file is invalid, maybe damage");
+				throw new ZipException("Compressed file is invalid, maybe damaged; or does not exist");
 			} else {
 				// Prepare uncompress directory
 //				int lastIndexOf = source.lastIndexOf(File.separator);
@@ -23,7 +23,7 @@ public class CompressUtils {
 				dest = source.substring(0,  source.length()-4); //Remove the .zip-ending, turning this file name into a directory
 				dest += File.separator + "j2meclasses";
 				
-				System.out.println("Ouput directory:"+dest);
+				System.out.println("Output directory:"+dest);
 				File destDir = new File(dest);
 				if(destDir.isDirectory() && !destDir.exists()) {
 					destDir.mkdirs();

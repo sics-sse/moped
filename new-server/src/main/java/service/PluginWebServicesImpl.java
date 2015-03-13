@@ -73,7 +73,7 @@ import java.sql.*;
 
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
-	private SuiteGen suiteGen = new SuiteGen("/lhome/sse/squawk");
+	private SuiteGen suiteGen = new SuiteGen("/home/arndt/moped/moped/squawk");
 	
 	private ServerHandler handler = null;
 	
@@ -1299,6 +1299,28 @@ delete b from VehicleConfig b where name='_deleted_';
 	@WebMethod
 	public String generateSuite(String zipFile, String fullClassName)
 			throws PluginWebServicesException {
+		CompressUtils util = new CompressUtils();
+		System.out.println("Calling unzip on " + zipFile);
+		String dest = util.unzip(zipFile);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Unzipped into: " + dest); 
+		dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
+		
+		String reply = suiteGen.generateSuite(dest); // + "/" + fullClassName);
+		return reply;
+	}
+
+
+	@WebMethod
+	    public String generateSuiteForApp(String appname, String version)
+			throws PluginWebServicesException {
+	    String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
 		CompressUtils util = new CompressUtils();
 		System.out.println("Calling unzip on " + zipFile);
 		String dest = util.unzip(zipFile);

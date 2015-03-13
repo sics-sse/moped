@@ -70,6 +70,10 @@ function vehicle_operation_with_jquery()
 }  
 add_action( 'wp_enqueue_scripts', 'vehicle_operation_with_jquery' );
 
+
+
+
+// Arndt: These two function are probably completely obsolete
 // internal APIs
 function add_new_configuration($ecu_id, $name, $description, $function, $manufactory, $vehicle_id) {
 	global $wpdb;
@@ -109,6 +113,10 @@ function fetch_configurations() {
 	}
 }
 
+
+
+
+
 function reset_default_vehicle($vin) {
   global $client;
 
@@ -125,6 +133,7 @@ function reset_not_default_vehicle($vin) {
   return $client->setUserVehicleAssociationActive($userId, $vin, false);
 }
 
+// Arndt: obsolete
 function remove_configuration($id) {
 	global $wpdb;
 	$table_name = "Ecu";
@@ -469,7 +478,7 @@ function vehicle_configuration_form() {
 		<label for="manufactory">Manufactory</label><br/>
 		<input id="manufactory" name="manufactory" type="text" value=""/>
 	</p>
-	<input type="submit" name="Add_configuration" value="Add"/>
+	<input type="submit" name="Add_configuration" value="Add (ignored)"/>
 </form>
 <h3>Browse Vehicle Configuration</h3>
 <table>
@@ -523,13 +532,7 @@ function vehicle_configuration_form() {
 add_shortcode('vehicle_configuration_form', 'vehicle_configuration_form');
 
 if (isset($_POST['Add_configuration'])) {
-	$ecu_id = $_POST['ecuID'];
-	$name = $_POST['name-field'];
-	$description = $_POST['description'];
-	$function = $_POST['function'];
-	$manufactory = $_POST['manufactory'];
-	$vehicle_id = $_POST['vehicle'];
-	add_new_configuration($ecu_id, $name, $description, $function, $manufactory, $vehicle_id);
+  echo "<font color='red'>This button has no function</font>";
 } else if( isset ( $_GET['action'] ) ) {
 		// handle action request - show form
 		switch( $_GET['action'] ) {

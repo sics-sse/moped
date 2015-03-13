@@ -52,7 +52,6 @@ function application_upload_form(){
 			<input type="submit" name="submit_app" value="Upload" />
 <!-- 		</p> -->
 <!-- 		<p> -->
-		<input type="submit" name="test_comp" value="Upload and compile"/></p>
 	</form>
 </div>
 
@@ -61,9 +60,6 @@ function application_upload_form(){
 add_shortcode('application_upload_form', 'application_upload_form');
 if (isset($_POST['submit_app'])) {
 	application_upload_handler();
-}
-if (isset($_POST['test_comp'])) {
-	test_compilation();
 }
 
 function application_upload_handler() {
@@ -102,86 +98,18 @@ function application_upload_handler() {
 
     if ($res) {
       echo "<font color='green'>$fname was successfully submitted...</font><br/>";
-    }
-    else {
-      echo "<font color='red'>Submission of $fname failed...</font><br/>";
+      $res = $client->generateSuiteForApp($shortName, $version);
+
+      if ($res) {
+	echo "<font color='green'>Suite generation for $fname was successful.</font><br/>";
+
+      } else {
+	echo "<font color='red'>Suite generation for $fname failed.</font><br/>";
+      }
+    } else {
+      echo "<font color='red'>Submission of $fname failed.</font><br/>";
     }
   }
 }
 
-function test_compilation() {
-	echo "<font color='green'>Testing compilation...</font><br/>";
-	
-	/* Store files in the application directory */
-	for($i=0; $i<count($_FILES['app_files']['name']); $i++) {
-		$res = true;
-	
-		$fname = $_FILES['app_files']['name'][$i];
-		$versionIndex = strrpos($fname, "-");
-		
-		/* Check that this is a *.jar-file */
-		if (substr($fname, -4) != '.jar') {
-			echo "<font color='red'>Only *.jar files are currently supported, skipping $fname</font><br/>";
-			continue;
-		}
-		
-		/* Extract the application name (file name without its class type)
-		* and its version (use 1.0 as default) */
-		if ($versionIndex !== false) {
-			$version = substr($fname, $versionIndex+1, -4);
-			$shortName = substr($fname, 0, $versionIndex);
-		}
-		else {
-			$version = "1.0";
-			$shortName = substr($fname, 0, -4);
-		}
-	
-		/* Create a directory for the new application */
-		$targetDir = __DIR__.'/../../moped_plugins/'.$shortName.'/'.$version.'/';
-		if (!file_exists($targetDir)) {
-			$res &= mkdir($targetDir, 0777, true);
-		}
-		
-		$res &= move_uploaded_file($_FILES['app_files']['tmp_name'][$i],
-				$targetDir.$shortName.'.jar'); //.zip???
-		$res &= copy($targetDir.$shortName.'.jar', $targetDir.$shortName.'.zip'); //TEMP
-		
-		$res &= invoke_generateSuite($targetDir.$shortName.'.zip', $shortName);
-		
-		/* Report the result */
-		if ($res) {
-			echo "<font color='green'>$fname was compiled...</font><br/>";
-		}
-		else {
-			echo "<font color='red'>Compilation of $fname failed...</font><br/>";
-		}
-	}
-}
-
-function invoke_generateSuite($zipFile, $fullClassName) {
-	global $client;
-	$reply = "";
-
-	// 		$webServiceAddress = getWebServiceAddress();
-	// 		ini_set("soap.wsdl_cache_enabled", "0");
-	// 		$client = new SoapClient($webServiceAddress, array('encoding'=>'UTF-8'));
-
-	try
-	{
-		// 			$param = array('arg0' => $zipFile, 'arg1' => $fullClassName);
-		// 			$reply = $client->generateSuite($param);
-			
-		$reply = $client->__soapCall("generateSuite",
-				array('arg0' => $zipFile,
-						'name' => $fullClassName));
-		echo "<font color='blue'>Compilation result: $reply</font><br/>";
-	} catch (SoapFault $exception) {
-		print $exception;
-	}
-
-	if ($reply == "")
-		return false;
-	else 
-		return true;
-}
 ?>

@@ -131,18 +131,23 @@ public class ServerHandler extends IoHandlerAdapter {
 				
 				break;
 			case MessageType.UNINSTALL_ACK:
-			    System.out.println("UNINSTALL_ACK not converted");
-				UninstallAckPacket uninstallAckPackage = (UninstallAckPacket) packageMessage;
+				UninstallAckPacket uninstallAckPackage
+				    = (UninstallAckPacket) packageMessage;
 				vin = uninstallAckPackage.getVin();
-				String vehiclePluginNameForUninstallAck = uninstallAckPackage
-						.getPluginName();
+				pluginName
+				    = uninstallAckPackage.getPluginName();
 				
 				//				int uninstallAppId = vehiclePluginDao.getApplicationId(vin, vehiclePluginNameForUninstallAck);
 				//				
 				//				vehiclePluginDao.removeVehiclePlugin(vin,
 				//						vehiclePluginNameForUninstallAck);
 				
-				System.out.println("  " + vin + " " + vehiclePluginNameForUninstallAck);
+
+				String q4 = "delete from VehiclePlugin where vin = '" + vin + "' and name = '" + pluginName + "'";
+				int rows4 = mysql.update(q4);
+				System.out.println("rows4 = " + rows4);
+
+				System.out.println("  " + vin + " " + pluginName);
 
 				//boolean isDelete = Cache.getCache().updateUninstallCacheAndCheckIfRemovable(vin, uninstallAppId, vehiclePluginNameForUninstallAck);
 				//if(isDelete) {

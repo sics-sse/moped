@@ -49,6 +49,10 @@ public interface PluginWebServices {
 	public String generateSuite(String zipFile, String fullClassName) throws PluginWebServicesException;
 
     @WebMethod
+	public String generateSuiteForApp(String appname, String version)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public String [] infoVehicle(String vin) throws PluginWebServicesException;
     @WebMethod
 	public boolean deleteVehicle(String vin) throws PluginWebServicesException;
