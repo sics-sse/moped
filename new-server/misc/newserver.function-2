@@ -1,0 +1,303 @@
+Web services in the server
+
+"GUI" refers to the web portal, currently implemented with wordpress.
+
+
+QUESTION: Wording: do "remove" and "delete" mean different things? Do
+we use both?
+
+
+All web services need user/password. Those are in the table wp_users,
+which is copied from the web portal.
+
+'ret' is a general return type, with at least a boolean return value, and
+a message in case of error. This message could encapsulate several levels
+of error messages (backtrace).
+
+'ret+int' means that it also contains an int.
+
+========================================
+Admin services, only allowed when the user is 'admin' or something like
+that. Meant to be called from the web portal only.
+
+ret updateUserTable(set of pairs (user, password))
+The contents of the table wp_users are replaced.
+
+QUESTION: Note that the first time, this must be done "manually".
+
+========================================
+User services
+
+All services return appropriate errors if the entities referred to don't
+exist, if they are supposed to.
+
+
+--------------------
+ret+int
+uploadApp(app, name, version)
+
+app is a byte array, the contents of a jar file
+The returned number is the appId. There is an error if something went wrong
+when uploading (for example the app not being a jar file).
+The app is placed in an appropriate place in the file system of the server.
+Its state is 'uploaded'.
+
+CURRENTLY: returns boolean
+Does anyone need the appid at this point? It can be looked up later.
+CURRENTLY: no concept of state
+
+QUESTION: can version be any string? (not empty, anyway)
+We may want to define a comparison operator, in order to know which
+version is the latest, but does the server need to know?
+
+--------------------
+ret+something
+infoApp(appId)
+
+Returns info about an app, including its state.
+
+CURRENTLY: doesn't exist
+
+--------------------
+ret
+compileApp(appId)
+
+Runs squawk and produces a .suite file. If all went well, the state of the
+app becomes 'compiled'.
+
+CURRENTLY: arguments are (appname, version)
+Returns a string with output from squawk, because it did that before.
+Is that output interesting when all goes well?
+CURRENTLY: no concept of state
+
+--------------------
+ret
+testApp(appId)
+
+The state must not be 'uploaded'. Some tests are run, and if they fail,
+an error is returned, and the app keeps its state. If the tests
+succeed and the state was 'compiled', the state will be 'tested'.
+
+CURRENTLY: doesn't exist
+
+--------------------
+ret
+installApp(VIN, appId)
+
+If the state of the app is 'tested', schedule an installation of the app
+on the vehicle and return a success value.
+
+The scheduling means that a row in InstalledApps is created with the
+installation marked as pending. It will be performed when the car contacts
+the server the next time. At that time, the app is sent to the car, and
+the server waits for an acknowledgment. When/if the acknowledgment appears,
+the app is marked as installed in the InstalledApps table.
+
+QUESTION: what if the state is 'installed'? Note that actually installing the
+same thing several times on the car is allowed - it may happen if the ack
+got lost.
+
+QUESTION: do we need a way to wait until the car is done installing, or should
+the user simply call infoApp until satisfied?
+
+QUESTION: checking that the app and the vehicle are compatible
+
+QUESTION: if the app runs correctly, does something useful and then stops,
+it may be interesting to restart it. Is installing it again the way to do
+this, or should this be a service in the car, which the remote control can
+call?
+
+CURRENTLY: returns boolean
+CURRENTLY: args are (vin, appid, jvm); we need to determine which jvm
+ is applicable
+CURRENTLY: no concept of state
+
+--------------------
+ret
+uninstallApp(VIN, appId)
+
+If the app has not been installed, return an error.
+If it has, schedule an uninstallation and return a success code.
+In InstalledApps, the uninstallation is marked as pending, etc. Similar to
+installing.
+
+QUESTION: what if there are both an installation and an uninstallation pending?
+
+Perhaps the server should use the uninstallation call when it arrives to
+cancel a pending installation and do nothing more. And the other way
+around, cancel an uninstallation as if it wasn't there.
+Alternatively, if we don't cancel anything, we should remember which one
+arrived first.
+
+CURRENTLY: returns boolean
+CURRENTLY: no concept of state
+
+--------------------
+ret
+deleteApp(appId)
+
+QUESTION: do we have to do uninstall it from all cars? Even then, we
+have to leave the app in its table until the scheduled uninstalling has
+been performed.
+
+CURRENTLY: doesn't exist
+
+--------------------
+ret
+addVehicleConfig(name, byte array xml_document)
+
+The xml document is checked for consistency. If valid, it is stored under
+its name in the server's file system. Any earlier file with the same
+name is replaced.
+
+QUESTION: do we need to handle some identifier for it, more than having
+the name inside the document?
+I think it's good to provide the name as an argument. This reduces the
+risk of uploading something where the user forgot to change the name.
+Of course the document should be checked that the name is the correct one.
+
+QUESTION: some checks to see whether the new vehicleConfig makes a vehicle
+using it incompatible with apps it has installed?
+Maybe some general consistency check call in the server.
+
+CURRENTLY: returns boolean
+CURRENTLY: args are xml document only, not name
+
+--------------------
+ret
+deleteVehicleConfig(name)
+The vehicle configuration named is removed.
+Error if it didn't exist.
+
+QUESTION: error if used, or is it implicitly removed from those vehicles?
+The user may want to know, but should the GUI or the server do the
+calculations?
+Maybe a vehicle must be associated with a vehicleConfig. Then this should
+be specified in addVehicle, and we can't remove a vehicleConfig until
+it is no longer used.
+
+CURRENTLY: doesn't exist
+
+--------------------
+ret
+assignVehicleConfig(name, VIN)
+
+Make the vehicle use the named config.
+
+QUESTION: compatibility check for installed apps?
+
+CURRENTLY: doesn't exist
+
+--------------------
+ret
+listApplications()
+
+Returns a JSON structure
+{
+  result = list of {id, name, publisher, version}
+  error = boolean
+}
+
+--------------------
+ret
+listVehicles()
+
+CURRENTLY: returns an array of VIN strings
+
+--------------------
+ret
+listUserVehicles(int user)
+
+Returns a JSON structure
+{
+  result = list of {vin, name}
+  error = boolean
+}
+
+--------------------
+ret
+listVehicleConfigs(int user)
+
+QUESTION: including which ones are used?
+
+Returns a JSON structure
+{
+  result = list of {name, brand}
+  error = boolean
+}
+
+--------------------
+ret
+listUserVehicleAssociations(int user)
+
+QUESTION: should all information about all users be visible to everyone?
+To reduce the info returned, add an optional argument 'user'?
+
+CURRENTLY: user is the argument
+
+Returns a JSON structure
+{
+  result = list of {vin, active}
+  error = boolean
+}
+
+--------------------
+ret
+addUserVehicleAssociation(user, VIN, boolean activeVehicle)
+
+QUESTION: user must be the one authenticated?
+
+CURRENTLY: returns boolean for whether the db was changed
+
+--------------------
+ret
+setUserVehicleAssociationActive(user, VIN, active)
+
+CURRENTLY: returns boolean for whether the db was changed
+ought to report error if the user/VIN combination doesn't exist.
+being a no-op returns false today.
+This is used today when changing the active vehicle, in a non-atomic
+operation, so something better is wanted.
+
+--------------------
+ret
+deleteUserVehicleAssociation(user, VIN)
+
+QUESTION: user must be the one authenticated?
+
+CURRENTLY: no checks
+CURRENTLY: returns boolean for whether the db was changed
+
+--------------------
+ret
+addVehicle(name, vin, type)
+
+type is the name of a vehicleConfig.
+
+CURRENTLY: returns boolean for whether the db was changed
+
+--------------------
+ret
+deleteVehicle
+
+--------------------
+ret+something
+infoVehicle(VIN)
+
+--------------------
+ret+binary
+downloadApp(appId)
+
+Called by the car. The return value contains the app.
+
+The app is supposed to always exist on the server, but due to bugs, perhaps
+it doesn't, or the car calls the wrong thing. Then an error is returned.
+What the car is supposed to do then is not clear.
+
+QUESTION: how does the car authenticate itself?
+
+QUESTION: how does the server know which format is wanted? An added
+VIN argument, or does the server know that this is the car calling (or
+the simulator)? In the former case, we can use this in order to retrieve
+the jar file if we want to.
+

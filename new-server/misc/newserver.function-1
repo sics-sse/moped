@@ -1,0 +1,435 @@
+From: "Jakob Axelsson" <jax@sics.se>
+To: "'Arndt Jonasson'" <arndt@sics.se>, <avenir@sics.se>
+Subject: RE: server-webservice-spec
+Date: Fri, 27 Feb 2015 07:39:41 +0100
+
+Hej,
+Har kollat ganska noga, och det ser bra ut. Har en del
+kommentarer/funderingar insprängda i texten nedan (markerade med ***JAKOB).
+Hör av dig om någon kommentar är otydlig!
+
+Mvh /Jakob
+
+
+-----Original Message-----
+From: Arndt Jonasson [mailto:arndt@sics.se] 
+Sent: den 26 februari 2015 18:50
+To: jax@sics.se; avenir@sics.se
+Subject: server-webservice-spec
+
+
+En första version. "QUESTION" betyder inte att någon behöver svara på dem
+precis nu.
+
+
+Web services in the server
+
+"GUI" refers to the web portal, currently implemented with wordpress.
+
+
+QUESTION: Wording: do "remove" and "delete" mean different things? Do we use
+both?
+***JAKOB: Tror det borde vara samma sak, och vi borde använda en term.
+
+All web services need user/password. Those are in the table wp_users, which
+is copied from the web portal.
+
+'ret' is a general return type, with at least a boolean return value, and a
+message in case of error. This message could encapsulate several levels of
+error messages (backtrace).
+
+'ret+int' means that it also contains an int.
+
+========================================
+Admin services, only allowed when the user is 'admin' or something like
+that. Meant to be called from the web portal only.
+
+ret updateUserTable(set of pairs (user, password)) The contents of the table
+wp_users are replaced.
+
+QUESTION: Note that the first time, this must be done "manually".
+
+========================================
+User services
+
+All services return appropriate errors if the entities referred to don't
+exist, if they are supposed to.
+
+
+--------------------
+ret+int
+uploadApp(app, name, version)
+
+app is a jar file
+The returned number is the appId. There is an error if something went wrong
+when uploading (for example the app not being a jar file).
+The app is placed in an appropriate place in the file system of the server.
+Its state is 'uploaded'.
+
+QUESTION: can version be any string? (not empty, anyway) We may want to
+define a comparison operator, in order to know which version is the latest,
+but does the server need to know?
+
+*** JAKOB:
+Jag lutar åt att vi bör ha en logik kring versionsnummerordning. Vi borde
+väl kräva att en uppladdad version har högre nummer än den senaste
+uppladdade (vilket indirekt medför att vi inte tillåter att man skriver över
+en existerande version). Annars kan det ju bli kaos, en bil som har en viss
+version uppladdad, och den versionen ändras på servern, kommer ju vara
+osynkad fast det inte riktigt går att se.
+
+Kanske ska vi bara bestämma att versionsnummer är på formatet
+x1.x2.x3.x4...... (godtycklig längd) där xi är ett naturligt tal. En version
+x < en annan version y om för alla i < j: xi = yi, och x(i+1) < y(i+1),
+eller något i den stilen.
+
+Vi pratade ju om att Maven på något sätt kunde hjälpa oss här, men jag har
+glömt detaljerna. Avenir?
+
+--------------------
+ret+something
+infoApp(appId)
+
+Returns info about an app, including its state.
+
+*** JAKOB:
+Behövs det även en metod för att fråga servern om appId för en viss
+kombination (name, version)? Vi använder ju appId som referens i de flesta
+metoder, så man måste kunna få fram detta på något sätt. Kanske vill man
+även kunna be om appId för den senaste versionen av appen name. 
+
+--------------------
+ret
+compileApp(appId)
+
+Runs squawk and produces a .suite file. If all went well, the state of the
+app becomes 'compiled'.
+
+*** JAKOB:
+Skulle egentligen vilja kalla denna buildApp. Just nu är det ju mest en
+kompilering, men man kanske senare vill lägga in andra saker under denna
+rubrik. Tillståndet bör då heta 'built'.
+
+--------------------
+ret
+testApp(appId)
+
+The state must not be 'uploaded'. Some tests are run, and if they fail, an
+error is returned, and the app keeps its state. If the tests succeed and the
+state was 'compiled', the state will be 'tested'.
+
+*** JAKOB:
+Tror vi ska ha ett steg till, som jag skulle vilja kalla deployApp(appId). I
+detta steg görs appen tillgänglig för nedladdning, men man kan också tänka
+sig att en bil kan välja att prenumerera på uppdateringar, och då görs som
+en del i detta steg en uninstallApp på den gamla versionen följt av en
+installApp på den nya för de bilar som prenumererar. Denna prenumerering kan
+hanteras med en kolumn (boolean) till i den tabell som håller reda på vilka
+appar som är installerade i bilen.
+
+--------------------
+ret
+installApp(appId, VIN)
+
+If the state of the app is 'tested', schedule an installation of the app on
+the vehicle and return a success value.
+
+*** JAKOB:
+Tillståndet som är precondition blir 'deployed' enligt ovan. Man behöver
+också "pinga" bilen att det finns en uppdatering (vi får hitta på en bättre
+term än "pinga"...).
+
+Kanske ska man här skicka med en parameter som säger ifall man vill
+prenumerera på uppdaterade versioner?
+
+
+The scheduling means that a row in InstalledApps is created with the
+installation marked as pending. It will be performed when the car contacts
+the server the next time. At that time, the app is sent to the car, and the
+server waits for an acknowledgment. When/if the acknowledgment appears, the
+app is marked as installed in the InstalledApps table.
+
+QUESTION: what if the state is 'installed'? Note that actually installing
+the same thing several times on the car is allowed - it may happen if the
+ack got lost.
+
+*** JAKOB:
+Hur ska vi göra med olika versioner här. Ska det vara tillåtet att
+installera två olika versioner av samma app samtidigt i samma bil? Jag tror
+det är olyckligt, de kommer ju normalt sett vilja göra snarlika saker, och
+därigenom kommer de i konflikt med varandra. Två vägar: Antingen blir det
+fel om man försöker installera en ny version av en redan installerad app,
+dvs man tvingas göra uninstall först, eller så tas den gamla bort
+automatiskt.
+
+
+QUESTION: do we need a way to wait until the car is done installing, or
+should the user simply call infoApp until satisfied?
+
+QUESTION: checking that the app and the vehicle are compatible
+
+*** JAKOB:
+Här skulle man nog vilja ha en web service som gör detta, dvs man kan fråga
+om det är lämpligt att lägga till en viss app till en existerande
+konfiguration. Observera att konfiguration är dels bilen, men också den
+kombination av appar som finns installerad redan. 
+
+Finns mycket "future research" att göra inom detta område, så det vore bra
+att skapa en placeholder för den redan nu. Just nu kanske den blir ganska
+tom dock.
+
+
+QUESTION: if the app runs correctly, does something useful and then stops,
+it may be interesting to restart it. Is installing it again the way to do
+this, or should this be a service in the car, which the remote control can
+call?
+
+*** JAKOB:
+Vi valde ett enkelt koncept för app-exekvering: När de installeras så
+startar de automatiskt och kör tills de når sitt slut eller att bilen stängs
+av. Eventuella moder får hanteras inuti appen, eftersom det är svårt att
+hitta ett enkelt och generellt koncept för detta. I min tanke ser en typisk
+app ut så här ungefär:
+
+while (true) {
+    waitForSomeEvent();
+    doSomeStuff();
+}
+
+Problemet just nu är att vi inte har några användarinitierade events. Jag
+skulle vilja lägga till i appen på mobiltelefonen några generiska knappar
+(3-4 st) som man kan trycka på och som kan detekteras genom portar i VCU
+PIRTE. Detta är tekniskt okomplicerat (det kan hanteras på exakt samma sätt
+som körreglagen), men skär igenom hela systemet, så jag föreslår att vi
+väntar med detta ett tills vi är nöjda med servern.
+
+--------------------
+ret
+uninstallApp(appId, VIN)
+
+*** JAKOB:
+Kanske vill man också ha en uninstallAllApps(VIN)? För att nollställa bilen?
+
+
+If the app has not been installed, return an error.
+If it has, schedule an uninstallation and return a success code.
+In InstalledApps, the uninstallation is marked as pending, etc. Similar to
+installing.
+
+QUESTION: what if there are both an installation and an uninstallation
+pending?
+
+Perhaps the server should use the uninstallation call when it arrives to
+cancel a pending installation and do nothing more. And the other way around,
+cancel an uninstallation as if it wasn't there.
+Alternatively, if we don't cancel anything, we should remember which one
+arrived first.
+
+*** JAKOB:
+Man kan fundera på vad som är bästa lösningen här. En variant (som du
+antyder) är att man har en tabell för schemaläggning, som innehåller alla
+installeringar/avinstalleringar i tidsordning. Då får man mot bilen erbjuda
+en tjänst "ge mig nästa ändring" som då ger första raden i tabellen
+tillbaka, inkl. en taskID. När bilen sedan gör ack så skickar den med detta
+taskID, varvid raden kan raderas. Sedan ber bilen om nästa ändring igen, och
+fortsätter så tills serverns svarar att det inte finns några. Kanske är
+detta bästa sättet. Man får dock vara lite vaksam, det innebär ju t ex att
+man även måste kolla i denna tabell ifall man tänker sig att ta bort en bil,
+eller en app, ur databasen.
+
+Det jag ursprungligen hade i åtanke var att man bara skulle markera ett
+tillstånd i den tabell som innehåller associeringen (VIN, appID). Man kunde
+då där markera tillstånd i stil med pending_installation, installed,
+pending_uninstallation, etc. 
+
+--------------------
+ret
+deleteApp(appId)
+
+QUESTION: do we have to do uninstall it from all cars? Even then, we have to
+leave the app in its table until the scheduled uninstalling has been
+performed.
+
+*** JAKOB:
+Japp, man måste vänta på ack att den verkligen är borttagen. Möjligen skulle
+man kunna ha en undeployApp-tjänst / tillstånd, som gör det omöjligt att
+nyinstallera den.
+
+--------------------
+ret
+addVehicleConfig(name, xml document)
+
+The xml document is checked for consistency. If valid, it is stored under
+its name in the server's file system. Any earlier file with the same name is
+replaced.
+
+QUESTION: do we need to handle some identifier for it, more than having the
+name inside the document?
+I think it's good to provide the name as an argument. This reduces the risk
+of uploading something where the user forgot to change the name.
+Of course the document should be checked that the name is the correct one.
+
+QUESTION: some checks to see whether the new vehicleConfig makes a vehicle
+using it incompatible with apps it has installed?
+Maybe some general consistency check call in the server.
+
+*** JAKOB:
+Låter rimligt med en konsistenskoll. Kanske borde vi göra samma sak för
+XML-filen som följer med när vi laddar upp en app?
+
+--------------------
+ret
+deleteVehicleConfig(name)
+The vehicle configuration named is removed.
+Error if it didn't exist.
+
+QUESTION: error if used, or is it implicitly removed from those vehicles?
+The user may want to know, but should the GUI or the server do the
+calculations?
+Maybe a vehicle must be associated with a vehicleConfig. Then this should be
+specified in addVehicle, and we can't remove a vehicleConfig until it is no
+longer used.
+
+*** JAKOB:
+Det bör inte gå att ta bort en vehicleConfig som används.
+
+--------------------
+ret
+assignVehicleConfig(name, VIN)
+
+Make the vehicle use the named config.
+
+QUESTION: compatibility check for installed apps?
+
+--------------------
+ret
+listApps()
+
+--------------------
+ret
+listVehicles()
+
+--------------------
+ret
+listVehicleConfigs()
+
+QUESTION: including which ones are used?
+
+--------------------
+ret
+listUserVehicleAssocs()
+
+QUESTION: should all information about all users be visible to everyone?
+To reduce the info returned, add an optional argument 'user'?
+
+--------------------
+ret
+addUserVehicleAssoc(user, VIN)
+
+QUESTION: user must be the one authenticated?
+
+--------------------
+ret
+deleteUserVehicleAssoc(user, VIN)
+
+QUESTION: user must be the one authenticated?
+
+--------------------
+ret
+addVehicle
+
+--------------------
+ret
+deleteVehicle
+
+--------------------
+ret+something
+infoVehicle(VIN)
+
+
+
+
+
+
+
+
+jax:
+Jag kom på en tjänst till som nog kommer att behövas, för att täcka fallet
+att en bil "tappar minnet" (t ex om en hårdvara byts ut). Bilen har kanske
+fortfarande samma identitet (VIN), men de appar som servern tror finns
+installerade finns inte längre. Det man då behöver göra är att uppdatera
+status i tabellen, och schemalägga nya install för de appar som servern tror
+att bilen har. Kanske borde heta reinstallAllApps(VIN), eller något i den
+stilen.
+
+arndt:
+Klarar man sig inte med att första kolla vilka appar som påstås vara
+installerade, med listApps, och sedan installera om dem en i taget?
+
+jax:
+ >  > Jo, just det, det gör man ju förstås, givet att tjänsten  >
+downloadApp(appId)  > som returnerar appen finns.
+
+arndt:
+> Jag missförstår kanske. Menar du
+att downloadApp(appId) är det jag kallar  > installApp(appId, VIN)?
+
+ > Men att få tillbaka jar-filen kan kanske vara intressant i något annat  >
+sammanhang, om det är det du menar.
+ >
+ > Jag funderar på din föreslagna uninstallAllApps(VIN). Med den kan man
+göra  > likadant, att man loopar, men i det fallet kanske det i stället
+finns någon  > funktion typ "factory reset" på bilen? (som dock inte tar
+bort allt på  > TCU:n, helst, så det är väl snarast en funktion i TCU:n).
+
+
+jax:
+ > installApp(appId, VIN) schemalägger väl bara appen för installation?
+ > downloadApp initieras av bilen för att faktiskt hämta appen
+(suite/jar-fil,  > beroende på typ av bil).
+ >
+ > En factory reset kan säkert vara en bra funktion att ha i bilens web  >
+service-uppsättning.
+
+
+arndt:
+Just det ja, en downloadApp som bilen anropar behövs också. Men menade du
+att bilen ber om att få allt den ska ha, eller att användaren talar om för
+servern att allt på bilen ska dit igen?
+
+Jag tror jag implementerar det nya i två steg: först med en install som
+idag, som skickar appen till bilen, och i andra steget med en install som
+beskriven, och då ändra kommunikationen i ECM också. Men det kanske bara går
+nån dag mellan steg ett och två.
+
+jax:
+Har inte tänkt igenom detaljerna för detta use case. Men om vi utgår ifrån
+att bilen alltid ska fråga servern om vad den ska ha, så ska man som
+användare bara "pinga" bilen. Ett sätt är ju att bilen, när den får en
+"ping", först frågar servern vad den tycker att bilen borde ha, och sedan
+jämför bilen detta med vad den faktiskt har, och sedan steg för steg hämtar
+detta. Då hanterar man nog alla situationer enligt en enkel princip. Däremot
+får man ingen direkt kontroll på i vilken ordning saker hämtas, men det
+kanske man kan leva med.
+
+Principen skulle alltså bli så här:
+- Servern har alltid koll på bör-värdet, dvs hur bilen borde se ut enligt
+användarens önskemål. 
+- Användaren ändrar bör-värdet genom att gå in på servern. 
+- När börvärdet ändras markeras de ändrade posterna med någon form av
+"unacknowledged".
+- Dessutom "pingas" bilen.
+- När ett "ping" kommer (eller när bilen bootar om) så hämtar bilen aktuellt
+bör-värde, och jämför detta med är-värdet, samt genomför ändringarna steg
+för steg.
+- När en ändring genomförts så meddelar bilen detta, med någon form av
+"ack", och detta registreras av servern genom att posten ändras till
+"acknowledged". (I fallet borttagning av app från bilen så kan man även ta
+bort denna rad i tabellen.)
+
+Man skulle kunna tänka sig att bilen i normalfallet bara hämtar de poster
+som är "unacknowledged". För att hantera situationen att man har gjort en
+hårdvaruförändring och behöver återställa allting, så behöver man då bara
+sätta alla poster till "unacknowledged" igen, så funkar mekanismen.
+
+Detta blev kanske lite svamligt, hoppas ni förstår ungefär hur jag menar?
