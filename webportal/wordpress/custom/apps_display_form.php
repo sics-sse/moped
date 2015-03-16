@@ -98,7 +98,12 @@ function apps_display_form(){
 	
 	<?php 
 	if (isset($_POST['Jdk_install_x'])) {
-		$ret = invoke_install_webservice($_POST['app_id'], 'jdk');
+	  $myvin = getVIN();
+	  if (!$myvin) {
+	    print "<font color='red'>No active vehicle: add one to your list of cars, and mark it as active</font>";
+	  } else {
+	    $ret = invoke_install_webservice($_POST['app_id'], 'jdk');
+	  }
 	}
 }
 add_shortcode('apps_display_form', 'apps_display_form');

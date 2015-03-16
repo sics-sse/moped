@@ -94,11 +94,11 @@ function application_upload_handler() {
     $myfile = fopen($path, "r");
     $data = fread($myfile, filesize($path));
     fclose($myfile);
-    $res = $client->transferBytes($data, $shortName, $version);
+    $res = $client->uploadApp($data, $shortName, $version);
 
     if ($res) {
       echo "<font color='green'>$fname was successfully submitted...</font><br/>";
-      $res = $client->generateSuiteForApp($shortName, $version);
+      $res = $client->compileApp($shortName, $version);
 
       if ($res) {
 	echo "<font color='green'>Suite generation for $fname was successful.</font><br/>";

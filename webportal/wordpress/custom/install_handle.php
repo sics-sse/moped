@@ -8,7 +8,7 @@ function invoke_install_webservice($app_id, $jvm) {
   try  
     {  
       $vin = getVIN();
-      $client->install($vin, $app_id, $jvm);
+      $client->installApp($vin, $app_id, $jvm);
       for ($i=0; $i<30; $i++) {
 	$ret = $client->get_ack_status($vin, $app_id);
 
