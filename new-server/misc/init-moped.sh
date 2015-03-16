@@ -38,13 +38,10 @@ from testmoped import *
 import base64
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest3/target/PluginCreationTest3-1.0.jar"))
-s.transferBytes(x, "PluginCreationTest3", "1.0")
-
-#x = client.service.parseVehicleConfiguration("/home/arndt/moped/system1.xml")
-#print x
+s.uploadApp(x, "PluginCreationTest3", "1.0")
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.xml"))
-x = client.service.parseVehicleConfigurationFromStr(x)
+x = client.service.addVehicleConfig(x)
 print x
 
 x = client.service.addVehicle("minMOPED", "20UYA31581L000000", "MOPED")
@@ -53,25 +50,25 @@ print x
 x=client.service.addUserVehicleAssociation(33, "20UYA31581L000000", True)
 print x
 
-x = client.service.install("20UYA31581L000000", 200, "jdk")
+x = client.service.installApp("20UYA31581L000000", 200, "jdk")
 print x
 
 ack(client, 200)
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest2/target/PluginCreationTest2-1.8.jar"))
-s.transferBytes(x, "PluginCreationTest2", "1.8")
+s.uploadApp(x, "PluginCreationTest2", "1.8")
 
-x = client.service.install("20UYA31581L000000", 201, "jdk")
+x = client.service.installApp("20UYA31581L000000", 201, "jdk")
 print x
 
 ack(client, 201)
 
 
-x = client.service.uninstall("20UYA31581L000000", 200)
+x = client.service.uninstallApp("20UYA31581L000000", 200)
 print x
 
-x = client.service.uninstall("20UYA31581L000000", 201)
-print x
+#x = client.service.uninstallApp("20UYA31581L000000", 201)
+#print x
 
 EOF
 

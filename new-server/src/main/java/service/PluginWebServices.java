@@ -13,8 +13,8 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
     @WebMethod
-	public boolean transferBytes(byte [] data,
-				     String filename, String version)
+	public boolean uploadApp(byte [] data,
+				 String appname, String version)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -22,11 +22,11 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 	
     @WebMethod
-	public boolean install(String vin, int appID, String jvm)
+	public boolean installApp(String vin, int appID, String jvm)
 	throws PluginWebServicesException;
 	
     @WebMethod
-	public boolean uninstall(String vin, int appID)
+	public boolean uninstallApp(String vin, int appID)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -38,30 +38,28 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean parseVehicleConfiguration(String path)
+	public boolean addVehicleConfig(byte [] data) 
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean parseVehicleConfigurationFromStr(byte [] data) 
+	public String compileApp(String appname, String version)
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String generateSuite(String zipFile, String fullClassName) throws PluginWebServicesException;
-
-    @WebMethod
-	public String generateSuiteForApp(String appname, String version)
+	public String [] infoVehicle(String vin)
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String [] infoVehicle(String vin) throws PluginWebServicesException;
-    @WebMethod
-	public boolean deleteVehicle(String vin) throws PluginWebServicesException;
+	public boolean deleteVehicle(String vin)
+	throws PluginWebServicesException;
+
     @WebMethod
 	public boolean addVehicle(String name, String vin, String type)
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String [] listVehicles() throws PluginWebServicesException;
+	public String [] listVehicles()
+	throws PluginWebServicesException;
 
     @WebMethod
 	public String listUserVehicles(int user_id)
@@ -80,6 +78,10 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
+	public String listInstalledApps()
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public boolean addUserVehicleAssociation(int user_id, String vin,
 						 boolean defaultVehicle)
 	throws PluginWebServicesException;
@@ -94,7 +96,8 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String jsontest() throws PluginWebServicesException;
+	public String jsontest()
+	throws PluginWebServicesException;
 
     @WebMethod
 	public boolean checkpassword(String pwd, String hash)

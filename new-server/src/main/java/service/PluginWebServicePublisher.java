@@ -69,7 +69,7 @@ public class PluginWebServicePublisher {
 			try {
 				String vin = "20UYA31581L000000";
 				handler.messageReceived(new ProtocolCodecSession(), new InitPacket(vin));
-				pws.install(vin, 25, "jdk");
+				pws.installApp(vin, 25, "jdk");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
