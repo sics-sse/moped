@@ -130,6 +130,7 @@ public class SocketEcuManager implements EcuManager {
 	}
 
 	public void sendMessage(Message message) {
+		System.out.println("<<< ecm-core/SocketEcuManager " + message.getMessageType());
 		switch (message.getMessageType()) {
 		case MessageType.INSTALL:
 			InstallMessage installMessage = (InstallMessage) message;
@@ -629,6 +630,7 @@ public class SocketEcuManager implements EcuManager {
 			byte[] pluginNameBytes;
 
 			byte messageType = data[0];
+		System.out.println(">>> ecm-core/SocketEcuManager " + messageType);
 			switch (messageType) {
 			case MessageType.REQUEST_ID_ACK:
 				int id = 0;

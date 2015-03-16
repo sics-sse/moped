@@ -50,6 +50,7 @@ public class Ecm {
 	private HashMap<Byte, String> id2name4UninstallCache = new HashMap<Byte, String>();
 	
 	public Ecm() {
+	    System.out.println("Ecm new");
 		dbDao = new DataTableDao();
 	}
 
@@ -64,6 +65,9 @@ public class Ecm {
 		commuManager.setEcm(this);
 		carDriver.setEcm(this);
 //		iotManager.setEcm(this);
+
+	    System.out.println("Ecm init");
+
 	}
 	
 	public void start() {
@@ -72,6 +76,7 @@ public class Ecm {
 		new Thread(iotManager).start();
 		new Thread(commuManager).start();
 		
+		System.out.println("Ecm start");
 		// TODO: make it dynamic later
 		// loadPlugins
 		loadPlugins(2);
@@ -85,9 +90,10 @@ public class Ecm {
 		HashMap<String, DataRecord> installedApps = getInstalledApps(ecuId);
 		
 		//TODO: TEMP
-		if (installedApps != null)
+		if (installedApps != null) {
 			System.out.println("Nr installed apps: " + installedApps.size());
-		else
+			System.out.println(installedApps);
+		} else
 			System.out.println("installedApps: NULL!!!!!!!!!!!!!!");
 		
 		if (!installedApps.isEmpty()) {
@@ -198,12 +204,14 @@ public class Ecm {
 		byte pluginId;
 		
 		int messageType = message.getMessageType();
+		System.out.println(">>> ecm-core/Ecm " + messageType);
 		switch (messageType) {
 		case MessageType.INSTALL:
 		case MessageType.UNINSTALL:
 		case MessageType.RESTORE:
 		case MessageType.LOAD:
 		case MessageType.PWM:
+		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			ecuManager.sendMessage(message);
 			break;
 		case MessageType.INSTALL_ACK:
@@ -211,14 +219,18 @@ public class Ecm {
 			InstallAckMessage installAckMessage = (InstallAckMessage) message;
 			pluginId = installAckMessage.getPluginId();
 			pluginName = installAckMessage.getPluginName();
-//			System.out.println("@@@ pluginName:"+pluginName);
+			System.out.println("INSTALL_ACK in Ecm");
+			System.out.println("@@@ pluginName:"+pluginName);
 			updateDB(pluginId);
+			System.out.println("@@@ pluginId:"+pluginId);
 			int appId = getAppId(pluginName);
+			System.out.println("@@@ appId:"+appId);
 			if(pluginName.contains(".zip")) {
 				pluginName = pluginName.replace(".zip", ".suite");
 			}
 			InstallAckPacket installAckPacket = new InstallAckPacket(getVin(), appId, 
 					pluginName);
+		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			commuManager.write(installAckPacket);
 			break;
 		case MessageType.UNINSTALL_ACK:
@@ -233,12 +245,15 @@ public class Ecm {
 			deletePlugInFile(location);
 			removeRecord(pluginName);
 			
+			System.out.println("UNINSTALL_ACK pluginName " + pluginName);
+
 			if(pluginName.contains(".zip")) {
 				pluginName = pluginName.replace(".zip", ".suite");
 			}
 			UninstallAckPacket uninstallAckPacket = new UninstallAckPacket(
 					getVin(), pluginName);
 			
+		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			commuManager.write(uninstallAckPacket);
 			break;
 		case MessageType.RESTORE_ACK:
@@ -246,6 +261,7 @@ public class Ecm {
 			RestoreAckMessage restoreAckMessage = (RestoreAckMessage) message;
 			pluginName = restoreAckMessage.getPluginName();
 			RestoreAckPacket restoreAckPacket = new RestoreAckPacket(getVin(), pluginName);
+		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			commuManager.write(restoreAckPacket);
 			break;
 		case MessageType.PUBLISH:
@@ -256,6 +272,7 @@ public class Ecm {
 			System.out.println("[Publish in ECM] - key: " + key + ", value: "
 					+ value);
 			PublishPacket publishPacket = new PublishPacket(key, value);
+		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			iotManager.sendPacket(publishPacket);
 			break;
 		case MessageType.LOAD_ACK:
@@ -273,7 +290,9 @@ public class Ecm {
 
 	// access to DB
 	public void insertTmpDBRecord(Byte pluginId, DataRecord dataRecord) {
-		tmpDBRecords.put(pluginId, dataRecord);
+	    System.out.println("Ecm insert tmp " + pluginId);
+	    tmpDBRecords.put(pluginId, dataRecord);
+	    System.out.println(tmpDBRecords);
 	}
 	
 	public String getPluginNameFromTmpDB(Byte pluginId) {
@@ -286,12 +305,17 @@ public class Ecm {
 	}
 
 	private void removeRecord(String pluginName) {
-		dbDao.removeRecord(pluginName);
+	    System.out.println("Ecm remove " + pluginName);
+	    dbDao.removeRecord(pluginName);
 	}
 	
 	private void updateDB(byte pluginId) {
 		DataRecord dataRecord = tmpDBRecords.get(pluginId);
+		System.out.println("ecm updateDB " + pluginId);
+	    System.out.println(tmpDBRecords);
+		System.out.println("ecm updateDB " + dataRecord);
 		String pluginName = dataRecord.getPluginName();
+		System.out.println("ecm updateDB " + pluginName);
 		dbDao.insertRecord(pluginName, dataRecord);
 		tmpDBRecords.remove(pluginId);
 	}

@@ -82,6 +82,19 @@ public class ClientHandler extends IoHandlerAdapter {
 		session.write(initPackage);
 	}
 
+	@Override
+	public void sessionClosed(IoSession session) throws Exception {
+		String vin = manager.getVin();
+		System.out.println("Closed session " + session.getRemoteAddress() + " from vin:" + vin);
+
+	}
+
+        @Override
+	public void exceptionCaught(IoSession session, Throwable t) throws Exception {
+		String vin = manager.getVin();
+		System.out.println("Exception " + session.getRemoteAddress() + " from vin:" + vin + " " + t);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,7 +115,12 @@ public class ClientHandler extends IoHandlerAdapter {
 			out.writeObject(packet);
 			byte[] testBytes = bos.toByteArray();
 			System.out.print("TEST BYTES:");
-			for (int i = 0; i < testBytes.length; i++) {
+			for (int i = 0; i < 10; i++) {
+				System.out.print(" " + (testBytes[i] & 0xFF));
+			}
+			System.out.println("");
+			System.out.print("... ");
+			for (int i = testBytes.length - 10; i < testBytes.length; i++) {
 				System.out.print(" " + (testBytes[i] & 0xFF));
 			}
 			System.out.println("");
@@ -122,6 +140,7 @@ public class ClientHandler extends IoHandlerAdapter {
 		}
 		
 		Packet p = (Packet) packet;
+		System.out.println(">>> ecm-core/ClientHandler " + p.getMessageType());
 		switch (p.getMessageType()) {
 		case MessageType.INSTALL:
 			System.out.println("Install Packet arrived");
@@ -168,6 +187,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			
 			// send back about APP arrival in the Linux
 			InstallLinuxAckPacket installLinuxAckPacket = new InstallLinuxAckPacket(manager.getVin(), pluginName);
+		System.out.println("<<< ecm-core/ClientHandler INSTALL_LINUX_ACK");
 			manager.write(installLinuxAckPacket);
 			
 			int appId = installPacketData.getAppId();
@@ -208,6 +228,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			InstallMessage installMessage = new InstallMessage(reference, pluginIdAllocator++, executablePluginName,
 					callbackPortID, portInitialContext, portLinkingContext, binaryFile);
 
+		System.out.println("<<< ecm-core/ClientHandler INSTALL");
 			manager.getEcm().process(installMessage);
 
 			System.out.println("Package installed");
@@ -235,6 +256,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			UninstallMessage uninstallMessage = new UninstallMessage(reference, pluginIdAllocator++,
 					pluginName, callbackPortID);
 
+		System.out.println("<<< ecm-core/ClientHandler UNINSTALL");
 			manager.getEcm().process(uninstallMessage);
 		}
 	}
@@ -267,6 +289,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			RestoreMessage restoreMessage = new RestoreMessage(reference, pluginName,
 					callbackPortID, portInitialContext, binaryFile);
 
+		System.out.println("<<< ecm-core/ClientHandler RESTORE");
 			manager.getEcm().process(restoreMessage);
 		}
 	}

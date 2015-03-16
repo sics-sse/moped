@@ -85,13 +85,13 @@ public class SocketCommunicationManager implements CommunicationManager {
 					isStart = true;
 					failCnt = 0;
 				} catch (Exception e) {
-					System.out.println("Warning! Client failed to connect to " + server + ":" + port);
+				    //System.out.println("Warning! Client failed to connect to " + server + ":" + port);
 					System.out.println(e.toString());
 					// System.exit(-1);
 					isStart = false;
 					failCnt++;
 					
-					if (failCnt >= 5) {
+					if (failCnt >= 30) {
 						System.out.println("Error! Giving up attempts to connect to " + server + ":" + port);
 						break;
 					}
@@ -103,7 +103,7 @@ public class SocketCommunicationManager implements CommunicationManager {
 				}
 				else {
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -69,6 +69,7 @@ public class CanEcuManager implements EcuManager {
 				byte[] data = receiver.receive();
 				if(data != null) {
 					byte[] parsedData = parseByteData(data[0]);
+		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 					switch (parsedData[0]) {
 					case MessageType.INSTALL_ACK:
 						if(ecm.hasPluginInTmpDB(parsedData[1])) {
@@ -192,6 +193,7 @@ public class CanEcuManager implements EcuManager {
 
 	@Override
 	public void sendMessage(Message message) {
+		System.out.println("<<< ecm-core/CanEcuManager " + message.getMessageType());
 		switch (message.getMessageType()) {
 		case MessageType.INSTALL:
 			System.out.println("[CanEcuManager - sendInstallMessage(Message)]");
