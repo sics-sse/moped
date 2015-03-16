@@ -16,83 +16,83 @@ import java.io.OutputStreamWriter;
 //import static java.nio.file.StandardCopyOption.*;
 
 public class SuiteGen {
-	// executable process
-	private static Process process;
-	private String squawkDir;
-	private String cmd;
-	private String reply;
+    // executable process
+    private static Process process;
+    private String squawkDir;
+    private String cmd;
+    private String reply;
 	
-	public SuiteGen(String squawkDir) {
-		this.squawkDir = squawkDir;
-		cmd = "./d.sh user-suite ";
-	}
+    public SuiteGen(String squawkDir) {
+	this.squawkDir = squawkDir;
+	cmd = "./d.sh user-suite ";
+    }
 
-	public String getCmd() {
-		return cmd;
-	}
+    public String getCmd() {
+	return cmd;
+    }
 
-	public String generateSuite(String source) {
-		System.out.println("generating suite from source: " + source);
-		System.out.println("squawkDir = " + squawkDir);
+    public String generateSuite(String source) {
+	System.out.println("generating suite from source: " + source);
+	System.out.println("squawkDir = " + squawkDir);
 		
-		reply = "";
-		File sourceFileFolder = new File(source);
-		if (sourceFileFolder.exists() && sourceFileFolder.isDirectory()) {
-			BufferedWriter bw = null;
+	reply = "";
+	File sourceFileFolder = new File(source);
+	if (sourceFileFolder.exists() && sourceFileFolder.isDirectory()) {
+	    BufferedWriter bw = null;
 
-			try {			
-				Runtime runtime = Runtime.getRuntime();
-				process = runtime.exec("/bin/sh");
-				// In case cmd.exe application is not initiated
-				//Thread.sleep(1000);
+	    try {			
+		Runtime runtime = Runtime.getRuntime();
+		process = runtime.exec("/bin/sh");
+		// In case cmd.exe application is not initiated
+		//Thread.sleep(1000);
 
-				// Write command to console
-				bw = new BufferedWriter(new OutputStreamWriter(
-						process.getOutputStream()));
+		// Write command to console
+		bw = new BufferedWriter(new OutputStreamWriter
+					(process.getOutputStream()));
 				
-				// Go to directory of squawk
-				bw.write("cd "+squawkDir+"\n");
-				bw.flush();
+		// Go to directory of squawk
+		bw.write("cd "+squawkDir+"\n");
+		bw.flush();
 				
-				// Achieve output from console
-				Thread runtimeInput = new Thread(new RuntimeInput());
-				runtimeInput.start();
-				//Thread.sleep(500);
+		// Achieve output from console
+		Thread runtimeInput = new Thread(new RuntimeInput());
+		runtimeInput.start();
+		//Thread.sleep(500);
 				
-				bw.write(cmd + source + "\n");
-				bw.close();
+		bw.write(cmd + source + "\n");
+		bw.close();
 
-				process.waitFor();
+		process.waitFor();
 
-				//Thread.sleep(1000);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} 
-		else
-			System.out.println("Didn't find a source folder");
-		
-		return reply;
-	}
-
-	public class RuntimeInput implements Runnable {
-
-	    public void run() {
-		BufferedReader br = new BufferedReader
-		    (new InputStreamReader(process.getInputStream()));
-		String content = null;
-		try {
-		    while ((content = br.readLine()) != null) {
-			reply += content + "\n";
-		    }
-		} catch (IOException e) {
-		    e.printStackTrace();
-		}
+		//Thread.sleep(1000);
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    } catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
+	} 
+	else
+	    System.out.println("Didn't find a source folder");
+		
+	return reply;
+    }
 
+    public class RuntimeInput implements Runnable {
+
+	public void run() {
+	    BufferedReader br = new BufferedReader
+		(new InputStreamReader(process.getInputStream()));
+	    String content = null;
+	    try {
+		while ((content = br.readLine()) != null) {
+		    reply += content + "\n";
+		}
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
+
+    }
 }
