@@ -38,7 +38,7 @@ function vehicleConfigParser($data) {
   global $client;
   try  
     {  
-      $ret = $client->parseVehicleConfigurationFromStr($data);
+      $ret = $client->addVehicleConfig($data);
 
       if($ret->return == "true")
 	echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
