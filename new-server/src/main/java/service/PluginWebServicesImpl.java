@@ -218,7 +218,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    "'" + vehicleConfigName + "'" + ")";
 		int x4 = mysql.update(q4);
 
-		String q41 = "select max(id) from AppConfig where application_id = " + appId + " and brand = '" + brand + "' and vehicleConfigName = '" + vehicleConfigName + "'";
+		String q41 = "select max(id) from AppConfig where application_id = " + appId + " and vehicleConfigName = '" + vehicleConfigName + "'";
 		String x41 = mysql.getOne(q41);
 		int appConfigId = Integer.parseInt(x41);
 
@@ -405,7 +405,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    // Is it necessary to match with brand here?
 	    String q3 = "select id from AppConfig where application_id = " + appID
-		+ " and brand = '" + brand + "' and vehicleConfigName = '" +
+		+ " and vehicleConfigName = '" +
 		vehicleConfigName + "'";
 	    String c3 = mysql.getOne(q3);
 	    System.out.println("appconfig id " + c3);
@@ -1006,8 +1006,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    }
 
 	    int rows;
-	    String q1 = "select id from VehicleConfig where brand = '" +
-		vehicleBrandStr + "' and name = '" + vehicleNameStr + "'";
+	    String q1 = "select id from VehicleConfig where "
+		+ "name = '" + vehicleNameStr + "'";
 	    String c1 = mysql.getOne(q1);
 
 	    if (c1 != "none") {
@@ -1037,8 +1037,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    rows = mysql.update(q2);
 
 	    String q3 = "select id from VehicleConfig where"
-		+ " brand = '" + vehicleBrandStr + "'"
-		+ " and name = '" + vehicleNameStr + "'";
+		+ " name = '" + vehicleNameStr + "'";
 	    String c3 = mysql.getOne(q3);
 
 	    if (false) {
