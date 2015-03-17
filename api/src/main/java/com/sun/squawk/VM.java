@@ -6,8 +6,16 @@ public class VM {
 		System.out.print(out);
 	}
 	
+	public static void print(double out) {
+		System.out.print(out);
+	}
+	
 	public static void println(String out) {
 		System.out.println(out);
+	}
+	
+	public static void println() {
+		System.out.println("");
 	}
 	
 	// jna methods
