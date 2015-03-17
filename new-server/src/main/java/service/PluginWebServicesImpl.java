@@ -155,7 +155,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    JarEntry entry = entries.nextElement();
 		    String fileName = entry.getName();
 		    if (fileName.endsWith(".class")) {
-			fullClassName = fileName.substring(0, fileName.length() - 6);
+			String fullClassName1 = fileName.substring(0, fileName.length() - 6);
+			System.out.println("class file " + fullClassName1);
+			if (fullClassName1.endsWith(appname)) {
+			    fullClassName = fullClassName1;
+			}
 		    } else if (fileName.equals(configFileName)) {
 			configFile = File.createTempFile("tempxml.xml", null);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -167,6 +171,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			}
 			reader.close();
 			writer.close();
+		    } else {
+			System.out.println("file in jar: " + fileName);
 		    }
 		}
 		System.out.println("class name " + fullClassName);
