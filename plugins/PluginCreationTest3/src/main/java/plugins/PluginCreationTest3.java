@@ -10,6 +10,9 @@ public class PluginCreationTest3 extends PlugInComponent {
 	@Override
 	public void run() {
 		System.out.println("PluginCreationTest3 running");
+
+		HelpClass c = new HelpClass();
+
 		init();
 
 	}
@@ -28,6 +31,7 @@ public class PluginCreationTest3 extends PlugInComponent {
 	public static void main(String[] args) {
 		System.out.println("In PluginCreationTest3.main()");
 		PluginCreationTest3 instance = new PluginCreationTest3();
+
 		instance.run();
 	}
 }
