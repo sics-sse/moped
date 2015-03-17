@@ -42,6 +42,9 @@ public class Main {
  		
  		Car simulatorCar = CarFactory.getCarFactory().generateCar("configs/system1.xml");
  		simulatorCar.init();
+
+ 		//simulatorCar = CarFactory.getCarFactory().generateCar("configs/system2.xml");
+ 		//simulatorCar.init();
 	}
 
 }

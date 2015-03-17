@@ -25,21 +25,25 @@ public class FakeEcuManager implements EcuManager {
 	public void sendMessage(Message message) {
 		try {
 			int messageType = message.getMessageType();
+		    System.out.println(">>> simulator/FakeEcuManager " + messageType);
 			switch (messageType) {
 			case MessageType.INSTALL:
 				System.out
 						.println("[FakeEcuManager - sendInstallMessage(Message)]");
 				InstallMessage installMessage = (InstallMessage) message;
+		    System.out.println("<<< simulator/FakeEcuManager " + messageType);
 				sendMessage(installMessage);
 				break;
 			case MessageType.UNINSTALL:
 				System.out
 						.println("[FakeEcuManager - sendUninstallMessage(Message)]");
 				UninstallMessage uninstallMessage = (UninstallMessage) message;
+		    System.out.println("<<< simulator/FakeEcuManager " + messageType);
 				sendMessage(uninstallMessage);
 				break;
 			case MessageType.LOAD:
 				LoadMessage loadMessage = (LoadMessage) message;
+		    System.out.println("<<< simulator/FakeEcuManager " + messageType);
 				sendMessage(loadMessage);
 				break;
 			case MessageType.PWM:
@@ -56,6 +60,7 @@ public class FakeEcuManager implements EcuManager {
 				break;
 			case MessageType.PLUGIN_MESSAGE:
 				PluginMessage pluginMessage = (PluginMessage) message;
+		    System.out.println("<<< simulator/FakeEcuManager " + messageType);
 				sendMessage(pluginMessage);
 				break;
 			default:

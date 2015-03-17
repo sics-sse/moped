@@ -82,7 +82,9 @@ public class PIRTE implements Runnable {
 		 *            the jar file
 		 * @return the plug in component
 		 */
-		public PlugInComponent loadPlugIn(JarFile jarFile) {
+	    public PlugInComponent loadPlugIn(JarFile jarFile, String appname) {
+		appname = appname.substring(0, appname.lastIndexOf("."));
+		System.out.println("appname " + appname);
 			Class<?> mainClass = null;
 			try {
 				for (Enumeration<JarEntry> e = jarFile.entries(); e
@@ -124,8 +126,9 @@ public class PIRTE implements Runnable {
 					}
 
 					// TODO: UGLY HACK (Should be replaced by scanning the Manifest file for main-entry
-					if (!className.contains("$")) 
-						mainClass = newClass;
+					System.out.println("class " + className);
+					if (className.endsWith(appname))
+					    mainClass = newClass;
 				}
 					
 				jarFile.close();
@@ -141,11 +144,11 @@ public class PIRTE implements Runnable {
 	
 	protected PlugInLoader loader = new PlugInLoader();
 
-	public PlugInComponent loadPlugIn(String location) {
+    public PlugInComponent loadPlugIn(String location, String appname) {
 		PlugInComponent plugin = null;
 		try {
 			JarFile jarFile = new JarFile(location);
-			plugin = loader.loadPlugIn(jarFile);
+			plugin = loader.loadPlugIn(jarFile, appname);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -154,146 +157,155 @@ public class PIRTE implements Runnable {
 	}
 	
 	public void run() {
-		while(true) {
-			try {
-				await();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			// forward message
-//			ArrayList<Message> ackMessages = new ArrayList<Message>();
-			//TODO: Is there a better way to avoid java.util.ConcurrentModificationException???
-			synchronized(this) {
-				manageMsgs = new ArrayList<Message>();
-				for (Message msg : msgBuffer) {
-					manageMsgs.add(msg);
-				}
-				msgBuffer.clear();
-			}
-			
-			for(Message message : manageMsgs) {
-				int messageType = message.getMessageType();
-				switch(messageType) {
-				case MessageType.INSTALL:
-					InstallMessage installMessage = (InstallMessage) message;
-					byte pluginId = installMessage.getPluginId();
-					HashMap<String, Integer> portInitialContext = installMessage.getPortInitialContext();
-					String[] portInitialContextArray = convertMap2Array(portInitialContext);
-					ArrayList<LinkContextEntry> linkContext = installMessage.getLinkContext();
-					byte[] binaryFile = installMessage.getBinaryFile();
-					// Save the binary to file
-					String executablePluginName = installMessage.getExecutablePluginName();
-					int lastIndexOf = executablePluginName.lastIndexOf("/");
-					String pluginName = executablePluginName.substring(lastIndexOf+1);
-					String fileLocation = "ecus/ecu"+id+"/"+pluginName;
-					File file = new File(fileLocation);
-					FileOutputStream fos;
-					try {
-						fos = new FileOutputStream(file);
-						fos.write(binaryFile);
-						fos.close();
-						// Initiate PlugInComponent
-						System.out.println("Will try to load jar file at " + fileLocation);
-						JarFile jarFile = new JarFile(fileLocation);
-						System.out.println("jarFile created");
-						PlugInComponent loadPlugIn = loader.loadPlugIn(jarFile);
-						if(loadPlugIn == null) {
-							System.out.println("loadedPlugin is null");
-							System.exit(-1);
-						}
-						loadPlugIn.setPirte(this);
-						loadPlugIn.initPortInitContext(portInitialContextArray);
-						// Register Link Context
-						if(linkContext != null) {
-							for(LinkContextEntry entry:linkContext) {
-								linker.link(entry);
-							}
-						}
-						
-						Thread runnablePlugin = new Thread(loadPlugIn);
-						runnablePlugin.start();
-						RTE.getInstance().addRteMessage(
-								new InstallAckMessage(pluginId, pluginName));
-						
-						// Register PlugIn in pirte
-						runnablePlugins.put(pluginName, runnablePlugin);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				case MessageType.UNINSTALL:
-					UninstallMessage uninstallMessage = (UninstallMessage) message;
-					String pluginName4Uninstall = uninstallMessage.getPluginName();
-					if(pluginName4Uninstall.contains(".suite")) {
-						pluginName4Uninstall = pluginName4Uninstall.replace(".suite", ".zip");
-					}
-					System.out.println("uninstall: pluginname:"+pluginName4Uninstall);
-					Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
-					runnablePlugin.stop();
-					RTE.getInstance().addRteMessage(
-							new UninstallAckMessage(pluginName4Uninstall));
-					break;
-				case MessageType.LOAD:
-					LoadMessage loadMessage = (LoadMessage) message;
-					HashMap<String, Integer> portInitialContext4Load = loadMessage.getPortInitialContext();
-					String[] portInitialContextArray4Load = convertMap2Array(portInitialContext4Load);
-					ArrayList<LinkContextEntry> linkContext4Load = loadMessage.getLinkContext();
-					byte[] binaryFile4Load = loadMessage.getBinaryFile();
-					// Save the binary to file
-					String executablePluginName4Load = loadMessage.getExecutablePluginName();
-					int lastIndexOf4Load = executablePluginName4Load.lastIndexOf("/");
-					String pluginName4Load = executablePluginName4Load.substring(lastIndexOf4Load+1);
-					String fileLocation4Load = "ecus/ecu"+id+"/"+pluginName4Load;
-					File file4Load = new File(fileLocation4Load);
-					FileOutputStream fos4Uninstall;
-					try {
-						fos4Uninstall = new FileOutputStream(file4Load);
-						fos4Uninstall.write(binaryFile4Load);
-						fos4Uninstall.close();
-						// Initiate PlugInComponent
-						PlugInComponent loadPlugIn = loader.loadPlugIn(new JarFile(fileLocation4Load));
-						if(loadPlugIn == null) {
-							System.out.println("loadedPlugin is null");
-							System.exit(-1);
-						}
-						loadPlugIn.setPirte(this);
-						loadPlugIn.initPortInitContext(portInitialContextArray4Load);
-						// Register Link Context
-						if(linkContext4Load != null) {
-							for(LinkContextEntry entry:linkContext4Load) {
-								linker.link(entry);
-							}
-						}
-						
-						
-						Thread runnablePlugin4Load = new Thread(loadPlugIn);
-						runnablePlugin4Load.start();
-						
-						// Register PlugIn in pirte
-						runnablePlugins.put(pluginName4Load, runnablePlugin4Load);
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				default:
-					System.out.println("Error: wrong message type when PIRTE handles management messages");
-				}
-			}
-//			manageMsgs.clear();
+	    while(true) {
+		try {
+		    await();
+		} catch (InterruptedException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
 		}
+			
+		// forward message
+		//			ArrayList<Message> ackMessages = new ArrayList<Message>();
+		//TODO: Is there a better way to avoid java.util.ConcurrentModificationException???
+		synchronized(this) {
+		    manageMsgs = new ArrayList<Message>();
+		    for (Message msg : msgBuffer) {
+			manageMsgs.add(msg);
+		    }
+		    msgBuffer.clear();
+		}
+			
+		for(Message message : manageMsgs) {
+		    int messageType = message.getMessageType();
+		    System.out.println(">>> simulator/PIRTE 1 " + messageType);
+		    switch(messageType) {
+		    case MessageType.INSTALL:
+			InstallMessage installMessage = (InstallMessage) message;
+			byte pluginId = installMessage.getPluginId();
+			HashMap<String, Integer> portInitialContext = installMessage.getPortInitialContext();
+			String[] portInitialContextArray = convertMap2Array(portInitialContext);
+			ArrayList<LinkContextEntry> linkContext = installMessage.getLinkContext();
+			byte[] binaryFile = installMessage.getBinaryFile();
+			// Save the binary to file
+			String executablePluginName = installMessage.getExecutablePluginName();
+			System.out.println("PIRTE received exe " + executablePluginName);
+			System.out.println("PIRTE received local appId " + pluginId);
+
+			int lastIndexOf = executablePluginName.lastIndexOf("/");
+			String pluginName = executablePluginName.substring(lastIndexOf+1);
+			String fileLocation = "ecus/ecu"+id+"/"+pluginName;
+			File file = new File(fileLocation);
+			FileOutputStream fos;
+			try {
+			    fos = new FileOutputStream(file);
+			    fos.write(binaryFile);
+			    fos.close();
+			    // Initiate PlugInComponent
+			    System.out.println("Will try to load jar file at " + fileLocation);
+			    JarFile jarFile = new JarFile(fileLocation);
+			    System.out.println("jarFile created");
+			    PlugInComponent loadPlugIn = loader.loadPlugIn(jarFile, pluginName);
+			    if(loadPlugIn == null) {
+				System.out.println("loadedPlugin is null");
+				System.exit(-1);
+			    }
+			    loadPlugIn.setPirte(this);
+			    loadPlugIn.initPortInitContext(portInitialContextArray);
+			    // Register Link Context
+			    if(linkContext != null) {
+				for(LinkContextEntry entry:linkContext) {
+				    linker.link(entry);
+				}
+			    }
+						
+			    Thread runnablePlugin = new Thread(loadPlugIn);
+			    runnablePlugin.start();
+		    System.out.println("<<< simulator/PIRTE 1 " + messageType);
+			    RTE.getInstance().addRteMessage(
+							    new InstallAckMessage(pluginId, pluginName));
+						
+			    // Register PlugIn in pirte
+			    runnablePlugins.put(pluginName, runnablePlugin);
+			} catch (FileNotFoundException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			} catch (IOException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+			break;
+		    case MessageType.UNINSTALL:
+			UninstallMessage uninstallMessage = (UninstallMessage) message;
+			String pluginName4Uninstall = uninstallMessage.getPluginName();
+			if(pluginName4Uninstall.contains(".suite")) {
+			    pluginName4Uninstall = pluginName4Uninstall.replace(".suite", ".zip");
+			}
+			System.out.println("uninstall: pluginname:"+pluginName4Uninstall);
+			Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
+			System.out.println("UNINSTALL thread " + runnablePlugin);
+			runnablePlugin.stop();
+		    System.out.println("<<< simulator/PIRTE 1 " + messageType);
+			RTE.getInstance().addRteMessage(
+							new UninstallAckMessage(pluginName4Uninstall));
+			break;
+		    case MessageType.LOAD:
+			LoadMessage loadMessage = (LoadMessage) message;
+			HashMap<String, Integer> portInitialContext4Load = loadMessage.getPortInitialContext();
+			String[] portInitialContextArray4Load = convertMap2Array(portInitialContext4Load);
+			ArrayList<LinkContextEntry> linkContext4Load = loadMessage.getLinkContext();
+			byte[] binaryFile4Load = loadMessage.getBinaryFile();
+			// Save the binary to file
+			String executablePluginName4Load = loadMessage.getExecutablePluginName();
+			int lastIndexOf4Load = executablePluginName4Load.lastIndexOf("/");
+			String pluginName4Load = executablePluginName4Load.substring(lastIndexOf4Load+1);
+			String fileLocation4Load = "ecus/ecu"+id+"/"+pluginName4Load;
+			File file4Load = new File(fileLocation4Load);
+			FileOutputStream fos4Uninstall;
+			try {
+			    fos4Uninstall = new FileOutputStream(file4Load);
+			    fos4Uninstall.write(binaryFile4Load);
+			    fos4Uninstall.close();
+			    // Initiate PlugInComponent
+			    PlugInComponent loadPlugIn = loader.loadPlugIn(new JarFile(fileLocation4Load), pluginName4Load);
+			    if(loadPlugIn == null) {
+				System.out.println("loadedPlugin is null");
+				System.exit(-1);
+			    }
+			    loadPlugIn.setPirte(this);
+			    loadPlugIn.initPortInitContext(portInitialContextArray4Load);
+			    // Register Link Context
+			    if(linkContext4Load != null) {
+				for(LinkContextEntry entry:linkContext4Load) {
+				    linker.link(entry);
+				}
+			    }
+						
+						
+			    Thread runnablePlugin4Load = new Thread(loadPlugIn);
+			    runnablePlugin4Load.start();
+						
+			    // Register PlugIn in pirte
+			    runnablePlugins.put(pluginName4Load, runnablePlugin4Load);
+			} catch (FileNotFoundException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			} catch (IOException e) {
+			    // TODO Auto-generated catch block
+			    e.printStackTrace();
+			}
+			break;
+		    default:
+			System.out.println("Error: wrong message type when PIRTE handles management messages");
+		    }
+		}
+		//			manageMsgs.clear();
+	    }
 	}
 
 	public void addMessage(Message message) {
+	    //	    Thread.dumpStack();
+	    System.out.println(">>> simulator/PIRTE 2 " + message.getMessageType());
 		int messageType = message.getMessageType();
 		switch(messageType) {
 		case MessageType.INSTALL:

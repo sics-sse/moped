@@ -68,40 +68,48 @@ public class RTE {
 	
 	public void addRteMessage(Message message) {
 		int messageType = message.getMessageType();
+		    System.out.println(">>> simulator/RTE " + messageType);
 		switch(messageType) {
 		case MessageType.INSTALL:
 			InstallMessage installMessage = (InstallMessage) message;
 			int remoteEcuId = installMessage.getRemoteEcuId();
 			SWC swc = pirteSWCs.get(remoteEcuId);
+		    System.out.println("<<< simulator/RTE " + messageType);
 			swc.getPirte().addMessage(message);
 			break;
 		case MessageType.UNINSTALL:
 			UninstallMessage uninstallMessage = (UninstallMessage) message;
 			int remoteEcuId4Uninstall = uninstallMessage.getRemoteEcuId();
 			SWC swc4Uninstall = pirteSWCs.get(remoteEcuId4Uninstall);
+		    System.out.println("<<< simulator/RTE " + messageType);
 			swc4Uninstall.getPirte().addMessage(message);
 			break;
 		case MessageType.INSTALL_ACK:
 			InstallAckMessage installAckMessage = (InstallAckMessage) message;
+		    System.out.println("<<< simulator/RTE " + messageType);
 			ecm.process(installAckMessage);
 			break;
 		case MessageType.UNINSTALL_ACK:
 			UninstallAckMessage uninstallAckMessage = (UninstallAckMessage) message;
+		    System.out.println("<<< simulator/RTE " + messageType);
 			ecm.process(uninstallAckMessage);
 			break;
 		case MessageType.LOAD:
 			LoadMessage loadMessage = (LoadMessage) message;
 			int remoteEcuId4Load = loadMessage.getRemoteEcuId();
 			SWC swc4Load = pirteSWCs.get(remoteEcuId4Load);
+		    System.out.println("<<< simulator/RTE " + messageType);
 			swc4Load.getPirte().addMessage(message);
 			break;
 		case MessageType.PUBLISH:
 			PublishMessage publishMessage = (PublishMessage) message;
+		    System.out.println("<<< simulator/RTE " + messageType);
 			ecm.process(publishMessage);
 			break;
 		case MessageType.PLUGIN_MESSAGE:
 			// TODO: temporary solution for car communication
 			SWC swc4Subscribe = pirteSWCs.get(2);
+		    System.out.println("<<< simulator/RTE " + messageType);
 			swc4Subscribe.getPirte().addMessage(message);
 		default:
 			System.out.println("Append other handlers.................");

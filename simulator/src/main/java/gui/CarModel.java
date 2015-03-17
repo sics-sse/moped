@@ -91,6 +91,8 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 		lamp[0] = false;
 		lamp[1] = false;
 		lamp[2] = false;
+		steeringAngle = -50.0;
+		motorPower = 0.001;
 	}
 	
 	/*
@@ -132,6 +134,9 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 		 */
 
 		// Physical equations describing the motion of the car
+
+		//old.vehicleSpeed = 0.1;
+		//old.rearWheelSpeed = 0.5;
 
 		drag = dragCoefficient * old.vehicleSpeed * old.vehicleSpeed;
 
