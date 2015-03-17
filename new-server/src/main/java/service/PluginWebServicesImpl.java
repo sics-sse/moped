@@ -605,9 +605,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			+ rs12.getString(4) + "/" + pluginName;
 		    String pluginSuiteName = pluginName + ".suite"; //TODO: Come on...
 
-		    String location = /*
-				       * GlobalVariables.APPS_DIR +
-				       */rs12.getString(3);
+		    String location = rs12.getString(3);
 				
 		    String fileType = ".jar";
 		    if (jvm.equals("Squawk")) {
@@ -1313,42 +1311,60 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public String [] infoVehicle(String vin)
+	public String infoVehicle(String vin)
 	throws PluginWebServicesException {
-	String q1 = "select * from Vehicle where vin = '" + vin + "'";
-	String [] row = mysql.getOneSet(q1);
-	if (row == null) {
-	    row = new String[1];
-	    row[0] = "error";
+	String q1 = "select INSTALLED_APPS,vin,v.name,description,c.name from Vehicle v, VehicleConfig c where vin = '" + vin + "' and c.id = vehicleConfig_id";
+	MySqlIterator it = mysql.getIterator(q1);
+
+	JSONObject o = new JSONObject();
+	JSONObject o1 = new JSONObject();
+
+	if (it == null) {
+	    o.put("result", o1);
+	    o.put("error", true);
+	    return o.toString();
 	}
-	return row;
+
+	// should only be one row
+	it.next();
+	o1.put("apps", it.getString(1));
+	o1.put("vin", it.getString(2));
+	o1.put("name", it.getString(3));
+	o1.put("description", it.getString(4));
+	o1.put("type", it.getString(5));
+
+	o.put("result", o1);
+	o.put("error", false);
+
+	return o.toString();
     }
 
     @WebMethod
-	public String [] listVehicles()
+	public String listVehicles()
 	throws PluginWebServicesException {
 	String q1 = "select VIN from Vehicle";
 	ArrayList<String> a = new ArrayList<String>();
 
 	MySqlIterator it = mysql.getIterator(q1);
 
+	JSONObject o = new JSONObject();
+	JSONArray o1 = new JSONArray();
+
 	if (it == null) {
-	    String [] res = new String[1];
-	    res[0] = "error";
-	    return res;
+	    o.put("result", o1);
+	    o.put("error", true);
+	    return o.toString();
 	}
 
 	while (it.next()) {
-	    String s = it.getString(1);
-
-	    a.add(s);
+	    JSONObject o2 = new JSONObject();
+	    o2.put("vin", it.getString(1));
+	    o1.put(o2);
 	}
+	o.put("result", o1);
+	o.put("error", false);
 
-	String [] res = new String[a.size()];
-	for (int i = 0; i < a.size(); i++) {
-	    res[i] = a.get(i);
-	}
-	return res;
+	return o.toString();
     }
 
     @WebMethod

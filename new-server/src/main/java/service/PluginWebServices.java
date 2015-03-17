@@ -46,7 +46,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String [] infoVehicle(String vin)
+	public String infoVehicle(String vin)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -58,7 +58,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String [] listVehicles()
+	public String listVehicles()
 	throws PluginWebServicesException;
 
     @WebMethod
