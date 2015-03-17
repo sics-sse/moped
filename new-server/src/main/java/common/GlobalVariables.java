@@ -17,8 +17,7 @@ public class GlobalVariables implements Serializable {
 	public static final byte SERVER = (byte)0;
 	public static final int ECM = 1;
 	public static final byte ALL = (byte)-1;
-	public static final String APPS_DIR = "C:/Users/Ze Ni/xampp/htdocs/wordpress/custom/";
-	//public static final String APPS_DIR = "/opt/glassfish/glassfish/domains/domain1/config/";
+
 	public static final int SWC_PORT_TYPE1 = 1;
 	public static final int SWC_PORT_TYPE2 = 2;
 	public static final int SWC_PORT_TYPE3 = 3;
