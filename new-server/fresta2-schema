@@ -64,7 +64,7 @@ CREATE TABLE `DatabasePlugin` (
   `location` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `application_id` int(11) NOT NULL,
-  `reference` int(11) NOT NULL,
+  `ecuRef` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKF69F0AE7E5733A7` (`application_id`),
   CONSTRAINT `FKF69F0AE7E5733A7` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)

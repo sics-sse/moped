@@ -216,7 +216,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String x41 = mysql.getOne(q41);
 		int appConfigId = Integer.parseInt(x41);
 
-		String q5 = "insert into DatabasePlugin (name,fullClassName,reference,location,application_id) values (" +
+		String q5 = "insert into DatabasePlugin (name,fullClassName,ecuRef,location,application_id) values (" +
 		    "'" + name + "'" + "," +
 		    "'" + fullClassName + "'" + "," +
 		    Integer.parseInt(ecuRef) + "," +
@@ -229,6 +229,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		//TODO: Inconsequence
 				
+		// Why do we match with name, why with ecuRef, and why
+		// do we want to keep the old one at all?
 		String q3 = "select * from PluginConfig where ecuId = " +
 		    Integer.parseInt(ecuRef) + " and " +
 		    "name = " + "'" + name + ".suite" +"'" + " and " +
@@ -290,7 +292,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		}
 	    }
 	    else {
-		System.out.println("MF is NULL");
+		System.out.println("manifest is NULL");
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
@@ -561,7 +563,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    @SuppressWarnings("unchecked")
 
 		String q12 =
-		"select name,reference,location,fullClassName " +
+		"select name,ecuRef,location,fullClassName " +
 		"from DatabasePlugin where application_id = " + appID;
 	    ResultSet rs12 = mysql.getResults(q12);
 
@@ -695,10 +697,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    String pluginName = rs.getString(1);
 		    int sendingPortId = Integer.parseInt(rs.getString(2));
 		    int callbackPortId = Integer.parseInt(rs.getString(3));
-		    int reference = Integer.parseInt(rs.getString(4));
+		    int ecuRef = Integer.parseInt(rs.getString(4));
 
 		    UninstallPacketData uninstallPackageData = new UninstallPacketData(
-										       sendingPortId, callbackPortId, reference, pluginName);
+										       sendingPortId, callbackPortId, ecuRef, pluginName);
 		    uninstallPackageDataList.add(uninstallPackageData);
 
 		    uninstallCacheName.add(pluginName);
@@ -809,7 +811,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public boolean restoreEcu(String vin, int ecuReference)
+	public boolean restoreEcu(String vin, int ecuRef)
 	throws PluginWebServicesException {
 	IoSession session = ServerHandler.getSession(vin);
 	if (session == null) {
@@ -820,11 +822,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
 	    String q1 = "select application_id,name,sendingPortId,"
-		+ "callbackPortId,ecuId,executablePluginName,"
+		+ "callbackPortId,executablePluginName,"
 		+ "portInitialContext,portLinkingContext,location"
 		+ " from VehiclePlugin where"
 		+ " vin = '" + vin + "'"
-		+ " and ecuId = " + ecuReference;
+		+ " and ecuId = " + ecuRef;
 	    String [] c1 = mysql.getOneSet(q1);
 
 	    if (c1 == null) {
@@ -836,11 +838,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    String pluginName = c1[1];
 	    String sendingPortId = c1[2];
 	    String callbackPortId = c1[3];
-	    String reference = c1[4];
-	    String executablePluginName = c1[5];
-	    String portInitialContext_blob = c1[6];
-	    String portLinkingContext_blob = c1[7];
-	    String location = c1[8];
+	    String executablePluginName = c1[4];
+	    String portInitialContext_blob = c1[5];
+	    String portLinkingContext_blob = c1[6];
+	    String location = c1[7];
 
 	    System.out.println("blob " + portInitialContext_blob);
 	    System.out.println("blob " + portLinkingContext_blob);
@@ -918,7 +919,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		     pluginName,
 		     Integer.parseInt(sendingPortId),
 		     Integer.parseInt(callbackPortId),
-		     Integer.parseInt(reference),
+		     ecuRef,
 		     portInitialContext,
 		     portLinkingContext,
 		     executablePluginName,
