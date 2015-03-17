@@ -287,7 +287,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			connectionType = GlobalVariables.PPORT2VPORT;
 		    }
 
-		    String q6 = "insert into PluginLinkConfig (fromStr,toStr,remote,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
+		    String q6 = "insert into PluginLinkConfig (fromStr,toStr,connectionType,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
 		    int rows6 = mysql.update(q6);
 		}
 	    }
@@ -474,7 +474,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			try {
 
 
-			    String q42 = "select id,fromStr,toStr,remote from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
+			    String q42 = "select id,fromStr,toStr,connectionType from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
 			    ResultSet rs4 = mysql.getResults(q42);
 
 			    while (rs4.next()) {

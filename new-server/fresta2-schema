@@ -141,7 +141,7 @@ DROP TABLE IF EXISTS `PluginLinkConfig`;
 CREATE TABLE `PluginLinkConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `fromStr` varchar(255) DEFAULT NULL,
-  `remote` varchar(255) DEFAULT NULL,
+  `connectionType` varchar(255) DEFAULT NULL,
   `toStr` varchar(255) DEFAULT NULL,
   `pluginConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
