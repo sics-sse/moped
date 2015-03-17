@@ -1435,7 +1435,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listUserVehicleAssociations(int user_id)
 	throws PluginWebServicesException {
-	String q1 = "select v.vin,a.defaultVehicle from"
+	String q1 = "select v.vin,a.activeVehicle from"
 	    + " UserVehicleAssociation a,Vehicle v where"
 	    + " a.user_ID = " + user_id
 	    + " and a.vehicle_id = v.id";
@@ -1495,11 +1495,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
     @WebMethod
 	public boolean addUserVehicleAssociation(int user_id, String vin,
-						 boolean defaultVehicle)
+						 boolean activeVehicle)
 	throws PluginWebServicesException {
 	String q1 = "insert into UserVehicleAssociation"
-	    + " (user_ID,vehicle_id,defaultVehicle) select "
-	    + user_id + ",v.id," + defaultVehicle
+	    + " (user_ID,vehicle_id,activeVehicle) select "
+	    + user_id + ",v.id," + activeVehicle
 	    + " from Vehicle v where v.vin = '" + vin + "'";
 	int rows = mysql.update(q1);
 	if (rows == 0)
@@ -1519,7 +1519,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    a = 0;
 	// we should fetch v.id in a separate operation
 	String q1 = "update UserVehicleAssociation a, Vehicle v"
-	    + " set a.defaultVehicle = " + a + " where a.user_ID = "
+	    + " set a.activeVehicle = " + a + " where a.user_ID = "
 	    + user_id + " and a.vehicle_id=v.id and v.vin='" + vin + "'";
 	int rows = mysql.update(q1);
 	if (rows == 0)
