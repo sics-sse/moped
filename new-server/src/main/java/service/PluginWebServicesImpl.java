@@ -344,19 +344,48 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	return false;
     }
 	
+    private String jsonError(String msg) {
+	JSONObject o = new JSONObject();
+	JSONObject o1 = new JSONObject();
+
+	o.put("result", o1);
+	o.put("error", true);
+	o.put("message", msg);
+	return o.toString();
+    }
+
+    private String jsonOK() {
+	JSONObject o = new JSONObject();
+	JSONObject o1 = new JSONObject();
+
+	o.put("result", true);
+	o.put("error", false);
+	return o.toString();
+    }
+
     @Override
     @SuppressWarnings("unchecked")
-	public boolean installApp(String vin, int appID, String jvm) 
+	public String installApp(String vin, int appID, String jvm) 
 	throws PluginWebServicesException {
 	System.out.println("vin in install(): " + vin);
 	System.out.println("appID in install(): " + appID);
 		
+	String q1 =
+	    "select vehicleConfig_id from Vehicle where vin = '" + vin
+	    + "'";
+	String c = mysql.getOne(q1);
+	System.out.println("vehicle " + c);
+
+	if (c == null) {
+	    return jsonError("no such car " + vin);
+	}
+
 	// Fetch the connection session between Server and Vehicle
 	IoSession session = ServerHandler.getSession(vin);
 	if (session == null) {
 	    // If null, there is no connection between the server and the vehicle
 	    System.out.println("IoSession is NULL");
-	    return false;
+	    return jsonError("no connection with car " + vin);
 	} else {
 	    System.out.println("IoSession.address: " + session.getLocalAddress());
 			
@@ -371,12 +400,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    // Create an array list for cache
 	    ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
 
-	    String q1 =
-		"select vehicleConfig_id from Vehicle where vin = '" + vin
-		+ "'";
-	    String c = mysql.getOne(q1);
-	    System.out.println("vehicle " + c);
-
 	    String q2 =
 		"select name,brand from VehicleConfig where id = " + c;
 	    String [] c2 = mysql.getOneSet(q2);
@@ -390,7 +413,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    if (c7 == "none") {
 		System.out.println("ERROR: no appropriate Vehicle/VehicleConfig combination");
-		return false;
+		return jsonError("no appropriate Vehicle/VehicleConfig combination");
 	    }
 
 	    // VehicleConfig
@@ -411,7 +434,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    System.out.println("appconfig id " + c3);
 	    if (c3 == "none") {
 		System.out.println("ERROR: no appropriate AppConfig exists");
-		return false;
+		return jsonError("no appropriate AppConfig exists");
 	    }
 	    int appConfigId = Integer.parseInt(c3);
 
@@ -446,7 +469,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			} catch (SQLException ex) {
 			    System.out.println("db error 1");
 			    System.out.println(ex.getMessage());
-			    return false;
+			    return jsonError("internal db error 1");
 			} 
 		    }
 		    // are they closed automatically?
@@ -455,7 +478,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		} catch (SQLException ex) {
 		    System.out.println("db error 2");
 		    System.out.println(ex.getMessage());
-		    return false;
+		    return jsonError("internal db error 2");
 		} 
 
 
@@ -533,7 +556,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			} catch (SQLException ex) {
 			    System.out.println("db error 3");
 			    System.out.println(ex.getMessage());
-			    return false;
+			    return jsonError("internal db error 3");
 			}
 				
 			linkingContexts.put(pluginName, linkingContext);
@@ -549,7 +572,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		} catch (SQLException ex) {
 		    System.out.println("db error 4");
 		    System.out.println(ex.getMessage());
-		    return false;
+		    return jsonError("internal db error 4");
 		}
 	    }
 
@@ -611,6 +634,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    if (jvm.equals("Squawk")) {
 			fileType = ".suite";
 			location += File.separator + pluginName;
+		    } else if (jvm.equals("jdk")) {
+		    } else {
+			return jsonError("invalid jvm value " + jvm);
 		    }
 				
 		    location += fileType;
@@ -659,17 +685,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    } catch (IOException e) {
 			e.printStackTrace();
 			// will rs12 not be closed now?
-			return false;
+			return jsonError("internal error: couldn't open the app file");
 		    }
 		}
 		rs12.close();
 	    } catch (SQLException ex) {
 		System.out.println("db error 5");
 		System.out.println(ex.getMessage());
-		return false;
+		return jsonError("internal db error 5");
 	    }
 
-	    return true;
+	    return jsonOK();
 	}
     }
 
@@ -1275,12 +1301,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	CompressUtils util = new CompressUtils();
 	System.out.println("Calling unzip on " + zipFile);
 	String dest = util.unzip(zipFile);
-	try {
-	    Thread.sleep(1000);
-	} catch (InterruptedException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}
 		
 	System.out.println("Unzipped into: " + dest); 
 	dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
@@ -1304,7 +1324,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	throws PluginWebServicesException {
 
 	String q1 = "insert into Vehicle (vin,name,vehicleConfig_id) select '" + vin + "','" + name + "',c.id from VehicleConfig c where c.name = '" + type + "'";
-	System.out.println("adding vehicle: " + q1);
 	int rows = mysql.update(q1);
 	return (rows != 0);
     }
