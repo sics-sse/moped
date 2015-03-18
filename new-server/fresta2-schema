@@ -123,7 +123,7 @@ DROP TABLE IF EXISTS `PluginConfig`;
 CREATE TABLE `PluginConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ecuId` int(11) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   `appConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK5405C0758F57C655` (`appConfig_id`),
@@ -140,9 +140,9 @@ DROP TABLE IF EXISTS `PluginLinkConfig`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `PluginLinkConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fromStr` varchar(255) DEFAULT NULL,
-  `connectionType` varchar(255) DEFAULT NULL,
-  `toStr` varchar(255) DEFAULT NULL,
+  `fromStr` varchar(255) NOT NULL,
+  `connectionType` varchar(255) NOT NULL,
+  `toStr` varchar(255) NOT NULL,
   `pluginConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK46DC278F42C6247F` (`pluginConfig_id`),
@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `PluginPortConfig`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `PluginPortConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   `pluginConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FKD394ED642C6247F` (`pluginConfig_id`),
