@@ -253,7 +253,7 @@ CREATE TABLE `VehiclePlugin` (
   `application_id` int(11) NOT NULL,
   `callbackPortId` int(11) NOT NULL,
   `sendingPortId` int(11) NOT NULL,
-  `vin` varchar(255) DEFAULT NULL,
+  `vin` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `executablePluginName` varchar(255) DEFAULT NULL,
@@ -261,7 +261,8 @@ CREATE TABLE `VehiclePlugin` (
   `portLinkingContext` longblob,
   PRIMARY KEY (`id`),
   KEY `VehiclePlugin_application_id` (`application_id`),
-  CONSTRAINT `VehiclePlugin_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
+  CONSTRAINT `VehiclePlugin_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`),
+  CONSTRAINT `VehiclePlugin_vin` FOREIGN KEY (`vin`) REFERENCES `Vehicle` (`vin`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1300;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
