@@ -26,8 +26,8 @@ DROP TABLE IF EXISTS `AppConfig`;
 CREATE TABLE `AppConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `application_id` int(11) NOT NULL,
-  `brand` varchar(255) DEFAULT NULL,
-  `vehicleConfigName` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) NOT NULL,
+  `vehicleConfigName` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `AppConfig_application_id` (`application_id`),
   CONSTRAINT `AppConfig_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`)
@@ -43,10 +43,10 @@ DROP TABLE IF EXISTS `Application`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Application` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   `hasNewVersion` tinyint(1) NOT NULL,
-  `publisher` varchar(255) DEFAULT NULL,
-  `version` varchar(255) DEFAULT NULL,
+  `publisher` varchar(255) NOT NULL,
+  `version` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=200;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -60,9 +60,9 @@ DROP TABLE IF EXISTS `DatabasePlugin`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `DatabasePlugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `fullClassName` varchar(255) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `fullClassName` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `application_id` int(11) NOT NULL,
   `ecuRef` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -216,7 +216,7 @@ CREATE TABLE `Vehicle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `INSTALLED_APPS` varchar(255) DEFAULT NULL,
   `vin` varchar(17) UNIQUE NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `vehicleConfig_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -234,7 +234,7 @@ DROP TABLE IF EXISTS `VehicleConfig`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `VehicleConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `brand` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) NOT NULL,
   `name` varchar(255) UNIQUE NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1200;
@@ -254,9 +254,9 @@ CREATE TABLE `VehiclePlugin` (
   `callbackPortId` int(11) NOT NULL,
   `sendingPortId` int(11) NOT NULL,
   `vin` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `executablePluginName` varchar(255) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `executablePluginName` varchar(255) NOT NULL,
   `portInitialContext` longblob,
   `portLinkingContext` longblob,
   PRIMARY KEY (`id`),
