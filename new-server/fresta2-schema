@@ -260,7 +260,7 @@ CREATE TABLE `VehiclePlugin` (
   `executablePluginName` varchar(255) NOT NULL,
   `portInitialContext` longblob,
   `portLinkingContext` longblob,
-  `state` varchar(255) UNIQUE NOT NULL,
+  `state` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `VehiclePlugin_application_id` (`application_id`),
   CONSTRAINT `VehiclePlugin_application_id` FOREIGN KEY (`application_id`) REFERENCES `Application` (`id`),
