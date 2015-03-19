@@ -366,6 +366,51 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	return o.toString();
     }
 
+    private String checkVIN(String vin) {
+	String q1 =
+	    "select * from Vehicle where vin = '" + vin + "'";
+	String c = mysql.getOne(q1);
+
+	if (c.equals("error")) {
+	    return jsonError("internal db error");
+	}
+
+	if (c.equals("none")) {
+	    return jsonError("no such car " + vin);
+	}
+	return null;
+    }
+
+    private String checkUser(int user_id) {
+	String q1 =
+	    "select * from wp_users where ID = " + user_id;
+	String c = mysql.getOne(q1);
+
+	if (c.equals("error")) {
+	    return jsonError("internal db error");
+	}
+
+	if (c.equals("none")) {
+	    return jsonError("no such user " + user_id);
+	}
+	return null;
+    }
+
+    private String checkApp(int appID) {
+	String q11 =
+	    "select * from Application where id = " + appID;
+	String c11 = mysql.getOne(q11);
+
+	if (c11.equals("error")) {
+	    return jsonError("internal db error");
+	}
+
+	if (c11.equals("none")) {
+	    return jsonError("no such app " + appID);
+	}
+	return null;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
 	public String installApp(String vin, int appID, String jvm) 
@@ -373,15 +418,12 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	System.out.println("vin in install(): " + vin);
 	System.out.println("appID in install(): " + appID);
 		
-	String q1 =
-	    "select vehicleConfig_id from Vehicle where vin = '" + vin
-	    + "'";
-	String c = mysql.getOne(q1);
-	System.out.println("vehicle " + c);
+	String cs1 = checkVIN(vin);
+	if (cs1 != null)
+	    return cs1;
 
-	if (c == null) {
-	    return jsonError("no such car " + vin);
-	}
+	String q1 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
+	String c = mysql.getOne(q1);
 
 	// Fetch the connection session between Server and Vehicle
 	IoSession session = ServerHandler.getSession(vin);
@@ -705,31 +747,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
     public String uninstallApp(String vin, int appID)
 	throws PluginWebServicesException {
 
-	String q1 =
-	    "select vehicleConfig_id from Vehicle where vin = '" + vin
-	    + "'";
-	String c1 = mysql.getOne(q1);
-	System.out.println("vehicle " + c1);
+	String cs1 = checkVIN(vin);
+	if (cs1 != null)
+	    return cs1;
 
-	if (c1.equals("error")) {
-	    return jsonError("uninstallApp: internal db error");
-	}
-
-	if (c1.equals("none")) {
-	    return jsonError("uninstallApp: no such car " + vin);
-	}
-
-	String q11 =
-	    "select * from Application where id = " + appID;
-	String c11 = mysql.getOne(q11);
-
-	if (c11.equals("error")) {
-	    return jsonError("uninstallApp: internal db error");
-	}
-
-	if (c11.equals("none")) {
-	    return jsonError("uninstallApp: no such app " + appID);
-	}
+	String cs2 = checkApp(appID);
+	if (cs2 != null)
+	    return cs2;
 
 	// we should report that an app is not installed, even if the
 	// car is not available.
@@ -803,7 +827,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	System.out.println("upgrade " + c1);
 
-	if (c1 == "none") {
+	if (c1.equals("none")) {
 	    System.out.println("no such appid");
 	    return false;
 	}
@@ -1029,11 +1053,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    FileInputStream is = new FileInputStream(xmlFile);
 
-	    status = parseVehicleConfiguration2(is);
-	    if (!status) {
-		// say more
-		return jsonError("parsing vehicle config failed");
-	    }
+	    return parseVehicleConfiguration2(is);
 
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
@@ -1044,14 +1064,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    e.printStackTrace();
 	    return jsonError("addVehicleConfig: I/O error");
 	}
-
-	return jsonOK();
-
     }
 
-    public boolean parseVehicleConfiguration2(InputStream is)
+    // returns JSON
+    public String parseVehicleConfiguration2(InputStream is)
 	throws PluginWebServicesException {
-	boolean status = false;
 	System.out.println("In parseVehicleConfiguration2");
 
 	// key: port ID, value: ECU ID
@@ -1118,7 +1135,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		Element vinElement = (Element) root.getElementsByTagName("vin").item(0);
 		if(vinElement == null) {
 		    System.out.println("There is no VIN element in vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no <vin> element");
 		}
 		String vinStr = vinElement.getTextContent();
 			
@@ -1143,7 +1160,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    if (ecusElement == null) {
 		System.out.println
 		    ("There is no ecus element in vehicle configuration file");
-		System.exit(-1);
+		return jsonError("vehicle configuration: no <ecus> element");
 	    }
 
 	    NodeList ecuList = ecusElement.getElementsByTagName("ecu");
@@ -1156,7 +1173,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    System.out.println
 			("There is no ecu element in vehicle " +
 			 "configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no <ecu> element");
 		}
 		Element idElement = (Element)
 		    ecuElement.getElementsByTagName("id").item(0);
@@ -1164,7 +1181,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    System.out.println
 			("There is no id element " +
 			 "in ecu range in vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no ecus/ecu/id element");
 		}
 		String ecuIdStr = idElement.getTextContent();
 		System.out.println("  <id>" + ecuIdStr + "</id>");
@@ -1185,7 +1202,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    .getElementsByTagName("swcs").item(0);
 		if (swcsElement == null) {
 		    System.out.println("There is no swcs element in ecu range in vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no ecus/ecu/swcs element");
 		}
 		NodeList swcList = swcsElement.getElementsByTagName("swc");
 		for (int s = 0; s < swcList.getLength(); s++) {
@@ -1195,7 +1212,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			System.out.println
 			    ("There is no swc element " +
 			     "in ecu range in vehicle configuration file");
-			System.exit(-1);
+			return jsonError("vehicle configuration: no ecus/ecu/swcs/swc element");
 		    }
 		    // hasPirte
 		    Element hasPirteElement = (Element) swcElement
@@ -1203,7 +1220,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    if (hasPirteElement == null) {
 			System.out
 			    .println("There is no hasPirte in ecu range in vehicle configuration file");
-			System.exit(-1);
+			return jsonError("vehicle configuration: no hasPirte element");
 		    }
 		    String hasPirteStr = hasPirteElement.getTextContent();
 		    if (hasPirteStr.equals("true")) {
@@ -1213,7 +1230,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			if (portsElement == null) {
 			    System.out
 				.println("There is no ports element in ecu range in vehicle configuraiton file");
-			    System.exit(-1);
+			    return jsonError("vehicle configuration: no <ports> element");
 			}
 			NodeList portsList = portsElement
 			    .getElementsByTagName("port");
@@ -1227,7 +1244,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    if (portIdElement == null) {
 				System.out
 				    .println("There is no id element in port range in vehicle configuration file");
-				System.exit(-1);
+				return jsonError("vehicle configuration: no ports/port/id element");
 			    }
 			    String portIdStr = portIdElement.getTextContent();
 			    int portId = Integer.parseInt(portIdStr);
@@ -1261,7 +1278,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		if (typeElement == null) {
 		    System.out
 			.println("There is no type element in link range in vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no link/type element");
 		}
 		String typeStr = typeElement.getTextContent();
 		int type = Integer.parseInt(typeStr);
@@ -1272,7 +1289,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		if (fromPortElement == null) {
 		    System.out
 			.println("There is no from element in link range in vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no link/from element");
 		}
 		String fromPortStr = fromPortElement.getTextContent();
 		int fromPortId = Integer.parseInt(fromPortStr);
@@ -1288,7 +1305,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    fromEcuId = portId2EcuId.get(fromPortId);
 		} catch (NullPointerException e) {
 		    System.out.println(portId2EcuId + " is not in the table");
-		    throw e;
+		    return jsonError("vehicle configuration: unlisted port " + fromPortId);
+		//throw e;
 		}
 				
 		// toPort
@@ -1297,7 +1315,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		if (toPortElement == null) {
 		    System.out
 			.println("There is no to element in link range vehicle configuration file");
-		    System.exit(-1);
+		    return jsonError("vehicle configuration: no link/to element");
 		}
 		String toPortStr = toPortElement.getTextContent();
 		int toPortId = Integer.parseInt(toPortStr);
@@ -1319,25 +1337,28 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    "," + c3 + ")";
 		rows = mysql.update(q7);
 
-		status = true;
 		System.out.println("Done saving config!!!!!!");
 	    }
 
 	} catch (ParserConfigurationException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("vehicle configuration: ParserConfigurationException");
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("vehicle configuration: FileNotFoundException");
 	} catch (SAXException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("vehicle configuration: SAXException");
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("vehicle configuration: I/O exception");
 	}
 
-	return status;
+	return jsonOK();
 
     }
 
@@ -1393,12 +1414,21 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 
     @WebMethod
-	public boolean deleteVehicle(String vin)
+	public String deleteVehicle(String vin)
 	throws PluginWebServicesException {
+
+	String cs1 = checkVIN(vin);
+	if (cs1 != null)
+	    return cs1;
 
 	String q1 = "delete from Vehicle where vin = '" + vin + "'";
 	int rows = mysql.update(q1);
-	return (rows != 0);
+	if (rows > 0) {
+	    return jsonOK();
+	} else {
+	    // say why
+	    return jsonError("deleteVehicle: couldn't delete " + vin);
+	}
     }
 
     @WebMethod
@@ -1418,6 +1448,12 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String infoVehicle(String vin)
 	throws PluginWebServicesException {
+
+	String cs1 = checkVIN(vin);
+	if (cs1 != null)
+	    return cs1;
+
+
 	String q1 = "select INSTALLED_APPS,vin,v.name,description,c.name from Vehicle v, VehicleConfig c where vin = '" + vin + "' and c.id = vehicleConfig_id";
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1475,10 +1511,15 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listUserVehicles(int user_id)
 	throws PluginWebServicesException {
-	String q1 = "select v.vin,v.name from Vehicle v, UserVehicleAssociation a where a.vehicle_id = v.id and a.user_ID = " + user_id;
+
+	String cs1 = checkUser(user_id);
+	if (cs1 != null)
+	    return cs1;
+
+	String q2 = "select v.vin,v.name from Vehicle v, UserVehicleAssociation a where a.vehicle_id = v.id and a.user_ID = " + user_id;
 	ArrayList<String> a = new ArrayList<String>();
 
-	MySqlIterator it = mysql.getIterator(q1);
+	MySqlIterator it = mysql.getIterator(q2);
 
 	JSONObject o = new JSONObject();
 	JSONArray o1 = new JSONArray();
@@ -1563,12 +1604,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listUserVehicleAssociations(int user_id)
 	throws PluginWebServicesException {
-	String q1 = "select v.vin,a.activeVehicle from"
+
+	String cs1 = checkUser(user_id);
+	if (cs1 != null)
+	    return cs1;
+
+	String q2 = "select v.vin,a.activeVehicle from"
 	    + " UserVehicleAssociation a,Vehicle v where"
 	    + " a.user_ID = " + user_id
 	    + " and a.vehicle_id = v.id";
 
-	MySqlIterator it = mysql.getIterator(q1);
+	MySqlIterator it = mysql.getIterator(q2);
 
 	JSONObject o = new JSONObject();
 	JSONArray o1 = new JSONArray();
@@ -1623,8 +1669,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
     @WebMethod
 	public String addUserVehicleAssociation(int user_id, String vin,
-						 boolean activeVehicle)
+						boolean activeVehicle)
 	throws PluginWebServicesException {
+
+	String cs1 = checkUser(user_id);
+	if (cs1 != null)
+	    return cs1;
+
+	String cs2 = checkVIN(vin);
+	if (cs2 != null)
+	    return cs2;
+
 	String q1 = "insert into UserVehicleAssociation"
 	    + " (user_ID,vehicle_id,activeVehicle) select "
 	    + user_id + ",v.id," + activeVehicle
@@ -1647,6 +1702,16 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    a = 1;
 	else
 	    a = 0;
+
+	String cs1 = checkUser(user_id);
+	if (cs1 != null)
+	    return cs1;
+
+	String cs2 = checkVIN(vin);
+	if (cs2 != null)
+	    return cs2;
+
+
 	// we should fetch v.id in a separate operation
 	String q1 = "update UserVehicleAssociation a, Vehicle v"
 	    + " set a.activeVehicle = " + a + " where a.user_ID = "
@@ -1663,6 +1728,16 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String deleteUserVehicleAssociation(int user_id, String vin)
 	throws PluginWebServicesException {
+
+	String cs1 = checkUser(user_id);
+	if (cs1 != null)
+	    return cs1;
+
+	String cs2 = checkVIN(vin);
+	if (cs2 != null)
+	    return cs2;
+
+
 	String q1 =
 	    "select id from Vehicle where"
 	    + " vin = '" + vin + "'";

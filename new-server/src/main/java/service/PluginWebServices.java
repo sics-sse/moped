@@ -50,7 +50,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean deleteVehicle(String vin)
+	public String deleteVehicle(String vin)
 	throws PluginWebServicesException;
 
     @WebMethod
