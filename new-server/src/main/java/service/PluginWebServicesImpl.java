@@ -9,6 +9,8 @@ import java.io.*;
 import service.CallMySql;
 import service.MySqlIterator;
 
+import common.MopedException;
+
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedReader;
@@ -91,7 +93,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 	
     @Override
-	public boolean uploadApp(byte [] data, String appname,
+	public String uploadApp(byte [] data, String appname,
 				 String fversion)
 	throws PluginWebServicesException {
 	int rows;
@@ -299,25 +301,26 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    }
 	    else {
 		System.out.println("manifest is NULL");
+		return jsonError("uploadApp: no manifest");
 	    }
 	} catch (IOException e) {
 	    e.printStackTrace();
-	    return false;
+	    return jsonError("uploadApp: I/O exception");
 	} catch (SAXException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
-	    return false;
+	    return jsonError("uploadApp: SAXException");
 	} catch (ParserConfigurationException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
-	    return false;
+	    return jsonError("uploadApp: ParserConfigurationException");
 	} catch (FactoryConfigurationError e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
-	    return false;
+	    return jsonError("uploadApp: FactoryConfigurationError");
 	} 
 
-	return true;
+	return jsonOK();
     }
 
     @Override
@@ -535,7 +538,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 					break;
 				    default:
 					System.out.println("Error: Wrong link type in GlobalVariables");
-					System.exit(-1);
+					return jsonError("installApp: wrong link type " + remoteId);
 				    }
 				} else {
 				    // Plug-In -> VRPort
@@ -685,7 +688,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    } catch (IOException e) {
 			e.printStackTrace();
 			// will rs12 not be closed now?
-			return jsonError("internal error: couldn't open the app file");
+			return jsonError("installApp: internal error: couldn't read from the app file " + location);
 		    }
 		}
 		rs12.close();
@@ -699,13 +702,43 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
     }
 
-    public boolean uninstallApp(String vin, int appID)
+    public String uninstallApp(String vin, int appID)
 	throws PluginWebServicesException {
+
+	String q1 =
+	    "select vehicleConfig_id from Vehicle where vin = '" + vin
+	    + "'";
+	String c1 = mysql.getOne(q1);
+	System.out.println("vehicle " + c1);
+
+	if (c1.equals("error")) {
+	    return jsonError("uninstallApp: internal db error");
+	}
+
+	if (c1.equals("none")) {
+	    return jsonError("uninstallApp: no such car " + vin);
+	}
+
+	String q11 =
+	    "select * from Application where id = " + appID;
+	String c11 = mysql.getOne(q11);
+
+	if (c11.equals("error")) {
+	    return jsonError("uninstallApp: internal db error");
+	}
+
+	if (c11.equals("none")) {
+	    return jsonError("uninstallApp: no such app " + appID);
+	}
+
+	// we should report that an app is not installed, even if the
+	// car is not available.
+
 	IoSession session = ServerHandler.getSession(vin);
 	if (session == null) {
 	    // If null, response user about the disconnection between Sever and
 	    // Vehicle
-	    return false;
+	    return jsonError("uninstallApp: no connection with car " + vin);
 	} else {
 	    // Fetch un_installation PlugIns
 	    ArrayList<UninstallPacketData> uninstallPackageDataList = new ArrayList<UninstallPacketData>();
@@ -713,17 +746,21 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    // Save pluginname into array list cache for uninstallation
 	    ArrayList<String> uninstallCacheName = new ArrayList<String>();
 
-	    String q1 = "select name,sendingPortId,callbackPortId,ecuId"
+	    String q2 = "select name,sendingPortId,callbackPortId,ecuId"
 		+ " from VehiclePlugin where"
 		+ " application_id = " + appID
 		+ " and vin = '" + vin + "'";
-	    ResultSet rs = mysql.getResults(q1);
+	    ResultSet rs = mysql.getResults(q2);
 
 	    // We should fetch all rows, but we don't expect there to
 	    // be more than one.
 
+	    int inst_n = 0;
+
 	    try {
 		while (rs.next()) {
+		    inst_n++;
+
 		    String pluginName = rs.getString(1);
 		    int sendingPortId = Integer.parseInt(rs.getString(2));
 		    int callbackPortId = Integer.parseInt(rs.getString(3));
@@ -736,9 +773,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    uninstallCacheName.add(pluginName);
 		}
 		rs.close();
+		if (inst_n == 0)
+		    return jsonError("uninstallApp: app " + appID +
+				     " not installed on car " + vin);
 	    } catch (SQLException ex) {
 		System.out.println("db error 6");
 		System.out.println(ex.getMessage());
+		return jsonError("internal db error 6");
 	    }
 
 	    Cache.getCache().addUninstallCache(vin, appID, uninstallCacheName);
@@ -746,7 +787,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    UninstallPacket uninstallPackage = new UninstallPacket(vin,
 								   uninstallPackageDataList);
 	    session.write(uninstallPackage);
-	    return true;
+	    return jsonOK();
 	}
     }
 
@@ -973,7 +1014,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public boolean addVehicleConfig(byte [] data) 
+	public String addVehicleConfig(byte [] data) 
 	throws PluginWebServicesException {
 	boolean status = false;
 	System.out.println("In parseVehicleConfigurationFromStr");
@@ -988,17 +1029,23 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    FileInputStream is = new FileInputStream(xmlFile);
 
-	    return parseVehicleConfiguration2(is);
+	    status = parseVehicleConfiguration2(is);
+	    if (!status) {
+		// say more
+		return jsonError("parsing vehicle config failed");
+	    }
 
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("addVehicleConfig: tmp file error");
 	} catch (IOException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    return jsonError("addVehicleConfig: I/O error");
 	}
 
-	return status;
+	return jsonOK();
 
     }
 
@@ -1297,16 +1344,51 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String compileApp(String appname, String version)
 	throws PluginWebServicesException {
+
+	String q1 = "select id from Application where name = '" + appname + "'";
+	String c1 = mysql.getOne(q1);
+
+	if (c1.equals("error")) {
+	    return jsonError("compileApp: internal db error");
+	}
+
+	if (c1.equals("none")) {
+	    return jsonError("compileApp: no such app " + appname);
+	}
+
+	String q2 = "select id from Application where name = '" + appname +
+	    "' and version = '" + version + "'";
+	String c2 = mysql.getOne(q2);
+
+	if (c2.equals("error")) {
+	    return jsonError("compileApp: internal db error");
+	}
+
+	if (c2.equals("none")) {
+	    return jsonError("compileApp: app " + appname + " has no version [" + version + "]");
+	}
+
 	String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
 	CompressUtils util = new CompressUtils();
 	System.out.println("Calling unzip on " + zipFile);
-	String dest = util.unzip(zipFile);
+	String dest;
+	try {
+	    dest = util.unzip(zipFile);
+	} catch (MopedException e) {
+	    return jsonError(e.getMsg());
+	}
 		
 	System.out.println("Unzipped into: " + dest); 
 	dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
 		
-	String reply = suiteGen.generateSuite(dest); // + "/" + fullClassName);
-	return reply;
+	String reply[] = new String[1];
+	boolean s = suiteGen.generateSuite(dest, reply); // + "/" + fullClassName);
+	if (s) {
+	    // return reply too.
+	    return jsonOK();
+	} else {
+	    return jsonError(reply[0]);
+	}
     }
 
 
@@ -1320,12 +1402,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public boolean addVehicle(String name, String vin, String type)
+	public String addVehicle(String name, String vin, String type)
 	throws PluginWebServicesException {
 
 	String q1 = "insert into Vehicle (vin,name,vehicleConfig_id) select '" + vin + "','" + name + "',c.id from VehicleConfig c where c.name = '" + type + "'";
 	int rows = mysql.update(q1);
-	return (rows != 0);
+	if (rows != 0) {
+	    return jsonOK();
+	} else {
+	    // distinguish between causes.
+	    return jsonError("addVehicle failed");
+	}
     }
 
     @WebMethod
@@ -1535,7 +1622,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public boolean addUserVehicleAssociation(int user_id, String vin,
+	public String addUserVehicleAssociation(int user_id, String vin,
 						 boolean activeVehicle)
 	throws PluginWebServicesException {
 	String q1 = "insert into UserVehicleAssociation"
@@ -1543,14 +1630,16 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    + user_id + ",v.id," + activeVehicle
 	    + " from Vehicle v where v.vin = '" + vin + "'";
 	int rows = mysql.update(q1);
-	if (rows == 0)
-	    return false;
-	else
-	    return true;
+	if (rows == 0) {
+	    // say more
+	    return jsonError("addUserVehicleAssociation failed");
+	} else {
+	    return jsonOK();
+	}
     }
 
     @WebMethod
-	public boolean setUserVehicleAssociationActive
+	public String setUserVehicleAssociationActive
 	(int user_id, String vin, boolean active)
 	throws PluginWebServicesException {
 	int a;
@@ -1563,31 +1652,37 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    + " set a.activeVehicle = " + a + " where a.user_ID = "
 	    + user_id + " and a.vehicle_id=v.id and v.vin='" + vin + "'";
 	int rows = mysql.update(q1);
-	if (rows == 0)
-	    return false;
-	else
-	    return true;
+	if (rows == 0) {
+	    // say more
+	    return jsonError("setUserVehicleAssociationActive failed");
+	} else {
+	    return jsonOK();
+	}
     }
 
     @WebMethod
-	public boolean deleteUserVehicleAssociation(int user_id, String vin)
+	public String deleteUserVehicleAssociation(int user_id, String vin)
 	throws PluginWebServicesException {
 	String q1 =
 	    "select id from Vehicle where"
 	    + " vin = '" + vin + "'";
 	String c1 = mysql.getOne(q1);
 
-	if (c1 == "none")
-	    return false;
+	if (c1.equals("none"))
+	    return jsonError("deleteUserVehicleAssociation: no such car " + vin);
+
+	// check user too
 
 	String q2 = "delete from UserVehicleAssociation where"
 	    + " user_ID = " + user_id
 	    + " and vehicle_id = " + c1;
 	int rows = mysql.update(q2);
-	if (rows == 0)
-	    return false;
-	else
-	    return true;
+	if (rows == 0) {
+	    // say more
+	    return jsonError("deleteUserVehicleAssociation failed");
+	} else {
+	    return jsonOK();
+	}
     }
 
     @WebMethod

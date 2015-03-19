@@ -13,7 +13,7 @@ import service.exception.PluginWebServicesException;
 @SOAPBinding(style = Style.RPC)
 public interface PluginWebServices {
     @WebMethod
-	public boolean uploadApp(byte [] data,
+	public String uploadApp(byte [] data,
 				 String appname, String version)
 	throws PluginWebServicesException;
 
@@ -26,7 +26,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 	
     @WebMethod
-	public boolean uninstallApp(String vin, int appID)
+	public String uninstallApp(String vin, int appID)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -38,7 +38,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean addVehicleConfig(byte [] data) 
+	public String addVehicleConfig(byte [] data) 
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -54,7 +54,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean addVehicle(String name, String vin, String type)
+	public String addVehicle(String name, String vin, String type)
 	throws PluginWebServicesException;
 
     @WebMethod
@@ -82,17 +82,17 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean addUserVehicleAssociation(int user_id, String vin,
-						 boolean defaultVehicle)
+	public String addUserVehicleAssociation(int user_id, String vin,
+						boolean defaultVehicle)
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean setUserVehicleAssociationActive
+	public String setUserVehicleAssociationActive
 	(int user_id, String vin, boolean active)
 	throws PluginWebServicesException;
 
     @WebMethod
-	public boolean deleteUserVehicleAssociation(int user_id, String vin)
+	public String deleteUserVehicleAssociation(int user_id, String vin)
 	throws PluginWebServicesException;
 
     @WebMethod

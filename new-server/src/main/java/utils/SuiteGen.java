@@ -31,10 +31,11 @@ public class SuiteGen {
 	return cmd;
     }
 
-    public String generateSuite(String source) {
+    public boolean generateSuite(String source, String[] r) {
 	System.out.println("generating suite from source: " + source);
 	System.out.println("squawkDir = " + squawkDir);
 		
+	int ret;
 	reply = "";
 	File sourceFileFolder = new File(source);
 	if (sourceFileFolder.exists() && sourceFileFolder.isDirectory()) {
@@ -62,21 +63,32 @@ public class SuiteGen {
 		bw.write(cmd + source + "\n");
 		bw.close();
 
-		process.waitFor();
+		ret = process.waitFor();
+		if (ret != 0) {
+		    r[0] = "subprocess returned " + ret + ":\n" + reply;
+		    return false;
+		}
 
 		//Thread.sleep(1000);
 	    } catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		r[0] = "I/O exception";
+		return false;
 	    } catch (InterruptedException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		r[0] = "interrupted exception";
+		return false;
 	    }
-	} 
-	else
+	} else {
 	    System.out.println("Didn't find a source folder");
+	    r[0] = "no source folder: " + source;
+	    return true;
+	}
 		
-	return reply;
+	r[0] = reply;
+	return true;
     }
 
     public class RuntimeInput implements Runnable {

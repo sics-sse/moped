@@ -5,13 +5,19 @@ import java.io.File;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import common.MopedException;
+
 public class CompressUtils {
-    public String unzip(String source) {
+    public String unzip(String source) throws MopedException {
 	String dest = "";
 	try {
+	    File f = new File(source);
+	    if (!f.exists()) {
+		throw new MopedException("unzip: file not found " + source);
+	    }
 	    ZipFile zipFile = new ZipFile(source);
 	    if(!zipFile.isValidZipFile()) {
-		throw new ZipException("Compressed file is invalid, maybe damaged; or does not exist");
+		throw new MopedException("unzip: not a valid zip file " + source);
 	    } else {
 		// Prepare uncompress directory
 		//				int lastIndexOf = source.lastIndexOf(File.separator);
@@ -35,6 +41,7 @@ public class CompressUtils {
 	} catch (ZipException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
+	    throw new MopedException("unzip: ZipException " + source, e);
 	}
 	return dest;
     }
