@@ -109,7 +109,7 @@ public class ServerHandler extends IoHandlerAdapter {
 		    System.out.println
 			("[ Fail to fetch vehicle plugin record!!!]");
 		} else {
-		    String q1 = "insert into VehiclePlugin (vin,name,application_id,ecuId,sendingPortId,callbackPortId,location,executablePluginName) values ('" +
+		    String q1 = "insert into VehiclePlugin (vin,name,application_id,ecuId,sendingPortId,callbackPortId,location,state,executablePluginName) values ('" +
 			vin + "','" +
 			pluginName + "'," +
 			installAppId + "," +
@@ -117,6 +117,7 @@ public class ServerHandler extends IoHandlerAdapter {
 			vehiclePluginRecord.getSendingPortId() + "," +
 			vehiclePluginRecord.getCallbackPortId() + ",'" +
 			vehiclePluginRecord.getLocation() + "','" +
+			"installed" + "','" +
 			vehiclePluginRecord.getExecutablePluginName() + "')";
 		    int rows = mysql.update(q1);
 

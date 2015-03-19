@@ -190,9 +190,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String c1 = mysql.getOne(q1);
 		if (c1 == "none") {
 		    String q2 = "insert into Application " +
-			"(name,publisher,version,hasNewVersion) values ('" +
+			"(name,publisher,state,version,hasNewVersion) values ('" +
 			name + "','" +
 			publisher + "','" +
+			"uploaded" + "','" +
 			version + "',0)";
 		    rows = mysql.update(q2);
 
@@ -1574,7 +1575,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listApplications()
 	throws PluginWebServicesException {
-	String q1 = "select id,name,publisher,version from Application ORDER BY name, version";
+	String q1 = "select id,name,publisher,version,state from Application ORDER BY name, version";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1593,6 +1594,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    o2.put("name", it.getString(2));
 	    o2.put("publisher", it.getString(3));
 	    o2.put("version", it.getString(4));
+	    o2.put("state", it.getString(5));
 	    o1.put(o2);
 	}
 	o.put("result", o1);
@@ -1640,7 +1642,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listInstalledApps()
 	throws PluginWebServicesException {
-	String q1 = "select application_id,ecuId,name,vin from VehiclePlugin";
+	String q1 = "select application_id,ecuId,name,vin,state from VehiclePlugin";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1659,6 +1661,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    o2.put("ecu", it.getString(2));
 	    o2.put("name", it.getString(3));
 	    o2.put("vin", it.getString(4));
+	    o2.put("state", it.getString(5));
 	    o1.put(o2);
 	}
 	o.put("result", o1);
