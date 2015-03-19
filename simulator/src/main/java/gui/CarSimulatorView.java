@@ -22,7 +22,7 @@ public class CarSimulatorView extends JFrame implements SimulatorView {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myDrawingSurface = new DrawingSurface(sim, 10.0, -10.0, -10.0, 10.0);
         add(myDrawingSurface);
-        setSize(1000, 800);
+        setSize(800, 800);
         setLocationRelativeTo(null);
         this.setVisible(true);
 	}

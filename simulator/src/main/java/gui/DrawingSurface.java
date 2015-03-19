@@ -88,6 +88,9 @@ class DrawingSurface extends JPanel {
 	public void drawOvalToScale(Graphics g, double x, double y, double oval_w, double oval_h) {
 		// Draws an oval to scale, with end points expressed in meters instead of pixels
 
+	    x -= oval_w/2;
+	    y -= oval_h/2;
+
         Dimension size = getSize();
         Insets insets = getInsets();
 
@@ -110,12 +113,24 @@ class DrawingSurface extends JPanel {
 	 */
 	private void drawCarToScale(Graphics g, CarModel car) {
         g.setColor(Color.blue);
-        drawLineToScale(g, -car.width/2, -car.length/2, -car.width/2, car.length/2, car.position_x, car.position_y, car.direction);
-		drawLineToScale(g, car.width/2, -car.length/2, car.width/2, car.length/2, car.position_x, car.position_y, car.direction);
-		drawLineToScale(g, -car.width/2, -car.length/2, car.width/2, -car.length/2, car.position_x, car.position_y, car.direction);
-		drawLineToScale(g, -car.width/2, car.length/2, car.width/2, car.length/2, car.position_x, car.position_y, car.direction);
-		drawLineToScale(g, -car.width/2, car.length/6, 0, car.length/2, car.position_x, car.position_y, car.direction);
-		drawLineToScale(g, car.width/2, car.length/6, 0, car.length/2, car.position_x, car.position_y, car.direction);
+        drawLineToScale
+	    (g, -car.width/2, -car.length/2, -car.width/2, car.length/2,
+	     car.position_x, car.position_y, car.direction);
+	drawLineToScale
+	    (g, car.width/2, -car.length/2, car.width/2, car.length/2,
+	     car.position_x, car.position_y, car.direction);
+	drawLineToScale
+	    (g, -car.width/2, -car.length/2, car.width/2, -car.length/2,
+	     car.position_x, car.position_y, car.direction);
+	drawLineToScale
+	    (g, -car.width/2, car.length/2, car.width/2, car.length/2,
+	     car.position_x, car.position_y, car.direction);
+	drawLineToScale
+	    (g, -car.width/2, car.length/6, 0, car.length/2,
+	     car.position_x, car.position_y, car.direction);
+	drawLineToScale
+	    (g, car.width/2, car.length/6, 0, car.length/2,
+	     car.position_x, car.position_y, car.direction);
 	}
 	
 	/**
@@ -151,11 +166,16 @@ class DrawingSurface extends JPanel {
         
         // Draw the models
         for (SimulatorModel mod : mySimulator.models) {
-        	if (mod instanceof CarModel)
-        		drawCarToScale(g, (CarModel) mod);
-        	if (mod instanceof WallModel)
-        		drawWallToScale(g, (WallModel) mod);
+	    if (mod instanceof CarModel) {
+		CarModel car = (CarModel) mod;
+		drawCarToScale(g, car);
+		for (int i = 0; i < car.oldn; i++) {
+		    drawOvalToScale(g, car.oldx[i], car.oldy[i], 0.1, 0.1);
 		}
+	    }
+	    if (mod instanceof WallModel)
+		drawWallToScale(g, (WallModel) mod);
+	}
         
         // Show the current timeStep
         g.setColor(Color.black);

@@ -86,7 +86,17 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 	/** The limited speed. */
 	static double limitedSpeed;
 
+    public static double [] oldx;
+    public static double [] oldy;
+    public static int oldn;
+
+    private static int iteration = 0;
+
 	public CarModel() {
+		oldx = new double [100];
+		oldy = new double [100];
+		oldn = 0;
+
 		lamp = new boolean[3];
 		lamp[0] = false;
 		lamp[1] = false;
@@ -127,6 +137,8 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 	protected void update(SimulatorModel oldModel,
 		Queue<SimulatorModel> allOldModels, double timeStep) {
 		CarModel old = (CarModel) oldModel;
+
+		iteration += 1;
 
 		/*
 		 * TODO list: Calculate acceleration, gyro in all directions Calculate
@@ -222,6 +234,21 @@ public class CarModel extends SimulatorModel implements PhysicalObjectModel {
 		else 
 			allowedSpeed = 5.0;
 		
+		if (iteration % 10 == 0) {
+		    if (oldn < 100) {
+			oldx[oldn] = position_x;
+			oldy[oldn] = position_y;
+			oldn++;
+		    } else {
+			for (int i = 0; i < 100-1; i++) {
+			    oldx[i] = oldx[i+1];
+			    oldy[i] = oldy[i+1];
+			}
+			oldx[100-1] = position_x;
+			oldy[100-1] = position_y;
+		    }
+		}
+
 //		System.out.println("speed = " + vehicleSpeed + ", acc = "
 //				+ acceleration_x + ", allowedSpeed = " + allowedSpeed + ", temp = " + outdoorTemperature + ", hazard = " + hazardLightOn);
 	}
