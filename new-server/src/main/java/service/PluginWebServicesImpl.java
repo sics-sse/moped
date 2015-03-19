@@ -193,7 +193,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			"(name,publisher,state,version,hasNewVersion) values ('" +
 			name + "','" +
 			publisher + "','" +
-			"uploaded" + "','" +
+			"created" + "','" +
 			version + "',0)";
 		    rows = mysql.update(q2);
 
@@ -299,6 +299,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    String q6 = "insert into PluginLinkConfig (fromStr,toStr,connectionType,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
 		    int rows6 = mysql.update(q6);
 		}
+
+		String q7 = "update Application set state='uploaded' where id=" + appId;
+		int rows7 = mysql.update(q7);
+		if (rows7 != 1)
+		    return jsonError("uploadApp: internal db error");
 	    }
 	    else {
 		System.out.println("manifest is NULL");
@@ -1388,6 +1393,22 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	if (c2.equals("none")) {
 	    return jsonError("compileApp: app " + appname + " has no version [" + version + "]");
+	}
+
+	String q3 = "select state from Application where name = '" + appname +
+	    "' and version = '" + version + "'";
+	String c3 = mysql.getOne(q2);
+
+	if (c3.equals("error")) {
+	    return jsonError("compileApp: internal db error");
+	}
+
+	if (c3.equals("none")) {
+	    return jsonError("compileApp: internal db error");
+	}
+
+	if (c3.equals("created")) {
+	    return jsonError("compileApp: application in wrong state: " + c3);
 	}
 
 	String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
