@@ -237,6 +237,7 @@ CREATE TABLE `VehicleConfig` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `brand` varchar(255) NOT NULL,
   `name` varchar(255) UNIQUE NOT NULL,
+  `state` varchar(255) UNIQUE NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1200;
 /*!40101 SET character_set_client = @saved_cs_client */;
