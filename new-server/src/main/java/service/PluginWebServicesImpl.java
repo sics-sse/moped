@@ -49,6 +49,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Schema;
+import javax.xml.XMLConstants;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.mina.core.session.IoSession;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,6 +77,44 @@ import utils.SuiteGen;
 
 import java.sql.*;
 
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
+
+class LoggingErrorHandler implements ErrorHandler {
+
+    public String message = "";
+
+    private boolean isValid = true;
+
+    public boolean isValid() {
+        return this.isValid;
+    }
+
+    @Override
+    public void warning(SAXParseException exc) {
+	System.out.println("xml warning " + exc);
+        // log info
+        // valid or not?
+    }
+
+    @Override
+    public void error(SAXParseException exc) {
+	message += exc;
+	System.out.println("xml error " + exc);
+        // log info
+        this.isValid = false;
+    }
+
+    @Override
+    public void fatalError(SAXParseException exc) throws SAXParseException {
+	message += exc;
+	System.out.println("xml fatalerror " + exc);
+        // log info
+        this.isValid = false;
+        throw exc;
+    }
+}
 
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
@@ -462,7 +505,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    String q7 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
 	    String c7 = mysql.getOne(q7);
 
-	    if (c7 == "none") {
+	    if (c7.equals("none")) {
 		System.out.println("ERROR: no appropriate Vehicle/VehicleConfig combination");
 		return jsonError("no appropriate Vehicle/VehicleConfig combination");
 	    }
@@ -493,7 +536,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    // PluginConfig
 	    //TODO: Move it to a warmer place
-	    if (c3 != "none") {
+	    if (!c3.equals("none")) {
 		// can it happen that there is no AppConfig?
 		int pluginConfigId;
 
@@ -766,8 +809,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	IoSession session = ServerHandler.getSession(vin);
 	if (session == null) {
-	    // If null, response user about the disconnection between Sever and
-	    // Vehicle
 	    return jsonError("uninstallApp: no connection with car " + vin);
 	} else {
 	    // Fetch un_installation PlugIns
@@ -1082,8 +1123,32 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 	try {
+	    domfac.setIgnoringElementContentWhitespace(true);
+	    domfac.setNamespaceAware(true);
+	    final SchemaFactory sf = 
+		SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+
+	    String SCHEMA_PATH = "/home/arndt/moped/moped/xml/vehicleconfig.xsd";
+	    File f = new File(SCHEMA_PATH);
+	    //SCHEMA_PATH = "http://merkur.sics.se/VehicleConfig/1.0/VehicleConfig.xsd";
+	    //domfac.setValidating(true);  
+	    //	    final Schema schema = sf.newSchema
+	    //		(new StreamSource(getClass().getResourceAsStream(SCHEMA_PATH)));
+	    final Schema schema = sf.newSchema
+		(new StreamSource(f));
+	    domfac.setSchema(schema);
+
+
 	    DocumentBuilder dombuilder = domfac.newDocumentBuilder();
+
+	    LoggingErrorHandler eh = new LoggingErrorHandler();
+	    dombuilder.setErrorHandler(eh);
+
+
 	    Document doc = dombuilder.parse(is);
+	    if (!eh.isValid()) {
+		return jsonError(eh.message);
+	    }
 	    // vehicle
 	    Element root = doc.getDocumentElement();
 	    System.out.println("Start parsing XML");
@@ -1253,8 +1318,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				return jsonError("vehicle configuration: no ports/port/id element");
 			    }
 			    String portIdStr = portIdElement.getTextContent();
+
+			    // should check that it's an integer
 			    int portId = Integer.parseInt(portIdStr);
 
+			    if (portId2EcuId.containsKey(portId)) {
+				return jsonError("vehicle configuration: port " + portIdStr + "declared several times");
+			    }
 			    portId2EcuId.put(portId, ecuId);
 
 			    System.out.println("      <id>" + portIdStr
@@ -1312,7 +1382,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		} catch (NullPointerException e) {
 		    System.out.println(portId2EcuId + " is not in the table");
 		    return jsonError("vehicle configuration: unlisted port " + fromPortId);
-		//throw e;
+		    //throw e;
 		}
 				
 		// toPort
