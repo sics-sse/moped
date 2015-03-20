@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified">
+
+  <xs:element name="vehicle" type="vehicle"/>
+
+  <xs:complexType name="vehicle">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="brand" type="xs:string"/>
+      <xs:element name="vin" type="xs:string"/>
+      <xs:element ref="ecm"/>
+      <xs:element ref="ecus"/>
+      <xs:element ref="links"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="ecm">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="server" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="server">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="ip" type="xs:string"/>
+	<xs:element name="socketport" type="xs:int"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="links">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="link" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="link">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="type" type="xs:int"/>
+	<xs:element name="from" type="xs:int"/>
+	<xs:element name="to" type="xs:int"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ecus">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="ecu" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ecu">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="id" type="xs:int"/>
+	<xs:element ref="swcs"/>
+	<xs:element ref="sensors"/>
+	<xs:element ref="actuators"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="swcs">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="swc" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="swc">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="hasPirte" type="xs:boolean"/>
+	<xs:element ref="ports"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ports">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="port" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="port">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="id" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sensors">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="sensor" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="sensor">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="name" type="xs:string"/>
+	<xs:element ref="ports"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="actuators">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element ref="actuator" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="actuator">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="name" type="xs:string"/>
+	<xs:element ref="ports"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
