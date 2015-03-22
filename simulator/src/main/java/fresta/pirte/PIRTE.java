@@ -137,6 +137,7 @@ public class PIRTE implements Runnable {
 				return ((PlugInComponent) mainClass.newInstance());
 			} catch (Exception e) {
 				System.out.println("Exception triggered");
+				e.printStackTrace();
 				return null;
 			}
 		}
