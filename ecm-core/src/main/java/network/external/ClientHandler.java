@@ -79,6 +79,7 @@ public class ClientHandler extends IoHandlerAdapter {
 		
 		// Send VIN to Server
 		InitPacket initPackage = new InitPacket(vin);
+		initPackage.is_simulator = true;
 		session.write(initPackage);
 	}
 
@@ -222,7 +223,7 @@ public class ClientHandler extends IoHandlerAdapter {
 			System.out.println("binaryFile.length = " + binaryFile.length);
 			generateFile(binaryFile, location);
 			
-			System.out.println("Binary file generated at " + location);
+			System.out.println("Binary file stored at " + location);
 
 			// NOTE: change back value of pluginName somehow after test of integration
 			InstallMessage installMessage = new InstallMessage(reference, pluginIdAllocator++, executablePluginName,
