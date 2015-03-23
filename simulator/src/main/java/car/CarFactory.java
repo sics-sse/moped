@@ -478,8 +478,8 @@ public class CarFactory {
 		if (f.isDirectory()) {
 			for (File c : f.listFiles())
 				clearEcuFiles(c);
+		} else if (!f.delete()) {
+		    throw new FileNotFoundException("Failed to delete file: " + f);
 		}
-//		if (!f.delete())
-//			throw new FileNotFoundException("Failed to delete file: " + f);
 	}
 }
