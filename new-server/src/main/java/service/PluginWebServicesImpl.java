@@ -231,7 +231,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    "' and publisher = '" + publisher +
 		    "' and version = '" + version + "'";
 		String c1 = mysql.getOne(q1);
-		if (c1 == "none") {
+		if (c1.equals("none")) {
 		    String q2 = "insert into Application " +
 			"(name,publisher,state,version,hasNewVersion) values ('" +
 			name + "','" +
@@ -291,7 +291,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("existing PluginConfig: " + c3);
 
 		int pluginConfig;
-		if (c3 == "none") {
+		if (c3.equals("none")) {
 		    String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
 			Integer.parseInt(ecuRef) + "," +
 			"'" + name + ".suite" +"'" + "," +
@@ -381,7 +381,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    "where id = " + appId;
 	String x = mysql.getOne(q1);
 
-	if (x == "none") {
+	if (x.equals("none")) {
 	    return false;
 	}
 
@@ -526,7 +526,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		vehicleConfigName + "'";
 	    String c3 = mysql.getOne(q3);
 	    System.out.println("appconfig id " + c3);
-	    if (c3 == "none") {
+	    if (c3.equals("none")) {
 		System.out.println("ERROR: no appropriate AppConfig exists");
 		return jsonError("no appropriate AppConfig exists");
 	    }
@@ -1171,7 +1171,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		+ "name = '" + vehicleNameStr + "'";
 	    String c1 = mysql.getOne(q1);
 
-	    if (c1 != "none") {
+	    if (!c1.equals("none")) {
 		String q3 = "update VehicleConfig set name = '_deleted_' where id = " + c1;
 		rows = mysql.update(q3);
 	    }
@@ -1212,7 +1212,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			
 		String q10 = "select * from Vehicle where vin = '" + vinStr + "'";
 		String c10 = mysql.getOne(q10);
-		if (c10 == "none") {
+		if (c10.equals("none")) {
 		    String q11 = "insert into Vehicle"
 			+ " (name,vin,vehicleConfig_id) values "
 			+ "('" + vehicleNameStr
@@ -1733,7 +1733,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listInstalledApps()
 	throws PluginWebServicesException {
-	String q1 = "select application_id,ecuId,name,vin,state from VehiclePlugin";
+	String q1 = "select application_id,ecuId,a.name,vin,a.state,v.state,a.version from VehiclePlugin v, Application a where a.id = v.application_id";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1748,11 +1748,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	while (it.next()) {
 	    JSONObject o2 = new JSONObject();
-	    o2.put("appid", it.getString(1));
+	    o2.put("appId", it.getString(1));
 	    o2.put("ecu", it.getString(2));
 	    o2.put("name", it.getString(3));
 	    o2.put("vin", it.getString(4));
-	    o2.put("state", it.getString(5));
+	    o2.put("applicationState", it.getString(5));
+	    o2.put("installationState", it.getString(6));
+	    o2.put("version", it.getString(7));
 	    o1.put(o2);
 	}
 	o.put("result", o1);

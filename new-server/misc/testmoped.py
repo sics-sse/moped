@@ -7,7 +7,8 @@ def ack(client, app):
         y = json.loads(y)
         for t in y['result']:
             if t['vin'] == vin:
-                if int(t['appid']) == app:
+                if int(t['appId']) == app:
+                    print t['installationState']
                     return
 
 #        x = client.service.get_ack_status(vin, app)

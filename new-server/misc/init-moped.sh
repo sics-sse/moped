@@ -37,8 +37,12 @@ s = client.service
 from testmoped import *
 import base64
 
-x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest3/target/PluginCreationTest3-1.0.jar"))
-s.uploadApp(x, "PluginCreationTest3", "1.0")
+n="LEDLighter"
+n="PluginCreationTest3"
+v="1.0"
+x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/%s/target/%s-%s.jar" % (n,n,v)))
+x=s.uploadApp(x, n, v)
+print x
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.xml"))
 x = client.service.addVehicleConfig(x)
@@ -58,10 +62,10 @@ ack(client, 200)
 x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest2/target/PluginCreationTest2-1.8.jar"))
 s.uploadApp(x, "PluginCreationTest2", "1.8")
 
-#x = client.service.installApp("20UYA31581L000000", 201, "jdk")
-#print x
+x = client.service.installApp("20UYA31581L000000", 201, "jdk")
+print x
 
-#ack(client, 201)
+ack(client, 201)
 
 
 #x = client.service.uninstallApp("20UYA31581L000000", 200)
