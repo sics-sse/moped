@@ -64,12 +64,35 @@ public class ServerHandler extends IoHandlerAdapter {
 	    case MessageType.INIT:
 		InitPacket initPackageMessage = (InitPacket) packageMessage;
 		vin = initPackageMessage.getVin();
-		sessions.add(session);
-		session.setAttribute("vehicle", vin);
-		MdcInjectionFilter.setProperty(session, "vehicle", vin);
+
+		if (vehicles.containsKey(vin)) {
+		    System.out.println("Vehicle " + vin + " tries to connect again - ignoring it");
+		    // Just leave it hanging now. If we close it, the car
+		    // will retry (when using my unchecked-in changes)
+		    //session.close(false);
+		} else {
+
+		    sessions.add(session);
+		    session.setAttribute("vehicle", vin);
+		    MdcInjectionFilter.setProperty(session, "vehicle", vin);
 				
-		vehicles.put(vin, session);
-		System.out.println("Vehicle " + vin + " joins the connection");
+		    String is_sim;
+		    if (initPackageMessage.is_simulator)
+			is_sim = "1";
+		    else
+			is_sim = "0";
+		    MdcInjectionFilter.setProperty(session, "is_sim", is_sim);
+
+		    vehicles.put(vin, session);
+		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + initPackageMessage.is_simulator + ")");
+
+		    String q1 = "update Vehicle set simulator=" + is_sim +
+			" where vin = '" + vin + "'";
+		    int rows = mysql.update(q1);
+		    if (rows == 0) {
+			System.out.println("unknown car");
+		    }
+		}
 		break;
 	    case MessageType.INSTALL_LINUX_ACK:
 		InstallLinuxAckPacket installLinuxAckPacket =

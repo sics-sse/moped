@@ -100,6 +100,10 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
+	public String tellVehicle(String vin, int val)
+	throws PluginWebServicesException;
+
+    @WebMethod
 	public boolean checkpassword(String pwd, String hash)
 	throws PluginWebServicesException;
 

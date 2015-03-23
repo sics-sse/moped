@@ -29,6 +29,7 @@ public class MessageType extends Enum implements Serializable {
 	public static final byte REQUEST_ID_ACK = 15;
 	public static final byte PWM = 16;
 	public static final byte INSTALL_LINUX_ACK = 17;
+	public static final byte PINGCAR = 18;
 	protected MessageType(byte enumValue) {
 		super(enumValue);
 		// TODO Auto-generated constructor stub

@@ -55,6 +55,7 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.logging.MdcInjectionFilter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -68,6 +69,7 @@ import messages.InstallPacket;
 import messages.InstallPacketData;
 import messages.LinkContextEntry;
 import messages.RestorePacket;
+import messages.PingcarPacket;
 import messages.UninstallPacket;
 import messages.UninstallPacketData;
 import mina.ServerHandler;
@@ -1085,6 +1087,20 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
+	public String tellVehicle(String vin, int val)
+	throws PluginWebServicesException {
+	IoSession session = ServerHandler.getSession(vin);
+	if (session == null) {
+	    return jsonError("no connection with car " + vin);
+	}
+
+	PingcarPacket pingcarPacket = new PingcarPacket
+	    (vin, val);
+	session.write(pingcarPacket);
+	return jsonOK();
+    }
+
+    @WebMethod
 	public String addVehicleConfig(byte [] data) 
 	throws PluginWebServicesException {
 	boolean status = false;
@@ -1530,6 +1546,15 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String q1 = "insert into Vehicle (vin,name,vehicleConfig_id) select '" + vin + "','" + name + "',c.id from VehicleConfig c where c.name = '" + type + "'";
 	int rows = mysql.update(q1);
 	if (rows != 0) {
+	    IoSession session = ServerHandler.getSession(vin);
+	    if (session != null) {
+		String is_sim = MdcInjectionFilter.getProperty(session, "is_sim");
+		System.out.println("vehicle " + vin + " simulator: " + is_sim);
+		    String q2 = "update Vehicle set simulator=" + is_sim +
+			" where vin='" + vin + "'";
+		int rows2 = mysql.update(q2);
+	    }
+
 	    return jsonOK();
 	} else {
 	    // distinguish between causes.
