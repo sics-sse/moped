@@ -464,7 +464,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
     @Override
     @SuppressWarnings("unchecked")
-	public String installApp(String vin, int appID, String jvm) 
+	public String installApp(String vin, int appID)
 	throws PluginWebServicesException {
 	System.out.println("vin in install(): " + vin);
 	System.out.println("appID in install(): " + appID);
@@ -726,13 +726,17 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 		    String location = rs12.getString(3);
 				
+		    String q71 = "select simulator from Vehicle where vin = '" + vin + "'";
+		    String c71 = mysql.getOne(q7);
+		    if (c71.equals("none")) {
+			System.out.println("internal error 71");
+			return jsonError("internal db error");
+		    }
+
 		    String fileType = ".jar";
-		    if (jvm.equals("Squawk")) {
+		    if (c71.equals("0")) {
 			fileType = ".suite";
 			location += File.separator + pluginName;
-		    } else if (jvm.equals("jdk")) {
-		    } else {
-			return jsonError("invalid jvm value " + jvm);
 		    }
 				
 		    location += fileType;
@@ -903,7 +907,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    try {
 		Thread.sleep(2000);
 		if (newAppId > -1) {
-		    installApp(vin, newAppId, "Squawk"); //TODO: This should also be implemented for JDK (all the way to the upgrade button in the php-interface)
+		    installApp(vin, newAppId); //TODO: This should also be implemented for JDK (all the way to the upgrade button in the php-interface)
 		    return true;
 		}
 		else 

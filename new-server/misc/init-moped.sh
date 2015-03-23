@@ -54,7 +54,7 @@ print x
 x=client.service.addUserVehicleAssociation(33, "20UYA31581L000000", True)
 print x
 
-x = client.service.installApp("20UYA31581L000000", 200, "jdk")
+x = client.service.installApp("20UYA31581L000000", 200)
 print x
 
 ack(client, 200)
@@ -62,7 +62,7 @@ ack(client, 200)
 x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest2/target/PluginCreationTest2-1.8.jar"))
 s.uploadApp(x, "PluginCreationTest2", "1.8")
 
-x = client.service.installApp("20UYA31581L000000", 201, "jdk")
+x = client.service.installApp("20UYA31581L000000", 201)
 print x
 
 ack(client, 201)

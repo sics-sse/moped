@@ -22,7 +22,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 	
     @WebMethod
-	public String installApp(String vin, int appID, String jvm)
+	public String installApp(String vin, int appID)
 	throws PluginWebServicesException;
 	
     @WebMethod

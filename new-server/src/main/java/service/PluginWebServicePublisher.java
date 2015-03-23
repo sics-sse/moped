@@ -63,16 +63,5 @@ public class PluginWebServicePublisher {
 //			ex.printStackTrace();
 //		}
 		
-		//TODO: temporary direct trigger (for debugging)
-		boolean debug = false;
-		if (debug) {
-			try {
-				String vin = "20UYA31581L000000";
-				handler.messageReceived(new ProtocolCodecSession(), new InitPacket(vin));
-				pws.installApp(vin, 25, "jdk");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
