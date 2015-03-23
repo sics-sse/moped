@@ -201,6 +201,7 @@ public class Ecm {
 
 	public void process(Message message) {
 		String pluginName;
+		// the plugin number in the vehicle, starting from 1:
 		byte pluginId;
 		
 		int messageType = message.getMessageType();
@@ -222,7 +223,7 @@ public class Ecm {
 			System.out.println("INSTALL_ACK in Ecm");
 			System.out.println("@@@ pluginName:"+pluginName);
 			updateDB(pluginId);
-			System.out.println("@@@ pluginId:"+pluginId);
+			System.out.println("@@@ local pluginId:"+pluginId);
 			int appId = getAppId(pluginName);
 			System.out.println("@@@ appId:"+appId);
 			if(pluginName.contains(".zip")) {
@@ -311,7 +312,7 @@ public class Ecm {
 	
 	private void updateDB(byte pluginId) {
 		DataRecord dataRecord = tmpDBRecords.get(pluginId);
-		System.out.println("ecm updateDB " + pluginId);
+		System.out.println("ecm updateDB local id " + pluginId);
 	    System.out.println(tmpDBRecords);
 		System.out.println("ecm updateDB " + dataRecord);
 		String pluginName = dataRecord.getPluginName();
