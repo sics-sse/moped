@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import com.sun.squawk.VM;
 import java.lang.Math;
@@ -13,11 +13,13 @@ public class LEDLighter extends PlugInComponent {
 		super(args);
 	}
 	
+	public LEDLighter() {
+	}
+	
 	public static void main(String[] args) {
 		VM.println("LEDLighter.main()\r\n");
 		LEDLighter ledLighter = new LEDLighter(args);
-		ledLighter.init();
-		ledLighter.doFunction();
+		ledLighter.run();
 		VM.println("LEDLighter-main done\r\n");
 	}
 
@@ -35,7 +37,7 @@ public class LEDLighter extends PlugInComponent {
 	}
 	
 	public void doFunction() {
-		VM.println("doFunction");
+	    //VM.println("doFunction");
 		try {
 			for (int i = 0; i < 100; i++) {
 //				// Initial LEDs
@@ -91,10 +93,13 @@ public class LEDLighter extends PlugInComponent {
 //				Thread.sleep(10000);
 			}
 		} catch (InterruptedException e) {
-			VM.println("Interrupted.\r\n");
+		    //VM.println("Interrupted.\r\n");
 		}
 	}
 
-	public void run() {}
+	public void run() {
+	    init();
+	    doFunction();
+	}
 	
 }

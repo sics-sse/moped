@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import com.sun.squawk.VM;
 import sics.plugin.PlugInComponent;

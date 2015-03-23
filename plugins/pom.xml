@@ -9,6 +9,9 @@
   	<module>PluginCreationTest</module>
   	<module>PluginCreationTest2</module>
   	<module>SemiAutomaticReverseParking</module>
+  	<module>AP</module>
+  	<module>CL</module>
+  	<module>LEDLighter</module>
   </modules>
   
   <dependencies>

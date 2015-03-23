@@ -15,6 +15,7 @@ public class PluginCreationTest extends PlugInComponent {
 	public void init() {
 		System.out.println("PluginCreationTest initializing...");
 		System.out.println("and done!");
+		System.out.println("Howdy!");
 	}
 
 	public static void main(String[] args) {

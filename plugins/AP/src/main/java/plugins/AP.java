@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import com.sun.squawk.VM;
 import java.lang.Math;
@@ -14,11 +14,13 @@ public class AP extends PlugInComponent {
 		super(args);
 	}
 	
+	public AP() {
+	}
+	
 	public static void main(String[] args) {
 		VM.println("AP.main()\r\n");
 		AP ap = new AP(args);
-		ap.init();
-		ap.doFunction();
+		ap.run();
 		VM.println("AP-main done\r\n");
 	}
 
@@ -39,7 +41,7 @@ public class AP extends PlugInComponent {
 	public void doFunction() {
 		try {
 			for (int i = 0; i < 100; i++) {
-				VM.println("[AP is running]");
+			    //VM.println("[AP is running]");
 				
 				// warmup
 				Thread.sleep(2000);
@@ -72,7 +74,7 @@ public class AP extends PlugInComponent {
 				Thread.sleep(2000);
 			}
 		} catch (InterruptedException e) {
-			VM.println("Interrupted.\r\n");
+		    //VM.println("Interrupted.\r\n");
 		}
 	}
 
@@ -82,6 +84,9 @@ public class AP extends PlugInComponent {
 //	private int rescaleToPwm(int val) {
 //		return (int) (Math.ceil(100 + (0.55556 * val)) * 16.38);
 //	}
-	public void run() {}
+	public void run() {
+	    init();
+	    doFunction();
+	}
 	
 }
