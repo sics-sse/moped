@@ -233,32 +233,34 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String q1 = "select id from Application where " +
 		    "name = '" + name +
 		    "' and publisher = '" + publisher +
-		    "' and version = '" + version + "'";
+		    "' and version = '" + version + 
+		    "' and state = '020-uploaded'";
 		String c1 = mysql.getOne(q1);
-		if (c1.equals("none")) {
-		    String q2 = "insert into Application " +
-			"(name,publisher,state,version,hasNewVersion) values ('" +
-			name + "','" +
-			publisher + "','" +
-			"created" + "','" +
-			version + "',0)";
-		    rows = mysql.update(q2);
 
-		    String q3 = "select id from Application " +
-			"where name = '" + name +
-			"' and publisher = '" + publisher +
-			"' and version = '" + version + "'";
-		    String c3 = mysql.getOne(q3);
-		    appId = Integer.parseInt(c3);
-		} else {
-		    // should it be allowed to insert a new copy into an
-		    // existing version?
-		    // then we should also delete the old one
-		    // for the time being we make an unwarranted assumption,
-		    // namely that the old entries don't hurt (that the new ones
-		    // are the same)
-		    appId = Integer.parseInt(c1);
+		// we delete the old one
+		// but maybe this should be an error
+		if (!c1.equals("none")) {
+		    String q1u = "update Application set state='060-pending-delete' where id=" + c1;
+		    int rows1u = mysql.update(q1u);
+		    if (rows1u != 1)
+			return jsonError("upload: internal db error 1");
 		}
+
+		String q2 = "insert into Application " +
+		    "(name,publisher,state,version,hasNewVersion) values ('" +
+		    name + "','" +
+		    publisher + "','" +
+		    "010-created" + "','" +
+		    version + "',0)";
+		rows = mysql.update(q2);
+
+		String q3 = "select id from Application " +
+		    "where name = '" + name +
+		    "' and publisher = '" + publisher +
+		    "' and version = '" + version + 
+		    "' and state < '060'";
+		String c3 = mysql.getOne(q3);
+		appId = Integer.parseInt(c3);
 
 		System.out.println("new appId " + appId);
 
@@ -287,31 +289,31 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				
 		// Why do we match with name, why with ecuRef, and why
 		// do we want to keep the old one at all?
-		String q3 = "select * from PluginConfig where ecuId = " +
+		String q30 = "select * from PluginConfig where ecuId = " +
 		    Integer.parseInt(ecuRef) + " and " +
 		    "name = " + "'" + name + ".suite" +"'" + " and " +
 		    "appConfig_id = " + appConfigId;
-		String c3 = mysql.getOne(q3);
-		System.out.println("existing PluginConfig: " + c3);
+		String c30 = mysql.getOne(q3);
+		System.out.println("existing PluginConfig: " + c30);
 
 		int pluginConfig;
-		if (c3.equals("none")) {
-		    String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
-			Integer.parseInt(ecuRef) + "," +
-			"'" + name + ".suite" +"'" + "," +
-			appConfigId + ")";
-		    int x3 = mysql.update(q31);
-		    System.out.println("updated rows " + x3);
-
-		    String q32 = "select * from PluginConfig where ecuId = " +
-			Integer.parseInt(ecuRef) + " and " +
-			"name = " + "'" + name + ".suite" +"'" + " and " +
-			"appConfig_id = " + appConfigId;
-		    String c32 = mysql.getOne(q32);
-		    pluginConfig = Integer.parseInt(c32);
-		} else {
-		    pluginConfig = Integer.parseInt(c3);
+		if (c30.equals("none")) {
+		    System.out.println("pluginconfig already exists");
 		}
+
+		String q31 = "insert into PluginConfig (ecuId,name,appConfig_id) values (" +
+		    Integer.parseInt(ecuRef) + "," +
+		    "'" + name + ".suite" +"'" + "," +
+		    appConfigId + ")";
+		int x3 = mysql.update(q31);
+		System.out.println("updated rows " + x3);
+
+		String q32 = "select * from PluginConfig where ecuId = " +
+		    Integer.parseInt(ecuRef) + " and " +
+		    "name = " + "'" + name + ".suite" +"'" + " and " +
+		    "appConfig_id = " + appConfigId;
+		String c32 = mysql.getOne(q32);
+		pluginConfig = Integer.parseInt(c32);
 
 		//TODO: Refactor
 		// Xml-parsing
@@ -347,10 +349,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    int rows6 = mysql.update(q6);
 		}
 
-		String q7 = "update Application set state='uploaded' where id=" + appId;
+		String q7 = "update Application set state='020-uploaded' where id=" + appId;
 		int rows7 = mysql.update(q7);
 		if (rows7 != 1)
-		    return jsonError("uploadApp: internal db error");
+		    return jsonError("uploadApp: internal db error 2");
 	    }
 	    else {
 		System.out.println("manifest is NULL");
@@ -1470,7 +1472,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String c1 = mysql.getOne(q1);
 
 	if (c1.equals("error")) {
-	    return jsonError("compileApp: internal db error");
+	    return jsonError("compileApp: internal db error 1");
 	}
 
 	if (c1.equals("none")) {
@@ -1482,7 +1484,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String c2 = mysql.getOne(q2);
 
 	if (c2.equals("error")) {
-	    return jsonError("compileApp: internal db error");
+	    return jsonError("compileApp: internal db error 2");
 	}
 
 	if (c2.equals("none")) {
@@ -1494,14 +1496,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String c3 = mysql.getOne(q2);
 
 	if (c3.equals("error")) {
-	    return jsonError("compileApp: internal db error");
+	    return jsonError("compileApp: internal db error 3");
 	}
 
 	if (c3.equals("none")) {
-	    return jsonError("compileApp: internal db error");
+	    return jsonError("compileApp: internal db error 4");
 	}
 
-	if (c3.equals("created")) {
+	if (c3.compareTo("010-created") <= 0) {
 	    return jsonError("compileApp: application in wrong state: " + c3);
 	}
 
@@ -1521,6 +1523,11 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String reply[] = new String[1];
 	boolean s = suiteGen.generateSuite(dest, reply); // + "/" + fullClassName);
 	if (s) {
+	    String q1u = "update Application set state='030-compiled' where id=" + c1;
+	    int rows1u = mysql.update(q1u);
+	    if (rows1u != 1)
+		return jsonError("compile: internal db error 5");
+
 	    // return reply too.
 	    return jsonOK();
 	} else {
@@ -1746,7 +1753,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listApplications()
 	throws PluginWebServicesException {
-	String q1 = "select a.id,name,publisher,version,state,c.vehicleConfigName from Application a, AppConfig c where c.application_id=a.id ORDER BY name";
+	String q1 = "select a.id,name,publisher,version,state,c.vehicleConfigName from Application a, AppConfig c where c.application_id=a.id and state < '060' ORDER BY name";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1795,7 +1802,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    if (k == -1)
 		k = n;
 
-	    for (int i = n-1; i > k; i--) {
+	    for (int i = n-1; i >= k; i--) {
 		o1.put(i+1, o1.get(i));
 	    }
 	    o1.put(k, o2);
