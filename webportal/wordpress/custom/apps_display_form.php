@@ -78,12 +78,13 @@ function apps_display_form(){
 	<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 		<thead>
 			<tr>
-				<th width="35%">Application</th>
-				<th width="25%">Publisher</th>
+				<th width="33%">Application</th>
+				<th width="15%">Publisher</th>
 				<th width="10%">Version</th>
 				<th width="10%">Type</th>
 				<th width="10%">Install</th>
-				<th width="10%">Info</th>
+				<th width="7%">Info</th>
+				<th width="15%">Uninstall</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -102,6 +103,7 @@ function apps_display_form(){
 				    $i = 0;
 				}
 				echo "<td>$i</td>\r\n";
+				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->id'/><input name='Jdk_uninstall' type='image' src='wordpress/custom/images/uninstall.png' alt='Uninstall'/></form></td>\r\n";
 				echo "</tr>\r\n";
 				$app_nr++;
 			}
@@ -119,12 +121,21 @@ function apps_display_form(){
 				<th>Type</th>
 				<th>Install</th>
 				<th>Info</th>
+				<th>Uninstall</th>
 			</tr>
 		</tfoot>
 	</table>
 	<div id="feedback"></div>
 	
 	<?php 
+	if (isset($_POST['Jdk_uninstall_x'])) {
+	  $myvin = getVIN();
+	  if (!$myvin) {
+	    print "<font color='red'>No active vehicle: add one to your list of cars, and mark it as active</font>";
+	  } else {
+	    $ret = invoke_uninstall_webservice($_POST['app_id']);
+	  }
+	}
 	if (isset($_POST['Jdk_install_x'])) {
 	  $myvin = getVIN();
 	  if (!$myvin) {
