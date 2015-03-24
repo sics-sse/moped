@@ -11,6 +11,8 @@ import service.MySqlIterator;
 
 import common.MopedException;
 
+import java.lang.NumberFormatException;
+
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.BufferedReader;
@@ -1694,10 +1696,57 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	return o.toString();
     }
 
+    private int cmpVersions(String s1, String s2) {
+	String [] a1 = s1.split("\\.");
+	String [] a2 = s2.split("\\.");
+
+	int i = 0;
+	int n1 = a1.length;
+	int n2 = a2.length;
+	int n;
+
+	if (n1 < n2)
+	    n = n1;
+	else
+	    n = n2;
+
+	while (i < n) {
+	    String p1 = a1[i];
+	    String p2 = a2[i];
+
+	    int cmp;
+
+	    try {
+		int i1 = Integer.parseInt(p1);
+		int i2 = Integer.parseInt(p2);
+		if (i1 < i2)
+		    cmp = -1;
+		else if (i1 > i2)
+		    cmp = 1;
+		else
+		    cmp = 0;
+	    } catch (NumberFormatException e) {
+		cmp = p1.compareTo(p2);
+	    }
+
+	    if (cmp < 0)
+		return -1;
+	    if (cmp > 0)
+		return 1;
+	    i++;
+	}
+	if (n1 < n2)
+	    return -1;
+	else if (n1 > n2)
+	    return 1;
+	else
+	    return 0;
+    }
+
     @WebMethod
 	public String listApplications()
 	throws PluginWebServicesException {
-	String q1 = "select a.id,name,publisher,version,state,c.vehicleConfigName from Application a, AppConfig c where c.application_id=a.id ORDER BY name, version";
+	String q1 = "select a.id,name,publisher,version,state,c.vehicleConfigName from Application a, AppConfig c where c.application_id=a.id ORDER BY name";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1710,6 +1759,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    return o.toString();
 	}
 
+	int n = 0;
 	while (it.next()) {
 	    JSONObject o2 = new JSONObject();
 	    o2.put("id", it.getString(1));
@@ -1718,8 +1768,40 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    o2.put("version", it.getString(4));
 	    o2.put("state", it.getString(5));
 	    o2.put("vehicleConfig", it.getString(6));
-	    o1.put(o2);
+
+	    int cmp;
+	    String n1 = (String) o2.get("name");
+	    String v1 = (String) o2.get("version");
+	    int k = -1;
+	    for (int i = 0; i < n; i++) {
+		JSONObject o3 = (JSONObject) o1.get(i);
+		String n2 = (String) o3.get("name");
+		cmp = n1.compareTo(n2);
+		if (cmp < 0) {
+		    k = i;
+		    break;
+		}
+		if (cmp == 0) {
+		    String v2 = (String) o3.get("version");
+		    //cmp = v1.compareTo(v2);
+		    cmp = cmpVersions(v1, v2);
+		    if (cmp < 0) {
+			k = i;
+			break;
+		    }
+		}
+	    }
+
+	    if (k == -1)
+		k = n;
+
+	    for (int i = n-1; i > k; i--) {
+		o1.put(i+1, o1.get(i));
+	    }
+	    o1.put(k, o2);
+	    n++;
 	}
+
 	o.put("result", o1);
 	o.put("error", false);
 
