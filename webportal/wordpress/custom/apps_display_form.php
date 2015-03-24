@@ -56,6 +56,23 @@ function apps_display_form(){
 	  print "Active vehicle: $myvin";
 	}
 
+	$car = $client->infoVehicle($myvin);
+	$car = json_decode($car);
+	$car = $car->result;
+
+	$iapps = $client->listInstalledApps();
+	$iapps = json_decode($iapps);
+	$iapps = $iapps->result;
+
+	$ia = array();
+	foreach ($iapps as $iapp) {
+	  $nam = $iapp->name;
+	  $vin = $iapp->vin;
+	  if ($iapp->vin == $myvin) {
+	    $ia[$nam] = 1;
+	  }
+	}
+
 	?>
 		
 	<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
@@ -63,8 +80,10 @@ function apps_display_form(){
 			<tr>
 				<th width="35%">Application</th>
 				<th width="25%">Publisher</th>
-				<th width="25%">Version</th>
-				<th width="15%">Install</th>
+				<th width="10%">Version</th>
+				<th width="10%">Type</th>
+				<th width="10%">Install</th>
+				<th width="10%">Info</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -72,10 +91,17 @@ function apps_display_form(){
 			$app_nr = 0;
 			foreach ($apps as $app) {
 				echo "<tr>\r\n";
-				echo "<td>$app->name $xx</td>\r\n";
+				echo "<td>$app->name</td>\r\n";
 				echo "<td>$app->publisher</td>\r\n";
 				echo "<td>$app->version</td>\r\n";
+				echo "<td>$app->vehicleConfig</td>\r\n";
 				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->id'/><input name='Jdk_install' type='image' src='wordpress/custom/images/install.png' alt='Install'/></form></td>\r\n";
+				$i = $ia[$app->name];
+				if (!$i) {
+				  if ($app->vehicleConfig == $car->type)
+				    $i = 0;
+				}
+				echo "<td>$i</td>\r\n";
 				echo "</tr>\r\n";
 				$app_nr++;
 			}
@@ -90,7 +116,9 @@ function apps_display_form(){
 				<th>Application</th>
 				<th>Publisher</th>
 				<th>Version</th>
+				<th>Type</th>
 				<th>Install</th>
+				<th>Info</th>
 			</tr>
 		</tfoot>
 	</table>
@@ -102,7 +130,7 @@ function apps_display_form(){
 	  if (!$myvin) {
 	    print "<font color='red'>No active vehicle: add one to your list of cars, and mark it as active</font>";
 	  } else {
-	    $ret = invoke_install_webservice($_POST['app_id'], 'jdk');
+	    $ret = invoke_install_webservice($_POST['app_id']);
 	  }
 	}
 }
