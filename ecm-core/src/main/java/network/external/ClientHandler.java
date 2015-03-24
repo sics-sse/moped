@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import messages.InitPacket;
+import messages.PingcarPacket;
 import messages.InstallLinuxAckPacket;
 import messages.InstallMessage;
 import messages.InstallPacket;
@@ -157,6 +158,15 @@ public class ClientHandler extends IoHandlerAdapter {
 			System.out.println("Restore Packet arrived");
 			RestorePacket restorePacket = (RestorePacket) packet;
 			unpackRestorePackage(restorePacket);
+			break;
+		case MessageType.PINGCAR:
+		    PingcarPacket pingcarPacket = (PingcarPacket) packet;
+		    System.out.println("Ping Packet arrived (" + pingcarPacket.type + " " + pingcarPacket.val + " " + pingcarPacket.msg + ")");
+		    if (pingcarPacket.type == 44) {
+			System.out.println("told to shut down");
+			System.exit(0);
+		    }
+
 			break;
 		default:
 			System.out.println("???");
