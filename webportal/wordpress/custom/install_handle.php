@@ -38,6 +38,28 @@ function invoke_install_webservice($app_id) {
     return false;
   }
 }
+
+
+function invoke_uninstall_webservice($app_id) {
+  global $client;
+		
+  try  
+    {  
+      $vin = getVIN();
+      $ret = $client->uninstallApp($vin, $app_id);
+      $ret = json_decode($ret);
+      if ($ret->error) {
+	$e = $ret->message;
+	echo "<font color='red'>Uninstallation failed: $e</font>";
+	return;
+      }
+
+      return $ret;
+    } catch (SoapFault $exception) {  
+    print $exception;
+    return false;
+  }
+}
 	
 	
 ?>
