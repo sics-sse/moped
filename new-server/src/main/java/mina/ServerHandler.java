@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import messages.PingcarPacket;
 import messages.InitPacket;
 import messages.InstallAckPacket;
 import messages.InstallLinuxAckPacket;
@@ -66,7 +67,13 @@ public class ServerHandler extends IoHandlerAdapter {
 		vin = initPackageMessage.getVin();
 
 		if (vehicles.containsKey(vin)) {
-		    System.out.println("Vehicle " + vin + " tries to connect again - ignoring it");
+		    System.out.println("Vehicle " + vin + " tries to connect again - telling it to go away");
+
+		    PingcarPacket pingcarPacket = new PingcarPacket(vin, 0);
+		    pingcarPacket.type = 44;
+		    pingcarPacket.msg = "duplicate VIN";
+		    session.write(pingcarPacket);
+
 		    // Just leave it hanging now. If we close it, the car
 		    // will retry (when using my unchecked-in changes)
 		    //session.close(false);

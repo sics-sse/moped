@@ -1,3 +1,4 @@
+import base64
 import json
 
 def ack(client, app):
@@ -21,3 +22,8 @@ def readfile(name):
     s = f.read()
     f.close()
     return s
+
+def upload(s, n, v):
+    x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/%s/target/%s-%s.jar" % (n,n,v)))
+    x=s.uploadApp(x, n, v)
+    return x

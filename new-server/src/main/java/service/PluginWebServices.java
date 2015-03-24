@@ -100,7 +100,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String tellVehicle(String vin, int val)
+	public String tellVehicle(String vin, int type, int val, String msg)
 	throws PluginWebServicesException;
 
     @WebMethod

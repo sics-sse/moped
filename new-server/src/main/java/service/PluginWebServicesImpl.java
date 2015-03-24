@@ -1091,7 +1091,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public String tellVehicle(String vin, int val)
+	public String tellVehicle(String vin, int type, int val, String msg)
 	throws PluginWebServicesException {
 	IoSession session = ServerHandler.getSession(vin);
 	if (session == null) {
@@ -1100,6 +1100,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	PingcarPacket pingcarPacket = new PingcarPacket
 	    (vin, val);
+	pingcarPacket.type = type;
+	pingcarPacket.msg = msg;
 	session.write(pingcarPacket);
 	return jsonOK();
     }
@@ -1695,7 +1697,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     @WebMethod
 	public String listApplications()
 	throws PluginWebServicesException {
-	String q1 = "select id,name,publisher,version,state from Application ORDER BY name, version";
+	String q1 = "select a.id,name,publisher,version,state,c.vehicleConfigName from Application a, AppConfig c where c.application_id=a.id ORDER BY name, version";
 
 	MySqlIterator it = mysql.getIterator(q1);
 
@@ -1715,6 +1717,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    o2.put("publisher", it.getString(3));
 	    o2.put("version", it.getString(4));
 	    o2.put("state", it.getString(5));
+	    o2.put("vehicleConfig", it.getString(6));
 	    o1.put(o2);
 	}
 	o.put("result", o1);
