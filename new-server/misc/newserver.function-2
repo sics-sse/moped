@@ -5,7 +5,7 @@ Web services in the server
 
 QUESTION: Wording: do "remove" and "delete" mean different things? Do
 we use both?
-"add"/"create"
+add/create
 change/update/edit/modify
 list/get/fetch
 
@@ -13,44 +13,52 @@ list/get/fetch
 All web services need user/password. Those are in the table wp_users,
 which is copied from the web portal.
 
-'ret' is a general return type, with at least a boolean return value, and
-a message in case of error. This message could encapsulate several levels
-of error messages (backtrace).
+When it says "Returns ...", it means that a string containing a JSON
+structure is returned, with the structure containing the keys 'result' (which
+holds the returned value) and 'error' (which is true or false) and in
+the case of an error 'message' which is an error message.
 
-'ret+int' means that it also contains an int.
+If nothing is said about the return value, it is some uninteresting object,
+like an empty array or empty structure.
+
+Errors marked with * are not checked yet.
 
 ========================================
 Admin services, only allowed when the user is 'admin' or something like
 that. Meant to be called from the web portal only.
 
-ret updateUserTable(set of pairs (user, password))
+updateUserTable(set of pairs (user, password))
 The contents of the table wp_users are replaced.
 
 QUESTION: Note that the first time, this must be done "manually".
 
+CURRENTLY: doesn't exist yet.
+
 ========================================
 User services
 
-All services return appropriate errors if the entities referred to don't
-exist, if they are supposed to.
-
 
 --------------------
-ret+int
 uploadApp(app, name, version)
 
 app is a byte array, the contents of a jar file
-The returned number is the appId. There is an error if something went wrong
-when uploading (for example the app not being a jar file).
 The app is placed in an appropriate place in the file system of the server.
 Its state is 'uploaded'.
 
-QUESTION: can version be any string? (not empty, anyway)
-We may want to define a comparison operator, in order to know which
-version is the latest, but does the server need to know?
+Returns the new appId.
+
+Version should be a string containing nonnegative integers separated
+by periods, but this is not enforced. See listApplications.
+
+Errors:
+no manifest
+*not a jar file
+*unexpected non-class file
+*no class file
+*no xml config file
+xml parse error
 
 --------------------
-ret+something
 infoApp(appId)
 
 Returns info about an app, including its state.
@@ -58,19 +66,24 @@ Returns info about an app, including its state.
 CURRENTLY: doesn't exist
 
 --------------------
-ret
 compileApp(appId)
 
 Runs squawk and produces a .suite file. If all went well, the state of the
 app becomes 'compiled'.
 
+Errors:
+no such app
+can't find jar file
+unzipping failed
+suite generation failed
+
 CURRENTLY: arguments are (appname, version)
+I don't remember why I did that.
+
 Returns a string with output from squawk, because it did that before.
 Is that output interesting when all goes well?
-CURRENTLY: no concept of state
 
 --------------------
-ret
 testApp(appId)
 
 The state must not be 'uploaded'. Some tests are run, and if they fail,
@@ -80,11 +93,14 @@ succeed and the state was 'compiled', the state will be 'tested'.
 CURRENTLY: doesn't exist
 
 --------------------
-ret
 installApp(VIN, appId)
 
 If the state of the app is 'tested', schedule an installation of the app
 on the vehicle and return a success value.
+
+If the app was already installed, it will be installed again.
+
+The vehicleConfig name must match.
 
 The scheduling means that a row in InstalledApps is created with the
 installation marked as pending. It will be performed when the car contacts
@@ -92,33 +108,39 @@ the server the next time. At that time, the app is sent to the car, and
 the server waits for an acknowledgment. When/if the acknowledgment appears,
 the app is marked as installed in the InstalledApps table.
 
-QUESTION: what if the state is 'installed'? Note that actually installing the
-same thing several times on the car is allowed - it may happen if the ack
-got lost.
+The above is a bit internal: talk about the state of an installation instead.
 
-QUESTION: do we need a way to wait until the car is done installing, or should
-the user simply call infoApp until satisfied?
+If we want to know when the car is done installing, we have to
+call listInstalledApps or infoApp until the state says 'installed'.
 
-QUESTION: checking that the app and the vehicle are compatible
+Errors:
+no such car
+no such app
+car has no config
+no fitting vehicle config
+wrong link type
+jar/suite file not found
 
-QUESTION: if the app runs correctly, does something useful and then stops,
-it may be interesting to restart it. Is installing it again the way to do
-this, or should this be a service in the car, which the remote control can
-call?
+CURRENTLY: the car must be connected; installations are not scheduled for
+later.
 
-CURRENTLY: returns boolean
-CURRENTLY: args are (vin, appid, jvm); we need to determine which jvm
- is applicable
-CURRENTLY: no concept of state
+QUESTION: wrong link type can be checked when parsing.
+errors detected on the car are not reported.
 
 --------------------
-ret
 uninstallApp(VIN, appId)
 
 If the app has not been installed, return an error.
 If it has, schedule an uninstallation and return a success code.
 In InstalledApps, the uninstallation is marked as pending, etc. Similar to
 installing.
+
+Errors:
+no such car
+no such app
+not installed
+
+CURRENTLY: car must be connected.
 
 QUESTION: what if there are both an installation and an uninstallation pending?
 
@@ -128,26 +150,27 @@ around, cancel an uninstallation as if it wasn't there.
 Alternatively, if we don't cancel anything, we should remember which one
 arrived first.
 
-CURRENTLY: returns boolean
-CURRENTLY: no concept of state
-
 --------------------
-ret
 deleteApp(appId)
 
-QUESTION: do we have to do uninstall it from all cars? Even then, we
-have to leave the app in its table until the scheduled uninstalling has
-been performed.
+The app is uninstalled from all cars where it is installed. Until that
+happens, it has the state 'uninstall-pending'.
 
 CURRENTLY: doesn't exist
 
 --------------------
-ret
 addVehicleConfig(name, byte array xml_document)
 
 The xml document is checked for consistency. If valid, it is stored under
 its name in the server's file system. Any earlier file with the same
 name is replaced.
+
+Checks are made to see whether the new vehicleConfig makes a vehicle
+using it incompatible with apps it has installed.
+
+Errors:
+invalid xml
+link using undeclared port
 
 QUESTION: do we need to handle some identifier for it, more than having
 the name inside the document?
@@ -155,17 +178,14 @@ I think it's good to provide the name as an argument. This reduces the
 risk of uploading something where the user forgot to change the name.
 Of course the document should be checked that the name is the correct one.
 
-QUESTION: some checks to see whether the new vehicleConfig makes a vehicle
-using it incompatible with apps it has installed?
-Maybe some general consistency check call in the server.
-
-CURRENTLY: returns boolean
 CURRENTLY: args are xml document only, not name
+CURRENTLY: no checks for compatibility are made
 
 --------------------
-ret
 deleteVehicleConfig(name)
+
 The vehicle configuration named is removed.
+
 Error if it didn't exist.
 
 QUESTION: error if used, or is it implicitly removed from those vehicles?
@@ -178,7 +198,6 @@ it is no longer used.
 CURRENTLY: doesn't exist
 
 --------------------
-ret
 assignVehicleConfig(name, VIN)
 
 Make the vehicle use the named config.
@@ -188,108 +207,113 @@ QUESTION: compatibility check for installed apps?
 CURRENTLY: doesn't exist
 
 --------------------
-ret
 listApplications()
 
-Returns a JSON structure
-{
-  result = list of {id, name, publisher, version}
-  error = boolean
-}
+Returns list of {id, name, publisher, version, state, vehicleConfig}
+
+There are no error conditions.
 
 --------------------
-ret
 listVehicles()
 
-CURRENTLY: returns an array of VIN strings
+Returns list of VIN
+
+There are no error conditions.
 
 --------------------
-ret
 listUserVehicles(int user)
 
-Returns a JSON structure
-{
-  result = list of {vin, name}
-  error = boolean
-}
+Returns list of {VIN, name}
+
+Errors:
+no such user
 
 --------------------
-ret
-listVehicleConfigs(int user)
+listVehicleConfigs()
 
-QUESTION: including which ones are used?
+QUESTION: info about which ones are used?
 
-Returns a JSON structure
-{
-  result = list of {name, brand}
-  error = boolean
-}
+There are no error conditions.
+
+Returns list of {name, brand}
 
 --------------------
-ret
 listUserVehicleAssociations(int user)
 
+Returns list of {VIN, active}
+
+Errors:
+no such user
+
 QUESTION: should all information about all users be visible to everyone?
-To reduce the info returned, add an optional argument 'user'?
-
-CURRENTLY: user is the argument
-
-Returns a JSON structure
-{
-  result = list of {vin, active}
-  error = boolean
-}
 
 --------------------
-ret
 addUserVehicleAssociation(user, VIN, boolean activeVehicle)
+
+Errors:
+no such user
+no such car
+association already exists
 
 QUESTION: user must be the one authenticated?
 
-CURRENTLY: returns boolean for whether the db was changed
-
 --------------------
-ret
 setUserVehicleAssociationActive(user, VIN, active)
 
-CURRENTLY: returns boolean for whether the db was changed
-ought to report error if the user/VIN combination doesn't exist.
-being a no-op returns false today.
+Errors:
+no such user
+no such car
+no such association
+
+CURRENTLY:
 This is used today when changing the active vehicle, in a non-atomic
 operation, so something better is wanted.
 
 --------------------
-ret
 deleteUserVehicleAssociation(user, VIN)
+
+This may make there be no active vehicle for a user.
+
+Errors:
+no such user
+no such car
+no such association
 
 QUESTION: user must be the one authenticated?
 
-CURRENTLY: no checks
-CURRENTLY: returns boolean for whether the db was changed
+QUESTION: even if there were two cars associated with a user, so the
+remaining one ought to be the selected one, should this function set it?
 
 --------------------
-ret
-addVehicle(name, vin, type)
+addVehicle(name, VIN, type)
 
 type is the name of a vehicleConfig.
 
-CURRENTLY: returns boolean for whether the db was changed
+Errors:
+VIN exists
+type doesn't exist
+
+CURRENTLY: errors are not handled properly
 
 --------------------
-ret
-deleteVehicle(vin)
+deleteVehicle(VIN)
 
-CURRENTLY: returns boolean for whether the db was changed
+Errors:
+no such car
+car is in a user vehicle association
 
 --------------------
-ret+something
 infoVehicle(VIN)
 
-CURRENTLY: returns an array of strings
-CURRENTLY: not used
+Returns a list of {apps, VIN, name, description, type}
+
+Errors:
+no such car
+
+CURRENTLY: apps is a comma-separated list of appId's. This will change.
+'type' is the name of a vehicle config.
 
 --------------------
-ret+binary
 downloadApp(appId)
 
 Called by the car. The return value contains the app.
@@ -300,31 +324,17 @@ What the car is supposed to do then is not clear.
 
 QUESTION: how does the car authenticate itself?
 
-QUESTION: how does the server know which format is wanted? An added
-VIN argument, or does the server know that this is the car calling (or
-the simulator)? In the former case, we can use this in order to retrieve
-the jar file if we want to.
-
 CURRENTLY: doesn't exist - the server still pushes the apps to the car,
 using another protocol than SOAP
 
 --------------------
-
-ret
 listInstalledApps()
 
-Returns a JSON structure
-{
-  result = list of {appid, vin, ecu, name}
-  error = boolean
-}
+Returns list of {appid, ecu, name, VIN, applicationState, installationState,
+version}
 
-CURRENTLY: name ends with .jar
-name is unnecessary if we have appid, and if we don't have appid, we
-should get version as well
-CURRENTLY: used to poll for a completed installation
+No error conditions.
 
-old get_ack_status is not used, so the ack messages will accumulate in
-the server
+Can be used to poll for a completed installation.
 
 
