@@ -145,6 +145,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	throws PluginWebServicesException {
 	int rows;
 
+	int appId;
+
 	System.out.println(data.length);
 	System.out.println("filename " + appname + " " + fversion);
 	File configFile = null;
@@ -228,8 +230,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		System.out.println("config file " + configFileName);
 
 				
-		int appId;
-
 		String q1 = "select id from Application where " +
 		    "name = '" + name +
 		    "' and publisher = '" + publisher +
@@ -375,7 +375,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    return jsonError("uploadApp: FactoryConfigurationError");
 	} 
 
-	return jsonOK();
+	{
+	    JSONObject o = new JSONObject();
+	    JSONObject o1 = new JSONObject();
+
+	    o.put("result", appId);
+	    o.put("error", false);
+	    return o.toString();
+	}
     }
 
     @Override
