@@ -5,6 +5,9 @@ Web services in the server
 
 QUESTION: Wording: do "remove" and "delete" mean different things? Do
 we use both?
+"add"/"create"
+change/update/edit/modify
+list/get/fetch
 
 
 All web services need user/password. Those are in the table wp_users,
@@ -41,10 +44,6 @@ The returned number is the appId. There is an error if something went wrong
 when uploading (for example the app not being a jar file).
 The app is placed in an appropriate place in the file system of the server.
 Its state is 'uploaded'.
-
-CURRENTLY: returns boolean
-Does anyone need the appid at this point? It can be looked up later.
-CURRENTLY: no concept of state
 
 QUESTION: can version be any string? (not empty, anyway)
 We may want to define a comparison operator, in order to know which

@@ -37,11 +37,11 @@ s = client.service
 from testmoped import *
 import base64
 
-n="LEDLighter"
 n="PluginCreationTest3"
 v="1.0"
-x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/%s/target/%s-%s.jar" % (n,n,v)))
-x=s.uploadApp(x, n, v)
+print upload(s,n,v)
+
+x=s.compileApp(n, v)
 print x
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.xml"))
@@ -59,8 +59,12 @@ print x
 
 ack(client, 200)
 
-x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/PluginCreationTest2/target/PluginCreationTest2-1.8.jar"))
-s.uploadApp(x, "PluginCreationTest2", "1.8")
+n="PluginCreationTest2"
+v="1.8"
+print upload(s,n,v)
+
+x=s.compileApp(n, v)
+print x
 
 x = client.service.installApp("20UYA31581L000000", 201)
 print x
