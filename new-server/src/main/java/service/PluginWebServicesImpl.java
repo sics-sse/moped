@@ -234,7 +234,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    "name = '" + name +
 		    "' and publisher = '" + publisher +
 		    "' and version = '" + version + 
-		    "' and state = '020-uploaded'";
+		    "' and state >= '020-uploaded'";
 		String c1 = mysql.getOne(q1);
 
 		// we delete the old one
@@ -486,321 +486,336 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    // If null, there is no connection between the server and the vehicle
 	    System.out.println("IoSession is NULL");
 	    return jsonError("no connection with car " + vin);
-	} else {
-	    System.out.println("IoSession.address: " + session.getLocalAddress());
+	} 
+
+	System.out.println("IoSession.address: " + session.getLocalAddress());
 			
-	    // Achieve contexts
-	    // key: portName(String), value:
-	    // portId(Integer)>
-	    HashMap<String, Integer> portInitialContext = new HashMap<String, Integer>();
-	    // HashMap<String, ArrayList<LinkingContextEntry>> linkingContexts =
-	    // new HashMap<String, ArrayList<LinkingContextEntry>>();
-	    HashMap<String, ArrayList<LinkContextEntry>> linkingContexts = new HashMap<String, ArrayList<LinkContextEntry>>();
+	// Achieve contexts
+	// key: portName(String), value:
+	// portId(Integer)>
+	HashMap<String, Integer> portInitialContext = new HashMap<String, Integer>();
+	// HashMap<String, ArrayList<LinkingContextEntry>> linkingContexts =
+	// new HashMap<String, ArrayList<LinkingContextEntry>>();
+	HashMap<String, ArrayList<LinkContextEntry>> linkingContexts = new HashMap<String, ArrayList<LinkContextEntry>>();
 
-	    // Create an array list for cache
-	    ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
+	// Create an array list for cache
+	ArrayList<VehiclePluginRecord> installCachePlugins = new ArrayList<VehiclePluginRecord>();
 
-	    String q2 =
-		"select name,brand from VehicleConfig where id = " + c;
-	    String [] c2 = mysql.getOneSet(q2);
-	    if (c2 != null) {
-		System.out.println("vehicleconf name " + c2[0]);
-		System.out.println("vehicleconf brand " + c2[1]);
-	    }
+	String q2 =
+	    "select name,brand from VehicleConfig where id = " + c;
+	String [] c2 = mysql.getOneSet(q2);
+	if (c2 != null) {
+	    System.out.println("vehicleconf name " + c2[0]);
+	    System.out.println("vehicleconf brand " + c2[1]);
+	}
 
-	    String q7 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
-	    String c7 = mysql.getOne(q7);
+	String q7 = "select vehicleConfig_id from Vehicle where vin = '" + vin + "'";
+	String c7 = mysql.getOne(q7);
 
-	    if (c7.equals("none")) {
-		System.out.println("ERROR: no appropriate Vehicle/VehicleConfig combination");
-		return jsonError("no appropriate Vehicle/VehicleConfig combination");
-	    }
+	if (c7.equals("none")) {
+	    System.out.println("ERROR: no appropriate Vehicle/VehicleConfig combination");
+	    return jsonError("no appropriate Vehicle/VehicleConfig combination");
+	}
 
-	    // VehicleConfig
-	    int vehicleConfigId = Integer.parseInt(c7);
+	// VehicleConfig
+	int vehicleConfigId = Integer.parseInt(c7);
 			
-	    // AppConfig
-	    String vehicleConfigName = c2[0];
-	    String brand = c2[1];
+	// AppConfig
+	String vehicleConfigName = c2[0];
+	String brand = c2[1];
 
-	    //System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
-	    // what's this "next step"?
+	//System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
+	// what's this "next step"?
 
-	    // Is it necessary to match with brand here?
-	    String q3 = "select id from AppConfig where application_id = " + appID
-		+ " and vehicleConfigName = '" +
-		vehicleConfigName + "'";
-	    String c3 = mysql.getOne(q3);
-	    System.out.println("appconfig id " + c3);
-	    if (c3.equals("none")) {
-		System.out.println("ERROR: no appropriate AppConfig exists");
-		return jsonError("no appropriate AppConfig exists");
-	    }
-	    int appConfigId = Integer.parseInt(c3);
+	String q3s = "select state from Application where id = " + appID;
+	String c3s = mysql.getOne(q3s);
 
-	    System.out.println("AppConfig found, id: " + appConfigId);
+	if (c3s.equals("error")) {
+	    return jsonError("installApp: internal db error 3");
+	}
 
-	    // PluginConfig
-	    //TODO: Move it to a warmer place
-	    if (!c3.equals("none")) {
-		// can it happen that there is no AppConfig?
-		int pluginConfigId;
+	if (c3s.equals("none")) {
+	    return jsonError("installApp: internal db error 4");
+	}
 
-		String q4 = "select id,name from PluginConfig where appConfig_id = " + c3;
-		ResultSet rs = mysql.getResults(q4);
-		try {
-		    while (rs.next()) {
-			String c4 = rs.getString(1);
-			System.out.println("rs: " + c4);
-			pluginConfigId = Integer.parseInt(c4);
-			System.out.println("again pluginConfig.id: " + pluginConfigId);
+	if (c3s.compareTo("030-compiled") < 0) {
+	    return jsonError("installApp: application in wrong state: " + c3s);
+	}
 
-			String q41 = "select id,name from PluginPortConfig where pluginConfig_id = " + pluginConfigId;
+	// Is it necessary to match with brand here?
+	String q3 = "select id from AppConfig where application_id = " + appID
+	    + " and vehicleConfigName = '" +
+	    vehicleConfigName + "'";
+	String c3 = mysql.getOne(q3);
+	System.out.println("appconfig id " + c3);
+	if (c3.equals("none")) {
+	    System.out.println("ERROR: no appropriate AppConfig exists");
+	    return jsonError("no appropriate AppConfig exists");
+	}
+	int appConfigId = Integer.parseInt(c3);
 
-			ResultSet rs2 = mysql.getResults(q41);
-			try {
-			    while (rs2.next()) {
-				int pluginPortId = Integer.parseInt
-				    (rs2.getString(1));
-				String pluginPortName = rs2.getString(2);
-				portInitialContext.put(pluginPortName, pluginPortId);
-			    }
-			    rs2.close();
-			} catch (SQLException ex) {
-			    System.out.println("db error 1");
-			    System.out.println(ex.getMessage());
-			    return jsonError("internal db error 1");
-			} 
-		    }
-		    // are they closed automatically?
-		    rs.close();
+	System.out.println("AppConfig found, id: " + appConfigId);
 
-		} catch (SQLException ex) {
-		    System.out.println("db error 2");
-		    System.out.println(ex.getMessage());
-		    return jsonError("internal db error 2");
-		} 
+	// PluginConfig
+	//TODO: Move it to a warmer place
+	if (!c3.equals("none")) {
+	    // can it happen that there is no AppConfig?
+	    int pluginConfigId;
 
+	    String q4 = "select id,name from PluginConfig where appConfig_id = " + c3;
+	    ResultSet rs = mysql.getResults(q4);
+	    try {
+		while (rs.next()) {
+		    String c4 = rs.getString(1);
+		    System.out.println("rs: " + c4);
+		    pluginConfigId = Integer.parseInt(c4);
+		    System.out.println("again pluginConfig.id: " + pluginConfigId);
 
-		//TEMP_DEBUG
-		System.out.println("PORT INITIAL CONTEXTS: ");
-		for (String ctxt : portInitialContext.keySet()) {
-		    System.out.println("PIC: <" + ctxt + ", " + portInitialContext.get(ctxt) + ">");
+		    String q41 = "select id,name from PluginPortConfig where pluginConfig_id = " + pluginConfigId;
+
+		    ResultSet rs2 = mysql.getResults(q41);
+		    try {
+			while (rs2.next()) {
+			    int pluginPortId = Integer.parseInt
+				(rs2.getString(1));
+			    String pluginPortName = rs2.getString(2);
+			    portInitialContext.put(pluginPortName, pluginPortId);
+			}
+			rs2.close();
+		    } catch (SQLException ex) {
+			System.out.println("db error 1");
+			System.out.println(ex.getMessage());
+			return jsonError("internal db error 1");
+		    } 
 		}
+		// are they closed automatically?
+		rs.close();
+
+	    } catch (SQLException ex) {
+		System.out.println("db error 2");
+		System.out.println(ex.getMessage());
+		return jsonError("internal db error 2");
+	    } 
+
+
+	    //TEMP_DEBUG
+	    System.out.println("PORT INITIAL CONTEXTS: ");
+	    for (String ctxt : portInitialContext.keySet()) {
+		System.out.println("PIC: <" + ctxt + ", " + portInitialContext.get(ctxt) + ">");
+	    }
 					
-		ResultSet rs3 = mysql.getResults(q4);
-		try {
-		    while (rs3.next()) {
-			String c4 = rs3.getString(1);
-			System.out.println("rs: " + c4);
-			pluginConfigId = Integer.parseInt(c4);
+	    ResultSet rs3 = mysql.getResults(q4);
+	    try {
+		while (rs3.next()) {
+		    String c4 = rs3.getString(1);
+		    System.out.println("rs: " + c4);
+		    pluginConfigId = Integer.parseInt(c4);
 
-			// Plugin Link Config
-			String pluginName = rs3.getString(2);
-			// Initiate LinkingContext
-			ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
+		    // Plugin Link Config
+		    String pluginName = rs3.getString(2);
+		    // Initiate LinkingContext
+		    ArrayList<LinkContextEntry> linkingContext = new ArrayList<LinkContextEntry>();
 				
-			try {
+		    try {
 
 
-			    String q42 = "select id,fromStr,toStr,connectionType from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
-			    ResultSet rs4 = mysql.getResults(q42);
+			String q42 = "select id,fromStr,toStr,connectionType from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
+			ResultSet rs4 = mysql.getResults(q42);
 
-			    while (rs4.next()) {
-				String from = rs4.getString(2);
-				String to = rs4.getString(3);
-				String remote = rs4.getString(4);
-				System.out.println("port " + from + " " + to + " " + remote);
-				int fromPortId = 0;
-				int toPortId = 0;
-				int remoteId = 0;
+			while (rs4.next()) {
+			    String from = rs4.getString(2);
+			    String to = rs4.getString(3);
+			    String remote = rs4.getString(4);
+			    System.out.println("port " + from + " " + to + " " + remote);
+			    int fromPortId = 0;
+			    int toPortId = 0;
+			    int remoteId = 0;
 
-				Scanner scanner = new Scanner(remote);
-				boolean remoteTag = scanner.hasNextInt();
+			    Scanner scanner = new Scanner(remote);
+			    boolean remoteTag = scanner.hasNextInt();
 
-				if (remoteTag) {
-				    remoteId = scanner.nextInt();
-				    switch (remoteId) {
-				    case GlobalVariables.PPORT2PPORT:
-					fromPortId = portInitialContext.get(from);
-					toPortId = portInitialContext.get(to);
-					break;
-				    case GlobalVariables.PPORT2VPORT:
-					fromPortId = portInitialContext.get(from);
-					toPortId = Integer.parseInt(to);
-					break;
-				    case GlobalVariables.VPORT2PORT:
-					fromPortId = Integer.parseInt(from);
-					toPortId = portInitialContext.get(to);
-					break;
-				    default:
-					System.out.println("Error: Wrong link type in GlobalVariables");
-					return jsonError("installApp: wrong link type " + remoteId);
-				    }
-				} else {
-				    // Plug-In -> VRPort
-				    // remote represents the name of remote port
-				    remoteId = portInitialContext.get(remote);
+			    if (remoteTag) {
+				remoteId = scanner.nextInt();
+				switch (remoteId) {
+				case GlobalVariables.PPORT2PPORT:
+				    fromPortId = portInitialContext.get(from);
+				    toPortId = portInitialContext.get(to);
+				    break;
+				case GlobalVariables.PPORT2VPORT:
 				    fromPortId = portInitialContext.get(from);
 				    toPortId = Integer.parseInt(to);
+				    break;
+				case GlobalVariables.VPORT2PORT:
+				    fromPortId = Integer.parseInt(from);
+				    toPortId = portInitialContext.get(to);
+				    break;
+				default:
+				    System.out.println("Error: Wrong link type in GlobalVariables");
+				    return jsonError("installApp: wrong link type " + remoteId);
 				}
-						
-				scanner.close();
-
-				LinkContextEntry entry = new LinkContextEntry(fromPortId,
-									      toPortId, remoteId);
-				linkingContext.add(entry);
+			    } else {
+				// Plug-In -> VRPort
+				// remote represents the name of remote port
+				remoteId = portInitialContext.get(remote);
+				fromPortId = portInitialContext.get(from);
+				toPortId = Integer.parseInt(to);
 			    }
-			    rs4.close();
-			    
-			} catch (SQLException ex) {
-			    System.out.println("db error 3");
-			    System.out.println(ex.getMessage());
-			    return jsonError("internal db error 3");
-			}
-				
-			linkingContexts.put(pluginName, linkingContext);
-					
-			//TEMP_DEBUG
-			System.out.println("PORT LINKING CONTEXTS (" + pluginName + "): ");
-			for (Iterator<LinkContextEntry> ctxtIter = linkingContext.iterator(); ctxtIter.hasNext(); ) {
-			    LinkContextEntry ctxt = ctxtIter.next();
-			    System.out.println("PLC: <" + ctxt.getFromPortId() + ", " + ctxt.getToPortId() + "> via " + ctxt.getRemotePortId());
-			}
-		    }
-		    rs3.close();
-		} catch (SQLException ex) {
-		    System.out.println("db error 4");
-		    System.out.println(ex.getMessage());
-		    return jsonError("internal db error 4");
-		}
-	    }
+						
+			    scanner.close();
 
-	    // Achieve jars
-	    ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
+			    LinkContextEntry entry = new LinkContextEntry(fromPortId,
+									  toPortId, remoteId);
+			    linkingContext.add(entry);
+			}
+			rs4.close();
+			    
+		    } catch (SQLException ex) {
+			System.out.println("db error 3");
+			System.out.println(ex.getMessage());
+			return jsonError("internal db error 3");
+		    }
+				
+		    linkingContexts.put(pluginName, linkingContext);
+					
+		    //TEMP_DEBUG
+		    System.out.println("PORT LINKING CONTEXTS (" + pluginName + "): ");
+		    for (Iterator<LinkContextEntry> ctxtIter = linkingContext.iterator(); ctxtIter.hasNext(); ) {
+			LinkContextEntry ctxt = ctxtIter.next();
+			System.out.println("PLC: <" + ctxt.getFromPortId() + ", " + ctxt.getToPortId() + "> via " + ctxt.getRemotePortId());
+		    }
+		}
+		rs3.close();
+	    } catch (SQLException ex) {
+		System.out.println("db error 4");
+		System.out.println(ex.getMessage());
+		return jsonError("internal db error 4");
+	    }
+	}
+
+	// Achieve jars
+	ArrayList<InstallPacketData> installPackageDataList = new ArrayList<InstallPacketData>();
 
 			
-	    if (false) {
-		String q10 =
-		    "select name from Application where id = " + appID;
-		String c10 = mysql.getOne(q10);
-		System.out.println("application name " + c10);
-	    }
-
-	    // Fetch PlugIns from DB
-	    // HashMap<String, Byte> contexts = new HashMap<String, Byte>();
-	    @SuppressWarnings("unchecked")
-
-		String q12 =
-		"select name,ecuRef,location,fullClassName " +
-		"from DatabasePlugin where application_id = " + appID;
-	    ResultSet rs12 = mysql.getResults(q12);
-
-	    try {
-		//System.out.println("Found plugins, size: " + plugins.size());
-		while (rs12.next()) {
-		    String pluginName = rs12.getString(1);
-		    System.out.println("Found plugin with name: " + pluginName);
-				
-		    System.out.println(rs12.getString(2));
-		    System.out.println(rs12.getString(3));
-		    System.out.println(rs12.getString(4));
-
-		    int remoteEcuId = Integer.parseInt(rs12.getString(2));
-		    //			int sendingPortId = vehicleConfigDao.getSendingPortId
-		    //			    (
-		    //			     vehicleConfigId, remoteEcuId
-		    //			     );
-		    //			int callbackPortId = vehicleConfigDao.getCallbackPortId
-		    //			    (
-		    //			     vehicleConfigId, remoteEcuId
-		    //			     );
-		    //			System.out.println("sendingPortId " + sendingPortId);
-		    //			System.out.println("callbackPortId " + callbackPortId);
-
-		    // there is code in VehicleConfigDao which looks these up,
-		    // but they seem to always be -1 in the database right now,
-		    // and it's not clear that it does it right way.
-		    int sendingPortId = -1;
-		    int callbackPortId = -1;
-
-		    String executablePluginName = "plugin://"
-			+ rs12.getString(4) + "/" + pluginName;
-		    String pluginSuiteName = pluginName + ".suite"; //TODO: Come on...
-
-		    String location = rs12.getString(3);
-				
-		    String q71 = "select simulator from Vehicle where vin = '" + vin + "'";
-		    String c71 = mysql.getOne(q7);
-		    if (c71.equals("none")) {
-			System.out.println("internal error 71");
-			return jsonError("internal db error");
-		    }
-
-		    String fileType = ".jar";
-		    if (c71.equals("0")) {
-			fileType = ".suite";
-			location += File.separator + pluginName;
-		    }
-				
-		    location += fileType;
-		    pluginName += fileType;
-		    executablePluginName += fileType;
-				
-		    File file = new File(location);
-		    byte[] fileBytes;
-		    try {
-			// ArrayList<LinkingContextEntry> linkingContext =
-			// linkingContexts
-			// .get(pluginName);
-			ArrayList<LinkContextEntry> linkingContext = (ArrayList<LinkContextEntry>) linkingContexts
-			    .get(pluginSuiteName);
-			fileBytes = readBytesFromFile(file);
-			InstallPacketData installPacketData =
-			    new InstallPacketData
-			    (
-			     appID, pluginName, sendingPortId,
-			     callbackPortId, remoteEcuId, portInitialContext,
-			     linkingContext, executablePluginName, fileBytes
-			     );
-			installPackageDataList.add(installPacketData);
-
-			// Store it temporarily to cache and will be used after the
-			// arrival of acknowledge messages
-			VehiclePluginRecord record =
-			    new VehiclePluginRecord
-			    (
-			     pluginName, remoteEcuId, sendingPortId,
-			     callbackPortId, portInitialContext, linkingContext,
-			     location, executablePluginName
-			     );
-
-			installCachePlugins.add(record);
-					
-			System.out.println("READY FOR INSTALLATION WRITING!");
-					
-			Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
-			InstallPacket installPacket = new InstallPacket(vin,
-									installPackageDataList);
-			session.write(installPacket);
-					
-			System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!");
-
-		    } catch (IOException e) {
-			e.printStackTrace();
-			// will rs12 not be closed now?
-			return jsonError("installApp: internal error: couldn't read from the app file " + location);
-		    }
-		}
-		rs12.close();
-	    } catch (SQLException ex) {
-		System.out.println("db error 5");
-		System.out.println(ex.getMessage());
-		return jsonError("internal db error 5");
-	    }
-
-	    return jsonOK();
+	if (false) {
+	    String q10 =
+		"select name from Application where id = " + appID;
+	    String c10 = mysql.getOne(q10);
+	    System.out.println("application name " + c10);
 	}
+
+	// Fetch PlugIns from DB
+	// HashMap<String, Byte> contexts = new HashMap<String, Byte>();
+	@SuppressWarnings("unchecked")
+
+	    String q12 =
+	    "select name,ecuRef,location,fullClassName " +
+	    "from DatabasePlugin where application_id = " + appID;
+	ResultSet rs12 = mysql.getResults(q12);
+
+	try {
+	    //System.out.println("Found plugins, size: " + plugins.size());
+	    while (rs12.next()) {
+		String pluginName = rs12.getString(1);
+		System.out.println("Found plugin with name: " + pluginName);
+				
+		System.out.println(rs12.getString(2));
+		System.out.println(rs12.getString(3));
+		System.out.println(rs12.getString(4));
+
+		int remoteEcuId = Integer.parseInt(rs12.getString(2));
+		//			int sendingPortId = vehicleConfigDao.getSendingPortId
+		//			    (
+		//			     vehicleConfigId, remoteEcuId
+		//			     );
+		//			int callbackPortId = vehicleConfigDao.getCallbackPortId
+		//			    (
+		//			     vehicleConfigId, remoteEcuId
+		//			     );
+		//			System.out.println("sendingPortId " + sendingPortId);
+		//			System.out.println("callbackPortId " + callbackPortId);
+
+		// there is code in VehicleConfigDao which looks these up,
+		// but they seem to always be -1 in the database right now,
+		// and it's not clear that it does it right way.
+		int sendingPortId = -1;
+		int callbackPortId = -1;
+
+		String executablePluginName = "plugin://"
+		    + rs12.getString(4) + "/" + pluginName;
+		String pluginSuiteName = pluginName + ".suite"; //TODO: Come on...
+
+		String location = rs12.getString(3);
+				
+		String q71 = "select simulator from Vehicle where vin = '" + vin + "'";
+		String c71 = mysql.getOne(q7);
+		if (c71.equals("none")) {
+		    System.out.println("internal error 71");
+		    return jsonError("internal db error");
+		}
+
+		String fileType = ".jar";
+		if (c71.equals("0")) {
+		    fileType = ".suite";
+		    location += File.separator + pluginName;
+		}
+				
+		location += fileType;
+		pluginName += fileType;
+		executablePluginName += fileType;
+				
+		File file = new File(location);
+		byte[] fileBytes;
+		try {
+		    // ArrayList<LinkingContextEntry> linkingContext =
+		    // linkingContexts
+		    // .get(pluginName);
+		    ArrayList<LinkContextEntry> linkingContext = (ArrayList<LinkContextEntry>) linkingContexts
+			.get(pluginSuiteName);
+		    fileBytes = readBytesFromFile(file);
+		    InstallPacketData installPacketData =
+			new InstallPacketData
+			(
+			 appID, pluginName, sendingPortId,
+			 callbackPortId, remoteEcuId, portInitialContext,
+			 linkingContext, executablePluginName, fileBytes
+			 );
+		    installPackageDataList.add(installPacketData);
+
+		    // Store it temporarily to cache and will be used after the
+		    // arrival of acknowledge messages
+		    VehiclePluginRecord record =
+			new VehiclePluginRecord
+			(
+			 pluginName, remoteEcuId, sendingPortId,
+			 callbackPortId, portInitialContext, linkingContext,
+			 location, executablePluginName
+			 );
+
+		    installCachePlugins.add(record);
+					
+		    System.out.println("READY FOR INSTALLATION WRITING!");
+					
+		    Cache.getCache().addInstallCache(vin, appID, installCachePlugins);
+		    InstallPacket installPacket = new InstallPacket(vin,
+								    installPackageDataList);
+		    session.write(installPacket);
+					
+		    System.out.println("SUCCESSFULLY INSTALLED SOME STUFF!");
+
+		} catch (IOException e) {
+		    e.printStackTrace();
+		    // will rs12 not be closed now?
+		    return jsonError("installApp: internal error: couldn't read from the app file " + location);
+		}
+	    }
+	    rs12.close();
+	} catch (SQLException ex) {
+	    System.out.println("db error 5");
+	    System.out.println(ex.getMessage());
+	    return jsonError("internal db error 5");
+	}
+
+	return jsonOK();
     }
 
     public String uninstallApp(String vin, int appID)
@@ -1493,7 +1508,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	String q3 = "select state from Application where name = '" + appname +
 	    "' and version = '" + version + "'";
-	String c3 = mysql.getOne(q2);
+	String c3 = mysql.getOne(q3);
 
 	if (c3.equals("error")) {
 	    return jsonError("compileApp: internal db error 3");
@@ -1503,7 +1518,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    return jsonError("compileApp: internal db error 4");
 	}
 
-	if (c3.compareTo("010-created") <= 0) {
+	if (c3.compareTo("020-uploaded") < 0) {
 	    return jsonError("compileApp: application in wrong state: " + c3);
 	}
 
