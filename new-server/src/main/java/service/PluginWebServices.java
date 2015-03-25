@@ -38,7 +38,7 @@ public interface PluginWebServices {
 	throws PluginWebServicesException;
 
     @WebMethod
-	public String addVehicleConfig(byte [] data) 
+	public String addVehicleConfig(String name, byte [] data) 
 	throws PluginWebServicesException;
 
     @WebMethod

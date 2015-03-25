@@ -1133,7 +1133,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     @WebMethod
-	public String addVehicleConfig(byte [] data) 
+	public String addVehicleConfig(String name, byte [] data)
 	throws PluginWebServicesException {
 	boolean status = false;
 	System.out.println("In parseVehicleConfigurationFromStr");
@@ -1148,7 +1148,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 	    FileInputStream is = new FileInputStream(xmlFile);
 
-	    return parseVehicleConfiguration2(is);
+	    return parseVehicleConfiguration2(name, is);
 
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
@@ -1162,7 +1162,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     // returns JSON
-    public String parseVehicleConfiguration2(InputStream is)
+    public String parseVehicleConfiguration2(String name, InputStream is)
 	throws PluginWebServicesException {
 	System.out.println("In parseVehicleConfiguration2");
 
@@ -1212,6 +1212,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    String vehicleBrandStr = vehicleBrand.getTextContent();
 	    if (vehicleBrandStr == null) {
 		vehicleBrandStr = "";
+	    }
+
+	    if (!vehicleNameStr.equals(name)) {
+		return jsonError("vehicle configuration: specified name not the same in the xml document: " + name + ", " + vehicleNameStr);
 	    }
 
 	    int rows;

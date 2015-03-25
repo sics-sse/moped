@@ -45,7 +45,7 @@ x=s.compileApp(n, v)
 print x
 
 x=base64.b64encode(readfile("/home/arndt/moped/moped/simulator/configs/system1.xml"))
-x = client.service.addVehicleConfig(x)
+x = client.service.addVehicleConfig("MOPED", x)
 print x
 
 x = client.service.addVehicle("minMOPED", "20UYA31581L000000", "MOPED")
