@@ -34,10 +34,17 @@ License: GPL
 
    ini_set("soap.wsdl_cache_enabled", "0");
  	$webServiceAddress = "http://localhost:9990/moped/pws?wsdl";
+
+try {
 	  $client = new SoapClient
 	    ($webServiceAddress,
 	     array('cache_wsdl' => WSDL_CACHE_NONE,
 		   'features' => SOAP_SINGLE_ELEMENT_ARRAYS));
+
+} catch (SoapFault $fault) {
+  print "<font color='red'>ERROR: the trusted server can not be contacted</font>";
+  }
+
 
 // create tables with plugins
 function vehicle_install() {
