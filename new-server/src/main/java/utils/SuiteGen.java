@@ -84,7 +84,7 @@ public class SuiteGen {
 	} else {
 	    System.out.println("Didn't find a source folder");
 	    r[0] = "no source folder: " + source;
-	    return true;
+	    return false;
 	}
 		
 	r[0] = reply;

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import messages.PingcarPacket;
 import messages.InitPacket;
+import messages.Init2Packet;
 import messages.InstallAckPacket;
 import messages.InstallLinuxAckPacket;
 import messages.MessageType;
@@ -56,6 +57,8 @@ public class ServerHandler extends IoHandlerAdapter {
 
     public void messageReceived(IoSession session, Object packageMessage)
 	throws Exception {
+	
+	String is_sim;
 	System.out.println("Message received on server...");
 		
 	if (packageMessage instanceof Packet) {
@@ -65,6 +68,27 @@ public class ServerHandler extends IoHandlerAdapter {
 	    case MessageType.INIT:
 		InitPacket initPackageMessage = (InitPacket) packageMessage;
 		vin = initPackageMessage.getVin();
+
+		    sessions.add(session);
+		    session.setAttribute("vehicle", vin);
+		    MdcInjectionFilter.setProperty(session, "vehicle", vin);
+				
+		    is_sim = "0";
+		    MdcInjectionFilter.setProperty(session, "is_sim", is_sim);
+
+		    vehicles.put(vin, session);
+		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + is_sim + ")");
+
+		    String q11 = "update Vehicle set simulator=" + is_sim +
+			" where vin = '" + vin + "'";
+		    int rows2 = mysql.update(q11);
+		    if (rows2 == 0) {
+			System.out.println("unknown car");
+		    }
+		break;
+	    case MessageType.INIT2:
+		Init2Packet init2PackageMessage = (Init2Packet) packageMessage;
+		vin = init2PackageMessage.getVin();
 
 		if (vehicles.containsKey(vin)) {
 		    System.out.println("Vehicle " + vin + " tries to connect again - telling it to go away");
@@ -83,15 +107,14 @@ public class ServerHandler extends IoHandlerAdapter {
 		    session.setAttribute("vehicle", vin);
 		    MdcInjectionFilter.setProperty(session, "vehicle", vin);
 				
-		    String is_sim;
-		    if (initPackageMessage.is_simulator)
+		    if (init2PackageMessage.is_simulator)
 			is_sim = "1";
 		    else
 			is_sim = "0";
 		    MdcInjectionFilter.setProperty(session, "is_sim", is_sim);
 
 		    vehicles.put(vin, session);
-		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + initPackageMessage.is_simulator + ")");
+		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + is_sim + ")");
 
 		    String q1 = "update Vehicle set simulator=" + is_sim +
 			" where vin = '" + vin + "'";

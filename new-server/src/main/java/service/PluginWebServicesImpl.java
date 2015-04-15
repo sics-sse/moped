@@ -332,8 +332,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		}
 				
 		NodeList links = doc.getElementsByTagName("link");
-		for (int i = 0; i < ports.getLength(); i++) {
+		for (int i = 0; i < links.getLength(); i++) {
 		    Element link = (Element)links.item(i);
+		    // link may be null; check for that
+		    // or there is no "from" or "to"
 		    String linkSource = link.getElementsByTagName("from").item(0).getTextContent();
 		    String linkTarget = link.getElementsByTagName("to").item(0).getTextContent();
 
@@ -754,11 +756,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String location = rs12.getString(3);
 				
 		String q71 = "select simulator from Vehicle where vin = '" + vin + "'";
-		String c71 = mysql.getOne(q7);
+		String c71 = mysql.getOne(q71);
 		if (c71.equals("none")) {
 		    System.out.println("internal error 71");
 		    return jsonError("internal db error");
 		}
+
+		System.out.println("c71 (" + c71 + ")");
 
 		String fileType = ".jar";
 		if (c71.equals("0")) {
@@ -766,6 +770,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    location += File.separator + pluginName;
 		}
 				
+		System.out.println("fileType " + fileType);
+
 		location += fileType;
 		pluginName += fileType;
 		executablePluginName += fileType;
