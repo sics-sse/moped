@@ -25,7 +25,7 @@
  * 									 (the second one follows 32-bit later)
  * @param gpio_pin	    	-----    GPIO pin number (0-53)
  */
-static void bcm2835_SetWriteOnlyGpioReg(volatile uint32* baseReg, uint32 gpio_pin)
+void bcm2835_SetWriteOnlyGpioReg(volatile uint32* baseReg, uint32 gpio_pin)
 {
 	uint32 regOffset = gpio_pin / 32;							/* 32 pins per register */
 	uint32 bitOffset = gpio_pin % 32;							/* One bit per pin within a register */

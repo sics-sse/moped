@@ -764,4 +764,7 @@ void bcm2835_Sleep(uint64_t micros);
 int bcm2835_SetPower(enum board_power_feature feature, boolean on);
 
 void bcm2835_GpioIsr(void);
+
+void bcm2835_SetWriteOnlyGpioReg(volatile uint32* baseReg, uint32 gpio_pin);
+
 #endif
