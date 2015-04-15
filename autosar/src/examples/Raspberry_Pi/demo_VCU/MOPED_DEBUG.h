@@ -13,6 +13,7 @@
 
 //Led
 #define LED_PRINT               false
+#define LED_PRINT_DEBUG         false
 
 //Wheel Speed Sensor
 #define WHEEL_PRINT_DEBUG  		false
@@ -29,4 +30,4 @@
 //Postion
 #define POSITION_PRINT          false
 //RUN squawk
-#define RUN_SQUAWK              false
+#define RUN_SQUAWK              true
