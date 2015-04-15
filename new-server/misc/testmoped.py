@@ -28,3 +28,7 @@ def upload(s, n, v):
     x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/storage/%s-%s.jar" % (n,v)))
     x=s.uploadApp(x, n, v)
     return x
+
+def uploadplus(s, n, v):
+    x = upload(s, n, v)
+    x=s.compileApp(n, v)
