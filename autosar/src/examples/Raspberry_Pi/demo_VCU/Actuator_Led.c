@@ -14,6 +14,7 @@ boolean led_init = false;
 static void Led_Init(void){
 	int i;
 
+	printf("Led_Init\r\n");
 	/* Configure the led-pins as output pins */
 	bcm2835_GpioFnSel(GPIO_LED_RED, GPFN_OUT);
 	bcm2835_GpioFnSel(GPIO_LED_YELLOW1, GPFN_OUT);
