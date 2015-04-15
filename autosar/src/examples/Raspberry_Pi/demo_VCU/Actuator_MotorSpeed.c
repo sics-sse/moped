@@ -54,9 +54,6 @@ void MotorControlRunnable(void){
     }*/
 
     //TODO: Make it better (fulhack)
-    if (select == 1) {
-    	pirte_write_speed = true;
-    }
 
     if (pirte_write_speed == true) {
     	speed_value_pirte = Rte_IRead_MotorControlRunnable_MotorSwcReadDataFromPirteSwcPort1_dataInt32();
