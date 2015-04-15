@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -e
+
 P=$1
 V=$2
 
