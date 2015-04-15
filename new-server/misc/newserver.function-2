@@ -19,7 +19,7 @@ holds the returned value) and 'error' (which is true or false) and in
 the case of an error 'message' which is an error message.
 
 If nothing is said about the return value, it is some uninteresting object,
-like an empty array or empty structure.
+like an empty array or true.
 
 Errors marked with * are not checked yet.
 
@@ -178,7 +178,6 @@ I think it's good to provide the name as an argument. This reduces the
 risk of uploading something where the user forgot to change the name.
 Of course the document should be checked that the name is the correct one.
 
-CURRENTLY: args are xml document only, not name
 CURRENTLY: no checks for compatibility are made
 
 --------------------
