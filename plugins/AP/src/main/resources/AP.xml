@@ -13,6 +13,12 @@
 				<port>
 					<name>st</name>
 				</port>
+				<port>
+					<name>rsp</name>
+				</port>
+				<port>
+					<name>rst</name>
+				</port>
 			</ports>
 		</plugin>
 	</plugins>
@@ -24,6 +30,14 @@
 		<link>
 			<from>st</from>
 			<to>4</to>
+		</link>
+		<link>
+			<from>5</from>
+			<to>rsp</to>
+		</link>
+		<link>
+			<from>6</from>
+			<to>rst</to>
 		</link>
 	</links>
 </app>
