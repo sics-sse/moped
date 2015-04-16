@@ -43,4 +43,6 @@ public class PluginPPort implements PluginPort {
 	public void write(String value) {
 	}
 
+	public void send(String value) {
+	}
 }
