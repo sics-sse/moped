@@ -852,6 +852,19 @@ public final class Suite {
         return null;
     }
 
+    public void showclasses() {
+        for (int i = 0 ; i < classes.length ; i++) {
+            Klass klass = classes[i];
+            if (klass != null) {
+		VM.println("Klass lookup sees " + klass.getInternalName());
+            }
+        }
+    }
+
+    public void showparentclasses() {
+	parent.showclasses();
+    }
+
     /**
      * Returns true if this suite contains the given klass.
      *
@@ -954,6 +967,7 @@ public final class Suite {
 
         Object root = om.getRoot();
         if (!(root instanceof Suite)) {
+	    VM.println("getSuite: blop");
             throw new Error("object memory in '" + om.getURI() + "' does not contain a suite");
         }
         Suite rootSuite = (Suite)root;
