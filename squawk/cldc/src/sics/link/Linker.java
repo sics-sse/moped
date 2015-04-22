@@ -43,21 +43,60 @@ public class Linker {
 //		return (PluginPort) portId2PluginPort.get(new Integer(portId));
 //	}
 	
+    private void showtables() {
+	    VM.println("pport2pport: " + pport2pport);
+	    VM.println("pportId2vrportId: " + pportId2vrportId);
+	    VM.println("pportId2rportId: " + pportId2rportId);
+	    VM.println("rportId2vpportId: " + rportId2vpportId);
+    }
+
 	public int getVirtualRPortId(int pportId) {
-		return pportId2vrportId.get(pportId);
+	    showtables();
+	    VM.println("getVirtualRPortId " + pportId);
+
+	    Enumeration<Integer> keys = pportId2vrportId.keys();
+	    while(keys.hasMoreElements()) {
+		Integer from = keys.nextElement();
+		Integer to = pportId2vrportId.get(from);
+		VM.println(" link " + from + " -> " + to);
+		if (from.intValue() == pportId)
+		    return to.intValue();
+	    }
+
+
+	    Integer p = pportId2vrportId.get(new Integer(pportId));
+	    VM.println("getVirtualRPortId -> " + p);
+	    VM.println("getVirtualRPortId -> val " + p.intValue());
+	    return p.intValue();
 	}
 	
 	public int getVirtualPPortId(int rportId) {
-		return rportId2vpportId.get(rportId);
+	    showtables();
+	    VM.println("getVirtualPPortId " + rportId);
+		Integer vpportId = rportId2vpportId.get(rportId);
+//		if (vpportId == null)
+//			return -100; //TEMP
+		return vpportId.intValue();
 	}
 	
 	public int getPluginRPortId(int pportId) {
+	    showtables();
+	    VM.println("getPluginRPortId " + pportId);
+		//TODO: What is this while-loop for???
 		Enumeration<Integer> keys = pportId2rportId.keys();
 		while(keys.hasMoreElements()) {
 			Integer from = keys.nextElement();
 			Integer to = pportId2rportId.get(from);
+
+			VM.println(" link " + from + " -> " + to);
+			if (from.intValue() == pportId)
+			    return to.intValue();
 		}
-		return pportId2rportId.get(pportId);
+		
+		Integer p = pportId2rportId.get(pportId);
+	    VM.println("getPluginRPortId -> " + p);
+	    VM.println("getPluginRPortId -> val " + p.intValue());
+		return p;
 	}
 
 	public void link(LinkContextEntry entry) {
@@ -66,12 +105,15 @@ public class Linker {
 		int remotePortId = entry.getRemotePortId();
 		if (remotePortId == Configuration.PPORT2VPORT) {
 			// from PluginPort to VirtualPort
+			VM.println("Linking " + fromPortId + " -> " + toPortId + " as P->V");
 			pportId2vrportId.put(fromPortId, toPortId);
 		} else if (remotePortId == Configuration.PPORT2PPORT) {
 			// from PluginPort to PluginPort and they are in the same ECU
+			VM.println("Linking " + fromPortId + " -> " + toPortId + " as P->P on the same ECU");
 			pportId2rportId.put(fromPortId, toPortId);
 		} else if (remotePortId == Configuration.VPORT2PPORT) {
 			// from VirtualPPort to PluginRPort
+			VM.println("Linking " + toPortId + " -> " + fromPortId + " as V->P");
 			rportId2vpportId.put(toPortId, fromPortId);
 		} else if (remotePortId > 0 ) {
 			// from PluginPort to PluginPort but they are in different ECUs
