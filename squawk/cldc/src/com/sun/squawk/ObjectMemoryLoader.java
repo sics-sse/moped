@@ -629,6 +629,8 @@ public abstract class ObjectMemoryLoader {
             }
         }
 
+	VM.println("hash, parent hash = (" + hash + ") (" + parent.getHash() + ")");
+
 //        if (parent.getHash() != hash) {
 //        	String helpText = "";
 //      	
@@ -743,6 +745,12 @@ class StandardObjectMemoryLoader extends ObjectMemoryLoader {
         if (dbg)
         	VM.println("Relocating this, url: " + url);
         ObjectMemory.relocate(url, buffer, bufferAddress, oopMap, relocatedBufferAddress, canonicalStart, size, false, requiresEndianSwap, tracing, true);
+        if (dbg)
+        	VM.println("Done relocating");
+        
+	if (oopMap.cardinality() != 0) {
+	    VM.println("card = (" + oopMap.cardinality() + ")");
+	}
 
         Assert.always(oopMap.cardinality() == 0); // "some pointers were not relocated"
         
