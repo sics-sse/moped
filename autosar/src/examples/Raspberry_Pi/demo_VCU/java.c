@@ -21,6 +21,10 @@ void output(char* s) {
 	pi_printf(s);
 }
 
+void output2(char* s, int length) {
+  pi_printf2(s, length);
+}
+
 char autosarFetchByte(int rearIndex) {
 	char res;
 	if (PackageInstallation.indexReadStart > rearIndex) {
