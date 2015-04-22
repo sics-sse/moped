@@ -1373,7 +1373,7 @@ VM.println();
         Assert.always(state == NEW);
         stack = newStack(stackSize, this, true);
         if (stack == null) {
-VM.println("creating stack:");
+VM.println("creating stack: " + stackSize);
             throw VM.getOutOfMemoryError();
         }
 
@@ -1552,13 +1552,13 @@ VM.println("creating stack:");
     
     
     private static void threadGC(boolean userThread, boolean fullGC) {
-    	/*
+
     	if (userThread) {
             VM.collectGarbage(fullGC);
         } else {
             GC.collectGarbage(fullGC);
         }
-        */
+
     }
     
     /**
