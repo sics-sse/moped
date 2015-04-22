@@ -182,6 +182,9 @@ public class PluginRPort implements PluginPort {
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
+		} catch (NullPointerException ex) {
+			VM.println("NULL POINTER in PluginRPort.receive()");
+			ex.printStackTrace();
 		}
 		return null;
 	}
