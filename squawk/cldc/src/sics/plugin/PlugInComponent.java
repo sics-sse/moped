@@ -35,7 +35,7 @@ public abstract class PlugInComponent implements Runnable {
 		client.start();
 
 		if (clientChannel == null) {
-			VM.println("CLIENT CHANNEL NULL");
+			VM.println("Client channel not ready yet, attempting once again...");
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
@@ -43,11 +43,14 @@ public abstract class PlugInComponent implements Runnable {
 			}
 
 			if (clientChannel == null) {
-				VM.println("Still null");
+				VM.println("CLIENT CHANNEL STILL NULL, PROBLEMS AHEAD...");
 			} else {
-				VM.println("non null");
+				VM.println("Client channel initialized after some sleep");
 			}
 		}
+
+		if (portInitContext == null) 
+			VM.println("PortInitContext is NULL!!!");
 
 		for (int i = 0; i < args.length; i = i + 2) {
 			portInitContext.put(args[i], Integer.parseInt(args[i + 1]));
