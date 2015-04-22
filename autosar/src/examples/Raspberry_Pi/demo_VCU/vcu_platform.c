@@ -99,7 +99,7 @@ void Can_Read_First_Frame(uint8* tempBuffer, CanPackage * CANPackage){
  * @param CANPackage
  */
 void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
-//	printf("infor: consecutive frame\r\n");
+//	printf("infor: consecutive frame readBytes = %d\r\n", CANPackage->readBytes);
 	uint16 sequenceNumber = tempBuffer[0] & SEQUENCE_NUMBER;
 
 	if(sequenceNumber == CANPackage->nextFrameRead){
@@ -107,24 +107,28 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 			CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+CF_PCI_BYTE];
 			CANPackage->indexReadEnd++;
 			CANPackage->readBytes++;
-//			printf("Index: %d\r\n",CANPackage->indexReadEnd);
+//			printf("Index: %d (%d)\r\n",CANPackage->indexReadEnd,
+//			       CANPackage->CanReadBuffer[CANPackage->indexReadEnd-1]);
 			if(CANPackage->indexReadEnd >= BUFFERSIZE){
 				CANPackage->indexReadEnd = 0;
 			}
 			if(CANPackage->TotalReadSize == (CANPackage->readBytes)){
-//				printf("endSize: %d\r\n",CANPackage->indexReadEnd);
+//			  printf("endSize: %d\r\n",CANPackage->indexReadEnd);
 				CANPackage->PackageState.Done = true;
 				CANPackage->nextFrameRead = NO_FRAME;
 				break;
 			}
 		}
+		//printf("nextframeread %d\r\n", CANPackage->nextFrameRead);
 		if(CANPackage->nextFrameRead >= 15){
-			if(CANPackage->nextFrameRead != NO_FRAME)
-				CANPackage->nextFrameRead = 0;
+		  if(CANPackage->nextFrameRead != NO_FRAME) {
+		    CANPackage->nextFrameRead = 0;
+		  }
 		}else{
 			CANPackage->nextFrameRead++;
 		}
 	}else{
+	  printf("consec: not same sequence number: %d %d\r\n", sequenceNumber, CANPackage->nextFrameRead);
 		//nothing
 	}
 
@@ -315,6 +319,8 @@ void Can_Send_Package(CanPackage* CANPackage){
 	}
 }
 
+boolean plugin_new_packageFromTCU = false;
+
 /**
  *
  * @param CANPackage
@@ -344,6 +350,7 @@ void Can_Read_Package(CanPackage* CANPackage){
     		pluginData = Rte_IRead_Pirte_ReadPositionData_Runnable_PirteSwcReadPositionDataFromTCUPort12_PositionData();
     	    break;
 		default:
+		  printf("CommunicationType %d\r\n", CommunicationType);
     	    break;
     }
     memcpy(tempBuffer, pluginData, 8);
@@ -363,16 +370,21 @@ void Can_Read_Package(CanPackage* CANPackage){
     	break;
 
     	default:
+		  printf("unknown frameType %d\r\n", frameType);
     		//nothing
     	break;
     }
 }
 
+static CanPackage *mm(CanPackage *x)
+{
+  return x;
+}
+
 static boolean plugin_install = false; //temp
-boolean plugin_new_packageFromTCU = false;
+
 CanPackage PackageInstallation;
 void Pirte_ReadInstallationDataFromTCU_Runnable(void){
-
 	//first time initialization
 	if (plugin_install == false) {
 		PackageInstallation.CommunicationType = plugin_Installation_VCU;
@@ -389,7 +401,12 @@ void Pirte_ReadInstallationDataFromTCU_Runnable(void){
 
 	Can_Read_Package(&PackageInstallation);
 
-	if (PackageInstallation.PackageState.Done == true) {
+	if (PackageInstallation.PackageState.Done == true
+	    // Arndt
+	    //	    && mm(&PackageInstallation)->indexReadStart == mm(&PackageInstallation)->indexReadEnd
+)
+{
+	printf("ready? %d %d\n\r", PackageInstallation.indexReadStart, PackageInstallation.indexReadEnd);
 //		printf("infor: app data ");
 //		for (int i = 0; i < PackageInstallation.TotalReadSize; i++) {
 //			printf("%d ", BufferForPluginInstallaiton[i]);

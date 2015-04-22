@@ -153,6 +153,7 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 				break;
 			}
 		}
+		//printf("nextframeread %d\r\n", CANPackage->nextFrameRead);
 		if(CANPackage->nextFrameRead >= 15){
 			if(CANPackage->nextFrameRead != NO_FRAME)
 				CANPackage->nextFrameRead = 0;
@@ -160,6 +161,7 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 			CANPackage->nextFrameRead++;
 		}
 	}else{
+	  printf("consec: not same sequence number: %d %d\r\n", sequenceNumber, CANPackage->nextFrameRead);
 		//nothing
 	}
 
@@ -344,6 +346,7 @@ void Can_Read_Package(CanPackage* CANPackage){
 
     UInt8 CommunicationType = CANPackage->CommunicationType;
 
+    //printf("read package, start = %d, end = %d\r\n", CANPackage->indexReadStart, CANPackage->indexReadEnd);
     switch(CommunicationType)
     {
     	case plugin_Installation_SCU:
@@ -356,6 +359,7 @@ void Can_Read_Package(CanPackage* CANPackage){
     		pluginData = Rte_IRead_SCU_Communication_TCU_ReadRunnable_PirteSwcReadCommDataFromTCUPort3_pluginCommunication();
     	    break;
     	default:
+		  printf("CommunicationType %d\r\n", CommunicationType);
     	    break;
     }
     memcpy(tempBuffer, pluginData, 8);
@@ -372,6 +376,7 @@ void Can_Read_Package(CanPackage* CANPackage){
     	break;
 
     	default:
+		  printf("unknown frameType %d\r\n", frameType);
     		//nothing
     		break;
     }
@@ -396,6 +401,7 @@ void SCU_Installation_TCU_ReadRunnable(void) {
 	}
 	Can_Read_Package(&PackageInstallation);
 	if (PackageInstallation.PackageState.Done == true) {
+	printf("ready? %d %d\n\r", PackageInstallation.indexReadStart, PackageInstallation.indexReadEnd);
 //		printf("infor: app data ");
 //		for (int i = 0; i < PackageInstallation.TotalReadSize; i++) {
 //			printf("%d ", BufferForPluginInstallaiton[i]);
