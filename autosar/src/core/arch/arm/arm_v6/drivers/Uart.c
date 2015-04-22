@@ -153,6 +153,18 @@ void mini_uart_sendstr (char *s)
 
 }
 
+void mini_uart_sendstr2 (char *s, int length)
+{
+
+  unsigned char c;
+  int i;
+  for (i = 0; i < length; i++) {
+    c = s[i];
+    mini_uart_send(c);
+  }
+
+}
+
 void mini_uart_sendhex ( uint32 d, boolean newline )
 {
   uint32 rb;
@@ -251,6 +263,18 @@ void pi_printf(char* s){
 	}
 
 	mini_uart_sendstr (s);
+
+}
+
+void pi_printf2(char* s, int length){
+
+
+	if(UART_FLAG == false ){
+		Uart_Init();
+		UART_FLAG = true;
+	}
+
+	mini_uart_sendstr2 (s, length);
 
 }
 
