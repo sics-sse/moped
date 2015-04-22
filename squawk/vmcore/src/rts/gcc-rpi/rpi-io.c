@@ -54,7 +54,8 @@ static void ioExecuteSys(void) {
 
 static void rpiPrint(char *str) {
 #ifdef AUTOSAR
-	output(str);
+  int length = getArrayLength(str);
+  output2(str, length);
 #else
 	printf("%s", str);
 #endif
