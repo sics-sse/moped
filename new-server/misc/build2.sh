@@ -16,13 +16,13 @@ cd $PLUGINS/$P
 mvn clean install
 cp target/$P-$V.jar ../storage
 
-#Only needed if the manifest or xml files were changed
+#Needed if the manifest or xml files were changed, or classes removed
 #cd $HERE
-#rm $SERVERPLUGINS/$P/$V
+#rm -rf $SERVERPLUGINS/$P/$V
 #./init-moped4.sh
 
 cd $PLUGINS/$P
-rm -rf classes classes.jar j2meclasses
+rm -rf classes classes.jar j2meclasses weaved preprocessed
 cd $SQUAWK
 ./d.sh user-compile $PLUGINS/$P
 cp $PLUGINS/$P/j2meclasses/plugins/* $SERVERPLUGINS/$P/$V/$P/j2meclasses/plugins/
