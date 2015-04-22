@@ -11,7 +11,7 @@
 #include "Platform_Types.h"
 #include "Rte_Type.h"
 
-#define BUFFERSIZE              2000
+#define BUFFERSIZE              5000
 
 //definition of CAN Frame
 typedef enum {
