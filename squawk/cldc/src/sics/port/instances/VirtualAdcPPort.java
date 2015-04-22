@@ -19,7 +19,7 @@ public class VirtualAdcPPort extends EcuVirtualPPort {
 	@Override
 	public Object deliver() {
 		long data = VM.jnaFetchAdcData();
-		float res = data/10000;
+		float res = ((float) data)/10000;
 		String resStr = String.valueOf(res);
 		return resStr;
 	}
