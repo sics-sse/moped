@@ -1,0 +1,1 @@
+ -bootclasspath tests/HelloWorld/classes:tests/HelloWorld/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/arndt/moped/moped/squawk-zeni/tests/HelloWorld/. -d tests/HelloWorld/classes -g tests/HelloWorld/preprocessed/tests/HelloWorld.java

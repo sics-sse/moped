@@ -1,0 +1,1 @@
+ -bootclasspath ./javatest-device/classes:./javatest-device/classes:./cldc/classes:./cldc/classes:/home/arndt/moped/moped/squawk/./javatest-device/lib/agent.jar:/home/arndt/moped/moped/squawk/./javatest-device/lib/client.jar -d ./javatest-device/classes -g ./javatest-device/preprocessed/com/sun/tck/cldc/javatest/agent/CldcAgent.java

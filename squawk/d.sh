@@ -42,7 +42,7 @@ if [ -z "$JAVA_HOME" ]; then
 fi
 
 #TEMP
-JAVA_HOME='/usr/local/lib/java/jdk1.6.0_45'
+#JAVA_HOME='/usr/local/lib/java/jdk1.6.0_45'
 
 echo "JAVA_HOME=$JAVA_HOME"
 #-client -XX:+PrintCompilation

@@ -1,1 +1,0 @@
- -bootclasspath tests/FWPub/classes:tests/FWPub/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/moped/squawk/tests/FWPub/. -d tests/FWPub/classes -g tests/FWPub/preprocessed/tests/FWPub.java

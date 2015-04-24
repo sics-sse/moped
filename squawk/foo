@@ -1,0 +1,82 @@
+loaded object memories: 1
+file://tests/HelloWorld/HelloWorld.suite {
+                size = 92
+                hash = 1115
+                root = 4
+     canonical start = 399356
+       canonical end = 399448
+         oopmap size = 3
+}
++++++++++++++++++++++  start of object memory with URI file://tests/HelloWorld/HelloWorld.suite +++++++++++++++++++++++
++    399356 :  84 f6 01 00               instance com.sun.squawk.Suite    { class = 128644 }
++    399360 *  9c 0c 00 00                 ref    classes = 3228            [Lcom.sun.squawk.Klass;
++    399364 :  34 18 06 00                 ref    name = 399412             com.sun.squawk.StringOfBytes       // "HelloWorld"
++    399368 :  48 18 06 00                 ref    metadatas = 399432        [Lcom.sun.squawk.KlassMetadata;
+     399372 :  01 00 00 00                 int    type = 1 
++    399376 :  04 00 00 00                 ref    parent = 4                com.sun.squawk.Suite
++    399380 :  50 18 06 00                 ref    resourceFiles = 399440    [Lcom.sun.squawk.ResourceFile;
++    399384 :  58 18 06 00                 ref    manifestProperties = 399448 [Lcom.sun.squawk.ManifestProperty;
++    399388 :  00 00 00 00                 ref    noClassDefFoundErrorClassNames = 0 [Ljava.lang.String;
++    399392 :  00 00 00 00                 ref    stripClassesLater = 0     [Lcom.sun.squawk.Klass;
++    399396 :  dc 17 06 00                 ref    configuration = 399324    com.sun.squawk.StringOfBytes       // "symbols stripped in library mode"
+     399400 :  01                          bool   closed = 1 
+     399401 :  00                          bool   isPropertiesManifestResourceInstalled = 0 
+     399404 :  29 00 00 00               [10]
++    399408 :  f8 d5 02 00               array com.sun.squawk.StringOfBytes    { class = 185848 }
+     399412 *  48 65 6c 6c 6f 57 6f 72   "HelloWor"
+     399420 :  6c 64                     "ld"
+     399424 :  01 00 00 00               [0]
++    399428 :  fc 90 01 00               array [com.sun.squawk.KlassMetadata    { class = 102652 }
+     399432 *  01 00 00 00               [0]
++    399436 :  00 15 02 00               array [com.sun.squawk.ResourceFile    { class = 136448 }
+     399440 *  01 00 00 00               [0]
++    399444 :  90 14 02 00               array [com.sun.squawk.ManifestProperty    { class = 136336 }
+
+Suite Statistics (bytes):
+    Oopmap = 3
+    Suite memory = 92
+        Suite Data = 68
+            20        com.sun.squawk.StringOfBytes
+            48        com.sun.squawk.Suite
+        Properties = 0
+        Resource Files = 8
+            8         [Lcom.sun.squawk.ResourceFile;
+        Meta Data = 8
+            8         [Lcom.sun.squawk.KlassMetadata;
+        Shared Objects = 0
+        All Classes = 0
+
+Histogram of instance counts:
+1         [Lcom.sun.squawk.KlassMetadata;
+1         [Lcom.sun.squawk.ManifestProperty;
+1         [Lcom.sun.squawk.ResourceFile;
+1         com.sun.squawk.StringOfBytes
+1         com.sun.squawk.Suite
+Total: 5
+
+Histogram of instance sizes:
+8         [Lcom.sun.squawk.KlassMetadata;
+8         [Lcom.sun.squawk.ManifestProperty;
+8         [Lcom.sun.squawk.ResourceFile;
+20        com.sun.squawk.StringOfBytes
+48        com.sun.squawk.Suite
+Total: 92
+
+Total Bytecode count = 0
+Method count = 0
+Average method header = NaN
+    avg header oopmap length = NaN
+    avg header exception table length = NaN
+    avg header relocation table length = NaN
+    avg header type table length = NaN
+    avg header minfo size = NaN
+Average locals = NaN
+Average op stack = NaN
+
+Package statistics (bytes):
+
+# classes:0
+Class statistics sorted alphabetically (bytes):
+
+# classes:0
+Class statistics sorted by size (bytes):

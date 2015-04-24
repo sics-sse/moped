@@ -2069,6 +2069,7 @@
     .method deliverValue (II)V
     .method deliverValue (ILjava/lang/String;)V
     .method sendValue (ILsics/messages/PluginMessage;)V
+    .method sendValue2 (ILsics/messages/PluginMessage;)V
 .class sics.PIRTE$PluginLoader
     .method <init> (Lsics/PIRTE;Ljava/lang/String;[Ljava/lang/String;)V
     .method run ()V

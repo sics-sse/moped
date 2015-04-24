@@ -1,0 +1,1301 @@
+/*
+ * Copyright 2004-2010 Sun Microsystems, Inc. All Rights Reserved.
+ * Copyright 2011 Oracle Corporation. All Rights Reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+ *
+ * This code is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2
+ * only, as published by the Free Software Foundation.
+ *
+ * This code is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License version 2 for more details (a copy is
+ * included in the LICENSE file that accompanied this code).
+ *
+ * You should have received a copy of the GNU General Public License
+ * version 2 along with this work; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ * Please contact Oracle Corporation, 500 Oracle Parkway, Redwood
+ * Shores, CA 94065 or visit www.oracle.com if you need additional
+ * information or have any questions.
+ */
+
+    /*-----------------------------------------------------------------------*\
+     *                                     DEFNS                             *
+    \*-----------------------------------------------------------------------*/
+
+//#if PLATFORM_UNALIGNED_LOADS
+#if 0
+// This slows down interp loop on x86, so don't force inlining the unaligned getters/setters/
+#define INLINE_UNALIGNED INLINE
+#else
+#define INLINE_UNALIGNED 
+#endif /* PLATFORM_UNALIGNED_LOADS */
+
+#ifndef PLATFORM_UNALIGNED_64_LOADS
+#define PLATFORM_UNALIGNED_64_LOADS PLATFORM_UNALIGNED_LOADS
+#endif
+
+    /*-----------------------------------------------------------------------*\
+     *                           Memory access verification                  *
+    \*-----------------------------------------------------------------------*/
+
+/**
+ * Comment the following line for %50 slower but better type checking
+ */
+#define FASTER_SET_TYPES
+
+/**
+ * Comment the following line for assume code that is 20% faster.
+ */
+//#define SETASSUMES ASSUME
+
+/**
+ * Address to look for in setType()
+ */
+#define BADSETTYPE 0
+
+/**
+ * Fast object allocation
+ */
+#define FASTALLOC true
+
+#if SETASSUMES
+#define setAssume(x) assume(x)
+int     getByte(Address oop, int offset);
+int     getUShort(Address oop, int offset);
+UWord   getUWord(Address oop, int offset);
+jlong   getLong(Address oop, int offset);
+jlong   getLongAtWord(Address oop, int offset);
+Address getObject(Address oop, int offset);
+#else
+#define setAssume(x) /**/
+#endif
+
+#ifndef C_PARMS_LEFT_TO_RIGHT
+#define C_PARMS_LEFT_TO_RIGHT false
+#endif
+
+#ifndef C_PARMS_RIGHT_TO_LEFT
+#define C_PARMS_RIGHT_TO_LEFT false
+#endif
+
+INLINE boolean setArrayLength(Address _oop, int _size);
+
+        /*-----------------------------------------------------------------------*\
+         *                               Assertions                               *
+        \*-----------------------------------------------------------------------*/
+
+/*MAC*/ int inRAM(Address $ea) {
+            Address addr = $ea;
+	    return addr >= com_sun_squawk_GC_ramStart && addr < com_sun_squawk_GC_ramEnd;
+        }
+
+/*MAC*/ int inROM(Address $ea) {
+            Address addr = $ea;
+	    return addr >= com_sun_squawk_VM_romStart && addr < com_sun_squawk_VM_romEnd;
+        }
+
+#ifdef FLASH_MEMORY
+/*MAC*/ int inCode(Address $ea) {
+	        return inROM($ea);
+        }
+#else
+/*MAC*/ int inCode(Address $ea) {
+            Address addr = $ea;
+	    return addr >= com_sun_squawk_VM_romStart && addr < com_sun_squawk_GC_ramEnd;
+        }
+#endif
+
+        /*-----------------------------------------------------------------------*\
+         *                            Type map checking                          *
+        \*-----------------------------------------------------------------------*/
+
+#if TYPEMAP
+        /**
+         * Gets the ASCII character representing a given type.
+         *
+         * @param type  the type to represent
+         * @return the ASCII representation of 'type'
+         */
+/*INL*/ char getTypeMnemonic(char $type) {
+            return AddressType_Mnemonics[$type & AddressType_TYPE_MASK];
+        }
+
+        /**
+         * Determines if a given address is within the range of type mapped memory.
+         *
+         * @param ea   the address to test
+         * @return true if 'ea' is within the range of type mapped memory
+         */
+/*INL*/ boolean isInTypedMemoryRange(Address $ea) {
+            return (hieq($ea, memory) && lo($ea, memoryEnd));
+        }
+
+        /**
+         * Gets the address at which the type for a given address is recorded.
+         *
+         * @param ea   the address for which the type is being queried
+         * @return the address at which the type for 'ea' is recorded
+         */
+/*INL*/ char *getTypePointer(Address $ea) {
+            /*if (!isInTypedMemoryRange($ea)) {
+                fprintf(stderr, format("access outside of 'memory' chunk: %A\n"), $ea);
+                return;
+             }
+             */
+
+            return (char *)$ea + memorySize;
+        }
+
+        /**
+         * Records the type of the value written to a given address.
+         *
+         * @param ea   the address written to
+         * @param type the type of the value written to 'ea'
+         * @param size the length in bytes of the field
+         */
+/*INL*/ void setType(Address $ea, char $type, int $size) {
+            if (isInTypedMemoryRange($ea)) {
+                char *ptr = getTypePointer($ea);
+                switch ($size) {
+                    case 1:                                                                            break;
+                    case 2: *( (unsigned short *)ptr)    = (unsigned short)AddressType_UNDEFINED_WORD; break;
+                    case 4: *( (unsigned int   *)ptr)    = (unsigned int)  AddressType_UNDEFINED_WORD; break;
+                    case 8: *( (unsigned int   *)ptr)    = (unsigned int)  AddressType_UNDEFINED_WORD;
+                            *(((unsigned int   *)ptr)+1) = (unsigned int)  AddressType_UNDEFINED_WORD; break;
+                    default: fatalVMError("unknown size in setType()");
+                }
+                *ptr = $type;
+
+                if (BADSETTYPE && $ea == (Address)BADSETTYPE) {
+                    openTraceFile();
+                    fprintf(
+                            traceFile,
+                            format("setType @ %A is %c,  [ea - rom = %A]\n"),
+                            $ea,
+                            getTypeMnemonic($type),
+                            Address_diff($ea, com_sun_squawk_VM_romStart)
+                           );
+                    printStackTrace("setType");
+                }
+            }
+        }
+
+        /**
+         * Verifies that the type of the value at a given address matches a given type.
+         *
+         * @param ea   the address to test
+         * @param type the type to match
+         */
+        void checkTypeError(Address ea, char recordedType, char type) {
+            fprintf(
+                    stderr,
+                    format("checkType @ %A is %c, not %c  [ea - rom = %A]\n"),
+                    ea,
+                    getTypeMnemonic(recordedType),
+                    getTypeMnemonic(type),
+                    Address_diff(ea, com_sun_squawk_VM_romStart)
+                   );
+            fatalVMError("memory access type check failed");
+        }
+
+        /**
+         * Verifies that the type of the value at a given address matches a given type.
+         *
+         * @param ea   the address to test
+         * @param type the type to match
+         */
+/*INL*/ void checkType2(Address $ea, char $recordedType, char $type) {
+            char recordedType = (char)($recordedType & AddressType_TYPE_MASK);
+            if (recordedType != AddressType_ANY && recordedType != $type) {
+                checkTypeError($ea, recordedType, $type);
+            }
+        }
+
+        /**
+         * Verifies that the type of the value at a given address matches a given type.
+         *
+         * @param ea   the address to test
+         * @param type the type to match
+         * @param size the length in bytes of the field
+         */
+/*INL*/ Address checkType(Address $ea, char $type, int $size) {
+            if (isInTypedMemoryRange($ea)) {
+                /* AddressType_ANY always matches */
+                if ($type != AddressType_ANY) {
+                    char *a = (char *)$ea;
+                    char *p = getTypePointer($ea);
+                    char fillType = ($type == AddressType_BYTECODE) ? AddressType_BYTECODE : AddressType_UNDEFINED;
+#ifdef FASTER_SET_TYPES
+                    checkType2(a++, *p, $type);
+#else
+                    switch ($size) {
+                        case 8: {
+                            checkType2(a++, *p++, $type);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            break;
+                        }
+                        case 4: {
+                            checkType2(a++, *p++, $type);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            checkType2(a++, *p++, fillType);
+                            break;
+                        }
+                        case 2: {
+                            checkType2(a++, *p++, $type);
+                            checkType2(a++, *p++, fillType);
+                            break;
+                        }
+                        case 1: {
+                            checkType2(a++, *p, $type);
+                            break;
+                        }
+                        default: shouldNotReachHere();
+                    }
+#endif
+                }
+            }
+            return $ea;
+        }
+
+        /**
+         * Gets the type recorded for a given address.
+         *
+         * @param  the address to test
+         */
+/*MAC*/ char getType(Address $ea) {
+            return *getTypePointer($ea);
+        }
+
+        /**
+         * Gets the type of the value that is written to memory by the current memory mutating instruction.
+         * This method assumes that the current value of 'ip' is one byte past the current
+         * instruction (i.e. it points to the opcode of the next instruction).
+         */
+/*DEF*/ char getMutationType() {
+            return (char)((*getTypePointer(ip - 1) >> AddressType_MUTATION_TYPE_SHIFT) & AddressType_TYPE_MASK);
+        }
+
+        /**
+         * Sets the type recorded for each address in a range of word-aligned memory to be AddressType_ANY, the default for every type.
+         *
+         * @param start   the start address of the memory range
+         * @param end     the end address of the memory range
+         */
+        void zeroTypes(Address start, Address end) {
+            /* memset is not used as this can only be called on the service thread. */
+            UWordAddress s = (UWordAddress)(getTypePointer(start));
+            UWordAddress e = (UWordAddress)(getTypePointer(end));
+            assume(isWordAligned((UWord)s));
+            assume(isWordAligned((UWord)e));
+            while (s < e) {
+                *s++ = AddressType_ANY_WORD;
+            }
+        }
+
+        /**
+         * Block copies the types recorded for a range of memory to another range of memory.
+         *
+         * @param src    the start address of the source range
+         * @param dst    the start address of the destination range
+         * @param length the length (in bytes) of the range
+         */
+        void copyTypes(Address src, Address dst, int length) {
+            /* memmove is not used as this can only be called on the service thread. */
+            assume(length >= 0);
+/*fprintf(stderr, format("copyTypes: src=%A, dst=%A, length=%d\n"), src, dst, length);*/
+            if (lo(src, dst)) {
+                char *s = getTypePointer(src) + length;
+                char *d = getTypePointer(dst) + length;
+                char *end = getTypePointer(src);
+                while (s != end) {
+                    *--d = *--s;
+                }
+            } else if (hi(src, dst)) {
+                char *s = getTypePointer(src);
+                char *d = getTypePointer(dst);
+                char *end = s + length;
+                while (s != end) {
+                    *d++ = *s++;
+                }
+            }
+        }
+
+#else
+
+/**
+ * These macros disable the type checking for a production build.
+ * A macro replacement for 'getType()' is intentionally omitted.
+ */
+#define setType(ea, type, size)
+#define checkType(ea, type, size)     ea
+#define setTypeRange(ea, length, type)
+#define zeroTypes(start, end)
+#define copyTypes(src, dst, length)
+#define getMutationType() 0
+        char getType(Address ea) {
+            fatalVMError("getType() called without TYPEMAP");
+            return 0;
+        }
+#endif /* TYPEMAP */
+
+    /*-----------------------------------------------------------------------*\
+     *                              Memory addressing                        *
+    \*-----------------------------------------------------------------------*/
+
+//#define BAD_ADDRESS 93146860
+//#define BAD_VALUE 93146896
+
+//#define BAD_ADDRESS 100300348
+//#define BAD_VALUE 99786999
+
+#ifdef BAD_ADDRESS
+void checkOneAddress(Address ea, int size, Address addr);
+#else
+#define checkOneAddress(ea, size, addr)
+#endif /* BAD_ADDRESS */
+
+#ifdef com_sun_squawk_CheneyCollector
+#define cheneyCheck(ea) assume(cheneyStartMemoryProtect == 0 || \
+                   lo(ea, cheneyStartMemoryProtect) || \
+                   hieq(ea, cheneyEndMemoryProtect))
+#else
+#define cheneyCheck(ea)
+#endif /* com_sun_squawk_CheneyCollector */
+
+        /**
+         * Performs a number of checks on a given part of memory immediately after
+         * it was written to.
+         *
+         * @param ea   the address of the last write to memory
+         * @param size the number of bytes written
+         */
+/*DEF*/ void checkPostWrite(Address $ea, int $size) {
+            checkOneAddress($ea, $size, (Address)BAD_ADDRESS);
+            cheneyCheck($ea);
+        }
+
+        /**
+         * Given a base address and offset to a byte value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value specified by 'oop' and 'offset'
+         */
+/*MAC*/ signed char getByteTyped(Address $base, Offset $offset, char $type) {
+            return *((signed char *)checkType(&((signed char *)$base)[$offset], $type, 1));
+        }
+
+        /**
+         * Given a base address and offset to a byte value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value specified by 'oop' and 'offset'
+         */
+/*MAC*/ unsigned char getUByteTyped(Address $base, Offset $offset, char $type) {
+            return *((unsigned char *)checkType(&((unsigned char *)$base)[$offset], $type, 1));
+        }
+
+        /**
+         * Given a base address and offset to a byte value, sets the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+/*MAC*/ void setByteTyped(Address $base, Offset $offset, char $type, signed char $value) {
+            signed char *ea = &((signed char *)$base)[$offset];
+            setType(ea, $type, 1);
+            *ea = $value;
+            checkPostWrite(ea, 1);
+        }
+
+        /**
+         * Given a base address and offset to a short value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value
+         */
+/*MAC*/ short getShortTyped(Address $base, Offset $offset, char $type) {
+            return *((short *)checkType(&((short *)$base)[$offset], $type, 2));
+        }
+
+        /**
+         * Given a base address and offset to a short value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value
+         */
+/*MAC*/ unsigned short getUShortTyped(Address $base, Offset $offset, char $type) {
+            return *((unsigned short *)checkType(&((unsigned short *)$base)[$offset], $type, 2));
+        }
+
+        /**
+         * Given a base address and offset to a short value, sets the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+/*MAC*/ void setShortTyped(Address $base, Offset $offset, char $type, short $value) {
+            short *ea = &((short *)$base)[$offset];
+            setType(ea, $type, 2);
+            *ea = $value;
+            checkPostWrite(ea, 2);
+        }
+
+        /**
+         * Given a base address and offset to an integer value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 32 bit words) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value specified by 'oop' and 'offset'
+         */
+/*MAC*/ int getIntTyped(Address $base, Offset $offset, char $type) {
+            return *((int *)checkType(&((int *)$base)[$offset], $type, 4));
+        }
+
+        /**
+         * Given a base address and offset to an integer value, sets the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 32 bit words) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+/*MAC*/ void setIntTyped(Address $base, Offset $offset, char $type, int $value) {
+            int *ea = &((int *)$base)[$offset];
+            setType(ea, $type, 4);
+            *ea = $value;
+            checkPostWrite(ea, 4);
+        }
+
+        /**
+         * Given a base address and offset to a 64 bit value, returns the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value
+         */
+/*MAC*/ jlong getLongAtWordTyped(Address $base, Offset $offset, char $type) {
+            return *((jlong *)checkType(&((UWordAddress)$base)[$offset], $type, 8));
+        }
+
+        /**
+         * Given a base address and offset to a 64 bit value, sets the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+/*MAC*/ void setLongAtWordTyped(Address $base, Offset $offset, char $type, jlong $value) {
+            jlong *ea = (jlong *)&((UWordAddress)$base)[$offset];
+            setType(ea, $type, 8);
+            *ea = $value;
+            checkPostWrite(ea, 8);
+        }
+
+        /**
+         * Given a base address and offset to a 64 bit value, return the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 64 bit words) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value
+         */
+/*MAC*/ jlong getLongTyped(Address $base, Offset $offset, char $type) {
+            return *((jlong *)checkType(&((jlong *)$base)[$offset], $type, 8));
+        }
+
+        /**
+         * Given a base address and offset to a 64 bit value, set the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 64 bit words) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+/*MAC*/ void setLongTyped(Address $base, Offset $offset, char $type, jlong $value) {
+            jlong *ea = (jlong *)&((jlong *)$base)[$offset];
+            setType(ea, $type, 8);
+            *ea = $value;
+            checkPostWrite(ea, 8);
+        }
+
+        /**
+         * Given a base address and offset to a UWord value, return the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' at which to write
+         * @param type   the expected type of the value about to be read from the effective address
+         * @return       the value
+         */
+#if SQUAWK_64
+/*MAC*/ UWord getUWordTyped(Address $base, Offset $offset, char $type) {
+            return (UWord)getLongTyped($base, $offset, $type);
+        }
+#else
+/*MAC*/ UWord getUWordTyped(Address $base, Offset $offset, char $type) {
+            return (UWord)getIntTyped($base, $offset, $type);
+        }
+#endif
+
+        /**
+         * Given a base address and offset to a UWord value, set the corresponding value.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' at which to write
+         * @param type   the type of the value about to be written to the effective address
+         * @param value  the value
+         */
+#if SQUAWK_64
+/*MAC*/ void setUWordTyped(Address $base, Offset $offset, char $type, UWord $value) {
+            setLongTyped($base, $offset, $type, (UWord)$value);
+        }
+#else
+/*MAC*/ void setUWordTyped(Address $base, Offset $offset, char $type, UWord $value) {
+            setIntTyped($base, $offset, $type, (UWord)$value);
+        }
+#endif
+
+
+        /*-----------------------------------------------------------------------*\
+         *                           Memory access interface                     *
+        \*-----------------------------------------------------------------------*/
+
+        /**
+         * Sets an 8 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' at which to write
+         * @param value the value to write
+         */
+/*MAC*/ void setByte(Address $base, Offset $offset, int $value) {
+            setByteTyped($base, $offset, AddressType_BYTE, (signed char)$value);
+            setAssume(($value & 0xFF) == (getByte($base, $offset) & 0xFF));
+        }
+
+        /**
+         * Sets a 16 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setShort(Address $base, Offset $offset, int $value) {
+            setShortTyped($base, $offset, AddressType_SHORT, (short)$value);
+            setAssume(($value & 0xFFFF) == getUShort($base, $offset));
+        }
+
+        /**
+         * Sets a 32 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 32 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setInt(Address $base, Offset $offset, int $value) {
+            setIntTyped($base, $offset, AddressType_INT, $value);
+            setAssume($value == getInt($base, $offset));
+        }
+
+        /**
+         * Sets a UWord value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from oop at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setUWord(Address $base, Offset $offset, UWord $value) {
+            setUWordTyped($base, $offset, AddressType_UWORD, $value);
+            setAssume($value == getUWord($base, $offset));
+        }
+
+        /**
+         * Sets a pointer value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from oop at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setObject(Address $base, Offset $offset, Address $value) {
+            setUWordTyped($base, $offset, AddressType_REF, (UWord)$value);
+            setAssume($value == getObject($base, $offset));
+        }
+
+        /**
+         * Sets a pointer value in memory and updates write barrier bit for the pointer if
+         * a write barrier is being maintained.
+         *
+         * @param base   the base address
+         * @param offset the offset to a field in the object
+         */
+/*MAC*/ void setObjectAndUpdateWriteBarrier(Address $base, Offset $offset, Address $value) {
+            setObject($base, $offset, $value);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+        /**
+         * Sets a 64 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 64 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setLong(Address $base, Offset $offset, jlong $value) {
+            setLongTyped($base, $offset, AddressType_LONG, $value);
+            setAssume($value == getLong($base, $offset));
+        }
+
+        /**
+         * Sets a 64 bit value in memory at a UWord offset.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' at which to write
+         * @param value  the value to write
+         */
+/*MAC*/ void setLongAtWord(Address $base, Offset $offset, jlong $value) {
+            if (SQUAWK_64 || PLATFORM_UNALIGNED_64_LOADS) {
+                setLongAtWordTyped($base, $offset, AddressType_LONG, $value);
+            } else {
+                const int highOffset = (PLATFORM_BIG_ENDIAN) ? $offset     : $offset + 1;
+                const int lowOffset  = (PLATFORM_BIG_ENDIAN) ? $offset + 1 : $offset;
+                setIntTyped($base, highOffset, AddressType_LONG,  (int)($value >> 32));
+                setIntTyped($base, lowOffset,  AddressType_LONG2, (int) $value);
+            }
+            setAssume($value == getLongAtWord($base, $offset));
+        }
+
+        /**
+         * Sets a 16 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+INLINE_UNALIGNED void setUnalignedShort(Address base, Offset offset, int value) {
+            signed char *ea = &((signed char *)base)[offset];
+
+            if (PLATFORM_UNALIGNED_LOADS) {
+                 setShortTyped(ea, 0, AddressType_SHORT, (short)value);
+            } else {
+                int b0 =  value       & 0xFF;
+                int b1 = (value >> 8) & 0xFF;
+
+                if (PLATFORM_BIG_ENDIAN) {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b1);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b0);
+                } else {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b0);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b1);
+                }
+            }
+            setAssume((value & 0xFFFF) == getUnalignedShort(base, offset));
+        }
+
+        /**
+         * Sets a 32 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 32 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+INLINE_UNALIGNED void setUnalignedInt(Address base, Offset offset, int value) {
+            signed char *ea = &((signed char *)base)[offset];
+            if (PLATFORM_UNALIGNED_LOADS) {
+                 setIntTyped(ea, 0, AddressType_INT, value);
+            } else {
+                int b0 =  value        & 0xFF;
+                int b1 = (value >> 8)  & 0xFF;
+                int b2 = (value >> 16) & 0xFF;
+                int b3 = (value >> 24) & 0xFF;
+                if (PLATFORM_BIG_ENDIAN) {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b3);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b2);
+                    setByteTyped(ea, 2, AddressType_ANY, (char)b1);
+                    setByteTyped(ea, 3, AddressType_ANY, (char)b0);
+                } else {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b0);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b1);
+                    setByteTyped(ea, 2, AddressType_ANY, (char)b2);
+                    setByteTyped(ea, 3, AddressType_ANY, (char)b3);
+                }
+            }
+            setAssume(value == getUnalignedInt(base, offset));
+        }
+
+        /**
+         * Sets a 64 bit value in memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 64 bit words) from 'base' at which to write
+         * @param value  the value to write
+         */
+INLINE_UNALIGNED void setUnalignedLong(Address base, Offset offset, jlong value) {
+            signed char *ea = &((signed char *)base)[offset];
+            if (PLATFORM_UNALIGNED_64_LOADS || (!PLATFORM_UNALIGNED_LOADS && isAligned((UWord)ea, 8))) {
+                setLongTyped(ea, 0, AddressType_LONG, value);
+            } else if (PLATFORM_UNALIGNED_LOADS) {
+                /* optimize for 32-bit registers */
+                unsigned int hi = value >> 32;
+                unsigned int lo = value & 0xFFFFFFFF;
+                if (PLATFORM_BIG_ENDIAN) {
+                    setIntTyped(ea, 0, AddressType_LONG, hi);
+                    setIntTyped(ea, 1, AddressType_LONG, lo);
+                } else {
+                    setIntTyped(ea, 0, AddressType_LONG, lo);
+                    setIntTyped(ea, 1, AddressType_LONG, hi);
+                }
+            } else {
+                /* optimize for 32-bit registers */
+                unsigned int hi = value >> 32;
+                unsigned int lo = value & 0xFFFFFFFF;
+                unsigned int b0 =  hi        & 0xFF;
+                unsigned int b1 = (hi >> 8)  & 0xFF;
+                unsigned int b2 = (hi >> 16) & 0xFF;
+                unsigned int b3 = (hi >> 24) & 0xFF;
+                unsigned int b4 = (lo >> 0) & 0xFF;
+                unsigned int b5 = (lo >> 8) & 0xFF;
+                unsigned int b6 = (lo >> 16) & 0xFF;
+                unsigned int b7 = (lo >> 24) & 0xFF;
+                if (PLATFORM_BIG_ENDIAN) {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b7);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b6);
+                    setByteTyped(ea, 2, AddressType_ANY, (char)b5);
+                    setByteTyped(ea, 3, AddressType_ANY, (char)b4);
+                    setByteTyped(ea, 4, AddressType_ANY, (char)b3);
+                    setByteTyped(ea, 5, AddressType_ANY, (char)b2);
+                    setByteTyped(ea, 6, AddressType_ANY, (char)b1);
+                    setByteTyped(ea, 7, AddressType_ANY, (char)b0);
+                } else {
+                    setByteTyped(ea, 0, AddressType_ANY, (char)b0);
+                    setByteTyped(ea, 1, AddressType_ANY, (char)b1);
+                    setByteTyped(ea, 2, AddressType_ANY, (char)b2);
+                    setByteTyped(ea, 3, AddressType_ANY, (char)b3);
+                    setByteTyped(ea, 4, AddressType_ANY, (char)b4);
+                    setByteTyped(ea, 5, AddressType_ANY, (char)b5);
+                    setByteTyped(ea, 6, AddressType_ANY, (char)b6);
+                    setByteTyped(ea, 7, AddressType_ANY, (char)b7);
+                }
+            }
+            setAssume(value == getUnalignedLong(base, offset));
+        }
+
+        /**
+         * Gets a signed 8 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ int getByte(Address $base, Offset $offset) {
+            return getByteTyped($base, $offset, AddressType_BYTE);
+        }
+
+        /**
+         * Gets an unsigned 8 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ int getUByte(Address $base, Offset $offset) {
+            return getUByteTyped($base, $offset, AddressType_BYTE);
+        }
+
+        /**
+         * Gets a signed 16 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ int getShort(Address $base, Offset $offset) {
+            return getShortTyped($base, $offset, AddressType_SHORT);
+        }
+
+        /**
+         * Gets an unsigned 16 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 16 bit words) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ int getUShort(Address $base, Offset $offset) {
+            return getUShortTyped($base, $offset, AddressType_SHORT);
+        }
+
+        /**
+         * Gets a signed 32 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 32 bit words) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ int getInt(Address $base, Offset $offset) {
+            return getIntTyped($base, $offset, AddressType_INT);
+        }
+
+        /**
+         * Gets a UWord value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ UWord getUWord(Address $base, Offset $offset) {
+            return getUWordTyped($base, $offset, AddressType_UWORD);
+        }
+
+        /**
+         * Gets a pointer from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ Address getObject(Address $base, Offset $offset) {
+            return (Address)getUWordTyped($base, $offset, AddressType_REF);
+        }
+
+        /**
+         * Gets a 64 bit value from memory using a 64 bit word offset.
+         *
+         * @param base   the base address
+         * @param offset the offset (in 64 bit words) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ jlong getLong(Address $base, Offset $offset) {
+            return getLongTyped($base, $offset, AddressType_LONG);
+        }
+
+        /**
+         * Gets a 64 bit value from memory using a UWord offset.
+         *
+         * @param base   the base address
+         * @param offset the offset (in UWords) from 'base' from which to load
+         * @return the value
+         */
+/*MAC*/ jlong getLongAtWord(Address $base, Offset $offset) {
+            if (SQUAWK_64 || PLATFORM_UNALIGNED_64_LOADS) {
+                return getLongAtWordTyped($base, $offset, AddressType_LONG);
+            } else {
+                const int highOffset = (PLATFORM_BIG_ENDIAN) ? $offset     : $offset + 1;
+                const int lowOffset  = (PLATFORM_BIG_ENDIAN) ? $offset + 1 : $offset;
+                const unsigned int high = getIntTyped($base, highOffset, AddressType_LONG);
+                const unsigned int low  = getIntTyped($base, lowOffset,  AddressType_LONG2);
+
+                /*Some strange MSC 6.0 bug prevents the following line from working:
+                  return (jlong)(((jlong)high) << 32 | (((jlong)low) & 0xFFFFFFFF)); */
+
+                /* But, for some reason, the following two lines do: */
+				const jlong res = makeLong(high, low);
+                return res;
+            }
+        }
+
+        /**
+         * Gets a signed 16 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' from which to load
+         * @return the value
+         */
+INLINE_UNALIGNED int getUnalignedShort(Address base, Offset offset) {
+            signed char *ea = &((signed char *)base)[offset];
+            if (PLATFORM_UNALIGNED_LOADS) {
+                 return getShortTyped(ea, 0, AddressType_ANY);
+            } else {
+                if (PLATFORM_BIG_ENDIAN) {
+                    int b1 = getByteTyped(ea, 0, AddressType_ANY);
+                    int b2 = getUByteTyped(ea, 1, AddressType_ANY);
+                    return (b1 << 8) | b2;
+                } else {
+                    int b1 = getUByteTyped(ea, 0, AddressType_ANY);
+                    int b2 = getByteTyped(ea,  1, AddressType_ANY);
+                    return (b2 << 8) | b1;
+                }
+            }
+        }
+
+        /**
+         * Gets a signed 32 bit value from memory.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' from which to load
+         * @return the value
+         */
+INLINE_UNALIGNED int getUnalignedInt(Address base, Offset offset) {
+            signed char *ea = &((signed char *)base)[offset];
+            if (PLATFORM_UNALIGNED_LOADS) {
+                return getIntTyped(ea, 0, AddressType_ANY);
+            } else {
+                int b1 = getUByteTyped(ea, 0, AddressType_ANY);
+                int b2 = getUByteTyped(ea, 1, AddressType_ANY);
+                int b3 = getUByteTyped(ea, 2, AddressType_ANY);
+                int b4 = getUByteTyped(ea, 3, AddressType_ANY);
+                if (PLATFORM_BIG_ENDIAN) {
+                    return (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
+                } else {
+                    return (b4 << 24) | (b3 << 16) | (b2 << 8) | b1;
+                }
+            }
+        }
+
+        /**
+         * Gets a 64 bit value from memory using a byte offset.
+         *
+         * @param base   the base address
+         * @param offset the offset (in bytes) from 'base' from which to load
+         * @return the value
+         */
+INLINE_UNALIGNED jlong getUnalignedLong(Address base, Offset offset) {
+            signed char *ea = &((signed char *)base)[offset];
+            if (PLATFORM_UNALIGNED_64_LOADS || (!PLATFORM_UNALIGNED_LOADS && isAligned((UWord)ea, 8))) {
+                return getLongTyped(ea, 0, AddressType_ANY);
+            } else if (PLATFORM_UNALIGNED_LOADS) {
+                /* optimize for 32-bit registers */
+                unsigned int first = getIntTyped((Address)ea, 0, AddressType_ANY);
+                unsigned int second = getIntTyped((Address)ea, 1, AddressType_ANY);
+                if (PLATFORM_BIG_ENDIAN) {
+                      return ((jlong)first << 32) | second;
+                } else {
+                      return ((jlong)second << 32) | first;
+                }
+            } else {
+                unsigned int b1 = getUByteTyped(ea, 0, AddressType_ANY);
+                unsigned int b2 = getUByteTyped(ea, 1, AddressType_ANY);
+                unsigned int b3 = getUByteTyped(ea, 2, AddressType_ANY);
+                unsigned int b4 = getUByteTyped(ea, 3, AddressType_ANY);
+                unsigned int b5 = getUByteTyped(ea, 4, AddressType_ANY);
+                unsigned int b6 = getUByteTyped(ea, 5, AddressType_ANY);
+                unsigned int b7 = getUByteTyped(ea, 6, AddressType_ANY);
+                unsigned int b8 = getUByteTyped(ea, 7, AddressType_ANY);
+                if (PLATFORM_BIG_ENDIAN) {
+                    unsigned int lo =  (b5 << 24) | (b6 << 16) | (b7 << 8) | b8;
+                    unsigned int hi =  (b1 << 24) | (b2 << 16) | (b3 << 8) | b4;
+                    return ((jlong)hi << 32) | lo;
+                } else {
+                    unsigned int lo =  (b4 << 24) | (b3 << 16) | (b2 << 8) | b1;
+                    unsigned int hi =  (b8 << 24) | (b7 << 16) | (b6 << 8) | b5;
+                    return ((jlong)hi << 32) | lo;
+                }
+            }
+        }
+
+        /*-----------------------------------------------------------------------*\
+         *                           Endianess swapping                          *
+        \*-----------------------------------------------------------------------*/
+
+        /**
+         * Swaps the endianess of a 2 byte value.
+         *
+         * @param address   the address of the value
+         */
+/*MAC*/ void swap2(Address $address) {
+            char type = (TYPEMAP ? getType($address) : AddressType_UNDEFINED);
+            if (!(PLATFORM_UNALIGNED_LOADS || isAligned((UWord)$address, 2))) {
+                int b0 = getUByteTyped($address, 0, AddressType_ANY);
+                int b1 = getUByteTyped($address, 1, AddressType_ANY);
+                setByteTyped($address, 0, AddressType_ANY, (char)b1);
+                setByteTyped($address, 1, AddressType_ANY, (char)b0);
+            } else {
+                int value = getUShortTyped($address, 0, AddressType_ANY);
+                int b0 =  value       & 0xFF;
+                int b1 = (value >> 8) & 0xFF;
+                value = (b0 << 8) | b1;
+                setShortTyped($address, 0, type, (short)value);
+            }
+        }
+
+        INLINE unsigned int SWAP4_VAL(unsigned int val) {
+            return ((val & 0x000000FF) << 24) | ((val & 0x0000FF00) << 8) | ((val & 0x00FF0000) >> 8) | ((val & 0xFF000000) >> 24);
+        }
+
+        /**
+         * Swaps the endianess of a 4 byte value.
+         *
+         * @param address   the address of the value
+         */
+        void swap4(Address address) {
+            char type = (TYPEMAP ? getType(address) : AddressType_UNDEFINED);
+            if (!(PLATFORM_UNALIGNED_LOADS || isAligned((UWord)address, 4))) {
+                int b0 = getUByteTyped(address, 0, AddressType_ANY);
+                int b1 = getUByteTyped(address, 1, AddressType_ANY);
+                int b2 = getUByteTyped(address, 2, AddressType_ANY);
+                int b3 = getUByteTyped(address, 3, AddressType_ANY);
+                setByteTyped(address, 0, AddressType_ANY, (char)b3);
+                setByteTyped(address, 1, AddressType_ANY, (char)b2);
+                setByteTyped(address, 2, AddressType_ANY, (char)b1);
+                setByteTyped(address, 3, AddressType_ANY, (char)b0);
+            } else {
+                setIntTyped(address, 0, type, SWAP4_VAL(getIntTyped(address, 0, AddressType_ANY)));
+            }
+        }
+
+        /**
+         * Swaps the endianess of a 8 byte value.
+         *
+         * @param address   the address of the value
+         */
+        void swap8(Address address) {
+            char type = (TYPEMAP ? getType(address) : AddressType_UNDEFINED);
+            if (!(PLATFORM_UNALIGNED_LOADS || isAligned((UWord)address, 4))) {
+                int b0 = getUByteTyped(address, 0, AddressType_ANY);
+                int b1 = getUByteTyped(address, 1, AddressType_ANY);
+                int b2 = getUByteTyped(address, 2, AddressType_ANY);
+                int b3 = getUByteTyped(address, 3, AddressType_ANY);
+                int b4 = getUByteTyped(address, 4, AddressType_ANY);
+                int b5 = getUByteTyped(address, 5, AddressType_ANY);
+                int b6 = getUByteTyped(address, 6, AddressType_ANY);
+                int b7 = getUByteTyped(address, 7, AddressType_ANY);
+                setByteTyped(address, 0, AddressType_ANY, (char)b7);
+                setByteTyped(address, 1, AddressType_ANY, (char)b6);
+                setByteTyped(address, 2, AddressType_ANY, (char)b5);
+                setByteTyped(address, 3, AddressType_ANY, (char)b4);
+                setByteTyped(address, 4, AddressType_ANY, (char)b3);
+                setByteTyped(address, 5, AddressType_ANY, (char)b2);
+                setByteTyped(address, 6, AddressType_ANY, (char)b1);
+                setByteTyped(address, 7, AddressType_ANY, (char)b0);
+            } else {
+                /* optimize for 32-bit registers */
+                unsigned int hi = getIntTyped(address, 0, AddressType_ANY);
+                unsigned int lo = getIntTyped(address, 1, AddressType_ANY);
+                setIntTyped(address, 0, type, SWAP4_VAL(lo));
+                setIntTyped(address, 1, type, SWAP4_VAL(hi));
+            }
+        }
+
+        /**
+         * Swaps the endianess of a value.
+         *
+         * @param address   the address of the value
+         * @param dataSize  the size (in bytes) of the value
+         */
+/*MAC*/ void swap(Address $address, int $dataSize) {
+            /*fprintf(stderr, format("swap(%A, %d)\n"), $address, $dataSize);*/
+            switch ($dataSize) {
+                case 1:               break;
+                case 2: swap2($address); break;
+                case 4: swap4($address); break;
+                case 8: swap8($address); break;
+                default:
+                    fprintf(stderr, "dataSize=%d\n", $dataSize);
+                    shouldNotReachHere();
+            }
+        }
+
+        /**
+         * Swaps the endianess of a word sized value.
+         *
+         * @param address   the address of the value
+         */
+/*MAC*/ void swapWord(Address $address) {
+            swap($address, HDR_BYTES_PER_WORD);
+        }
+
+        /*-----------------------------------------------------------------------*\
+         *                             Memory management                         *
+        \*-----------------------------------------------------------------------*/
+
+        /**
+         * Zeros a range of words.
+         *
+         * @param start the start address
+         * @param end the end address
+         */
+/*MAC*/ void zeroWords(UWordAddress $start, UWordAddress $end) {
+            assume(isWordAligned((UWord)$start));
+            assume(isWordAligned((UWord)$end));
+            zeroTypes($start, $end);
+            while ($start < $end) {
+                *$start = 0;
+                $start++;
+            }
+        }
+
+/*MAC*/ void traceAllocation(Address $oop, int $size) {
+            fprintf(stderr, "%s allocating object: size=%d, alloc free=%d, total free=%d, ptr=%d\n",
+                    (($oop != 0) ? "succeeded" : "failed"),
+                    $size,
+                    Address_diff(com_sun_squawk_GC_allocEnd, com_sun_squawk_GC_allocTop),
+                    Address_diff(com_sun_squawk_GC_heapEnd, com_sun_squawk_GC_allocTop),
+                    (Offset)$oop);
+        }
+
+        /**
+         * Allocate a chunk of zeroed memory from RAM.
+         *
+         * @param   size        the length in bytes of the object and its header (i.e. the total number of bytes to be allocated).
+         * @param   arrayLength the number of elements in the array being allocated or -1 if a non-array object is being allocated
+         * @return a pointer to a well-formed object or null if the allocation failed
+         */
+        Address allocate(int size, Address klass, int arrayLength) {
+            Address block = com_sun_squawk_GC_allocTop;
+            Offset available = Address_diff(com_sun_squawk_GC_allocEnd, block);
+            Address oop;
+            assume(size >= 0);
+            if (unlikely(lt(available, size))) {
+                if (available < 0) {
+                    /* The last allocation overflowed the allocEnd boundary */
+                    /*traceAllocation(null, size);*/
+                    return null;
+                } else {
+                    /*
+                     * If the object being allocated does not fit in the remaining allocation space
+                     * (e.g. Lisp2 young generation) but there is enough total memory available,
+                     * then allow the allocation to succeed. Without this, allocation of objects larger than
+                     * the allocation space would never succeed.
+                     */
+                    available = Address_diff(com_sun_squawk_GC_heapEnd, block);
+                    if (lt(available, size)) {
+                        /*traceAllocation(null, size);*/
+                        return null;
+                    }
+                }
+            }
+
+            if (arrayLength == -1) {
+                oop = Address_add(block, HDR_basicHeaderSize);
+                setObject(oop, HDR_klass, klass);
+            } else {
+                oop = Address_add(block, HDR_arrayHeaderSize);
+                setObject(oop, HDR_klass, klass);
+                if (!setArrayLength(oop, arrayLength)) {
+                    return 0;
+                }
+            }
+            com_sun_squawk_GC_allocTop = Address_add(block, size);
+            zeroWords(oop, com_sun_squawk_GC_allocTop);
+            com_sun_squawk_GC_newCount++;
+            /*traceAllocation(oop, size);*/
+            return oop;
+        }
+
+        /**
+         * Allocate a chunk of zeroed memory from RAM with hosted.
+         *
+         * @param   size        the length in bytes of the object and its header (i.e. the total number of
+         *                      bytes to be allocated).
+         * @param   arrayLength the number of elements in the array being allocated or -1 if a non-array
+         *                      object is being allocated
+         * @return a pointer to a well-formed object or null if the allocation failed
+         */
+/*MAC*/ Address allocateFast(int $size, Address $klass, int $arrayLength) {
+            if (
+                com_sun_squawk_GC_excessiveGC != false       ||
+                com_sun_squawk_GC_allocationEnabled == false ||
+                (com_sun_squawk_GC_GC_TRACING_SUPPORTED && (com_sun_squawk_GC_traceFlags & com_sun_squawk_GC_TRACE_ALLOCATION) != 0)
+               ) {
+                return null; /* Force call to Java code */
+            }
+            return allocate($size, $klass, $arrayLength);
+        }
+
+        /**
+         * Static version of {@link #getDataSize()} so that garbage collector can
+         * invoke this method on a possibly forwarded Klass object.
+         */
+/*MAC*/ int getDataSize(Address $klass) {
+            switch (com_sun_squawk_Klass_id($klass)) {
+                case CID_BOOLEAN:
+                case CID_BYTECODE:
+                case CID_BYTE: {
+                    return 1;
+                }
+                case CID_CHAR:
+                case CID_SHORT: {
+                    return 2;
+                }
+                case CID_DOUBLE:
+                case CID_LONG: {
+                    return 8;
+                }
+                case CID_FLOAT:
+                case CID_INT: {
+                    return 4;
+                }
+                default: {
+                    return HDR_BYTES_PER_WORD;
+                }
+            }
+        }
+
+        /**
+         * Copies bytes using memmove.
+         */
+        void copyBytes(Address src, int srcPos, Address dst, int dstPos, int length, boolean nvmDst) {
+            /*fprintf(stderr, format("copying  %d bytes from %A at offset %d to %A at offset %d nvmDst=%d\n"), length, src, srcPos, dst, dstPos, nvmDst);*/
+            if (nvmDst) {
+                sysToggleMemoryProtection(com_sun_squawk_GC_nvmStart, com_sun_squawk_GC_nvmEnd, false);
+            }
+            memmove(Address_add(dst, dstPos), Address_add(src, srcPos), length);
+            checkPostWrite(Address_add(dst, dstPos), length);
+            if (nvmDst) {
+                sysToggleMemoryProtection(com_sun_squawk_GC_nvmStart, com_sun_squawk_GC_nvmEnd, true);
+            }
+        }
+
+#ifdef BAD_ADDRESS
+        /**
+         * Checks to see if a specific address was written to and print it if it was.
+         *
+         * @param ea    the address of the last write to memory
+         * @param size  the number of bytes written
+         * @param addr  the address to check for
+         */
+        void checkOneAddress(Address ea, int size, Address addr) {
+            ByteAddress start  = (ByteAddress)ea;
+            ByteAddress end    = start + size;
+            ByteAddress target = (ByteAddress)addr;
+            if (target >= start && target < end) {
+                UWord value = ((UWord *)target)[0];
+                fprintf(stderr, format("*******************  [%A] = %A [bcount=%L]\n"), target, value, getBranchCount());
+#ifdef BAD_VALUE
+                if (value == BAD_VALUE) {
+                    fprintf(stderr, format("Stopping because bad value %A written in the range [%A .. %A)\n"), value, start, end);
+                    stopVM(-1);
+                }
+#endif
+            }
+        }
+#endif /* BAD_ADDRESS */
