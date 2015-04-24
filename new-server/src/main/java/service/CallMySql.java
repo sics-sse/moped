@@ -13,11 +13,11 @@ public class CallMySql {
      public Connection con = null;
      public Statement st = null;
 
-     public CallMySql() {
+    private String url = "jdbc:mysql://localhost:3306/fresta2";
+    private String user = "root";
+    private String password = "root";
 
-	 String url = "jdbc:mysql://localhost:3306/fresta2";
-	 String user = "root";
-	 String password = "root";
+     public CallMySql() {
 
 	 try {
 	     con = DriverManager.getConnection(url, user, password);
@@ -32,6 +32,8 @@ public class CallMySql {
      public String getOne(String query) {
 	
 	 ResultSet rs = null;
+
+	 checkdb();
 
 	 try {
 	     //con = DriverManager.getConnection(url, user, password);
@@ -72,6 +74,8 @@ public class CallMySql {
 
      public int update(String query) {
 
+	 checkdb();
+
 	 try {
 	     int count = st.executeUpdate(query);
 
@@ -90,6 +94,8 @@ public class CallMySql {
 
      public String [] getOneSet(String query) {
 	
+	 checkdb();
+
 	 ResultSet rs = null;
 
 	 try {
@@ -135,6 +141,8 @@ public class CallMySql {
 
      public ResultSet getResults(String query) {
 	
+	 checkdb();
+
 	 ResultSet rs = null;
 
 	 try {
@@ -157,9 +165,32 @@ public class CallMySql {
      }
 
 
+    private void checkdb() {
+	 try {
+	     if (!con.isValid(0)) {
+		 try {
+		     // do we need to close the old one?
+		     System.out.println("reopening db connection");
+		     con = DriverManager.getConnection(url, user, password);
+		     st = con.createStatement();
+		 } catch (SQLException ex) {
+		     System.out.println("DB ERROR 0");
+		     System.out.println(ex.getMessage());
+		 }
+	     }
+
+	 } catch (SQLException ex) {
+	     System.out.println("db exception " + ex.getMessage());
+	 }
+    }
+
+
+
      public MySqlIterator getIterator(String query) {
 	
 	 ResultSet rs = null;
+
+	 checkdb();
 
 	 try {
 	     // we need a local Statement, otherwise we are not
