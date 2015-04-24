@@ -1,0 +1,149 @@
+  Notes on Squawk Threading and Synchronization
+Derek White
+
+6/8/2006
+Thread scheduling can happen at:
+ - At application's backward branch
+ - Thread.yield()
+ - Thread.sleep(i>0)
+ - Thread.join()
+ - Thread.isolateJoin()
+ - Thread.monitorEnter() if contended
+   e.g. synchronized(foo)
+ - Thread.monitorWait() if contended
+   e.g. foo.wait()
+ - Thread.monitorNotify(), if some thread is waiting
+   e.g. foo.notify[All]().
+ - When calling a blocking IO operation.
+   e.g VM.execIO(), VM.execMessageIO(), VM.waitForInterrupt(), VM.waitForDeepSleep(), VM.readSerial()
+
+Note that monitorExit does NOT do a reschedule().
+
+Note that system code is all code in the  bootstrap suite in packages:
+    com.sun.*
+    java.*
+    javax.microedition.*
+
+
+There are some build properties to be aware of:
+SMARTMONITORS=true
+
+MONITORS, HASHCODES, AND OBJECT LAYOUT
+The format of an object is such that the word before the word pointed to by the object references is a pointer to 
+object's Klass (most commonly), or a pointer to an ObjectAssociation, if the object is locked or has a hashcode
+assigned to it. The ObjectAssociation not only contains room for the monitor and hashcode, but also contains 
+a pointer to the real klass, and a copy of the klass' vtable.
+
+If an object has no ObjectAssociation:
+
+   object            klass
+  ________         __________
+  | klass |  --->  |   self  | --> (points to self)
+  |-------|        |---------|
+  | ....  |        |  vtable |
+  | ....  |        |---------|
+                   |   ....  |
+ 
+If an object has an ObjectAssociation:
+
+   object              OA              klass
+  ________         __________       __________
+  |  oa   |  --->  |   self  | -->  |   self  | --> (points to self)
+  |-------|        |---------|      |---------| 
+  | ....  |        |  vtable |      |  vtable |
+  | ....  |        |---------|      |---------|
+                   | monitor |      |   ....  |
+                   |---------|
+                   |   hash  |
+                   |---------|
+
+So you can reliably get the klass or vtable by double dereference:
+   klass  = obj->klass->self
+   vtable = obj->klass->vtable
+
+Note that all of this is only true for objects in RAM. We can't easily patch in an OA for ROM objects (which tend 
+to be of type String, Klass, method and the odd array). The hashcode of a ROM object is based on its address, and
+the monitor for a ROM object is stored in a hashtable (Isolate.monitorHashtable).
+
+MONITOR ENTER/EXIT
+Synchronized methods and the use of the "synchronized" keyword generate explicit monitorenter/exit Squawk bytecodes.
+Unlike in Java, the "invoke" bytecodes never perform synchronization.
+
+There are two forms of monitor enter/exit - "explicit" and "pending".
+
+Pending monitors are used to optimize uncontended enter/exits. The interpreter loop keeps a cache (len 6) of objects
+that are locked for the currently executing thread. Precondition: Whenever a thread resumes execution, the current
+state of the world is that all objects locked by other threads will have explicit object associations (in fact, 
+even objects locked by the current thread will have explicit monitors). Recursively locking an objects results in
+duplicate entries in the cache. When a thread is rescheduled, or when the runtime systems needs a Monitor object (for wait/notify, for example), this "pendingMonitors" cache is drained by 
+VMThread.fixupPendingMonitors(). This method creates explicit monitors for all of the objects in the cache, creating
+the precondition for the next thread.
+
+Explicit enter/exit is used for ROM objects, when the pendingMonitorStack (a cache) is full, or when an explicit
+monitor has already been created for this object. Note that explicit monitors will always be used for synchronized
+static methods on the Spot, since the Klass object is in ROM.
+
+For explicit enter, the interpreter loop calls out to VM.monitorEnter(), which calls VMThread.monitorEnter(), which:
+  - calls getMonitor():
+      - drains the pendingMonitors cache (this is to handle the case where the cache was full. 
+        Not needed in other cases?)
+      - looks up the existing Monitor (in the ObjectAssociation for RAM objects, in a hashtable for ROM objects).
+      - creates Monitor if lookup fails, and stores new Monitor.
+  - if the object is unlocked, or locked by the current thread, then update owner and lock count.
+  - otherwise object is contended
+    - queue up current thread on monitor's wait queue.
+    - RESCHEDULE(), to let other threads run.
+
+For explicit exit, the interpreter loop calls out to VM.monitorExit(), which calls VMThread.monitorExit(), which:
+  - calls getMonitor():
+      - drains the pendingMonitors cache (new pending monitors could have been created since the entry)
+      - looks up the existing Monitor (in the ObjectAssociation for RAM objects, in a hashtable for ROM objects).
+  - decrement the lock count.
+  - if new count == zero, look for a waiting thread. If found, move from waiting queue to runnable queue.
+    DOES NOT RESCHEDULE.
+
+MONITOR WAIT/NOTIFY:
+
+monitorWait():
+  - call getMonitor(): (as above)
+  - check that it is locked by the currentThread.
+  - check for interruption.
+  - if wait w/timeout:
+     - add to timerQueue.
+     - add to condvarQueue
+  - give up lock and give to next thread on monitorWaitQueue (removeMonitorWait()).
+  - RESCHEDULE
+  - check for interruption.
+
+
+monitorNotify():
+  - optimization:
+    - if there is only a pendingMonitor for the object, then there can't be a waiter for the object, so 
+      can simply return.
+  - call getMonitor(): (as above)
+  - check that it is locked by the currentThread.
+  - remove a thread from the condvarWait queue (if one is waiting)
+  - remove that thread from the timer queue
+  - add that thread to the monitor's wait queue
+  - repeat least few steps if a "notify all".
+  - if any waiting threads found, do a reschedule.
+    - NOTE: If notifier has higher priority than waiters, then waiter won't run until notifier thread blocks or exits?
+
+THREAD INTERRUPTS:
+Thread interruption only seems to be checked during:
+   Thread.sleep()
+   Thread.join()
+   Object.wait()
+
+OPTIMIZE:
+ - Reduce tests in allocateFast to one: isAllocateFastEnabled (slowvm)
+
+
+6/21/06
+Fixed priority inversion bug by not handing ownship of monitor at lock release, simply allow threads to contend for it.
+
+TO DO:
+ - The monitor wait queues should be in priority order.
+ - We should COUNT backward branches even in system code, but not reschedule system code.
+ - When we switch from one user thread to another user thread, we should give teh new thread a fresh quanta to run in.
+ - Implement priority inheritance or ceiling.

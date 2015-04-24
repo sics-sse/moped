@@ -1,0 +1,65 @@
+#
+#   
+#
+# Copyright  1990-2007 Sun Microsystems, Inc. All Rights Reserved.
+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version
+# 2 only, as published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License version 2 for more details (a copy is
+# included at /legal/license.txt).
+# 
+# You should have received a copy of the GNU General Public License
+# version 2 along with this work; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA
+# 
+# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
+# Clara, CA 95054 or visit www.sun.com if you need additional
+# information or have any questions.
+#
+######################################################################
+#
+# Module's Component Configuration file
+#
+# Remember: It is up to the module itself to impose rules of
+# how to compile the options. All the global Makefile needs
+# is the final def. of Java and native file lists and some
+# other def. (like VPATH)
+#
+######################################################################
+
+# Adds to global SUBSYSTEMS list
+#
+SUBSYSTEMS += i18n
+
+SUBSYSTEM_I18N_DIR = $(SUBSYSTEM_DIR)/i18n
+
+I18N_PORT_DIR=$(SUBSYSTEM_I18N_DIR)/i18n_port
+I18N_MAIN_DIR=$(SUBSYSTEM_I18N_DIR)/i18n_main
+
+# Javadoc source path
+SUBSYSTEM_I18N_SOURCEPATH += $(I18N_MAIN_DIR)/classes$(PATHSEP)$(I18N_MAIN_DIR)/reference/classes
+
+SUBSYSTEM_I18N_PACKAGES = \
+    com.sun.$(J2ME_CONFIGURATION).i18n.uclc \
+    com.sun.$(J2ME_CONFIGURATION).i18n.j2me \
+    com.sun.$(J2ME_CONFIGURATION).i18n \
+    com.sun.midp.i18n \
+    com.sun.midp.l10n 
+
+MIDP_JAVADOC_SOURCEPATH += $(SUBSYSTEM_I18N_SOURCEPATH)
+MIDP_JAVADOC_PACKAGES +=  $(SUBSYSTEM_I18N_PACKAGES)
+
+MIDP_JAVADOC_ALL += \
+        -group "Internationalization" \
+	$(shell echo $(SUBSYSTEM_I18N_PACKAGES) | tr ' ' $(PATHSEP))
+
+
+include $(I18N_MAIN_DIR)/lib.gmk
+include $(I18N_PORT_DIR)/lib.gmk

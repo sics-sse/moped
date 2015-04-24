@@ -1,0 +1,1 @@
+ -bootclasspath tests/UltraSonicReader/classes:tests/UltraSonicReader/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/moped/squawk/tests/UltraSonicReader/. -d tests/UltraSonicReader/classes -g tests/UltraSonicReader/preprocessed/tests/UltraSonicReader.java
