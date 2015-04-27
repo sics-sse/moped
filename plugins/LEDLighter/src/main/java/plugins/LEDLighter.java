@@ -4,7 +4,6 @@ import com.sun.squawk.VM;
 import java.lang.Math;
 import sics.plugin.PlugInComponent;
 import sics.port.PluginPPort;
-import sics.PIRTE;
 
 public class LEDLighter extends PlugInComponent {
 	public PluginPPort led;
