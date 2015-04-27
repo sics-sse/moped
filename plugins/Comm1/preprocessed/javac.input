@@ -1,0 +1,1 @@
+ -bootclasspath /home/arndt/moped/moped/plugins/Comm1/classes:/home/arndt/moped/moped/plugins/Comm1/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes: -d /home/arndt/moped/moped/plugins/Comm1/classes -g /home/arndt/moped/moped/plugins/Comm1/preprocessed/main/java/plugins/Comm1.java
