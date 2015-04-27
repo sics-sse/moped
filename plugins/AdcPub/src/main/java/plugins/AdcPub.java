@@ -5,7 +5,6 @@ import java.lang.Math;
 import sics.plugin.PlugInComponent;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
-import sics.PIRTE;
 
 public class AdcPub extends PlugInComponent {
 	private PluginPPort ap;
