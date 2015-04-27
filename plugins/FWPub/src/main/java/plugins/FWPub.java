@@ -1,10 +1,7 @@
-package tests;
+package plugins;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
-import com.sun.squawk.io.mailboxes.Channel;
-import com.sun.squawk.io.mailboxes.Envelope;
-import com.sun.squawk.io.mailboxes.ByteArrayEnvelope;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 import sics.plugin.PlugInComponent;
@@ -20,11 +17,11 @@ public class FWPub extends PlugInComponent {
 	}
 	
 	public static void main(String[] args) {
-		VM.println("FWPub.main()\r\n");
+		VM.println("FWPub.main()");
 		FWPub publish = new FWPub(args);
 		publish.init();
 		publish.doFunction();
-		VM.println("FWPub-main done\r\n");
+		VM.println("FWPub-main done");
 	}
 
 	@Override
@@ -35,25 +32,40 @@ public class FWPub extends PlugInComponent {
 	}
 	
 	public void run() {
-		VM.println("FWPub.main()\r\n");
+		VM.println("FWPub.main()");
 		init();
 		doFunction();
-		VM.println("FWPub-main done\r\n");
+		VM.println("FWPub-main done");
 	}
 
 	public void doFunction() {
 		String data;
-		for (int i = 0; i < 1000; i++) {
+		//		for (int i = 0; i < 1000; i++) {
+		int i = 0;
+		while (true) {
+		    i++;
 //			VM.println("[FWPub is running]");
-			VM.println("[FWPub is running]");
 			
-			int frontWheelSpeedData = ff.readInt();
-			data = "fw|" + String.valueOf(frontWheelSpeedData);
+		    if (false) {
+			// with port 7 instead of 5, we read battery
+			// move this to AdcPub.
+			String s = ff.readString();
+			VM.println("value " + i + " = " + s);
+			data = "voltage|" + s;
 			fs.write(data);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-//				VM.println("Interrupted.\r\n");
+		    } else {
+			int frontWheelSpeedData = ff.readInt();
+
+			VM.println("speed = " + frontWheelSpeedData);
+			data = "fw|" + String.valueOf(frontWheelSpeedData);
+			data = "fw|66";
+			data = "speed|67";
+			data = "speed|" + String.valueOf(frontWheelSpeedData);
+			fs.write(data);
+		    } try {
+			Thread.sleep(800);
+		    } catch (InterruptedException e) {
+//				VM.println("Interrupted.");
 			}
 
 		}
