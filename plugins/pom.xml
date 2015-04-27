@@ -7,11 +7,23 @@
   
   <modules>
   	<module>PluginCreationTest</module>
+  	<module>PluginCreationTets</module>
   	<module>PluginCreationTest2</module>
+  	<module>PluginCreationTest3</module>
   	<module>SemiAutomaticReverseParking</module>
   	<module>AP</module>
   	<module>CL</module>
   	<module>LEDLighter</module>
+  	<module>AutoBrake</module>
+  	<module>UltraSonicReader</module>
+  	<module>Comm1</module>
+  	<module>Comm2</module>
+  	<module>AdcPub</module>
+  	<module>PosPub</module>
+  	<module>FWPub</module>
+  	<module>BWPub</module>
+  	<module>IMUPub</module>
+  	<module>Platoon</module>
   </modules>
   
   <dependencies>
@@ -29,8 +41,8 @@
 		    <artifactId>maven-compiler-plugin</artifactId>
 		    <version>3.1</version>
 		    <configuration>
-		    	<source>1.7</source>
-		        <target>1.7</target>
+		    	<source>1.6</source>
+		        <target>1.6</target>
 		    </configuration>
 		</plugin>
 	</plugins>
