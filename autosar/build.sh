@@ -2,9 +2,13 @@
 
 export BOARDDIR=Raspberry_Pi
 export BDIR=../examples/Raspberry_Pi/demo_VCU
+#export BDIR=../examples/Raspberry_Pi/demo_SCU
 export BUILDDIR=.
 export SQUAWK=true
+
+if [ -z "$CROSS_COMPILE" ]; then
 export CROSS_COMPILE=/opt/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
+fi
 
 cd src/core
 if [ "$1" = "clean" ]; then
