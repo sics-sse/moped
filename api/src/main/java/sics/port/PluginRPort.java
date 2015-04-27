@@ -47,11 +47,15 @@ public class PluginRPort implements PluginPort {
 		return 0;
 	}
 
+	public int readLong() {
+		return 0;
+	}
+
 	public String readString() {
 		return null;
 	}
 
-	public String receive() {
+	public Object receive() {
 		return null;
 	}
 
