@@ -13,7 +13,6 @@
   	<module>AP</module>
   	<module>CL</module>
   	<module>LEDLighter</module>
-  	<module>AutoBrake</module>
   	<module>UltraSonicReader</module>
   	<module>Comm1</module>
   	<module>Comm2</module>
