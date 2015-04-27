@@ -7,7 +7,6 @@
   
   <modules>
   	<module>PluginCreationTest</module>
-  	<module>PluginCreationTets</module>
   	<module>PluginCreationTest2</module>
   	<module>PluginCreationTest3</module>
   	<module>SemiAutomaticReverseParking</module>
