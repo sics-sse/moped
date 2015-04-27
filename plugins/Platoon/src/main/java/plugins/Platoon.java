@@ -2,9 +2,6 @@ package tests;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
-import com.sun.squawk.io.mailboxes.Channel;
-import com.sun.squawk.io.mailboxes.Envelope;
-import com.sun.squawk.io.mailboxes.ByteArrayEnvelope;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 import sics.plugin.PlugInComponent;
