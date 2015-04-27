@@ -1,10 +1,7 @@
-package tests;
+package plugins;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
-import com.sun.squawk.io.mailboxes.Channel;
-import com.sun.squawk.io.mailboxes.Envelope;
-import com.sun.squawk.io.mailboxes.ByteArrayEnvelope;
 import sics.port.PluginPPort;
 import sics.port.PluginRPort;
 import sics.plugin.PlugInComponent;
@@ -18,11 +15,11 @@ public class UltraSonicReader extends PlugInComponent {
 	}
 	
 	public static void main(String[] args) {
-		VM.println("UltraSonicReader.main()\r\n");
+		VM.println("UltraSonicReader.main()");
 		UltraSonicReader publish = new UltraSonicReader(args);
 		publish.init();
 		publish.doFunction();
-		VM.println("UltraSonicReader-main done\r\n");
+		VM.println("UltraSonicReader-main done");
 	}
 
 	@Override
@@ -40,7 +37,9 @@ public class UltraSonicReader extends PlugInComponent {
 		
 		VM.println("[UltraSonicReader is running]");
 		while (true) {
-			int ultraSonicData = ff.readInt();
+		    int ultraSonicData = ff.readInt();
+		    //String ultraSonicData = ff.readString();
+			VM.println("ultraSonicData = " + ultraSonicData);
 			fs.send(String.valueOf(ultraSonicData));
 
 			cnt++;
@@ -50,9 +49,9 @@ public class UltraSonicReader extends PlugInComponent {
 			}
 			
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
+				VM.println("Interrupted.");
 			}
 
 		}
