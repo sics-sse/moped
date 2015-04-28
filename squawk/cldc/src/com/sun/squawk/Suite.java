@@ -942,7 +942,19 @@ public final class Suite {
      *         a problem while loading it
      */
     static Suite getSuite(String uri, boolean errorOnIOException) throws Error {
-        ObjectMemory om = GC.lookupReadOnlyObjectMemoryBySourceURI(uri);
+	return getSuite(uri, errorOnIOException, false);
+    }
+
+	static Suite getSuite(String uri, boolean errorOnIOException,
+			      boolean alwaysLoad) throws Error {
+	VM.println("getSuite " + alwaysLoad + " " + uri);
+	ObjectMemory om;
+	if (alwaysLoad) {
+	    om = null;
+	} else {
+	    om = GC.lookupReadOnlyObjectMemoryBySourceURI(uri);
+	}
+
         if (om == null) {
 /*if[ENABLE_SUITE_LOADING]*/      		
     		try {
