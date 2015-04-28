@@ -175,7 +175,8 @@ public class CarFactory {
 			// instance ECM
 			EcuManager ecuManager = new FakeEcuManager();
 			CommunicationManager commuManager = new SocketCommunicationManager(
-					vinStr, ipStr, socketPortInt);
+											   vinStr, ipStr, socketPortInt,
+											   true);
 			CarDriver carDriver = new CarDriver(2);
 			// IPublisher publisher = PublisherFactory
 			// .publisher(
