@@ -662,14 +662,24 @@ enum board_power_feature {
 // *****************************************************************************
 
 //TODO: Don't use these
+#ifdef BUILD_VCU
 #define VCU   				1
-#define VCU_ID              1
+#else
+#define VCU   				0
+#endif
+
+#define VCU_ID              0
 #define VCU_SIDH_MASK       0x00
 #define VCU_SIDL_MASK       0xE0
 #define VCU_SIDH_FILT       0x00
 #define VCU_SIDL_FILT       0x20
 
-#define SCU    				0
+#ifdef BUILD_SCU
+#define SCU   				1
+#else
+#define SCU   				0
+#endif
+
 #define SCU_ID				2
 #define SCU_SIDH_MASK       0x00
 #define SCU_SIDL_MASK       0xE0
