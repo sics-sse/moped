@@ -1573,16 +1573,19 @@ public final class Isolate implements Runnable {
      * parent suite URI or class path.
      */
     private void updateLeafSuite(boolean prepass) {
+	VM.println("updateLeafSuite 1");
         if (!prepass) {
             Assert.that(VM.getCurrentIsolate() == this);
         }
 /*if[!ENABLE_DYNAMIC_CLASSLOADING]*/
 /*if[ENABLE_SUITE_LOADING]*/
         if (parentSuiteSourceURI != null) {
-            Suite parent = Suite.getSuite(parentSuiteSourceURI);
+	    VM.println("updateLeafSuite 2");
+            Suite parent = Suite.getSuite(parentSuiteSourceURI, true, true);
             Assert.that(parent != null);
             leafSuite = parent;
         } else {
+	    VM.println("updateLeafSuite 3");
             leafSuite = bootstrapSuite;
         }
 /*else[ENABLE_SUITE_LOADING]*/
@@ -1591,7 +1594,8 @@ public final class Isolate implements Runnable {
 
 /*else[ENABLE_DYNAMIC_CLASSLOADING]*/
 //        if (parentSuiteSourceURI != null || classPath != null) {       
-//            Suite parent = (parentSuiteSourceURI == null ? bootstrapSuite : Suite.getSuite(parentSuiteSourceURI));
+//	    VM.println("updateLeafSuite 4");
+//            Suite parent = (parentSuiteSourceURI == null ? bootstrapSuite : Suite.getSuite(parentSuiteSourceURI, true, true));
 //            Assert.that(parent != null);
 //
 //            // Don't create a suite for loading new classes if the class path is null
