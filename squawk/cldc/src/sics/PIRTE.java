@@ -462,21 +462,21 @@ public class PIRTE {
 		// Isolate iso = new Isolate(null, extractClassName, new String[0],
 		// null,
 		// pluginUrl);
-		//1 VM.println("loadPlugin 1");
+		VM.println("loadPlugin 1");
 		Isolate iso = new Isolate(null, extractClassName, portInitContextArray,
 				null, pluginUrl);
 
-		//1 VM.println("loadPlugin 2 " + extractClassName);
+		VM.println("loadPlugin 2 " + extractClassName);
 		// register Isolate and name to installedPlugins
 		String shortPluginName = pluginUrl
 				.substring(pluginUrl.lastIndexOf('/') + 1);
 		installedPlugins.put(shortPluginName, iso);
 
-		//1 VM.println("loadPlugin 3 " + extractClassName);
+		VM.println("loadPlugin 3 " + extractClassName);
 		iso.start();
-		//1 VM.println("loadPlugin 4 " + extractClassName);
+		VM.println("loadPlugin 4 " + extractClassName);
 		iso.join();
-		//1 VM.println("loadPlugin 5 " + extractClassName);
+		VM.println("loadPlugin 5 " + extractClassName);
 	}
 
 	class PluginLoader implements Runnable {
@@ -775,9 +775,6 @@ public class PIRTE {
 							VM.print("pluginName:");
 							VM.println(pluginName);
 
-							// String shortPluginName = pluginName
-							// .substring(pluginName.lastIndexOf('/') + 1);
-							// VM.println("ShortPluginName:" + shortPluginName);
 							InstallAckMessage installAckMessage = new InstallAckMessage(
 									pluginId);
 
@@ -794,6 +791,18 @@ public class PIRTE {
 							}
 
 							// loadPlugin(pluginName);
+							String shortPluginName = pluginName
+							.substring(pluginName.lastIndexOf('/') + 1);
+							// VM.println("ShortPluginName:" + shortPluginName);
+							Isolate isolate = installedPlugins
+							    .get(shortPluginName);
+							if(isolate != null) {
+							    if(!isolate.isExited()) {
+								VM.println("stopping earlier thread");								isolate.exit(1);
+							    }
+							}
+							
+
 							new Thread(new PluginLoader(pluginName,
 									portInitContext)).start();
 							VM.print("plugin loaded\r\n");
