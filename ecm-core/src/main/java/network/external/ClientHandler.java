@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import messages.InitPacket;
+import messages.Init2Packet;
 import messages.PingcarPacket;
 import messages.InstallLinuxAckPacket;
 import messages.InstallMessage;
@@ -79,8 +80,9 @@ public class ClientHandler extends IoHandlerAdapter {
 		System.out.println("Local session address: " + session.getLocalAddress());
 		
 		// Send VIN to Server
-		InitPacket initPackage = new InitPacket(vin);
-		initPackage.is_simulator = true;
+		//InitPacket initPackage = new InitPacket(vin);
+		Init2Packet initPackage = new Init2Packet(vin);
+		initPackage.is_simulator = manager.getIs_Simulator();
 		session.write(initPackage);
 	}
 
@@ -223,6 +225,7 @@ public class ClientHandler extends IoHandlerAdapter {
 					
 			}
 
+			System.out.println("reference = " + reference);
 			DataRecord dataRecord = new DataRecord(appId, reference, sendingPortID,
 					callbackPortID, pluginName, executablePluginName, location, portInitialContext,
 					portLinkingContext);
@@ -257,6 +260,7 @@ public class ClientHandler extends IoHandlerAdapter {
 
 		List<UninstallPacketData> uninstallPacketDataList = packet
 				.getUninstallPacketDataList();
+		System.out.println("unpackUninstallPackage");
 		for (UninstallPacketData uninstallPacketData : uninstallPacketDataList) {
 			String pluginName = uninstallPacketData.getPluginName();
 			int callbackPortID = uninstallPacketData.getCallbackPortID();
@@ -264,6 +268,11 @@ public class ClientHandler extends IoHandlerAdapter {
 			
 			manager.getEcm().addPluginIdPluginName2UninstallCache(pluginIdAllocator, pluginName);
 			
+		System.out.println("unpackUninstallPackage " + reference +
+				   " " + callbackPortID +
+				   " " + pluginName +
+				   " " + pluginIdAllocator);
+
 			UninstallMessage uninstallMessage = new UninstallMessage(reference, pluginIdAllocator++,
 					pluginName, callbackPortID);
 
@@ -310,6 +319,8 @@ public class ClientHandler extends IoHandlerAdapter {
 		try {
 			OutputStream output = null;
 			try {
+			    System.out.println("generateFile " + path);
+			    System.out.println("generateFile " + path + " " + data.length);
 				output = new BufferedOutputStream(new FileOutputStream(path));
 				output.write(data);
 			} finally {

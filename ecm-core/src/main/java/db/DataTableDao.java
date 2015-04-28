@@ -44,8 +44,8 @@ public class DataTableDao {
 	public void insertRecord(String pluginName, DataRecord dataRecord) {
 		// to check if application exists
 		if (pluginDataTable.containsKey(pluginName)) {
-//			System.out.println("@ Plugin (" + pluginName
-//					+ " has been installed before");
+			System.out.println("@ Plugin (" + pluginName
+					+ " has been installed before");
 			return;
 		} else {
 			pluginDataTable.put(pluginName, dataRecord);
@@ -74,10 +74,12 @@ public class DataTableDao {
 	public HashMap<String, DataRecord> getInstalledAppRecords(int targetEcuId) {
 		HashMap<String, DataRecord> result = new HashMap<String, DataRecord>();
 		Iterator<Entry<String, DataRecord>> iterator = pluginDataTable.entrySet().iterator();
+		System.out.println("getInstalledAppRecords " + targetEcuId);
 		while(iterator.hasNext()) {
 			Entry<String, DataRecord> entry = iterator.next();
 			DataRecord value = entry.getValue();
 			int recordEcuId = value.getRemoteEcuId();
+			System.out.println(" " + recordEcuId + " " + entry.getKey());
 			if(targetEcuId == recordEcuId) {
 				String key = entry.getKey();
 				result.put(key, value);

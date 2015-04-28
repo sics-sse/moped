@@ -29,6 +29,8 @@ public class SocketCommunicationManager implements CommunicationManager {
 	/** The vin. */
 	private String vin;
 
+        private Boolean is_simulator;
+
 	private String server;
 
 	private int port;
@@ -41,10 +43,12 @@ public class SocketCommunicationManager implements CommunicationManager {
 	 * @param vin
 	 *            the vin
 	 */
-	public SocketCommunicationManager(String vin, String server, int port) {
+    public SocketCommunicationManager(String vin, String server, int port,
+				      Boolean is_simulator) {
 		this.vin = vin;
 		this.server = server;
 		this.port = port;
+		this.is_simulator = is_simulator;
 	}
 
 	/*
@@ -144,6 +148,10 @@ public class SocketCommunicationManager implements CommunicationManager {
 	 */
 	public String getVin() {
 		return vin;
+	}
+
+	public Boolean getIs_Simulator() {
+		return is_simulator;
 	}
 
 	public void write(Object data) {

@@ -55,7 +55,7 @@ public class Ecm {
 	}
 
 	public void init(EcuManager ecuManager, CommunicationManager commuManager,
-			IoTManager iotManager, CarDriver carDriver) {
+			 IoTManager iotManager, CarDriver carDriver) {
 		this.ecuManager = ecuManager;
 		this.commuManager = commuManager;
 		this.iotManager = iotManager;
@@ -240,8 +240,10 @@ public class Ecm {
 			pluginName = uninstallAckMessage.getPluginName();
 
 			// Remove the PlugIn file in the local and the item in the DB
+			System.out.println("pluginName = " + pluginName);
 			DataRecord record = getRecord(pluginName);
 			String location = record.getLocation();
+			System.out.println("location = " + location);
 			
 			deletePlugInFile(location);
 			removeRecord(pluginName);
