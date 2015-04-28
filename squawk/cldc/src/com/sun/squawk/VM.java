@@ -2087,6 +2087,14 @@ hbp.dumpState();
      *                        Miscellaneous functions                        *
     \*-----------------------------------------------------------------------*/
 
+    public static int datahash(byte[] data) {
+	int sum = 0;
+	for (int i = 0; i < data.length; i++) {
+	    sum ^= data[i] << ((i%4)*8);
+	}
+	return sum;
+    }
+
     public static native void finalize(Object o);
     
     /** 
@@ -2094,6 +2102,8 @@ hbp.dumpState();
      * file loading protocol (and a file system) on a bare metal platform.
      */
 	public static void registerPluginObjectMemory(String name, byte[] data) {
+	    VM.println("registering data hash = " + datahash(data));
+
     	if (pluginObjectMemories == null)
     		pluginObjectMemories = new Hashtable();
     	
@@ -4514,7 +4524,9 @@ hbp.dumpState();
      */
     public static Hashtable getManifestPropertiesOfSuite(String uri) {
      	Hashtable properties = new Hashtable();
+	VM.println("getManifestPropertiesOfSuite 1 " + uri);
     	Suite suite = Suite.getSuite(uri);
+	VM.println("getManifestPropertiesOfSuite 2");
     	Enumeration additions = suite.getManifestPropertyNames();
     	while (additions.hasMoreElements()) {
 			String propertyName = (String)additions.nextElement();
