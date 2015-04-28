@@ -1,8 +1,11 @@
 #!/bin/sh
 
 export BOARDDIR=Raspberry_Pi
-export BDIR=../examples/Raspberry_Pi/demo_VCU
-#export BDIR=../examples/Raspberry_Pi/demo_SCU
+
+if [ -z "$BDIR" ]; then
+    export BDIR=../examples/Raspberry_Pi/demo_VCU
+fi
+
 export BUILDDIR=.
 export SQUAWK=true
 
