@@ -90,7 +90,9 @@ public class ServerHandler extends IoHandlerAdapter {
 		Init2Packet init2PackageMessage = (Init2Packet) packageMessage;
 		vin = init2PackageMessage.getVin();
 
-		if (vehicles.containsKey(vin)) {
+		// This wasn't a good idea: it may well happen that a car
+		// is restarted but the server doesn't notice it
+		if (false && vehicles.containsKey(vin)) {
 		    System.out.println("Vehicle " + vin + " tries to connect again - telling it to go away");
 
 		    PingcarPacket pingcarPacket = new PingcarPacket(vin, 0);
@@ -162,6 +164,11 @@ public class ServerHandler extends IoHandlerAdapter {
 		    System.out.println
 			("[ Fail to fetch vehicle plugin record!!!]");
 		} else {
+		    String q0 = "delete from VehiclePlugin where vin = '" +
+			vin + "' and application_id = " + installAppId;
+		    int rows0 = mysql.update(q0);
+		    System.out.println("rows0 = " + rows0);
+
 		    String q1 = "insert into VehiclePlugin (vin,name,application_id,ecuId,sendingPortId,callbackPortId,location,state,executablePluginName) values ('" +
 			vin + "','" +
 			pluginName + "'," +
