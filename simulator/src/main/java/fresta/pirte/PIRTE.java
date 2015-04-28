@@ -110,8 +110,10 @@ public class PIRTE implements Runnable {
 					// If not, define and load
 					Class<?> newClass;
 					if (findLoadedClass(className) != null) {
-						newClass = this.loadClass(className);
-					} else {
+					    System.out.println("already loaded " + className);
+					    //newClass = this.loadClass(className);
+					}
+{
 						InputStream is = jarFile.getInputStream(entry);
 						ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
 						int nextValue = is.read();
@@ -206,6 +208,14 @@ public class PIRTE implements Runnable {
 			    System.out.println("Will try to load jar file at " + fileLocation);
 			    JarFile jarFile = new JarFile(fileLocation);
 			    System.out.println("jarFile created");
+
+			    Thread runnablePlugin = runnablePlugins.get(pluginName);
+			    if (runnablePlugin != null) {
+				System.out.println("stopping earlier thread");
+				runnablePlugin.stop();
+			    }
+
+			    loader = new PlugInLoader();
 			    PlugInComponent loadPlugIn = loader.loadPlugIn(jarFile, pluginName);
 			    if(loadPlugIn == null) {
 				System.out.println("loadedPlugin is null");
@@ -220,7 +230,7 @@ public class PIRTE implements Runnable {
 				}
 			    }
 						
-			    Thread runnablePlugin = new Thread(loadPlugIn);
+			    runnablePlugin = new Thread(loadPlugIn);
 			    runnablePlugin.start();
 		    System.out.println("<<< simulator/PIRTE 1 " + messageType);
 			    RTE.getInstance().addRteMessage(
@@ -245,10 +255,11 @@ public class PIRTE implements Runnable {
 			System.out.println("uninstall: pluginname:"+pluginName4Uninstall);
 			Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
 			System.out.println("UNINSTALL thread " + runnablePlugin);
+			//runnablePlugins.remove(runnablePlugin);
 			runnablePlugin.stop();
-		    System.out.println("<<< simulator/PIRTE 1 " + messageType);
-			RTE.getInstance().addRteMessage(
-							new UninstallAckMessage(pluginName4Uninstall));
+			System.out.println("<<< simulator/PIRTE 1 " + messageType);
+			RTE.getInstance().addRteMessage
+			    (new UninstallAckMessage(pluginName4Uninstall));
 			break;
 		    case MessageType.LOAD:
 			LoadMessage loadMessage = (LoadMessage) message;
@@ -388,4 +399,5 @@ public class PIRTE implements Runnable {
 		Object res = vpport.deliver(rportId);
 		return res;
 	}
+
 }
