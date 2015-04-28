@@ -27,7 +27,11 @@ public class MessageType extends Enum {
 	public static final byte SUBSCRIBE = 13;
 	public static final byte REQUEST_ID = 14;
 	public static final byte REQUEST_ID_ACK = 15;
-	
+	public static final byte PWM = 16;
+	public static final byte INSTALL_LINUX_ACK = 17;
+	public static final byte PINGCAR = 18;
+	public static final byte INIT2 = 19;
+
 	protected MessageType(byte enumValue) {
 		super(enumValue);
 		// TODO Auto-generated constructor stub
