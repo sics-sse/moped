@@ -32,7 +32,7 @@ public class Main {
 		String server = PropertyAPI.getInstance().getProperty("SERVER");
 		int server_port = Integer.parseInt(PropertyAPI.getInstance().getProperty("SERVER_PORT"));
 		CommunicationManager commuManager = new SocketCommunicationManager(vin, server,
-				server_port);
+										   server_port, false);
 		
 		// Initiate CarDriver APP
 		CarDriver carDriver = new CarDriver(2);
@@ -52,7 +52,10 @@ public class Main {
 		//publisher.setRate(15000);
 		//publisher.addHeader("X-ApiKey", "8oxsohCL6TrQ1hNjoFYqRW1BrFW5jr1TkInzNVy4Y6bEJHsq");
 		//IoTManager iotManager = new IoTManager(publisher);
-		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+		//		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+
+		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+
 		IoTManager iotManager = new IoTManager(publisher);
 		
 //    IPublisher publisher = PublisherFactory.publisher("ws://api.xively.com:8080/", "{\n" +
@@ -76,7 +79,10 @@ public class Main {
 
 		Ecm ecm = new Ecm();
 		ecm.init(ecuManager, commuManager, iotManager, carDriver);
+		// Sometimes the mqtt manager is not ready yet, and then
+		// we crash
+		//iotManager.sendPacket(new PublishPacket("speed", "3.235"));
 		ecm.start();
-    //iotManager.sendPacket(new PublishPacket("speed", "3.234"));
+		//iotManager.sendPacket(new PublishPacket("speed", "3.234"));
 	}
 }
