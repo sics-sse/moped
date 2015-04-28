@@ -241,6 +241,7 @@ public abstract class ObjectMemoryLoader {
         	/* Shortcut for FRESTA plugins (loading bytecode from a hashtable instead of a file) */
         	if (url.startsWith("plugin://")) {
             	byte[] pluginData = (byte[])VM.getPluginObjectMemories().get(url);
+		VM.println("ObjectMemoryFile: hash = " + VM.datahash(pluginData));
             	if (pluginData != null) {
             		dis = new DataInputStream(new ByteArrayInputStream(pluginData));
             	}
@@ -630,6 +631,10 @@ public abstract class ObjectMemoryLoader {
         }
 
 	VM.println("hash, parent hash = (" + hash + ") (" + parent.getHash() + ")");
+
+        if (parent.getHash() != hash) {
+	    return null;
+	}
 
 //        if (parent.getHash() != hash) {
 //        	String helpText = "";
