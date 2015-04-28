@@ -30,7 +30,7 @@ CFLAGS += -DSIMPLE_STDIO
 PROJECT_C_FILES=$(notdir $(wildcard ../*.c))
 obj-y += $(PROJECT_C_FILES:%.c=%.o)
 
-build-bin-y = kernel.img
+build-bin-y = VCU-kernel.img
 inc-y += ..
 
 
@@ -38,7 +38,7 @@ ifeq ($(SQUAWK), true)
 # SQUAWK paths
 J2ME_HOME = $(ROOTDIR)/../../../squawk
 OBJ_BUILDDIR = $(J2ME_HOME)/vmcore/build
-CFLAGS += -DSQUAWK
+CFLAGS += -DSQUAWK -DBUILD_VCU
 
 LDFLAGS += -lm
 lib-y += -lm
