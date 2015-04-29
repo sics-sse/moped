@@ -37,6 +37,7 @@ public class DistPub extends PlugInComponent {
 			VM.println("[DistPub is running]");
 			int val = ff.readInt();
 			data = "DistPub|" + val;
+			VM.println(data);
 			fs.write(data);
 			try {
 				Thread.sleep(2000);
