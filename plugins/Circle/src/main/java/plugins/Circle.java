@@ -36,8 +36,8 @@ public class Circle extends PlugInComponent {
     public void doFunction() {
 	int st1 = 100;
 
-	try {
-	    while (true) {
+	while (true) {
+	    try {
 		VM.println("circle 1");
 		Thread.sleep(2000);
 		speed.write(0);
@@ -58,10 +58,10 @@ public class Circle extends PlugInComponent {
 		//VM.println("Interrupted.");
 	    }
 	}
+    }
 
-	public void run() {
-	    init();
-	    doFunction();
-	}
+    public void run() {
+	init();
+	doFunction();
     }
 }
