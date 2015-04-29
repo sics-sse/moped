@@ -14,6 +14,7 @@
   	<module>CL</module>
   	<module>LEDLighter</module>
   	<module>UltraSonicReader</module>
+  	<module>DistPub</module>
   	<module>Comm1</module>
   	<module>Comm2</module>
   	<module>AdcPub</module>
