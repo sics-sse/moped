@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
