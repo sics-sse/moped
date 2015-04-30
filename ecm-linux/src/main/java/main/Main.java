@@ -54,7 +54,7 @@ public class Main {
 		//IoTManager iotManager = new IoTManager(publisher);
 		//		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 
-		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 
 		IoTManager iotManager = new IoTManager(publisher);
 		
