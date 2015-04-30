@@ -70,6 +70,9 @@ public class Cache {
 		int i2 = s2.indexOf('.');
 		s2 = s2.substring(0,i2);
 		ArrayList<VehiclePluginRecord> records = appList.get(appId);
+		if (records == null) {
+		    return null;
+		}
 		for (VehiclePluginRecord record : records) {
 		    System.out.println(" " + record.getPluginName() +
 				       " " + pluginName);
