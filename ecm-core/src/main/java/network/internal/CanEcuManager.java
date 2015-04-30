@@ -179,12 +179,16 @@ public class CanEcuManager implements EcuManager {
 			Pointer p = javaCanLibrary.receiveData(channelNumber, canId);
 			int len = javaCanLibrary.getPackageSize();
 			if (len > 0) {
-				res = new byte[len];
-				for (int i = 0; i < len; i++) {
-					res[i] = p.getByte(i);
-				}
-				javaCanLibrary.resetPackageSize();
-				return res;
+			    if (p == null) {
+				System.out.println("CAN receive null pointer");
+				return null;
+			    }
+			    res = new byte[len];
+			    for (int i = 0; i < len; i++) {
+				res[i] = p.getByte(i);
+			    }
+			    javaCanLibrary.resetPackageSize();
+			    return res;
 			}
 			return null;
 		}
