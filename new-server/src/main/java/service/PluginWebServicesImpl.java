@@ -180,10 +180,10 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    Manifest mf = jar.getManifest();
 	    if (mf != null) {
 		Attributes attributes = mf.getMainAttributes();
-				
 		String publisher = attributes.getValue("Built-By");
 		if (publisher == null)
 		    publisher = "unknown";
+		System.out.println("publisher " + publisher);
 		String version = attributes.getValue("Manifest-Version");
 		if (version == null)
 		    version = "1.0";
@@ -232,7 +232,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 				
 		String q1 = "select id from Application where " +
 		    "name = '" + name +
-		    "' and publisher = '" + publisher +
+		    //"' and publisher = '" + publisher +
 		    "' and version = '" + version + 
 		    "' and state >= '020-uploaded'";
 		String c1 = mysql.getOne(q1);
@@ -432,6 +432,15 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	JSONObject o1 = new JSONObject();
 
 	o.put("result", true);
+	o.put("error", false);
+	return o.toString();
+    }
+
+    private String jsonOK(String s) {
+	JSONObject o = new JSONObject();
+	JSONObject o1 = new JSONObject();
+
+	o.put("result", s);
 	o.put("error", false);
 	return o.toString();
     }
@@ -1567,6 +1576,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	System.out.println("Unzipped into: " + dest); 
 	dest = dest.substring(0,  dest.length() - 11); //Remove "j2meclasses"
 		
+	new File(dest + appname + ".suite").delete();
+
 	String reply[] = new String[1];
 	boolean s = suiteGen.generateSuite(dest, reply); // + "/" + fullClassName);
 	if (s) {
@@ -1575,8 +1586,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    if (rows1u != 1)
 		return jsonError("compile: internal db error 5");
 
-	    // return reply too.
-	    return jsonOK();
+	    return jsonOK(reply[0]);
 	} else {
 	    return jsonError(reply[0]);
 	}
