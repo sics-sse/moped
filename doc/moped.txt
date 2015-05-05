@@ -14,22 +14,33 @@ varies a bit.)
 To get a complete MOPED system up and running from scratch, you need to
 perform the following steps:
 
-A Set up a mysql server.
+A Fetch the source code from github.
+  git clone https://github.com/sics-sse/moped
+  This will create a directory "moped" in your current directory.
+
+B Set up a mysql server.
   See moped-mysql.txt.
 
-B Fetch the source code from github and build it, and start the server.
+C Build the MOPED system, and start the server.
   See moped-building.txt.
 
-C Set up a wordpress server with the MOPED GUI files. 
+D Set up a wordpress server with the MOPED GUI files. 
   See moped-setup-gui.txt.
 
-D Construct a car, or get acquainted with an existing one. I haven't
+E Build the remote control app for Android.
+  See moped-android.txt.
+
+F Construct a car, or get acquainted with an existing one. I haven't
   written documentation for constructing a car, but there is a description of
   some parts of existing ones.
   See moped-car.txt.
 
-E Put the appropriate code from A on three SD cards, one for each
+G Put the appropriate code from C on three SD cards, one for each
   Raspberry Pie on the car.
+
+A needs to be done first. Then the order is not always important, but
+these ordering requirements exist:
+B->C->D, C->G.
 
 When you have a running system, you may want to do these things:
 
@@ -41,8 +52,8 @@ When you have a running system, you may want to do these things:
   See moped-system.txt
 
 
-A, B and C can be done on the same computer, or on different ones. I haven't
-had A and B on different computers, so I didn't learn how to set up a
+B, C and D can be done on the same computer, or on different ones. I haven't
+had B and C on different computers, so I didn't learn how to set up a
 secure connection to mysql, but use "localhost".
 
 There are two ways for the user to communicate with the server: using
@@ -59,3 +70,9 @@ into moped-misc.txt.
 
 On the MOPED site http://moped.sics.se you can find additional material,
 for example explaining the architecture.
+
+
+This should happen soon:
+"FRESTA" replaced with "MOPED"
+"new-server" moved to "server"
+hard-coded paths and ports made changeable through a configuration file.

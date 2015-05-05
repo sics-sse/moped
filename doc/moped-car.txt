@@ -1,0 +1,38 @@
+
+The car has three Raspberry Pie boards, revision 2,
+called TCU, SCU and VCU.
+
+TCU = telemetric (something unit)
+SCU = sensor
+VCU = vehicle
+
+VCU is connected to the steering and driving (both actuators and
+sensors), as well as the LEDs. The speed sensors are at the inside of the
+right wheels (but one of the sensor inputs is not used and is connected to
+the steering angle instead).
+
+When looking down at the car in its forward direction, the SCU is at
+the front, the TCU at the left and the VCU at the right.
+
+
+TCU runs Linux and handles all communication with the outside world.
+It has an ethernet socket and two USB sockets, of which one should have
+a wifi dongle (and the other may be connected to a keyboard). It has
+a video socket, for connecting a screen. (So do the others, but there
+these sockets are not used.)
+
+SCU and VCU are very similar. They run autosar, but are not meant to run
+exactly the same MOPED RTS code - the last building step is different.
+
+The three boards communicate with a CAN bus.
+
+All three boards have a list of 2x13 pins, described here:
+http://www.megaleecher.net/Raspberry_Pi_GPIO_Pinout_Helper
+
+At the front of the car is an ultra sound sensor.
+Behind it are three LEDs: two yellow ones, and between them a red one.
+
+Output (written by VM.println or printf) from SCU and VCU can be seen
+by connecting a serial cable to the UART pins. I used one with USB and
+plugged it into the computer, where I ran GtkTerm.
+

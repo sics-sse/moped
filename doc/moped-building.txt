@@ -1,0 +1,111 @@
+Here some configuring is described, then the building, and then
+some testing.
+
+
+Building:
+
+A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
+See http://elinux.org/ARMCompilers
+I don't know how to get a new, free, one.
+
+
+make sure that Java is 1.7 or later:
+java -version
+If it isn't, setting JAVA_HOME alone may not work; use
+update-alternatives --config java
+
+In new-server/src/main/java/service/PluginWebServicePublisher.java,
+change the value of PUB_ADDRESS to use the computer's domain name
+instead, if you want the server to be reachable from outside.
+
+In configs/system1.xml, change
+			<ip>localhost</ip>
+appropriately, if you did the corresponding change for the server
+(in PluginWebServicePublisher.java).
+
+
+
+
+Be sure that the "moped" top directory is your current directory.
+
+Modify the setting for CODEBENCH in new-server/misc/buildall.sh
+Run buildall.sh
+
+If there are any errors, the script will abort at that step.
+
+
+If the compilation is interrupted in the middle of bld.sh in squawk,
+there is then no functioning builder, and then d.sh doesn't
+function. If that happens, build first 'builder' explicitly with
+bld.sh.
+
+
+* Testing the server
+
+cd server
+java -jar target/server.jar
+
+
+
+The server should start, and say "published" when it's ready to receive
+web service calls.
+
+If it says
+    org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect
+    at dao.DBConnection.<init>(DBConnection.java:23)
+    Caused by: java.sql.SQLException: Access denied for user 'fresta'@'localhost'
+the local mysql wasn't started or the server doesn't have the right
+access.
+
+
+* Testing the simulator
+
+(The server from the step above should still be running.)
+
+cd simulator
+
+java -jar target/simulator-1.0.jar
+    Connected to trusted server
+    Opening a session to localhost/127.0.0.1:9999 from vin:20UYA31581L000000
+    Local session address: /127.0.0.1:60570
+
+and the server says
+    Message received on server...
+    Vehicle 20UYA31581L000000 joins the connection (simulator 1)
+It will say (simulator 0) for an actual model car.
+
+A window appears, and a small drawing of a car.
+
+* Testing the remote control
+
+Server and simulator from the steps above should still be running.
+
+If you already built the Android app:
+
+Start the WirelessIno app on your Android. Under the settings, set the
+correct host address of the server, and fill in the port number 9000
+that is suggested. Press Connect and it should say Connected. Use the
+controls to set speed and angle, and see that the car moves in the
+simulator. They revert to zero when let go.
+
+* Testing the web service interface to the server
+
+Fetch a simple SOAP client for Python:
+https://fedorahosted.org/suds/wiki/Documentation
+Install using "python setup.py install"
+
+Start python, and do
+from suds.client import Client
+url='http://localhost:9990/moped/pws?wsdl'
+client = Client(url)
+
+Test the server:
+    client.service.install("88", 2, "jdk")
+returns false and the server says
+    vin in install(): 88
+    appID in install(): 2
+    IoSession is NULL
+
+TODO: the above is old - now it says other things
+
+TODO: insert the rest of the testing from how-to-build.txt

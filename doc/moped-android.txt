@@ -1,0 +1,13 @@
+This supposes that you already have a development environment for Android.
+
+
+cd WirelessIno
+To get a build.xml, do
+export PATH=$PATH:~/android/android-sdk-linux/tools:~/android/android-sdk-linux/platform-tools
+android update project --subprojects --path . --target 9
+Then
+rm -r bin
+ant debug
+
+Put this on an Android phone somehow, via USB cable or a local web server.
+

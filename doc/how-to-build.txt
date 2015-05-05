@@ -1,6 +1,3 @@
-Fetching:
-
-git clone https://github.com/sics-sse/moped
 
 api
 autosar
@@ -21,161 +18,41 @@ webportal is a modification of https://wordpress.org/download/
 WirelessIno is a modification of https://github.com/MiichaelD/BluIno
 
 
-Building:
-
-make sure that Java is 1.7 or later:
-java -version
-If it isn't, setting JAVA_HOME alone may not work; use
-update-alternatives --config java
-
-cd api
-mvn install
-
-cd ecm-core
-mvn install
-
-cd ecm-linux
-mvn install
-
-cd plugins
-mvn install
-
-cd server
-mvn install
-
-cd simulator
-mvn install
-
 Nothing to do in webportal
 If we want to run it, we may want to at least change the address to the
 trusted server in custom/globalVariables.php
 
-cd squawk
-./startScript.sh
-(it sets JAVA_HOME itself, so remove that first in d.sh)
-
-Exception in thread "main" java.lang.RuntimeException: Problems finding builder
-	at com.sun.squawk.builder.launcher.Launcher.main(Launcher.java:76)
-Caused by: java.lang.ClassNotFoundException: com.sun.squawk.builder.Build
-
-Maybe first
-cd builder
-./bld.sh
-but it doesn't find com.sun.javadoc classes
-
-So we currently don't have a working squawk.
 
 
 
 cd autosar
-A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
-See http://elinux.org/ARMCompilers
-I don't know how to get a new, free, one.
-Change build.sh appropriately, for example
+Change build.sh aprropriately to use the cross compiler
 export CROSS_COMPILE=/home/arndt/moped/arm/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
-In src/examples/Raspberry_Pi/demo_VCU/Actuator_MotorSpeed.c, remove
-    if (select == 1) {
-    	pirte_write_speed = true;
-    }
-./build.sh
 
-cd WirelessIno
-To get a build.xml, do
-export PATH=$PATH:~/android/android-sdk-linux/tools:~/android/android-sdk-linux/platform-tools
-android update project --subprojects --path . --target 9
-Then
-rm -r bin
-ant debug
+export BDIR=../examples/Raspberry_Pi/demo_VCU
+#export BDIR=../examples/Raspberry_Pi/demo_SCU
+autosar/src/core/arch/arm/arm_v6/drivers/bcm2835.h
+#define VCU 1
+#define SCU 0
 
-Put this on an Android phone somehow, via USB cable or a local web server.
+./build.sh clean; ./build.sh
+
+
+autosar/src/core/binaries/Raspberry_Pi/kernel.img
+ecm-linux/target/ecm-linux-0.0.1-SNAPSHOT.jar
 
 
 
-Fetch and install mysql.
-
-sudo /etc/init.d/mysql start
-mysql -u root -proot
-
-create user fresta identified by 'somepasswordxxx';
-
-This password should be used in these files:
-    webportal/wordpress/custom/apps_display_form.php
-    webportal/wordpress/wp-config.php
-    server/src/main/resources/hibernate.cfg.xml
-
-create database fresta;
-    grant all privileges on fresta . * to 'fresta'@'%';
-    flush privileges;
-
-create database fresta2 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
-    grant all privileges on fresta2 . * to 'fresta'@'%';
-    flush privileges;
+see moped-mysql.txt
 
 
-Use a saved database dump to create and populate the tables:
-mysql -uroot -proot < dump
-If the dump doesn't say "use ..." on line 1, add such a line for the
-appropriate database (mentioned in the comment further down).
 
 
-cd server
-java -jar target/server.jar
-
-Error
-at service.PluginWebServicePublisher.main(PluginWebServicePublisher.java:52)
-Caused by: java.net.BindException: Cannot assign requested address
-
-Change this line to use "localhost" instead (in the future this will be
-configurable).
-
-The server should start, and be silent.
-
-If it says
-    org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect
-    at dao.DBConnection.<init>(DBConnection.java:23)
-    Caused by: java.sql.SQLException: Access denied for user 'fresta'@'localhost'
-the local mysql wasn't started or the server doesn't have the right
-access.
 
 
-cd simulator
-In configs/system1.xml, change
-			<ip>appz-ext.sics.se</ip>
-to
-			<ip>localhost</ip>
-
-java -jar target/simulator-1.0.jar
-    Connected to trusted server
-    Opening a session to localhost/127.0.0.1:9999 from vin:20UYA31581L000000
-    Local session address: /127.0.0.1:60570
-
-and the server says
-    Message received on server...
-    Vehicle 20UYA31581L000000 joins the connection
 
 
-Start the WirelessIno app on your Android. Under the settings, set the
-correct host address, and fill in the port number 9000 that is
-suggested. Press Connect and it should say Connected. Use the controls
-to set speed and angle, and see that the car moves in the
-simulator. They revert to zero when let go.
 
-
-Fetch a simple SOAP client for Python:
-https://fedorahosted.org/suds/wiki/Documentation
-Install using "python setup.py install"
-
-Start python, and do
-from suds.client import Client
-url='http://localhost:9990/moped/pws?wsdl'
-client = Client(url)
-
-Test the server:
-    client.service.install("88", 2, "jdk")
-returns false and the server says
-    vin in install(): 88
-    appID in install(): 2
-    IoSession is NULL
 
 With a saved mysql dump already containing apps, we first make sure the
 app paths refer to something: copy the moped_plugins directory, and
@@ -264,8 +141,4 @@ New app
 PluginCreationTest2
 We then need to add it to the database:
 insert into VehiclePlugin (appId,vin) values (38,"20JAX31581L000000");
-
-
-Next: use two cars in the simulator
-This doesn't work perfectly with all operations.
 
