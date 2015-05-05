@@ -1,11 +1,16 @@
 
 The car should be powered with about 8.4 V DC.
 
+This can be done either with a LiPo battery or a DC power aggregate
+(or what the name is).
+
 On the voltage divider, there are four lights, showing the voltage. When
 all four are steadily on, the voltage is fine.
 
+* Charging the battery
 
+Follow the instructions carefully.
 
-
-
-
+Charging a battery fully which has been depleted so that the rpi's
+can't run anymore (it's then between 5.7 and 6.6 V) takes between 65
+and 75 minutes.

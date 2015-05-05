@@ -70,16 +70,26 @@ coincide.
 
 ============================================================
 
-When debugging the code on an ECU, prinouts are normally not harmful, but
-if they are performed very fast (deep inside the runtime system), or
-in a sensitive place where they themselves may cause recursion (memory
-allocation, symbol lookup), they may either hang the ECU completely
-or make it behave erratically.
+When debugging the code on an ECU, printouts are normally not harmful,
+but if they are performed very fast (deep inside the runtime system),
+or in a sensitive place where they themselves may cause recursion
+(memory allocation, symbol lookup), they may either hang the ECU
+completely or make it behave erratically.
 
 At least for the communication between TCU and SCU/VCU, timing cannot
 be changed completely arbitrarily.
+
+In Java, printing is done with VM.print or VM.println, whereas System.out
+is ignored on autosar. The VM functions work on hosted platforms too,
+though.
 
 ============================================================
 
 Time taken to get the car started:
 
+0  boot
+33 TCU gets a wifi address (the dongle starts blinking in blue)
+34 ECM starts
+56 ECM connects to the server
+68 SCU or VCU receives the first plugin
+78 (if the plugin is 2400 bytes) the first plugin starts running

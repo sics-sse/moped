@@ -59,7 +59,12 @@ front of the TCU.
 
 Output (written by VM.println or printf) from SCU and VCU can be seen
 by connecting a serial cable to the UART pins. I used one with USB and
-plugged it into the computer, where I ran GtkTerm.
+plugged it into the computer, where I ran GtkTerm. Use the Log function
+of GtkTerm. The configuration should be 115200-8-N-1. The device is
+probably called /dev/ttyUSB0.
+If the cable is disconnected (for example if the car is to be run on its
+own, or if you want to connect to the other one of VCU and SCU), you need
+to setup the configuration again.
 
 
 On each rpi are some small lights that indicate what the rpi is doing.
