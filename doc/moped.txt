@@ -14,11 +14,15 @@ varies a bit.)
 To get a complete MOPED system up and running from scratch, you need to
 perform the following steps:
 
+install maven
+
+
 A Fetch the source code from github.
   git clone https://github.com/sics-sse/moped
   This will create a directory "moped" in your current directory.
 
-B Set up a mysql server.
+B Set up a mysql server. Wordpress already uses one, so if it's convenient,
+  we can use the same one.
   See moped-mysql.txt.
 
 C Build the MOPED system, and start the server.
@@ -76,3 +80,9 @@ This should happen soon:
 "FRESTA" replaced with "MOPED"
 "new-server" moved to "server"
 hard-coded paths and ports made changeable through a configuration file.
+
+new-server/src/main/java/service/PluginWebServicesImpl.java
+    private SuiteGen suiteGen = new SuiteGen("/home/arndt/moped/moped/squawk");
+	    String dir = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname
+	    String SCHEMA_PATH = "/home/arndt/moped/moped/xml/vehicleconfig.xsd";
+	String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";

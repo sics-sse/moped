@@ -1,0 +1,15 @@
+How SD cards behave.
+Write-protection
+
+start.elf bootcode.bin kernel.img
+
+A card may be mountable and have these files with correct content, but
+still refuse to boot.
+
+Conversely, a card may be unrecognized by a computer, but fully working
+as TCU.
+
+SD cards may get worn and stop functioning. It could be that they still
+work in a computer or SD card reader, but not in the Raspberry.
+Once, one of the small plastic ridges between the contacts broke. I could
+fix that by simply removing most of the ridge.

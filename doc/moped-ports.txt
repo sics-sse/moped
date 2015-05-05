@@ -1,0 +1,35 @@
+
+The port numbers in use are these:
+
+sensors
+VCU
+5 readSpeed (front wheel)
+6 readSteer (rear wheel)
+7 readAdc
+8 readPosition
+
+SCU
+13 readDistance UltraSonicPPort
+14 readIMU
+
+
+actuators
+VCU
+0 pubVCUData
+3 speedActuator
+4 steerActuator
+9 writeLED
+
+SCU
+10 pubSCUData (not used)
+
+In addition (see PIRTE.java):
+1 VCUReadPluginDataFromSCUVirtualPPort
+2 planned or has been used for VCU writing to SCU
+
+11 SCUWritePluginData2VCURPort
+12 planned or has been used for SCU reading from VCU
+
+15 ReadPluginDataFromTCUVirtualPPort
+-1 ReadSpeedInPirteVirtualPPort
+-2 ReadSteerInPirteVirtualPPort

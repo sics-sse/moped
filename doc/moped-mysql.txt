@@ -29,6 +29,9 @@ If the dump doesn't say "use ..." on line 1, add such a line for the
 appropriate database (mentioned in the comment further down).
 
 
+If you selected other than root/root for the user/password, change
+new-server/src/main/java/service/CallMySql.java accordingly.
+
 
 
 The schema for MOPED is in new-server/fresta2-schema.

@@ -1,0 +1,11 @@
+
+The car should be powered with about 8.4 V DC.
+
+On the voltage divider, there are four lights, showing the voltage. When
+all four are steadily on, the voltage is fine.
+
+
+
+
+
+

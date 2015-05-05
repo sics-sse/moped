@@ -1,0 +1,6 @@
+
+
+
+
+
+Currently, almost nothing in the GUI works if the server is not running.

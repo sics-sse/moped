@@ -25,6 +25,12 @@ appropriately, if you did the corresponding change for the server
 
 
 
+Maybe relevant note, for pom.xml in new-server:
+org.json is compiled with Java 8 in its latest version,
+			<version>20141113</version>
+so we use 20140107
+
+
 
 Be sure that the "moped" top directory is your current directory.
 
@@ -109,3 +115,14 @@ returns false and the server says
 TODO: the above is old - now it says other things
 
 TODO: insert the rest of the testing from how-to-build.txt
+
+
+
+On the TCU, two C source code files need to be compiled there (maybe
+not really, but they are now): apptest.c and javaCanLib.c, producing
+/lib/libjavaCanLib.so. This is done by the deployment script
+deployJavaCanLib.sh (which also starts ecm). These two files come from
+moped/ecm-linux.
+
+
+See also moped/autosar/readme.txt

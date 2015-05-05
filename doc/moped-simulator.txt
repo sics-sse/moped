@@ -1,0 +1,11 @@
+simulator's PIRTE defines these virtual ports:
+0 publish
+3 accelerator motorPower
+4 steering steeringAngle
+5 frontwheel vehicleSpeed
+6 rearwheel vehicleSpeed
+7 voltage voltage
+9 LED lamp
+
+Voltage is fake - it returns a constant.
+LED values are not shown graphically, but only on stdout.

@@ -1,0 +1,28 @@
+
+* speed
+
+This is computed from the frequency with which a light is turned into
+pulses by reflectors distributed evenly on the inside of a wheel. Thus,
+only the absolute value of the speed is reported.
+
+
+* steering
+
+
+* distance
+
+
+
+* battery
+
+
+* position
+
+GPS, I think, but it's not used
+
+
+* accelerometer/gyro
+
+I2C
+IMU
+six values

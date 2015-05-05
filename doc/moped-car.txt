@@ -1,5 +1,6 @@
 
-The car has three Raspberry Pie boards, revision 2,
+
+The car has three Raspberry Pie (called rpi below) boards, revision 2,
 called TCU, SCU and VCU.
 
 TCU = telemetric (something unit)
@@ -10,6 +11,8 @@ VCU is connected to the steering and driving (both actuators and
 sensors), as well as the LEDs. The speed sensors are at the inside of the
 right wheels (but one of the sensor inputs is not used and is connected to
 the steering angle instead).
+
+SCU has some other sensors.
 
 When looking down at the car in its forward direction, the SCU is at
 the front, the TCU at the left and the VCU at the right.
@@ -24,7 +27,8 @@ these sockets are not used.)
 SCU and VCU are very similar. They run autosar, but are not meant to run
 exactly the same MOPED RTS code - the last building step is different.
 
-The three boards communicate with a CAN bus.
+The three boards communicate with a CAN bus, which is implemented by
+what's sitting on the extra little board connected to the main rpi boards.
 
 All three boards have a list of 2x13 pins, described here:
 http://www.megaleecher.net/Raspberry_Pi_GPIO_Pinout_Helper
@@ -32,7 +36,40 @@ http://www.megaleecher.net/Raspberry_Pi_GPIO_Pinout_Helper
 At the front of the car is an ultra sound sensor.
 Behind it are three LEDs: two yellow ones, and between them a red one.
 
+Under the TCU, next to the battery, sits an ADC (analog to digital)
+converter. In the current configuration, it is taking input from the
+power supply, for measuring the voltage level.
+
+The two cars we have here, I call simply car1 and car2. They have these
+numbers on their rpi's:
+
+car1:
+TCU	12
+VCU	 2
+SCU	11
+
+car2:
+TCU	 8
+VCU	 5
+SCU	10
+
+
+On one of the cars (car1), there is a camera, pointing upwards, sitting in
+front of the TCU.
+
 Output (written by VM.println or printf) from SCU and VCU can be seen
 by connecting a serial cable to the UART pins. I used one with USB and
 plugged it into the computer, where I ran GtkTerm.
+
+
+On each rpi are some small lights that indicate what the rpi is doing.
+The second one is usually lit when the power is on. The first one blinks
+slowly (once a second) on VCU and SCU to show that autosar is running.
+
+On the TCU, the serial and network traffic is shown. I think there is
+no corresponding heartbeat function.
+
+
+There are lights for indicating the power level, see moped-battery.txt.
+
 

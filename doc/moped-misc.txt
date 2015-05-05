@@ -1,0 +1,85 @@
+* Speeding up building server
+
+Extract all maven repository files (in ~/.m2) to ~/jar-files
+Then run original-server:
+Delete our own jar files: server, ecm*, simulator
+and there are three log4j, where only one is needed
+java -cp ~/jar-files/'*':target/server.jar service.PluginWebServicePublisher
+Remove the shade thing in pom.xml and the building takes half the time.
+add this to how-to-build.txt
+
+mvn clean package -Dmaven.test.skip=true
+
+* Add the network of the Android on TCU
+
+(after setting up one, using Internet shared surf point, or something)
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+
+* settings.properties on TCU
+
+Change
+SERVER=appz-ext.sics.se
+
+
+============================================================
+
+indoor positioning system
+
+with the camera and opencv
+
+on TCU
+
+============================================================
+
+MQTT
+
+The SCU writes to a port, which sends the data to TCU, which sends it
+out (publishes).
+
+The address of the MQTT server is set in ecm-linux/.../Main.java and
+simulator/.../CarFactory.java.
+
+============================================================
+
+VCU and SCU have numbers: 2 = VCU and 3 = SCU. When relevant, 1 = TCU.
+
+============================================================
+
+Tips and tricks
+
+If only the SCU needs to be restarted (because it got stuck, or because
+its SD card needs to be updated), pull its power cable and put it in again.
+
+If you put an ssh app on the Android, you can log in to the TCU without
+a cable. Otherwise, you can use an ethernet cable from the TCU to your
+computer.
+
+When doing file operations on the TCU and then restarting the car, the
+operations sometimes turn out to be undone. I think it's important
+to do "sync" before restarting.
+
+The dependencies within the modules are far from understood, so it's
+best to always (yes, always) do a clean operation before rebuilding.
+
+============================================================
+
+If squawk is rebuilt, and a new kernel.img put on an ECU, all plugins
+for that ECU need to be rebuilt, since their "hash codes" need to
+coincide.
+
+============================================================
+
+When debugging the code on an ECU, prinouts are normally not harmful, but
+if they are performed very fast (deep inside the runtime system), or
+in a sensitive place where they themselves may cause recursion (memory
+allocation, symbol lookup), they may either hang the ECU completely
+or make it behave erratically.
+
+At least for the communication between TCU and SCU/VCU, timing cannot
+be changed completely arbitrarily.
+
+============================================================
+
+Time taken to get the car started:
+

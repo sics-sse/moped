@@ -1,0 +1,28 @@
+
+* steering
+
+-100 to 100
+
+
+
+
+* speed
+
+The value can be set to between -100 and 100. Negative numbers mean
+reversing, but setting first a positive speed and then a negative one
+will probably lead to 256+speed to being used. At least 0 should be
+set explicitly. More things may be needed, but I don't understand this
+yet. Possibly the steering should be set each time, too. Suitable pauses
+are important, and it takes a while for the thing to start (at which time
+the hardware beeps to indicate this).
+
+Look at AP.java, Circle.java.
+
+
+
+* LED
+
+The LEDs are numbered 1 to 3. To light one, set it to 0. To extinguish,
+set it to 1.
+
+Send a string like this to the port: "3|1".

@@ -1,0 +1,54 @@
+
+For clearing the simulator, do rm apps/* and rm db/*
+And same in can-utils/java on the TCU.
+
+TODO: describe what the plugin code should look like, and how it is
+compiled.
+
+
+pom.xml
+plugin configuration file (XML)
+ports
+
+See moped-ports.txt
+
+The simulator only supports a subset of the sensors and actuators.
+See moped-simulator.txt
+
+
+Existing plugins:
+For VCU:
+
+    AdcPub
+	publishes the battery value
+    AP
+	"auto path" - accelerates and turns here and there
+    BWPub
+    CL
+    Circle
+	runs at varying speeds in a small circle
+    Comm1
+    Comm2
+	Comm1 and Comm2 run on separate ECU's and communicate
+    DistPub
+	publishes distance
+    FWPub
+    LEDLighter
+	lights and extinguishes all three LEDs, periodically
+    Platoon
+    PluginCreationTest
+	writes only something on stdout
+    PluginCreationTest2
+    PluginCreationTest3
+    PosPub
+    SemiAutomaticReverseParking
+
+For SCU:
+    IMUPub
+    UltraSonicReader
+	reads distance and sends it to a port where AutoBrake will read it
+
+
+In addition, AutoBrake exists, but is not compilable. This may be easily
+fixed. Also BurningWheels.
+
