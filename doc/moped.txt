@@ -1,0 +1,61 @@
+
+This is the main documentation file for MOPED. It does not contain
+very much except references to other files.
+
+To understand the rest of this document, you may want to read
+moped-overview.txt, where the architecture is broadly described, and
+special terms introduced.
+
+(This document is written in the first person, because I did mostly not
+construct any of the above, and my competence in describing the parts
+varies a bit.)
+
+
+To get a complete MOPED system up and running from scratch, you need to
+perform the following steps:
+
+A Set up a mysql server.
+  See moped-mysql.txt.
+
+B Fetch the source code from github and build it, and start the server.
+  See moped-building.txt.
+
+C Set up a wordpress server with the MOPED GUI files. 
+  See moped-setup-gui.txt.
+
+D Construct a car, or get acquainted with an existing one. I haven't
+  written documentation for constructing a car, but there is a description of
+  some parts of existing ones.
+  See moped-car.txt.
+
+E Put the appropriate code from A on three SD cards, one for each
+  Raspberry Pie on the car.
+
+When you have a running system, you may want to do these things:
+
+* Write and run plugins, either in the car, or in the simulator.
+  Some plugins are included.
+  See moped-plugins.txt, moped-simulator.txt, moped-gui.txt.
+
+* Extend or debug the system
+  See moped-system.txt
+
+
+A, B and C can be done on the same computer, or on different ones. I haven't
+had A and B on different computers, so I didn't learn how to set up a
+secure connection to mysql, but use "localhost".
+
+There are two ways for the user to communicate with the server: using
+the (web) GUI, or calling the server's web services directly, using some
+programming language. For the latter, see moped-server-api.txt.
+
+
+Github has a list of issues, which are suggested changes or problems to
+be fixed. Issues which are not included there (yet) are listed in
+moped-problems.txt.
+
+Things that don't fit into any of the text files mentioned above are put
+into moped-misc.txt.
+
+On the MOPED site http://moped.sics.se you can find additional material,
+for example explaining the architecture.
