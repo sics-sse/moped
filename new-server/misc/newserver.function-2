@@ -1,3 +1,6 @@
+[this file is not used anymore - see moped/doc/moped-server-api.txt]
+
+
 Web services in the server
 
 "GUI" refers to the web portal, currently implemented with wordpress.
@@ -257,7 +260,7 @@ association already exists
 QUESTION: user must be the one authenticated?
 
 --------------------
-setUserVehicleAssociationActive(user, VIN, active)
+setUserVehicleAssociationActive(user, VIN, boolean active)
 
 Errors:
 no such user
