@@ -1,3 +1,4 @@
+
 simulator's PIRTE defines these virtual ports:
 0 publish
 3 accelerator motorPower
@@ -7,5 +8,20 @@ simulator's PIRTE defines these virtual ports:
 7 voltage voltage
 9 LED lamp
 
+The car is drawn as a rectangle with an arrow in the front part.
+The angle of steering is not shown.
+
+
+simulator/configs/system1.xml
+(PIRTE.java)
+
+--nowindow
+
+MQTT
+
+remote control
+
+Restrictions:
 Voltage is fake - it returns a constant.
 LED values are not shown graphically, but only on stdout.
+plugins cannot communicate (I think)

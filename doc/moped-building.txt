@@ -13,6 +13,8 @@ make sure that Java is 1.7 or later:
 java -version
 If it isn't, setting JAVA_HOME alone may not work; use
 update-alternatives --config java
+Whether everything works with 1.8, I don't know.
+
 
 In new-server/src/main/java/service/PluginWebServicePublisher.java,
 change the value of PUB_ADDRESS to use the computer's domain name
@@ -37,7 +39,7 @@ Be sure that the "moped" top directory is your current directory.
 Modify the setting for CODEBENCH in new-server/misc/buildall.sh
 Run buildall.sh
 
-If there are any errors, the script will abort at that step.
+If there is any error, the script will abort at that step.
 
 
 If the compilation is interrupted in the middle of bld.sh in squawk,
@@ -57,9 +59,12 @@ The server should start, and say "published" when it's ready to receive
 web service calls.
 
 If it says
-    org.hibernate.exception.JDBCConnectionException: Error calling Driver#connect
-    at dao.DBConnection.<init>(DBConnection.java:23)
-    Caused by: java.sql.SQLException: Access denied for user 'fresta'@'localhost'
+
+    java.sql.SQLException: Access denied for user 'fresta'@'localhost'
+or
+    DB ERROR 0
+    Communications link failure
+
 the local mysql wasn't started or the server doesn't have the right
 access.
 
@@ -89,10 +94,10 @@ Server and simulator from the steps above should still be running.
 If you already built the Android app:
 
 Start the WirelessIno app on your Android. Under the settings, set the
-correct host address of the server, and fill in the port number 9000
-that is suggested. Press Connect and it should say Connected. Use the
-controls to set speed and angle, and see that the car moves in the
-simulator. They revert to zero when let go.
+correct host address of the car (i.e., simulator), and fill in the
+port number 9000 that is suggested. Press Connect and it should say
+Connected. Use the controls to set speed and angle, and see that the
+car moves in the simulator. They revert to zero when let go.
 
 * Testing the web service interface to the server
 
@@ -118,11 +123,61 @@ TODO: insert the rest of the testing from how-to-build.txt
 
 
 
-On the TCU, two C source code files need to be compiled there (maybe
-not really, but they are now): apptest.c and javaCanLib.c, producing
-/lib/libjavaCanLib.so. This is done by the deployment script
-deployJavaCanLib.sh (which also starts ecm). These two files come from
-moped/ecm-linux.
 
+
+* Installing the software on a car
+
+Get three SD cards, call them TCU, SCU and VCU. Make empty file systems
+on SCU and VCU.
+
+On the TCU, put a Linux. How to do that is not described here, because
+I haven't done that yet.
+
+Then create a directory structure
+ ~pi
+     can-utils
+         java
+
+Under "java", put ecm-linux/target/ecm-linux-0.0.1-SNAPSHOT.jar.
+
+Copy ecm-linux/apptest.c and apptest.h to "can-utils".
+Copy ecm-linux/javaCanLib.c to "java".
+
+Create a script java/deployJavaCanLib.sh with the following contents:
+
+gcc -c -Wall -Werror -fpic javaCanLib.c ../apptest.c
+gcc -shared -o libjavaCanLib.so javaCanLib.o apptest.o
+sudo cp libjavaCanLib.so /lib
+java -jar ecm-linux/target/ecm-linux-0.0.1-SNAPSHOT.jar
+
+Arrange for it to be run when Linux boots.
+
+Create a file java/settings.properties with the following contents:
+
+LOCAL_PORT=8888
+VIN=20UYA31581L000000
+SERVER=appz-ext.sics.se
+SERVER_PORT=9999
+# port that is used to AUTOSAR
+LINUX_AUTOSAR_PORT=50000
+APP_DIR=apps
+
+Use the actual name of the computer where you run the server.
+Change VIN to something else.
+
+In /etc/wpa_supplicant/wpa_supplicant.conf, add the name and password
+of the network defined by the router Android.
+
+
+
+To VCU and SCU, copy autosar/boot/bootcode.bin and start.elf.
+Copy autosar/SCU/SCU-kernel.img to kernel.img on the SCU card.
+Copy autosar/VCU/VCU-kernel.img to kernel.img on the VCU card.
 
 See also moped/autosar/readme.txt
+
+Insert the cards in the respective slots on the car.
+Turn the car on.
+
+After a while (about one minute), the server should say that a car has
+connected.

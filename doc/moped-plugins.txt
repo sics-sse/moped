@@ -57,3 +57,12 @@ may be easily fixed. Also BurningWheels (which may use an older way of
 communicating).
 
 
+
+A plugin P needs a 'main' method, a constructor P() and a constructor
+P(String [] args).
+
+The simulator calls it with the 'main' method. On autosar, the one-argument
+constructor is used.
+
+The zero-argument constructor seems not to be called, but if it isn't there,
+the simulator will fail to load the plugin.

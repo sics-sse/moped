@@ -7,6 +7,8 @@ This can be done either with a LiPo battery or a DC power aggregate
 On the voltage divider, there are four lights, showing the voltage. When
 all four are steadily on, the voltage is fine.
 
+TODO: copy text from LOG-sensor-battery
+
 * Charging the battery
 
 Follow the instructions carefully.

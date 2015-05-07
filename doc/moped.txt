@@ -6,15 +6,18 @@ To understand the rest of this document, you may want to read
 moped-overview.txt, where the architecture is broadly described, and
 special terms introduced.
 
-(This document is written in the first person, because I did mostly not
-construct any of the above, and my competence in describing the parts
-varies a bit.)
+(This document is written in the first person, because I did mostly
+not construct any of the things described, and my competence in
+describing the parts varies a bit.)
 
 
 To get a complete MOPED system up and running from scratch, you need to
 perform the following steps:
 
 install maven
+
+(You may be able to use an existing server, with GUI, and then you don't
+need to do B-D.)
 
 
 A Fetch the source code from github.
@@ -54,7 +57,6 @@ When you have a running system, you may want to do these things:
 
 * Extend or debug the system
   See moped-system.txt
-
 
 B, C and D can be done on the same computer, or on different ones. I haven't
 had B and C on different computers, so I didn't learn how to set up a

@@ -18,3 +18,5 @@ I think this is due to a fall in voltage, not to a loose connection.
 The ultrasonic sensor is handled in such a way that it must be
 connected in order for the SCU to run at all: if even one pin is
 disconnected, the SCU pauses or crashes.
+
+The maximum size of a plugin is 4096 bytes. This should be increased.

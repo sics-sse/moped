@@ -1,0 +1,339 @@
+Web services in the server
+
+"GUI" refers to the web portal, currently implemented with wordpress.
+
+
+QUESTION: Wording: do "remove" and "delete" mean different things? Do
+we use both?
+add/create
+change/update/edit/modify
+list/get/fetch
+
+
+All web services need user/password. Those are in the table wp_users,
+which is copied from the web portal.
+
+When it says "Returns ...", it means that a string containing a JSON
+structure is returned, with the structure containing the keys 'result' (which
+holds the returned value) and 'error' (which is true or false) and in
+the case of an error 'message' which is an error message.
+
+If nothing is said about the return value, it is some uninteresting object,
+like an empty array or true.
+
+Errors marked with * are not checked yet.
+
+========================================
+Admin services, only allowed when the user is 'admin' or something like
+that. Meant to be called from the web portal only.
+
+updateUserTable(set of pairs (user, password))
+The contents of the table wp_users are replaced.
+
+QUESTION: Note that the first time, this must be done "manually".
+
+CURRENTLY: doesn't exist yet.
+
+========================================
+User services
+
+
+--------------------
+uploadApp(app, name, version)
+
+app is a byte array, the contents of a jar file
+The app is placed in an appropriate place in the file system of the server.
+Its state is 'uploaded'.
+
+Returns the new appId.
+
+Version should be a string containing nonnegative integers separated
+by periods, but this is not enforced. See listApplications.
+
+Errors:
+no manifest
+*not a jar file
+*unexpected non-class file
+*no class file
+*no xml config file
+xml parse error
+
+--------------------
+infoApp(appId)
+
+Returns info about an app, including its state.
+
+CURRENTLY: doesn't exist
+
+--------------------
+compileApp(appId)
+
+Runs squawk and produces a .suite file. If all went well, the state of the
+app becomes 'compiled'.
+
+Errors:
+no such app
+can't find jar file
+unzipping failed
+suite generation failed
+
+CURRENTLY: arguments are (appname, version)
+I don't remember why I did that.
+
+Returns a string with output from squawk, because it did that before.
+Is that output interesting when all goes well?
+
+--------------------
+testApp(appId)
+
+The state must not be 'uploaded'. Some tests are run, and if they fail,
+an error is returned, and the app keeps its state. If the tests
+succeed and the state was 'compiled', the state will be 'tested'.
+
+CURRENTLY: doesn't exist
+
+--------------------
+installApp(VIN, appId)
+
+If the state of the app is 'tested', schedule an installation of the app
+on the vehicle and return a success value.
+
+If the app was already installed, it will be installed again.
+
+The vehicleConfig name must match.
+
+The scheduling means that a row in InstalledApps is created with the
+installation marked as pending. It will be performed when the car contacts
+the server the next time. At that time, the app is sent to the car, and
+the server waits for an acknowledgment. When/if the acknowledgment appears,
+the app is marked as installed in the InstalledApps table.
+
+The above is a bit internal: talk about the state of an installation instead.
+
+If we want to know when the car is done installing, we have to
+call listInstalledApps or infoApp until the state says 'installed'.
+
+Errors:
+no such car
+no such app
+car has no config
+no fitting vehicle config
+wrong link type
+jar/suite file not found
+
+CURRENTLY: the car must be connected; installations are not scheduled for
+later.
+
+QUESTION: wrong link type can be checked when parsing.
+errors detected on the car are not reported.
+
+--------------------
+uninstallApp(VIN, appId)
+
+If the app has not been installed, return an error.
+If it has, schedule an uninstallation and return a success code.
+In InstalledApps, the uninstallation is marked as pending, etc. Similar to
+installing.
+
+Errors:
+no such car
+no such app
+not installed
+
+CURRENTLY: car must be connected.
+
+QUESTION: what if there are both an installation and an uninstallation pending?
+
+Perhaps the server should use the uninstallation call when it arrives to
+cancel a pending installation and do nothing more. And the other way
+around, cancel an uninstallation as if it wasn't there.
+Alternatively, if we don't cancel anything, we should remember which one
+arrived first.
+
+--------------------
+deleteApp(appId)
+
+The app is uninstalled from all cars where it is installed. Until that
+happens, it has the state 'uninstall-pending'.
+
+CURRENTLY: doesn't exist
+
+--------------------
+addVehicleConfig(name, byte array xml_document)
+
+The xml document is checked for consistency. If valid, it is stored under
+its name in the server's file system. Any earlier file with the same
+name is replaced.
+
+Checks are made to see whether the new vehicleConfig makes a vehicle
+using it incompatible with apps it has installed.
+
+Errors:
+invalid xml
+link using undeclared port
+
+QUESTION: do we need to handle some identifier for it, more than having
+the name inside the document?
+I think it's good to provide the name as an argument. This reduces the
+risk of uploading something where the user forgot to change the name.
+Of course the document should be checked that the name is the correct one.
+
+CURRENTLY: no checks for compatibility are made
+
+--------------------
+deleteVehicleConfig(name)
+
+The vehicle configuration named is removed.
+
+Error if it didn't exist.
+
+QUESTION: error if used, or is it implicitly removed from those vehicles?
+The user may want to know, but should the GUI or the server do the
+calculations?
+Maybe a vehicle must be associated with a vehicleConfig. Then this should
+be specified in addVehicle, and we can't remove a vehicleConfig until
+it is no longer used.
+
+CURRENTLY: doesn't exist
+
+--------------------
+assignVehicleConfig(name, VIN)
+
+Make the vehicle use the named config.
+
+QUESTION: compatibility check for installed apps?
+
+CURRENTLY: doesn't exist
+
+--------------------
+listApplications()
+
+Returns list of {id, name, publisher, version, state, vehicleConfig}
+
+There are no error conditions.
+
+--------------------
+listVehicles()
+
+Returns list of VIN
+
+There are no error conditions.
+
+--------------------
+listUserVehicles(int user)
+
+Returns list of {VIN, name}
+
+Errors:
+no such user
+
+--------------------
+listVehicleConfigs()
+
+QUESTION: info about which ones are used?
+
+There are no error conditions.
+
+Returns list of {name, brand}
+
+--------------------
+listUserVehicleAssociations(int user)
+
+Returns list of {VIN, active}
+
+Errors:
+no such user
+
+QUESTION: should all information about all users be visible to everyone?
+
+--------------------
+addUserVehicleAssociation(user, VIN, boolean activeVehicle)
+
+Errors:
+no such user
+no such car
+association already exists
+
+QUESTION: user must be the one authenticated?
+
+--------------------
+setUserVehicleAssociationActive(user, VIN, boolean active)
+
+Errors:
+no such user
+no such car
+no such association
+
+CURRENTLY:
+This is used today when changing the active vehicle, in a non-atomic
+operation, so something better is wanted.
+
+--------------------
+deleteUserVehicleAssociation(user, VIN)
+
+This may make there be no active vehicle for a user.
+
+Errors:
+no such user
+no such car
+no such association
+
+QUESTION: user must be the one authenticated?
+
+QUESTION: even if there were two cars associated with a user, so the
+remaining one ought to be the selected one, should this function set it?
+
+--------------------
+addVehicle(name, VIN, type)
+
+type is the name of a vehicleConfig.
+
+Errors:
+VIN exists
+type doesn't exist
+
+CURRENTLY: errors are not handled properly
+
+--------------------
+deleteVehicle(VIN)
+
+Errors:
+no such car
+car is in a user vehicle association
+
+--------------------
+infoVehicle(VIN)
+
+Returns a list of {apps, VIN, name, description, type}
+
+Errors:
+no such car
+
+CURRENTLY: apps is a comma-separated list of appId's. This will change.
+'type' is the name of a vehicle config.
+
+--------------------
+downloadApp(appId)
+
+Called by the car. The return value contains the app.
+
+The app is supposed to always exist on the server, but due to bugs, perhaps
+it doesn't, or the car calls the wrong thing. Then an error is returned.
+What the car is supposed to do then is not clear.
+
+QUESTION: how does the car authenticate itself?
+
+CURRENTLY: doesn't exist - the server still pushes the apps to the car,
+using another protocol than SOAP
+
+--------------------
+listInstalledApps()
+
+Returns list of {appid, ecu, name, VIN, applicationState, installationState,
+version}
+
+No error conditions.
+
+Can be used to poll for a completed installation.
+
+

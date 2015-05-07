@@ -30,6 +30,8 @@ with the camera and opencv
 
 on TCU
 
+TODO: copy text from LOG-camera
+
 ============================================================
 
 MQTT
@@ -40,6 +42,10 @@ out (publishes).
 The address of the MQTT server is set in ecm-linux/.../Main.java and
 simulator/.../CarFactory.java.
 
+A template is also defined there, which consists of a JSON structure. It
+is filled in with the key and value of what is written to the part in
+the form "key|value".
+
 ============================================================
 
 VCU and SCU have numbers: 2 = VCU and 3 = SCU. When relevant, 1 = TCU.
@@ -48,8 +54,9 @@ VCU and SCU have numbers: 2 = VCU and 3 = SCU. When relevant, 1 = TCU.
 
 Tips and tricks
 
-If only the SCU needs to be restarted (because it got stuck, or because
-its SD card needs to be updated), pull its power cable and put it in again.
+If only the SCU (or VCU) needs to be restarted (because it got stuck,
+or because its SD card needs to be updated), pull its power cable and
+put it in again.
 
 If you put an ssh app on the Android, you can log in to the TCU without
 a cable. Otherwise, you can use an ethernet cable from the TCU to your
@@ -60,7 +67,7 @@ operations sometimes turn out to be undone. I think it's important
 to do "sync" before restarting.
 
 The dependencies within the modules are far from understood, so it's
-best to always (yes, always) do a clean operation before rebuilding.
+best to always (yes, always) do a 'clean' operation before rebuilding.
 
 ============================================================
 
@@ -77,7 +84,8 @@ or in a sensitive place where they themselves may cause recursion
 completely or make it behave erratically.
 
 At least for the communication between TCU and SCU/VCU, timing cannot
-be changed completely arbitrarily.
+be changed completely arbitrarily, because there is no flow control between
+PIRTE and the code transferring data from the CAN bus.
 
 In Java, printing is done with VM.print or VM.println, whereas System.out
 is ignored on autosar. The VM functions work on hosted platforms too,
@@ -91,5 +99,5 @@ Time taken to get the car started:
 33 TCU gets a wifi address (the dongle starts blinking in blue)
 34 ECM starts
 56 ECM connects to the server
-68 SCU or VCU receives the first plugin
+68 SCU or VCU receives the first plugin (if the TCU has one)
 78 (if the plugin is 2400 bytes) the first plugin starts running

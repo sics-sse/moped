@@ -6,6 +6,13 @@ pulses by reflectors distributed evenly on the inside of a wheel. Thus,
 only the absolute value of the speed is reported.
 
 
+Testing the speed sensor without actually using the motor is easy: rotate
+one of the back wheels by hand (the mechanics make the other wheel rotate
+in the other direction).
+
+
+TODO: copy text from LOG-sensor-speed
+
 * steering
 
 

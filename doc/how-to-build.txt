@@ -26,7 +26,7 @@ trusted server in custom/globalVariables.php
 
 
 cd autosar
-Change build.sh aprropriately to use the cross compiler
+Change build.sh appropriately to use the cross compiler
 export CROSS_COMPILE=/home/arndt/moped/arm/Sourcery_CodeBench_Lite_for_ARM_EABI/bin/arm-none-eabi-
 
 export BDIR=../examples/Raspberry_Pi/demo_VCU
