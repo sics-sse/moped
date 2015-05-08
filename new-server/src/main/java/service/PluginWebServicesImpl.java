@@ -326,11 +326,13 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    Element port = (Element)ports.item(i);
 		    String portName = port.getElementsByTagName("name").item(0).getTextContent();
 					
-		    String q6 = "insert into PluginPortConfig (name,pluginConfig_id) values ('" + portName + "'," + pluginConfig + ")";
-		    //String q6 = "insert into PluginPortConfig (name,pluginConfig_id) values ('" + portName + "'," + 600 + ")";
-		    if (pluginConfig == 600 || true) {
+		    Element e1 = (Element) port.getParentNode().getParentNode();
+		    Element e2 = (Element) e1.getElementsByTagName("name").item(0);
+		    String ppluginName = e2.getTextContent();
+		    System.out.println("pluginName for port = " + ppluginName);
+
+		    String q6 = "insert into PluginPortConfig (name,pluginConfig_id,portPluginName) values ('" + portName + "'," + pluginConfig + ",'" + ppluginName +"'" + ")";
 		    int rows6 = mysql.update(q6);
-		    }
 
 		}
 				
@@ -351,10 +353,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    }
 
 		    String q6 = "insert into PluginLinkConfig (fromStr,toStr,connectionType,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + pluginConfig + ")";
-		    //String q6 = "insert into PluginLinkConfig (fromStr,toStr,connectionType,pluginConfig_id) values ('" + linkSource + "','" + linkTarget + "','" + connectionType + "'," + 600 + ")";
-		    if (pluginConfig == 600 || true) {
 		    int rows6 = mysql.update(q6);
-		    }
 		}
 
 		String q7 = "update Application set state='020-uploaded' where id=" + appId;
@@ -595,8 +594,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    pluginConfigId = Integer.parseInt(c4);
 		    System.out.println("again pluginConfig.id: " + pluginConfigId);
 
-		    String q41 = "select id,name from PluginPortConfig where pluginConfig_id = " + pluginConfigId;
-		    //String q41 = "select id,name from PluginPortConfig";
+		    String q41 = "select id,name,portPluginName from PluginPortConfig where pluginConfig_id = " + pluginConfigId;
 
 		    ResultSet rs2 = mysql.getResults(q41);
 		    try {
@@ -604,6 +602,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 			    int pluginPortId = Integer.parseInt
 				(rs2.getString(1));
 			    String pluginPortName = rs2.getString(2);
+			    String portPluginName = rs2.getString(3);
+
+			    String q41a = "select id from PluginPortConfig where name = '" + pluginPortName + "' and portPluginName = '" + portPluginName + "'";
+			    String s41a = mysql.getOne(q41a, false);
+			    System.out.println("actual id = " + s41a);
+
+			    pluginPortId = Integer.parseInt(s41a);
+
 			    System.out.println("initial context " +
 					       pluginPortName + " " +
 					       pluginPortId);
@@ -648,7 +654,6 @@ public class PluginWebServicesImpl implements PluginWebServices {
 
 
 			String q42 = "select id,fromStr,toStr,connectionType from PluginLinkConfig where pluginConfig_id = " + pluginConfigId;
-			//String q42 = "select id,fromStr,toStr,connectionType from PluginLinkConfig";
 			ResultSet rs4 = mysql.getResults(q42);
 
 			while (rs4.next()) {
