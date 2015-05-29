@@ -82,7 +82,6 @@ with version 1.0:
 
 Compiling:
 
-mkdir -p plugins/storage
 new-server/misc/build3.sh LEDLighter 1.0
 
 This puts LEDLighter-1.0.jar in plugin/storage
