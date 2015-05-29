@@ -5,6 +5,11 @@ This is computed from the frequency with which a light is turned into
 pulses by reflectors distributed evenly on the inside of a wheel. Thus,
 only the absolute value of the speed is reported.
 
+The measurements are made by a separate process, which writes a value into
+a memory cell which the sensor port then reads. So reading fast gives you
+the same value several times in sequence. This is maybe the case with all
+sensors.
+
 
 Testing the speed sensor without actually using the motor is easy: rotate
 one of the back wheels by hand (the mechanics make the other wheel rotate
@@ -18,6 +23,19 @@ TODO: copy text from LOG-sensor-speed
 
 * distance
 
+Minimum distance is 3 cm. 37xx is maximum, but it seems to mean that it
+doesn't detect the echo. 435 seems to be the useful maximum.
+
+It seems that with very large distances, there may be no answer at all
+from the port. I don't know why that is.
+
+The area reached by the sensor has an angle of about 15 degrees in
+both directions from the forward direction. I don't know if the shape
+is conical, or if it is wider in the left-right direction that up-down.
+It points slightly upwards so it will miss the floor.
+
+It seems that it only detects the echo if its angle to the reflecting surface is
+45-90 degrees.
 
 
 * battery

@@ -43,7 +43,7 @@ F Construct a car, or get acquainted with an existing one. I haven't
   See moped-car.txt.
 
 G Put the appropriate code from C on three SD cards, one for each
-  Raspberry Pie on the car.
+  Raspberry Pi on the car.
 
 A needs to be done first. Then the order is not always important, but
 these ordering requirements exist:

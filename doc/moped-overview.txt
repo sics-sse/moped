@@ -23,7 +23,7 @@ keyboard
 screen
 
 Cables between some of the parts:
- from car (UART via 9-pin serial to USB) to GtkTerm
+ from car (UART to USB) to GtkTerm
  from car (USB port) to keyboard
  from car (video port) to screen
  from car (ethernet port) to computer
@@ -41,7 +41,7 @@ interactively to the car.
 
 
 
-On the car are three Raspberry Pie boards, each with one SD card. One
+On the car are three Raspberry Pi boards, each with one SD card. One
 of them handles all external communication and is called the TCU and
 runs Linux.  The other two handles the local sensors and actuators and
 run the operating system autosar. They are called VCU and SCU. See

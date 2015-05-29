@@ -1,7 +1,4 @@
 
-I haven't yet been able to install three plugins on one ECU (different
-ones, or reinstalling) without getting the error "out of memory".
-
 Occasionally, the receiving of an installation package on an ECU from
 the TCU fails, either because it never got everything (there is a
 printout "ready?" followed by two numbers), or because the reading of

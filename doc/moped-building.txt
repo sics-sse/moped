@@ -133,6 +133,13 @@ on SCU and VCU.
 On the TCU, put a Linux. How to do that is not described here, because
 I haven't done that yet.
 
+See https://www.raspbian.org,
+https://www.raspberrypi.org
+https://moped.sics.se/?page_id=328
+http://elinux.org/RPi_CANBus
+NOOBS, raspbian
+
+
 Then create a directory structure
  ~pi
      can-utils

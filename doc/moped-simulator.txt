@@ -1,3 +1,7 @@
+Add note:
+modify config/system1.xml to point out where the trusted server is
+
+
 
 simulator's PIRTE defines these virtual ports:
 0 publish

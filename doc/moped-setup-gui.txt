@@ -1,2 +1,8 @@
+Add note:
+add user: add in wp, add the user to developer and engineer
+also copy the user entry in wp_users to the database of the server
+
+
+
 
 Not written yet.

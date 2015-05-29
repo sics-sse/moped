@@ -1,9 +1,9 @@
 
 
-The car has three Raspberry Pie (called rpi below) boards, revision 2,
+The car has three Raspberry Pi (called rpi below) boards, revision 2,
 called TCU, SCU and VCU.
 
-TCU = telemetric (something unit)
+TCU = telemetric control unit
 SCU = sensor
 VCU = vehicle
 
@@ -88,11 +88,9 @@ in the current wiring on these cars.
 
 
 * Serial data
-rpi pin 6 is connected (black) to pin 5 (ground) on a 9-pin serial cable
-8 to 2 (I014) (yellow)
-10 to 3 (I015) (green)
-
-Google "9-pin serial pinout"
+rpi pin 6 is connected to black on an USB cable
+8 to yellow
+10 to green
 
 It seems it still works if the connections to rpi pins 6 and 10 change
 places, because I did that accidentally, but what this means
