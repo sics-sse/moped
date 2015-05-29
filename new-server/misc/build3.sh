@@ -7,11 +7,14 @@ V=$2
 
 #ROOT=~/moped/newmoped/moped
 ROOT=~/moped/moped
+
 ROOT1=~/moped/moped
 
 PLUGINS=$ROOT/plugins
 PLUGINSTORAGE=$ROOT1/plugins/storage
 SQUAWK=$ROOT/squawk
+
+mkdir -p $PLUGINSTORAGE
 
 cd $PLUGINS/$P
 mvn clean install
