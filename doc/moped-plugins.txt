@@ -1,3 +1,10 @@
+Additions:
+What about plugin in Eclipse? It is mentioned in the "Plugin Manual"
+before building a plugin, you need to build api.
+build with Maven (mvn clean install)
+
+
+
 
 For clearing the simulator, do rm apps/* and rm db/*
 And same in can-utils/java on the TCU.
@@ -66,3 +73,19 @@ constructor is used.
 
 The zero-argument constructor seems not to be called, but if it isn't there,
 the simulator will fail to load the plugin.
+
+
+
+
+Compiling and uploading a plugin, for example the existing plugin LEDLighter,
+with version 1.0:
+
+Compiling:
+
+mkdir -p plugins/storage
+new-server/misc/build3.sh LEDLighter 1.0
+
+This puts LEDLighter-1.0.jar in plugin/storage
+From there, upload it to the server using Application Upload in the GUI.
+
+(Some of these steps will be made more intuitive.)
