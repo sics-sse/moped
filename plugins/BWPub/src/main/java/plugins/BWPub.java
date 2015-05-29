@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
@@ -9,6 +9,9 @@ import sics.plugin.PlugInComponent;
 public class BWPub extends PlugInComponent {
 	private PluginPPort pbw;
 	private PluginRPort rbw;
+	
+	public BWPub() {
+	}
 	
 	public BWPub(String[] args) {
 		super(args);
