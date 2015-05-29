@@ -1,3 +1,9 @@
+A car must be made the active vehicle for a user for it to show up in
+the apps gallery.
+
+In the GUI, press MOPED in the upper left to get to the inside of the
+Wordpress site. There, go to User->Vehicle Association in the menu on
+the left.
 
 
 
