@@ -182,7 +182,7 @@ function fetch_vehicles() {
   global $client;
 
   $myrows = $client->listVehicles();
-  return $myrows->item;
+  return json_decode($myrows)->result;
 }
 
 function fetch_my_vehicles() {
@@ -247,7 +247,8 @@ function operate_user_vehicle_association() {
 			<?php
 				$rows = fetch_vehicles();
 				foreach ($rows as $row) {
-					$output = "<option value=$row>$row</option>";
+                                        $vin = $row->vin;
+					$output = "<option value=$vin>$vin</option>";
 					echo $output;
 				}
 			?>
