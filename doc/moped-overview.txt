@@ -14,7 +14,7 @@ GtkTerm
 
 Android remote control
 
-Android shared internet point = router
+Smart phone (Android or IPhone) shared internet point = router
 
 car
 
