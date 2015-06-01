@@ -162,6 +162,9 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		+ "/" + fversion;
 	    new File(dir).mkdirs();
 	    String p = dir + "/" + appname + ".jar";
+	    // I don't know why we must delete the old one first, but if we don't,
+	    // it seems its old data remains.
+	    new File(p).delete();
 	    OutputStream out = new BufferedOutputStream
 		(Files.newOutputStream(Paths.get(p), CREATE));
 	    out.write(data, 0, data.length);
@@ -234,17 +237,22 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		    "name = '" + name +
 		    //"' and publisher = '" + publisher +
 		    "' and version = '" + version + 
-		    "' and state >= '020-uploaded'";
+		    "' and state >= '020-uploaded' and state < '060'";
 		String c1 = mysql.getOne(q1);
+
+		System.out.println("old App " + c1);
 
 		// we delete the old one
 		// but maybe this should be an error
 		if (!c1.equals("none")) {
+		    System.out.println("setting 060");
 		    String q1u = "update Application set state='060-pending-delete' where id=" + c1;
 		    int rows1u = mysql.update(q1u);
+		    System.out.println("setting 060 " + rows1u);
 		    if (rows1u != 1)
 			return jsonError("upload: internal db error 1");
 		}
+
 
 		String q2 = "insert into Application " +
 		    "(name,publisher,state,version,hasNewVersion) values ('" +
@@ -1529,7 +1537,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public String compileApp(String appname, String version)
 	throws PluginWebServicesException {
 
-	String q1 = "select id from Application where name = '" + appname + "'";
+	String q1 = "select id from Application where name = '" + appname + "'"
+	    + "and state < '060'";
 	String c1 = mysql.getOne(q1);
 
 	if (c1.equals("error")) {
@@ -1541,7 +1550,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 
 	String q2 = "select id from Application where name = '" + appname +
-	    "' and version = '" + version + "'";
+	    "' and version = '" + version + "'" + "and state < '060'";
+;
 	String c2 = mysql.getOne(q2);
 
 	if (c2.equals("error")) {
@@ -1553,7 +1563,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	}
 
 	String q3 = "select state from Application where name = '" + appname +
-	    "' and version = '" + version + "'";
+	    "' and version = '" + version + "'" + "and state < '060'";
+;
 	String c3 = mysql.getOne(q3);
 
 	if (c3.equals("error")) {
@@ -1586,7 +1597,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	String reply[] = new String[1];
 	boolean s = suiteGen.generateSuite(dest, reply); // + "/" + fullClassName);
 	if (s) {
-	    String q1u = "update Application set state='030-compiled' where id=" + c1;
+	    String q1u = "update Application set state='030-compiled' where id=" + c2;
 	    int rows1u = mysql.update(q1u);
 	    if (rows1u != 1)
 		return jsonError("compile: internal db error 5");
