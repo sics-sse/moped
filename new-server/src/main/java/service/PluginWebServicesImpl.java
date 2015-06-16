@@ -1206,7 +1206,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
     }
 
     // returns JSON
-    public String parseVehicleConfiguration2(String name, InputStream is)
+    private String parseVehicleConfiguration2(String name, InputStream is)
 	throws PluginWebServicesException {
 	System.out.println("In parseVehicleConfiguration2");
 
