@@ -558,7 +558,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	//System.out.println("Found vehicle: " + vehicleName + " of brand: " + brand + "... (next step not implemented yet)");
 	// what's this "next step"?
 
-	String q3s = "select state from Application where id = " + appID;
+	String q3s = "select state from Application where id = " + appID +
+	    " and state < '060'";
 	String c3s = mysql.getOne(q3s);
 
 	if (c3s.equals("error")) {
