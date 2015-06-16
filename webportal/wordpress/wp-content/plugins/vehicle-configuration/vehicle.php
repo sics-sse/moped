@@ -261,10 +261,10 @@ function operate_user_vehicle_association() {
 <table>
 	<thead>
 		<tr>
-			<th width="8%">Vehicle Name</th>
-			<th width="10%">Select default vehicle</th>
-			<th width="3%">Remove</th>
-			<th width="79%"></th>
+			<th width="50%">Vehicle Name</th>
+			<th width="30%">Select default vehicle</th>
+			<th width="20%">Remove</th>
+			<th width="0%"></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -536,6 +536,7 @@ function vehicle_configuration_form() {
 </table>
 <?php
 }
+add_shortcode('operate_user_vehicle_association', 'operate_user_vehicle_association');
 
 add_shortcode('vehicle_configuration_form', 'vehicle_configuration_form');
 
