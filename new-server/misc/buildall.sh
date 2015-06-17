@@ -42,11 +42,13 @@ cd ..
 fi
 
 cd autosar
-./build.sh clean; BDIR=../examples/Raspberry_Pi/demo_VCU ./build.sh
+export BDIR=../examples/Raspberry_Pi/demo_VCU
+./build.sh clean; ./build.sh
 mkdir -p VCU
 cp src/core/binaries/Raspberry_Pi/VCU-kernel.img VCU
 
-./build.sh clean; BDIR=../examples/Raspberry_Pi/demo_SCU ./build.sh
+export BDIR=../examples/Raspberry_Pi/demo_SCU
+./build.sh clean; ./build.sh
 mkdir -p SCU
 cp src/core/binaries/Raspberry_Pi/SCU-kernel.img SCU
 cd ..
