@@ -1,5 +1,6 @@
 import base64
 import json
+import re
 
 def ack(client, app):
     vin = "20UYA31581L000000"
@@ -31,4 +32,12 @@ def upload(s, n, v):
 
 def uploadplus(s, n, v):
     x = upload(s, n, v)
+    print x
     x=s.compileApp(n, v)
+    m = re.search("Romizer processed ([0-9]+) class", x, re.MULTILINE)
+    if m:
+        if m.group(1) == "0":
+            print "Romizer processed 0 classes!"
+    else:
+        print "Couldn't find how many classes were processed"
+    #print x
