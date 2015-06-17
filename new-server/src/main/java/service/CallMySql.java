@@ -29,7 +29,11 @@ public class CallMySql {
 	 }
      }
 
-     public String getOne(String query) {
+    public String getOne(String query) {
+	return getOne(query, true);
+    }
+
+    public String getOne(String query, Boolean warn) {
 	
 	 ResultSet rs = null;
 
@@ -55,7 +59,7 @@ public class CallMySql {
 	 } finally {
 	     try {
 		 if (rs != null) {
-		     if (rs.next()) {
+		     if (rs.next() && warn) {
 			 System.out.println("DB WARNING; more than one solution for: " + query);
 		     }
 		     rs.close();
