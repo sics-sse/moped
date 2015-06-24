@@ -958,7 +958,8 @@ public final class Suite {
         if (om == null) {
 /*if[ENABLE_SUITE_LOADING]*/      		
     		try {
-                om = ObjectMemoryLoader.load(uri, true).objectMemory;
+		    // Arndt: changed true to false
+                om = ObjectMemoryLoader.load(uri, false).objectMemory;
             } catch (IOException e) {
                 if (errorOnIOException) {
                     e.printStackTrace();
