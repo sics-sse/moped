@@ -51,14 +51,14 @@ public class Linker {
     }
 
 	public int getVirtualRPortId(int pportId) {
-	    showtables();
-	    VM.println("getVirtualRPortId " + pportId);
+	    //showtables();
+	    //VM.println("getVirtualRPortId " + pportId);
 
 	    Enumeration<Integer> keys = pportId2vrportId.keys();
 	    while(keys.hasMoreElements()) {
 		Integer from = keys.nextElement();
 		Integer to = pportId2vrportId.get(from);
-		VM.println(" link " + from + " -> " + to);
+		//VM.println(" link " + from + " -> " + to);
 		if (from.intValue() == pportId)
 		    return to.intValue();
 	    }
@@ -71,8 +71,8 @@ public class Linker {
 	}
 	
 	public int getVirtualPPortId(int rportId) {
-	    showtables();
-	    VM.println("getVirtualPPortId " + rportId);
+	    //showtables();
+	    //VM.println("getVirtualPPortId " + rportId);
 		Integer vpportId = rportId2vpportId.get(rportId);
 //		if (vpportId == null)
 //			return -100; //TEMP
