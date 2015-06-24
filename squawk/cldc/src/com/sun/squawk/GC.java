@@ -892,9 +892,11 @@ public class GC implements GlobalStaticFields {
         if (oop == null) {
             Assert.always(VM.isThreadingInitialized()); // "insufficient memory to start VM"
             if (gcEnabled) {
+		//VM.println("allocate 2 " + size + " " + arrayLength);
                 VM.collectGarbage(false);
                 oop = allocatePrim(size, klass, arrayLength);
                 if (oop == null) {
+		    //VM.println("allocate 3 " + size + " " + arrayLength);
                     // try harder!
                     VM.collectGarbage(true);
                     oop = allocatePrim(size, klass, arrayLength);
@@ -964,6 +966,8 @@ public class GC implements GlobalStaticFields {
         // Enable allocation again.
         setAllocationEnabled(true);
 
+	// Arndt: if I enable the below block, it says "[Full GC" and then
+	// nothing more
         if (isTracing(TRACE_BASIC)) {
             long afterFree = freeMemory();
             if (fullCollection) {
@@ -1268,6 +1272,7 @@ public class GC implements GlobalStaticFields {
      * @return a pointer to the new stack or null if the allocation fails
      */
     static Object newStack(int length, VMThread owner) {
+	//VM.println("newStack " + length);
         int size = roundUpToWord(HDR.arrayHeaderSize + (length * HDR.BYTES_PER_WORD));
         Object stack = allocatePrim(size, Klass.LOCAL_ARRAY, length);
         if (stack != null) {
