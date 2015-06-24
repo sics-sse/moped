@@ -166,13 +166,13 @@ public class PIRTE {
 				Envelope msg;
 				try {
 					msg = channel.receive();
-					VM.println("[Server] Server is receiving message");
+					//VM.println("[Server] Server is receiving message");
 					if (msg instanceof ByteArrayEnvelope) {
 						ByteArrayEnvelope dataEnv = (ByteArrayEnvelope) msg;
 						//VM.println("getData");
 						byte[] data = dataEnv.getData();
 						byte frameType = data[0];
-						VM.println("frameType " + frameType);
+						//VM.println("frameType " + frameType);
 						switch (frameType) {
 						case ChannelFrameType.INT_VALUE_TRANSMIT:
 							// Get port ID
@@ -224,9 +224,9 @@ public class PIRTE {
 							portIdBytes[2] = data[3];
 							portIdBytes[3] = data[4];
 							portId = byteArrayToInt(portIdBytes);
-							VM.println("calling fetchInt");
+							//VM.println("calling fetchInt");
 							int replyValue = fetchIntVal(portId);
-							VM.println("called fetchInt " + replyValue);
+							//VM.println("called fetchInt " + replyValue);
 							// 1: type, 4: intValue
 							int totalSize = 5;
 							byte dataBytes[] = new byte[totalSize];
@@ -237,9 +237,9 @@ public class PIRTE {
 							dataBytes[4] = (byte) (replyValue);
 							Envelope replyDataEnv = new ByteArrayEnvelope(
 									dataBytes);
-							VM.println("channel.send 1");
+							//VM.println("channel.send 1");
 							channel.send(replyDataEnv);
-							VM.println("channel.send 2");
+							//VM.println("channel.send 2");
 							break;
 						case ChannelFrameType.STRING_VALUE_RQ:
 							// Get port ID
@@ -987,11 +987,11 @@ public class PIRTE {
 
 	public void deliverValue(int pportId, String value) {
 		int vrportId = linker.getVirtualRPortId(pportId);
-	    VM.println("deliverValue " + pportId);
+		//VM.println("deliverValue " + pportId);
 		EcuVirtualRPort vrport = (EcuVirtualRPort) vrports.get(vrportId);
-	    VM.println("deliverValue 2 " + pportId);
+		//VM.println("deliverValue 2 " + pportId);
 		vrport.deliver(value);
-	    VM.println("deliverValue 3 " + pportId);
+		//VM.println("deliverValue 3 " + pportId);
 	}
 	
 	public void sendValue(int pportId, PluginMessage message) {
