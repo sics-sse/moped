@@ -1625,6 +1625,52 @@ public class Build {
             }
         });
         
+        addCommand(new Command(this, "user-compile-r") {
+            public String getDescription() {
+                return "compile a user-project";
+            }
+            
+            public void usage(String errMsg) {
+                PrintStream out = System.err;
+
+                if (errMsg != null) {
+                    out.println(errMsg);
+                }
+                out.println("Usage: user-compile [options] module ");
+                out.println("where module is directory containing a \"src\" directory, and options include:");
+                out.println();
+                out.println("    -cp:<classpath>        classes to compile against");
+                out.println("    -parent:<parentdir>    module that this module depends on");
+            }
+                        
+            public void run(String[] args) {
+                int argi = 0;
+                String cp = "";
+                String parent = null;
+                while (args[argi].startsWith("-")) {
+                    if (args[argi].startsWith("-cp:")) {
+                        cp = args[argi].substring("-cp:".length());
+                    } else if (args[argi].startsWith("-parent:")) {
+                        parent = args[argi].substring("-parent:".length());
+                    } else {
+                    	throw new CommandException(this, "malformed option " + args[argi]);
+                    }
+                    argi++;
+                }
+                String userBaseDir = args[argi];
+                log(brief, "[compiling user project at " + userBaseDir + "...]");
+                
+                String dependencies =  "cldc imp";
+                if (parent != null) {
+                    dependencies = dependencies + " " + parent;
+                }
+                log(verbose, "[    dependencies=" + dependencies + " cp=" + cp +" ...]");
+
+                Target compileTarget = addTarget(true, userBaseDir, dependencies, cp);
+		retroweave(new File(args[0]), new File(args[1]));
+            }
+        });
+        
         // Add the "preprocess" command
         addCommand(new Command(this, "preprocess") {
             public String getDescription() {
