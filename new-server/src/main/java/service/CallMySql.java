@@ -9,13 +9,15 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import utils.PropertyAPI;
+
 public class CallMySql {
      public Connection con = null;
      public Statement st = null;
 
-    private String url = "jdbc:mysql://localhost:3306/fresta2";
-    private String user = "root";
-    private String password = "root";
+    private String url = PropertyAPI.getInstance().getProperty("db_location");
+    private String user = PropertyAPI.getInstance().getProperty("db_user");
+    private String password = PropertyAPI.getInstance().getProperty("db_password");
 
      public CallMySql() {
 
