@@ -62,7 +62,6 @@ public class SuiteGen {
 				
                 bw.write("./d.sh user-compile-r " + source +
                          " " + source + "/j2meclasses/plugins" + "\n");
-                bw.write("cp " + source + "/weaved/*.class" + " " + "/tmp/kaka.class" + "\n");
                 bw.write("mv " + source + "/weaved/*.class" + " " + source + "/j2meclasses/plugins" + "\n");
 		bw.write(cmd + source + "\n");
 		bw.close();
