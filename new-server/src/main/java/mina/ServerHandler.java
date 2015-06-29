@@ -51,7 +51,7 @@ public class ServerHandler extends IoHandlerAdapter {
 	System.out.println("Message sent from server... " + message);
     }
 	
-    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
+    public void exceptionCaughtXXX(IoSession session, Throwable cause) throws Exception {
 	System.out.println("IoSession exception... " + cause);
     }
 
@@ -156,6 +156,8 @@ public class ServerHandler extends IoHandlerAdapter {
 		    System.out.println
 			("INSTALL_ACK: couldn't find VehiclePlugin for " +
 			 pluginName + " in cache!");
+		    // or return;
+		    break;
 		}
 		System.out.println("EcuId:"+vehiclePluginRecord.getEcuId());
 		System.out.println
@@ -192,6 +194,22 @@ public class ServerHandler extends IoHandlerAdapter {
 			// already present
 
 			System.out.println("installed before: " + c2);
+
+			String cidc = "," + installAppId + ",";
+			System.out.println("cidc = " + cidc);
+			if (c2.contains(cidc)) {
+			    System.out.println("already installed");
+			    break;
+			}
+			    
+			if (c2.matches("," + installAppId + ",") ||
+			    c2.matches("^" + installAppId + "$") ||
+			    c2.matches("^" + installAppId + ",") ||
+			    c2.matches("," + installAppId + "$")) {
+			    System.out.println("already installed");
+			    break;
+			}
+
 			if(c2 == null || c2.equals("")) {
 			    c2 = "" + installAppId;
 			} else {
