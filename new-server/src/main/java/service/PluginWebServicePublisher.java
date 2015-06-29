@@ -21,11 +21,12 @@ import org.hibernate.cfg.Configuration;
 
 import service.exception.PluginWebServicesException;
 
+import utils.PropertyAPI;
+
 public class PluginWebServicePublisher {
 	private final static int SOCKET_PORT = 9999;
 	private final static int WSDL_PORT = 9990;
-	private final static String PUB_ADDRESS = "http://localhost:" + WSDL_PORT + "/moped/pws";
-    //	private final static String PUB_ADDRESS = "http://appz-ext.sics.se:" + WSDL_PORT + "/moped/pws";
+	private final static String PUB_ADDRESS = PropertyAPI.getInstance().getProperty("serverhost") + WSDL_PORT + "/moped/pws";
 //	public static SessionFactory sqlSessionFactory;
 
 	public static void main(String[] args) {		
