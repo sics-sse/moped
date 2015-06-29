@@ -11,6 +11,8 @@ import service.MySqlIterator;
 
 import common.MopedException;
 
+import utils.PropertyAPI;
+
 import java.lang.NumberFormatException;
 
 import java.io.BufferedOutputStream;
@@ -122,7 +124,7 @@ class LoggingErrorHandler implements ErrorHandler {
 
 @WebService(endpointInterface = "service.PluginWebServices")
 public class PluginWebServicesImpl implements PluginWebServices {
-    private SuiteGen suiteGen = new SuiteGen("/home/arndt/moped/moped/squawk");
+    private SuiteGen suiteGen = new SuiteGen(PropertyAPI.getInstance().getProperty("mopedtop") + "/squawk");
 	
     private ServerHandler handler = null;
 	
@@ -158,7 +160,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    
 	    //File jarFile = File.createTempFile("apptemp.jar", null);
 
-	    String dir = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname
+	    String dir = PropertyAPI.getInstance().getProperty("mopedtop") + "/webportal/moped_plugins/" + appname
 		+ "/" + fversion;
 	    new File(dir).mkdirs();
 	    String p = dir + "/" + appname + ".jar";
@@ -1180,7 +1182,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	public String addVehicleConfig(String name, byte [] data)
 	throws PluginWebServicesException {
 	boolean status = false;
-	System.out.println("In parseVehicleConfigurationFromStr");
+	System.out.println("In parseVehicleConfigurationFromStr " + data.length);
 
 	try {
 	    File xmlFile = File.createTempFile("apptemp.jar", null);
@@ -1220,7 +1222,8 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    final SchemaFactory sf = 
 		SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-	    String SCHEMA_PATH = "/home/arndt/moped/moped/xml/vehicleconfig.xsd";
+	    String SCHEMA_PATH = PropertyAPI.getInstance().getProperty("mopedtop") + "/xml/vehicleconfig.xsd";
+
 	    File f = new File(SCHEMA_PATH);
 	    //SCHEMA_PATH = "http://merkur.sics.se/VehicleConfig/1.0/VehicleConfig.xsd";
 	    //domfac.setValidating(true);  
@@ -1580,7 +1583,7 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	    return jsonError("compileApp: application in wrong state: " + c3);
 	}
 
-	String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
+	String zipFile = PropertyAPI.getInstance().getProperty("mopedtop") + "/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
 	CompressUtils util = new CompressUtils();
 	System.out.println("Calling unzip on " + zipFile);
 	String dest;
