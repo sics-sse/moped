@@ -49,11 +49,17 @@ function apps_display_form(){
 	$apps = json_decode($apps);
 	$apps = $apps->result;
 
+	$username = wp_get_current_user()->user_login;
+
 	$myvin = getVIN();
-	if (!$myvin) {
-	  print "<font color='red'>No active vehicle</font>";
+	if (!$username) {
+	  print "<font color='red'>You are not logged in</font>";
 	} else {
-	  print "Active vehicle: $myvin";
+	  if (!$myvin) {
+	    print "<font color='red'>No active vehicle</font>";
+	  } else {
+	    print "Active vehicle: $myvin";
+	  }
 	}
 
 	$car = $client->infoVehicle($myvin);
@@ -65,11 +71,15 @@ function apps_display_form(){
 	$iapps = $iapps->result;
 
 	$ia = array();
+	$istatea = array();
+	$ecua = array();
 	foreach ($iapps as $iapp) {
 	  $nam = $iapp->name;
 	  $vin = $iapp->vin;
 	  if ($iapp->vin == $myvin) {
 	    $ia[$nam] = 1;
+	    $istatea[$nam] = $iapp->installationState;
+	    $ecua[$nam] = "ecu".$iapp->ecu;
 	  }
 	}
 
@@ -78,12 +88,12 @@ function apps_display_form(){
 	<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 		<thead>
 			<tr>
-				<th width="33%">Application</th>
+				<th width="18%">Application</th>
 				<th width="15%">Publisher</th>
-				<th width="10%">Version</th>
+				<th width="13%">Version</th>
 				<th width="10%">Type</th>
-				<th width="10%">Install</th>
-				<th width="7%">Info</th>
+				<th width="12%">Install</th>
+				<th width="17%">Info</th>
 				<th width="15%">Uninstall</th>
 			</tr>
 		</thead>
@@ -102,7 +112,14 @@ function apps_display_form(){
 				  if ($app->vehicleConfig == $car->type)
 				    $i = 0;
 				}
-				echo "<td>$i</td>\r\n";
+				$id = $app->id;
+				$state = $app->state;
+				$istate = $istatea[$app->name];
+				$ecus = "";
+				foreach ($app->ecuList as $ecu) {
+				  $ecus = $ecus." ecu$ecu";
+				}
+				echo "<td>$i $id $state $istate $ecus</td>\r\n";
 				echo "<td><form method=\"post\"><input type='hidden' name='app_row' value='$app_nr'/><input type='hidden' name='app_id' value='$app->id'/><input name='Jdk_uninstall' type='image' src='wordpress/custom/images/uninstall.png' alt='Uninstall'/></form></td>\r\n";
 				echo "</tr>\r\n";
 				$app_nr++;
