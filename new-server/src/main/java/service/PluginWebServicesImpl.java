@@ -1846,12 +1846,23 @@ public class PluginWebServicesImpl implements PluginWebServices {
 	int n = 0;
 	while (it.next()) {
 	    JSONObject o2 = new JSONObject();
-	    o2.put("id", it.getString(1));
+	    String appid = it.getString(1);
+	    o2.put("id", appid);
 	    o2.put("name", it.getString(2));
 	    o2.put("publisher", it.getString(3));
 	    o2.put("version", it.getString(4));
 	    o2.put("state", it.getString(5));
 	    o2.put("vehicleConfig", it.getString(6));
+
+	    String q2 = "select ecuRef from DatabasePlugin where application_id = " + appid;
+	    MySqlIterator it2 = mysql.getIterator(q2);
+	    JSONArray a2 = new JSONArray();
+	    int n3 = 0;
+	    while (it2.next()) {
+		a2.put(n3, it2.getString(1));
+		n3++;
+	    }
+	    o2.put("ecuList", a2);
 
 	    int cmp;
 	    String n1 = (String) o2.get("name");
