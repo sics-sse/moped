@@ -633,6 +633,7 @@ public abstract class ObjectMemoryLoader {
 	VM.println("hash, parent hash = (" + hash + ") (" + parent.getHash() + ")");
 
         if (parent.getHash() != hash) {
+	    VM.jnaSetLED(-1, 200);
 	    return null;
 	}
 
