@@ -23,20 +23,31 @@ uint32 led_count = 0;
 
 uint32 led_tick_period = 500;
 
+uint32 led_pattern0 = 0x121f;
+uint32 led_pattern = 0;
 /*
  *to proof the code is running by using the
  *led blink 500ms/once
  */
 static void led_proof(void){
+  if (led_pattern == 0)
+    led_pattern = led_pattern0;
+
+  led_tick_period = 1000/16*(led_pattern&0xf);
+
 	led_count++;
-	if ((led_flag == true) && (led_count / led_tick_period == 1)){// turn on
-		*((&IOPORT0)->gpclr) = 0x00010000;
-		led_flag = false;
-		led_count = 0;
-	}else if ((led_flag == false) && (led_count / led_tick_period == 1)) { // turn off
-		*((&IOPORT0)->gpset) = 0x00010000;
-		led_flag = true;
-		led_count = 0;
+
+	if (led_count / led_tick_period == 1) {
+	  if ((led_flag == true)){// turn on
+	    *((&IOPORT0)->gpclr) = 0x00010000;
+	    led_flag = false;
+	    led_count = 0;
+	  }else if ((led_flag == false)) { // turn off
+	    *((&IOPORT0)->gpset) = 0x00010000;
+	    led_flag = true;
+	    led_count = 0;
+	  }
+	  led_pattern >>= 4;
 	}
 }
 
