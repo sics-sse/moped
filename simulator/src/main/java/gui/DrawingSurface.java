@@ -89,7 +89,7 @@ class DrawingSurface extends JPanel {
 		// Draws an oval to scale, with end points expressed in meters instead of pixels
 
 	    x -= oval_w/2;
-	    y -= oval_h/2;
+	    y += oval_h/2;
 
         Dimension size = getSize();
         Insets insets = getInsets();
