@@ -42,6 +42,10 @@ public class PluginRPort implements PluginPort {
 		return plugin.getPirte().fetchVal(id);
 	}
 
+	public Object receive() {
+		return plugin.getPirte().fetchVal(id);
+	}
+
 	public int readInt() {
 		return plugin.getPirte().fetchIntVal(id);
 	}
