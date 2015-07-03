@@ -1126,6 +1126,8 @@ Address setupMemory(int ramSize, int nvmSize, int argc, char *argv[], char *boot
     memorySize = roundUp(memorySize + argvTotalSize, pageSize);
 #endif /* FLASH_MEMORY */
 
+       printf("squawk.c memorySize %d\r\n", memorySize);
+
      // Double the memory buffer to allocate the type map if necessary
     realMemorySize = TYPEMAP ? memorySize * 2 : memorySize;
     
@@ -1134,6 +1136,7 @@ Address setupMemory(int ramSize, int nvmSize, int argc, char *argv[], char *boot
     
     memoryEnd = Address_add(memory, memorySize);
 #ifdef FLASH_MEMORY
+       printf("flash memory\r\n");
     bootstrapSize = loadBootstrapSuiteFromFlash(bootstrapSuiteFile, &com_sun_squawk_VM_romStart, &suite, &com_sun_squawk_VM_bootstrapHash);
     com_sun_squawk_VM_bootstrapStart = com_sun_squawk_VM_romStart;
 
@@ -1150,6 +1153,7 @@ Address setupMemory(int ramSize, int nvmSize, int argc, char *argv[], char *boot
     // ROM starts at the begining of the VM's memory buffer
     com_sun_squawk_VM_romStart = com_sun_squawk_VM_bootstrapStart = memory;
 #ifdef BYPASS_FILELOADER
+       printf("bypass_fileloader\r\n");
 	//output_val(sizeof(squawkSuiteArray)/sizeof(squawkSuiteArray[0]));
 	bootstrapSize = new_loadBootstrapSuite(squawkSuiteArray, sizeOfSquawkSuiteArray, memory, memorySize, &suite, &com_sun_squawk_VM_bootstrapHash);
 #else
