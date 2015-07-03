@@ -243,6 +243,8 @@ public class MQTTConnection {
 				this.handler = servers.get(server);
 			}
 		}
+		if (debug)
+		    System.out.println("end of MQTT constructor ");
 	}
 
   public MQTTConnection(String location) {
@@ -263,6 +265,9 @@ public class MQTTConnection {
 	
 	public boolean send(String topic, byte[] data) {
 		// Create an MQTT message with proper payload, retainment and QoS.
+	    if (debug)
+		System.out.println("MQTT send");
+
 		MqttMessage message = new MqttMessage();
 		message.setPayload(data);
 		message.setQos(qos);
