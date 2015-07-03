@@ -18,5 +18,7 @@ public class VM {
 		System.out.println("");
 	}
 	
+    public native static void jnaSetSelect(int selector);
+
 	// jna methods
 }
