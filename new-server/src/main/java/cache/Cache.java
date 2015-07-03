@@ -1,5 +1,6 @@
 package cache;
 
+import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -71,8 +72,10 @@ public class Cache {
 		s2 = s2.substring(0,i2);
 		ArrayList<VehiclePluginRecord> records = appList.get(appId);
 		if (records == null) {
+		    System.out.println("appId didn't match");
 		    return null;
 		}
+
 		for (VehiclePluginRecord record : records) {
 		    System.out.println(" " + record.getPluginName() +
 				       " " + pluginName);
@@ -81,10 +84,13 @@ public class Cache {
 		    s1 = s1.substring(0,i1);
 		    System.out.println(" " + s1 +
 				       " " + s2);
-			if (s1.equals(s2)) {
-				records.remove(record);
-				return record;
-			}
+		    System.out.println(" record 1");
+		    if (s1.equals(s2)) {
+			System.out.println(" record 2");
+			records.remove(record);
+			System.out.println("returning record");
+			return record;
+		    }
 		}
 		return null;
 	}
