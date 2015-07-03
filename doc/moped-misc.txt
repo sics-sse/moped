@@ -10,7 +10,7 @@ add this to how-to-build.txt
 
 mvn clean package -Dmaven.test.skip=true
 
-* Add the network of the Android on TCU
+* Add the local network on TCU
 
 (after setting up one, using Internet shared surf point, or something)
 sudo nano /etc/wpa_supplicant/wpa_supplicant.conf

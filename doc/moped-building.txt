@@ -8,12 +8,22 @@ A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
 See http://elinux.org/ARMCompilers
 I don't know how to get a new, free, one.
 
+You may need to install gawk.
 
-make sure that Java is 1.7 or later:
+
+make sure that Java is 1.7 or later, both when building and running:
 java -version
+javac -version
 If it isn't, setting JAVA_HOME alone may not work; use
 update-alternatives --config java
 Whether everything works with 1.8, I don't know.
+
+
+sudo apt-get install git
+sudo apt-get install maven
+
+
+git clone https://github.com/sics-sse/moped
 
 
 In new-server/src/main/java/service/PluginWebServicePublisher.java,
@@ -25,6 +35,11 @@ In configs/system1.xml, change
 appropriately, if you did the corresponding change for the server
 (in PluginWebServicePublisher.java).
 
+
+In webportal/wordpress/custom/vehicle.php,
+modify
+ 	$webServiceAddress = "http://localhost:9990/moped/pws?wsdl";
+if the server is not running on the same host as the web server.
 
 
 Maybe relevant note, for pom.xml in new-server:
@@ -47,6 +62,14 @@ there is then no functioning builder, and then d.sh doesn't
 function. If that happens, build first 'builder' explicitly with
 bld.sh.
 
+
+If you are running a 64 bit Linux, you may need to install software to
+make it possible to run 32-bit programs (like
+squawk/tools/linux-x86/preverify). Googling for "run 32 bit on 64 bit linux"
+will bring up something useful.
+
+
+Read moped-mysql.txt.
 
 * Testing the server
 

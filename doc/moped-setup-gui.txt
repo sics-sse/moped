@@ -6,3 +6,6 @@ also copy the user entry in wp_users to the database of the server
 
 
 Not written yet.
+
+
+Only tested with wordpress 3.6, not later

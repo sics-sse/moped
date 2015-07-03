@@ -82,9 +82,13 @@ with version 1.0:
 
 Compiling:
 
-new-server/misc/build3.sh LEDLighter 1.0
+    OBSOLETE:
+    new-server/misc/build3.sh LEDLighter 1.0
 
-This puts LEDLighter-1.0.jar in plugin/storage
-From there, upload it to the server using Application Upload in the GUI.
+    This puts LEDLighter-1.0.jar in plugin/storage
+    From there, upload it to the server using Application Upload in the GUI.
 
-(Some of these steps will be made more intuitive.)
+    (Some of these steps will be made more intuitive.)
+
+The plugin can now be compiled with "mvn clean install" and uploaded
+from the "target" directory.

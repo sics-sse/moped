@@ -9,11 +9,6 @@ mysql -u root -proot
 
 create user fresta identified by 'somepasswordxxx';
 
-This password should be used in these files:
-    webportal/wordpress/custom/apps_display_form.php
-    webportal/wordpress/wp-config.php
-    server/src/main/resources/hibernate.cfg.xml
-
 create database fresta;
     grant all privileges on fresta . * to 'fresta'@'%';
     flush privileges;

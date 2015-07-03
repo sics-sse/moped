@@ -47,7 +47,7 @@ runs Linux.  The other two handles the local sensors and actuators and
 run the operating system autosar. They are called VCU and SCU. See
 moped-car.txt for specific details.
 
-The code running on the TCU is a Java program ECM, which uses C code
+The code running on the TCU is a Java program called ECM, which uses C code
 compiled into a sharable library libjavaCanBus.so for the communication
 with SCU and VCU (over what is called the CAN bus).
 
@@ -90,3 +90,13 @@ The flow of information between TCU and server is currently in a state
 of flux, so is not described in detail here. The intent is that when a
 car is restarted, it should ask the server for new things to be
 installed.
+
+
+--------------------------------------------------
+Additional documentation apart from these files:
+
+https://twiki.sics.se/bin/view/FRESTA/MOPED
+https://twiki.sics.se/bin/view/FRESTA/DocumentationOnTheSimulator
+https://twiki.sics.se/bin/view/FRESTA/TechnicalReferences#AutoSAR
+
+moped/doc/PluginManual.docx
