@@ -218,6 +218,8 @@ public class ServerHandler extends IoHandlerAdapter {
 			}
 			String q3 = "update Vehicle set INSTALLED_APPS = '" + c2 + "' where vin = '" + vin + "'";
 			int rows3 = mysql.update(q3);
+		    } else {
+			System.out.println("not all installed");
 		    }
 		}
 				
