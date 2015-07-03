@@ -196,7 +196,16 @@ void autosarResetPluginDataSizeFromSCU(void) {
 #endif
 }
 
+extern uint32 led_pattern0;
+extern uint32 led_count;
+
 void autosarSetLED(int pin, int val) {
+  if (pin == -1) {
+    led_pattern0 = val;
+    led_count = 0;
+    return;
+  }
+
 #if VCU
 	switch(pin) {
 	case 1:
