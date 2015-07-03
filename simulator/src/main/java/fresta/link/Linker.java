@@ -34,10 +34,16 @@ public class Linker {
 //	}
 	
 	public int getVirtualRPortId(int pportId) {
+	    //	    System.out.println("getVirtualRPortId, pportId2vrportId = "
+	    //			       + pportId2vrportId + " " + pportId);
+	    //	    System.out.println(" pportId2rportId = " + pportId2rportId);
 		return pportId2vrportId.get(pportId);
 	}
 	
 	public int getVirtualPPortId(int rportId) {
+	    //	    System.out.println("getVirtualPPortId, rportId2vpportId = "
+	    //			       + pportId2vrportId + " " + rportId);
+	    //	    System.out.println(" pportId2rportId = " + pportId2rportId);
 		return rportId2vpportId.get(rportId);
 	}
 	
