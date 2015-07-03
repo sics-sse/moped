@@ -278,7 +278,7 @@ function operate_user_vehicle_association() {
 				$output = "<tr><td align='center'>$vin</td>";
 				/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
 				$link = add_query_arg($link_arr_paras);
-				$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+				$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 				$output .= $edit;*/
 				if($isDefault == true) {
 					$output .= "<td align='center'><input type='radio' name='defaultVehicle' value='$myrow->vin' checked /></td>";
@@ -288,7 +288,7 @@ function operate_user_vehicle_association() {
 				}
 				$link_arr_paras = array('actionForAssociation' => 'remove', 'vin' => $myrow->vin);
 				$link = add_query_arg($link_arr_paras);
-				$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+				$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 				$output .= $remove;
 				$output .= "</tr>";		
 				echo $output;
@@ -347,15 +347,15 @@ function change_vehicle_configuration() {
 					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->ecuId</td><td align='center'>$myrow->description</td><td align='center'>$myrow->function</td><td align='center'>$myrow->manufactory</td>";
 					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
-					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 					$output .= $edit;*/
 					$link_arr_paras = array('action' => 'remove', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
-					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 					$output .= $remove;
 					$link_arr_paras = array('action' => 'restore', 'configid' => $myrow->ecuId);
 					$link = add_query_arg($link_arr_paras);
-					$restore = "<td align='center'><a href=$link alt='Restore Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/restore.png' /></a></td>";
+					$restore = "<td align='center'><a href=$link alt='Restore Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/restore.png' /></a></td>";
 					$output .= $restore;
 					$output .= "</tr>";
 					echo $output;
@@ -426,11 +426,11 @@ function vehicle_build_form(){
 					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->vin</td>";
 					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
-					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 					$output .= $edit;*/
 					$link_arr_paras = array('actionForVehicle' => 'remove', 'vehicleid' => $myrow->vin);
 					$link = add_query_arg($link_arr_paras);
-					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='../wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 					$output .= $remove;
 					$output .= "</tr>";
 					echo $output;
@@ -510,11 +510,11 @@ function vehicle_configuration_form() {
 					$output = "<tr><td align='center'>$myrow->name</td><td align='center'>$myrow->ecuId</td><td align='center'>$myrow->description</td><td align='center'>$myrow->function</td><td align='center'>$myrow->manufactory</td>";
 					/*$link_arr_paras = array('action' => 'edit', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
-					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
+					$edit = "<td align='center'><a href=$link alt='Edit Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/edit.png' /></a></td>";
 					$output .= $edit;*/
 					$link_arr_paras = array('action' => 'remove', 'configid' => $myrow->id);
 					$link = add_query_arg($link_arr_paras);
-					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wordpress/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
+					$remove = "<td align='center'><a href=$link alt='Remove Vehicle Configuration'><img src='/wp/wp-content/plugins/vehicle-configuration/images/remove.png' /></a></td>";
 					$output .= $remove;
 					$output .= "</tr>";
 					echo $output;
