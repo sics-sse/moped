@@ -93,22 +93,33 @@ public class CanEcuManager implements EcuManager {
 						}
 						break;
 					case MessageType.PUBLISH:
+					    System.out.println("data length = " + data.length);
 						int index = 1;
 						byte[] buffer = new byte[4];
 						for(int i=0;i<4;i++) {
 							buffer[i] = data[index++];
 						}
 						int keySize = byteArrayToInt(buffer);
+						System.out.println("keysize " + keySize);
 						byte[] keyBytes = new byte[keySize];
 						for(int k=0;k<keySize;k++) {
 							keyBytes[k] = data[index++];
 						}
 						String keyStr = new String(keyBytes);
 						
-						for(int i=0;i<4;i++) {
+						System.out.println("keystr " + keyStr);
+
+						try {
+						    for(int i=0;i<4;i++) {
+							System.out.println(" " + i + " " + data[index]);
 							buffer[i] = data[index++];
+						    }
+						} catch (Exception e) {
+						    continue;
 						}
 						int valueSize = byteArrayToInt(buffer);
+						System.out.println("valueSize " + valueSize);
+
 						byte[] valueBytes = new byte[valueSize];
 						for(int v=0;v<valueSize;v++) {
 							valueBytes[v] = data[index++];
