@@ -1,0 +1,1 @@
+ -bootclasspath /home/arndt/moped/moped/plugins/Circle/classes:/home/arndt/moped/moped/plugins/Circle/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes: -d /home/arndt/moped/moped/plugins/Circle/classes -g /home/arndt/moped/moped/plugins/Circle/preprocessed/main/java/plugins/Circle.java
