@@ -56,7 +56,7 @@ When you have a running system, you may want to do these things:
   See moped-plugins.txt, moped-simulator.txt, moped-gui.txt.
 
 * Extend or debug the system
-  See moped-system.txt
+  Nothing written yet.
 
 B, C and D can be done on the same computer, or on different ones. I haven't
 had B and C on different computers, so I didn't learn how to set up a
