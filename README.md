@@ -18,3 +18,10 @@ It consists of the following packages:
 * Plugin repository
 * API for the plugin developer
 * Some useful tools
+
+
+2015-10-14
+To get started:
+* Read everything in the "doc" directory.
+* Building is done by running new-server/misc/buildall.sh
+* Ignore the directory "server". "new-server" is the currently active code.
