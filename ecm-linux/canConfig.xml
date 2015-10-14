@@ -17,6 +17,11 @@
         </can>
         <can>
             <role>receiver</role>
+                <id>1132</id>
+                <function>cantp</function>
+        </can>
+        <can>
+            <role>receiver</role>
                 <id>1124</id>
                 <function>cantp</function>
         </can>
