@@ -16,9 +16,18 @@
 			</ports>
 		</plugin>
 		<plugin>
-			<name>Fake.suite</name>
+			<name>StarAndGo.suite</name>
 			<ecu>2</ecu>
 			<ports>
+				<port>
+					<name>sp</name>
+				</port>
+				<port>
+					<name>st</name>
+				</port>
+				<port>
+					<name>fw</name>
+				</port>
 				<port>
 					<name>ab</name>
 				</port>

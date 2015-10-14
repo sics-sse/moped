@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>volvo-rpi1</vehicleName>
+	<brand>Volvo</brand>
+	<plugins>
+		<plugin>
+			<name>UltraSonicReader.suite</name>
+			<ecu>3</ecu>
+			<ports>
+				<port>
+					<name>fs</name>
+				</port>
+				<port>
+					<name>ff</name>
+				</port>
+			</ports>
+		</plugin>
+		<plugin>
+			<name>Recv1.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>ab</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>fs</from>
+			<to>ab</to>
+		</link>
+	</links>
+</app>

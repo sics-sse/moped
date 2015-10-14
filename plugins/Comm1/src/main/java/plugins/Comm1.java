@@ -26,7 +26,7 @@ class WorkThread extends Thread {
 	    try {
 		Thread.sleep(4);
 	    } catch (InterruptedException e) {
-		//VM.println("Interrupted.\r\n");
+		//VM.println("Interrupted.");
 	    }
 	}
 	//obj = (Object) "hej";
@@ -36,18 +36,17 @@ class WorkThread extends Thread {
     }
 }
 
-    // Comment out constructor and 'main' when running in simulator.
-    //    	public Comm1(String[] args) {
-    //    		super(args);
-    //    	}
-    //    
-    //    	public static void main(String[] args) {
-    //    		VM.println("Comm1.main()\r\n");
-    //    		Comm1 autoBrake = new Comm1(args);
-    //    		autoBrake.init();
-    //    		autoBrake.doFunction();
-    //    		VM.println("Comm1-main done\r\n");
-    //    	}
+        	public Comm1(String[] args) {
+        		super(args);
+        	}
+        
+        	public static void main(String[] args) {
+        		VM.println("Comm1.main()");
+        		Comm1 autoBrake = new Comm1(args);
+        		autoBrake.init();
+        		autoBrake.doFunction();
+        		VM.println("Comm1-main done");
+        	}
 
 	@Override
 	public void init() {
@@ -56,10 +55,10 @@ class WorkThread extends Thread {
 	}
 	
 	public void run() {
-	    VM.println("Comm1.run()\r\n");
+	    VM.println("Comm1.run()");
 	    init();
 	    doFunction();
-	    VM.println("Comm1-main done\r\n");
+	    VM.println("Comm1-main done");
 	}
 
     private Object getval(PluginRPort port) {
@@ -68,7 +67,7 @@ class WorkThread extends Thread {
 	try {
 	    Thread.sleep(1000);
 	} catch (InterruptedException e) {
-	    VM.println("Interrupted.\r\n");
+	    VM.println("Interrupted.");
 	}
 	Object o2 = p.obj;
 	//VM.println("plupp " + o2);
@@ -86,7 +85,7 @@ class WorkThread extends Thread {
 		try {
 		    Thread.sleep(10000);
 		} catch (InterruptedException e) {
-		    VM.println("Interrupted.\r\n");
+		    VM.println("Interrupted.");
 		}
 
 		try {

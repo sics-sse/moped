@@ -1,0 +1,1 @@
+ -bootclasspath /home/arndt/moped/moped/plugins/Run/classes:/home/arndt/moped/moped/plugins/Run/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes: -d /home/arndt/moped/moped/plugins/Run/classes -g /home/arndt/moped/moped/plugins/Run/preprocessed/main/java/plugins/Run.java

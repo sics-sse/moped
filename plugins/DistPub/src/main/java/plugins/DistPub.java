@@ -15,11 +15,11 @@ public class DistPub extends PlugInComponent {
 	}
 	
 	public static void main(String[] args) {
-		VM.println("DistPub.main()\r\n");
+		VM.println("DistPub.main()");
 		DistPub publish = new DistPub(args);
 		publish.init();
 		publish.doFunction();
-		VM.println("DistPub-main done\r\n");
+		VM.println("DistPub-main done");
 	}
 
 	@Override
@@ -32,18 +32,25 @@ public class DistPub extends PlugInComponent {
 	public void run() {}
 	
 	public void doFunction() {
-		String data;
-		for (int i = 0; i < 1000; i++) {
-			VM.println("[DistPub is running]");
-			int val = ff.readInt();
-			data = "DistPub|" + val;
-			VM.println(data);
+		String data = "";
+		int cnt = 0;
+		VM.println("[DistPub X is running]");
+		while (true) {
+		    cnt += 1;
+		    int val = ff.readInt();
+		    data += " " + val;
+		    VM.println(data);
+		    if (cnt % 20 == 0) {
+			data = "DistPub| (" + cnt + ")" + data;
+			//VM.println(data);
 			fs.write(data);
+			data = "";
 			try {
-				Thread.sleep(2000);
+			    Thread.sleep(200);
 			} catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
+			    VM.println("Interrupted.");
 			}
+		    }
 		}
 	}
 	

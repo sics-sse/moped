@@ -1,4 +1,4 @@
-package tests;
+package plugins;
 
 import java.io.IOException;
 import com.sun.squawk.VM;
@@ -33,15 +33,14 @@ public class IMUPub extends PlugInComponent {
 	
 	public void doFunction() {
 		String data;
-		for (int i = 0; i < 1000; i++) {
-			VM.println("[IMUPub is running]");
+		VM.println("[IMUPub is running]");
+		while (true) {
 			String val = imu.readString();
 			data = "IMUPub|" + val;
-			VM.print("IMU:");
 			VM.println(data);
 			pub.write(data);
 			try {
-				Thread.sleep(2000);
+			    Thread.sleep(200);
 			} catch (InterruptedException e) {
 				VM.println("Interrupted.\r\n");
 			}

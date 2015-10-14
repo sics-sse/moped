@@ -68,11 +68,14 @@ public class LEDLighter extends PlugInComponent {
     private void setled(String str) {
 	led.write(str);
 	//	VM.println(str);
-	sleep(5000);
+	sleep(500);
     }
 
     public void doFunction() {
+	int i = 0;
 	while (true) {
+	    i++;
+	    VM.println("1 cycle " + i);
 	    setled("1|0");
 	    setled("2|0");
 	    setled("3|0");

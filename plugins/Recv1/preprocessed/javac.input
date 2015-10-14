@@ -1,0 +1,1 @@
+ -bootclasspath /home/arndt/moped/moped/plugins/AllPub/classes:/home/arndt/moped/moped/plugins/AllPub/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes: -d /home/arndt/moped/moped/plugins/AllPub/classes -g /home/arndt/moped/moped/plugins/AllPub/preprocessed/main/java/plugins/AllPub.java

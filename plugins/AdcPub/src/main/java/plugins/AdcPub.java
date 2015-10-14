@@ -41,12 +41,12 @@ public class AdcPub extends PlugInComponent {
 	}
 	
 	public void doFunction() {
-		for(int i=0;i<100;i++) {
+	    while (true) {
 		    //VM.println("[AdcPub is running]");
 			
 			String adcStr = adc.readString();
 			String pubData = "adc|" + adcStr;
-			System.out.println(pubData);
+			VM.println(pubData);
 			ap.write(pubData);
 			try {
 				Thread.sleep(2000);

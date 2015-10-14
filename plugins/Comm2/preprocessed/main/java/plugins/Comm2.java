@@ -9,20 +9,18 @@ import sics.plugin.PlugInComponent;
 public class Comm2 extends PlugInComponent {
     private PluginPPort fs;
 	
-    // Comment out constructor and 'main' when running in simulator.
             	public Comm2() {
             	}
 
-    // Comment out constructor and 'main' when running in simulator.
             	public Comm2(String[] args) {
             		super(args);
             	}
         	
-    //        	public static void main(String[] args) {
-    //        		VM.println("Comm2.main()\r\n");
-    //        		Comm2 publish = new Comm2(args);
-    //        		publish.run();
-    //        	}
+            	public static void main(String[] args) {
+            		VM.println("Comm2.main()");
+            		Comm2 publish = new Comm2(args);
+            		publish.run();
+            	}
 
 	@Override
 	public void init() {
@@ -31,10 +29,10 @@ public class Comm2 extends PlugInComponent {
 	}
 	
 	public void run() {
-	    VM.println("Comm2.run()\r\n");
+	    VM.println("Comm2.run()");
 	    init();
 	    doFunction();
-	    VM.println("Comm2-main done\r\n");
+	    VM.println("Comm2-main done");
 	}
 
 	public void doFunction() {
@@ -44,7 +42,7 @@ public class Comm2 extends PlugInComponent {
 		VM.println("[Comm2 is running]");
 		while (true) {
 		    int ultraSonicData = 42;
-		    //fs.send(String.valueOf(ultraSonicData));
+		    fs.send(String.valueOf(ultraSonicData));
 		    try {
 			VM.println("Comm2: sending " + ultraSonicData);
 			
@@ -54,7 +52,7 @@ public class Comm2 extends PlugInComponent {
 		    try {
 			Thread.sleep(10000);
 		    } catch (InterruptedException e) {
-			VM.println("Interrupted.\r\n");
+			VM.println("Interrupted.");
 		    }
 
 		}

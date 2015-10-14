@@ -63,7 +63,8 @@ public class FWPub extends PlugInComponent {
 			data = "speed|" + String.valueOf(frontWheelSpeedData);
 			fs.write(data);
 		    } try {
-			Thread.sleep(800);
+			//Thread.sleep(800);
+			Thread.sleep(3000);
 		    } catch (InterruptedException e) {
 //				VM.println("Interrupted.");
 			}

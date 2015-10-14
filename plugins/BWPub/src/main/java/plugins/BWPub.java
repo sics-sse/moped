@@ -36,14 +36,21 @@ public class BWPub extends PlugInComponent {
 
 	public void doFunction() {
 		String data;
-		for (int i = 0; i < 1000; i++) {
+		int extra = 0;
+		while (true) {
 			VM.println("[BWPub is running]");
-
 			int rearWheelSpeedData = rbw.readInt();
-			data = "bw|" + String.valueOf(rearWheelSpeedData);
+			data = "bw|" + String.valueOf(rearWheelSpeedData+extra);
 			pbw.write(data);
+			VM.println(rearWheelSpeedData + " + " + extra);
+			// Ensure that the values change, so something will
+			// actually be published even if rearWheelSpeedData
+			// is always 0.
+			extra += 1;
+			if (extra > 2)
+			    extra = 0;
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				VM.println("Interrupted.\r\n");
 			}

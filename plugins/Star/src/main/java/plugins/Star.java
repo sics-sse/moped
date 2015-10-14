@@ -33,7 +33,7 @@ public class Star extends PlugInComponent {
     }
 	
     public void doFunction() {
-	int st1 = 70;
+	int st1 = 100; // was 70
 
 	try {
 	    VM.println("star 1");

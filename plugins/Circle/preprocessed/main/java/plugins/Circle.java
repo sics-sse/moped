@@ -36,72 +36,27 @@ public class Circle extends PlugInComponent {
     public void doFunction() {
 	int st1 = 100;
 
-	try {
-	    VM.println("circle 1");
-	    Thread.sleep(2000);
-	    speed.write(0);
-	    steering.write(0);
+	while (true) {
+	    try {
+		VM.println("circle 1");
+		Thread.sleep(2000);
+		speed.write(0);
+		steering.write(0);
 
-	    VM.println("circle 2");
-	    Thread.sleep(2000);
-	    speed.write(0);
-	    Thread.sleep(2000);
+		VM.println("circle 2");
+		Thread.sleep(2000);
+		speed.write(0);
+		Thread.sleep(2000);
 
-	    while (true) {
-		VM.println("circle 3");
-		speed.write(10);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 4");
-		speed.write(20);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 5");
-		speed.write(30);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 6");
-		speed.write(40);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 7");
-		speed.write(50);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 8");
-		speed.write(60);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 8");
-		speed.write(70);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 8");
-		speed.write(80);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 8");
-		speed.write(90);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 8");
-		speed.write(100);
-		steering.write(st1);
-		Thread.sleep(10000);
-
-		VM.println("circle 6");
+		for (int i = 1; i < 11; i++) {
+		    VM.println("circle " + (i + 2));
+		    speed.write(10*i);
+		    steering.write(st1);
+		    Thread.sleep(10000);
+		}
+	    } catch (InterruptedException e) {
+		//VM.println("Interrupted.");
 	    }
-	} catch (InterruptedException e) {
-	    //VM.println("Interrupted.");
 	}
     }
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>UltraSonicReader.suite</name>
+			<ecu>3</ecu>
+			<ports>
+				<port>
+					<name>fs</name>
+				</port>
+			</ports>
+		</plugin>
+		<plugin>
+			<name>Run.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>sp</name>
+				</port>
+				<port>
+					<name>st</name>
+				</port>
+				<port>
+					<name>ab</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>sp</from>
+			<to>3</to>
+		</link>
+		<link>
+			<from>st</from>
+			<to>4</to>
+		</link>
+		<link>
+			<from>fs</from>
+			<to>ab</to>
+		</link>
+	</links>
+</app>
