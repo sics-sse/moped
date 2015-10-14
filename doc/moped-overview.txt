@@ -32,7 +32,7 @@ Internet access for connecting the router to the server.
 
 
 
-The two Android functions may be realised on the same phone. The
+The two smart phone functions may be realised on the same phone. The
 functions on computers may be realised on the same computer, or
 different ones.
 

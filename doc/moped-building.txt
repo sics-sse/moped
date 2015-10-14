@@ -4,9 +4,10 @@ some testing.
 
 Building:
 
-A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
-See http://elinux.org/ARMCompilers
-I don't know how to get a new, free, one.
+    A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
+    See http://elinux.org/ARMCompilers
+    I don't know how to get a new, free, one.
+I think the above is incorrect - it may be the IDE that's nonfree.
 
 You may need to install gawk.
 
@@ -59,7 +60,7 @@ If there is any error, the script will abort at that step.
 
 If the compilation is interrupted in the middle of bld.sh in squawk,
 there is then no functioning builder, and then d.sh doesn't
-function. If that happens, build first 'builder' explicitly with
+function. If that happens, first build 'builder' explicitly with
 bld.sh.
 
 
@@ -128,19 +129,23 @@ Fetch a simple SOAP client for Python:
 https://fedorahosted.org/suds/wiki/Documentation
 Install using "python setup.py install"
 
+cd new-server/misc
+
 Start python, and do
-from suds.client import Client
-url='http://localhost:9990/moped/pws?wsdl'
-client = Client(url)
+    from suds.client import Client
+    url='http://localhost:9990/moped/pws?wsdl'
+    client = Client(url)
+    client.options.cache.clear()
+    s = client.service
 
 Test the server:
-    client.service.install("88", 2, "jdk")
-returns false and the server says
-    vin in install(): 88
-    appID in install(): 2
-    IoSession is NULL
+    import testmoped
+    testmoped.uploadplus(s, "UltraSonicReader", "1.0")
+{"result":506,"error":false}
+    s.installApp("21UYA31581L000000", 506)
+{"message":"no connection with car 21UYA31581L000000","result":{},"error":true}
 
-TODO: the above is old - now it says other things
+
 
 TODO: insert the rest of the testing from how-to-build.txt
 
@@ -153,14 +158,21 @@ TODO: insert the rest of the testing from how-to-build.txt
 Get three SD cards, call them TCU, SCU and VCU. Make empty file systems
 on SCU and VCU.
 
-On the TCU, put a Linux. How to do that is not described here, because
-I haven't done that yet.
+On the TCU, put a Linux. For example, fetch a 4.1 image from
+https://www.raspberrypi.org/downloads/raspbian/ and put it on the card
+with the 'dd' program.
 
 See https://www.raspbian.org,
 https://www.raspberrypi.org
 https://moped.sics.se/?page_id=328
 http://elinux.org/RPi_CANBus
 NOOBS, raspbian
+
+Add these lines to /boot/config.txt
+# Arndt: added (see http://skpang.co.uk/blog/archives/1165)
+dtparam=spi=on 
+dtoverlay=mcp2515-can0-overlay,oscillator=20000000,interrupt=25 
+dtoverlay=spi-bcm2835-overlay
 
 
 Then create a directory structure
@@ -170,8 +182,22 @@ Then create a directory structure
 
 Under "java", put ecm-linux/target/ecm-linux-0.0.1-SNAPSHOT.jar.
 
-Copy ecm-linux/apptest.c and apptest.h to "can-utils".
+Copy ecm-linux/apptest.c and apptest.h to "can-utils". And canConfig.xml
 Copy ecm-linux/javaCanLib.c to "java".
+
+Create a script can-utils/setup.sh with the following contents:
+insmod spi-bcm2708.ko
+insmod can.ko
+insmod can-dev.ko
+insmod can-raw.ko
+insmod can-bcm.ko
+insmod mcp251x.ko
+ip link set can0 up type can bitrate 500000
+
+
+Find the *.ko files mentioned above somewhere under /lib/modules/*/kernel
+and copy them to ~pi/can-utils.
+This and the insmod may be unnecessary for some or all of them.
 
 Create a script java/deployJavaCanLib.sh with the following contents:
 
@@ -180,7 +206,17 @@ gcc -shared -o libjavaCanLib.so javaCanLib.o apptest.o
 sudo cp libjavaCanLib.so /lib
 java -jar ecm-linux/target/ecm-linux-0.0.1-SNAPSHOT.jar
 
-Arrange for it to be run when Linux boots.
+Arrange for it to be run when Linux boots: add this to /etc/rc.local
+cd /home/pi/can-utils
+sudo ./setup.sh
+cd java
+./deployJavaCanLib.sh &
+
+You may have to use
+    sudo raspi-config
+to enable SPI and/or CAN at boot time.
+
+
 
 Create a file java/settings.properties with the following contents:
 
@@ -196,7 +232,16 @@ Use the actual name of the computer where you run the server.
 Change VIN to something else.
 
 In /etc/wpa_supplicant/wpa_supplicant.conf, add the name and password
-of the network defined by the router Android.
+of the network defined by the router (internet access point), in a structure
+like this:
+network={
+	ssid="network name"
+	psk="password"
+	key_mgmt=WPA-PSK
+	proto=WPA2
+	pairwise=CCMP
+	group=CCMP
+}
 
 
 

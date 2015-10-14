@@ -8,10 +8,11 @@ build with Maven (mvn clean install)
 
 For clearing the simulator, do rm apps/* and rm db/*
 And same in can-utils/java on the TCU.
+You may need to use sudo.
 
 TODO: describe what the plugin code should look like, and how it is
 compiled.
-
+But see PlugInManual.docx.
 
 pom.xml
 plugin configuration file (XML)
@@ -82,13 +83,5 @@ with version 1.0:
 
 Compiling:
 
-    OBSOLETE:
-    new-server/misc/build3.sh LEDLighter 1.0
-
-    This puts LEDLighter-1.0.jar in plugin/storage
-    From there, upload it to the server using Application Upload in the GUI.
-
-    (Some of these steps will be made more intuitive.)
-
-The plugin can now be compiled with "mvn clean install" and uploaded
-from the "target" directory.
+The plugin is compiled with "mvn clean install" and uploaded from the
+"target" directory.

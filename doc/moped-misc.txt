@@ -101,3 +101,49 @@ Time taken to get the car started:
 56 ECM connects to the server
 68 SCU or VCU receives the first plugin (if the TCU has one)
 78 (if the plugin is 2400 bytes) the first plugin starts running
+
+============================================================
+
+Useful commands on TCU:
+
+gpio readall (displays the layout of the pins)
+candump -td can0 (shows the CAN traffic)
+
+
+============================================================
+
+New things, which have not been put in their proper place in this
+documentation:
+
+I added a 4x7 LED display (7 segments, and actually a period too), which
+uses I2C. SCU has code I2C, and otherwise uses this for the ADC. It's
+probably possible to put both ADC and the display on the same I2C pins,
+after setting a different device id on the display.
+
+The MPU9150 (accelerometer) unit also has a magnetometer, so one can
+get the orientation with some additional code on the SCU.
+
+The best current CAN behaviour is had with the 4.1.7+ kernel, which needs
+only a little configuration to work. We can probably build it, but I have
+only tried a downloaded SD card image. Then, the CAN problems on the TCU
+are gone.
+
+CAN problems on the ECU's are in the process of being fixed. A remaining
+one is that the CAN reading doesn't seem to make proper use of the second buffer
+in the CAN controller, so that if two sources send a stream of messages
+each with 20 ms intervals, messages are lost if they streams are not nearly
+10 ms from each other.
+
+I added code for reading the value of the GPIO 2 pin (pin 3). This can be
+changed from 1 to 0 with a simple switch which grounds the pin. The code
+is not readable from Java yet.
+
+New plugin: StarAndGo
+
+Did I write about the ACT LED blinking code?
+
+Sound: connected a small loudspeaker with 3.5mm audio and USB power (to
+charge internal battery) to TCU.
+
+Sending data from VCU to SCU (in the same way as SCU to VCU already works)
+is in progress, but not ready yet.

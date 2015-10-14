@@ -1,5 +1,3 @@
-Add note:
-modify config/system1.xml to point out where the trusted server is
 
 The simulator acts like a car towards the server, and can have plugins
 installed and run (and uninstalled) in it, as well as be remote
@@ -24,7 +22,9 @@ The car is drawn as a rectangle with an arrow in the front part.
 The angle of steering is not shown.
 
 
-simulator/configs/system1.xml
+simulator/configs/system1.xml defines for example the id of the car,
+and the location of the trusted server.
+
 (PIRTE.java)
 
 --nowindow

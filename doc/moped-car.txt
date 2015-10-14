@@ -1,11 +1,13 @@
 
 
-The car has three Raspberry Pi (called rpi below) boards, revision 2,
+The car has three Raspberry Pi 1 (called rpi below) boards, model B revision 2,
 called TCU, SCU and VCU.
 
 TCU = telemetric control unit
 SCU = sensor
 VCU = vehicle
+
+Sometimes I use "ECU" to refer to either of SCU and VCU.
 
 VCU is connected to the steering and driving (both actuators and
 sensors), as well as the LEDs. The speed sensors are at the inside of the
@@ -30,7 +32,7 @@ exactly the same MOPED RTS code - the last building step is different.
 The three boards communicate with a CAN bus, which is implemented by
 what's sitting on the extra little board connected to the main rpi boards.
 
-All three boards have a list of 2x13 pins, described here:
+All three boards have a list of 2x13 pins, described here (revision 2):
 http://www.megaleecher.net/Raspberry_Pi_GPIO_Pinout_Helper
 
 At the front of the car is an ultra sound sensor.
@@ -39,6 +41,8 @@ Behind it are three LEDs: two yellow ones, and between them a red one.
 Under the TCU, next to the battery, sits an ADC (analog to digital)
 converter. In the current configuration, it is taking input from the
 power supply, for measuring the voltage level.
+
+In front of the ADC, there is an accelerator/gyro measuring unit.
 
 The two cars we have here, I call simply car1 and car2. They have these
 numbers on their rpi's:
@@ -52,6 +56,9 @@ car2:
 TCU	 8
 VCU	 5
 SCU	10
+
+The numbers actually are drawn on the CAN bus boards, so if those are
+replaced, the numbers change.
 
 
 On one of the cars (car1), there is a camera, pointing upwards, sitting in
@@ -126,7 +133,11 @@ There are several 5V and ground pins that can be used.
 * I2C
 MPU9150
 
+The accelerometer, also containing a magnetometer. There is no code
+yet for handling the magnetometer.
+
 rpi pins 1, 3, 5 and 9 (ground) are used.
+
 
 * ADC
 Mcp3008

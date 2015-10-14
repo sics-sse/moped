@@ -8,9 +8,10 @@ is a printout "consec: not same sequence number").
 Performing the same operation again will probably be successful. If the
 ECU crashed, it has to be restarted first.
 
-When powered by the aggregate, trying to use the servo can make the TCU
-(and maybe everything) immediately restart. When by battery, it works well.
-I think this is due to a fall in voltage, not to a loose connection.
+When powered by the aggregate, trying to use the servo/motor can make
+the TCU (and maybe everything) immediately restart. When by battery,
+it works well.  I think this is due to a fall in voltage, not to a
+loose connection.
 
 The ultrasonic sensor is handled in such a way that it must be
 connected in order for the SCU to run at all: if even one pin is

@@ -13,3 +13,10 @@ SD cards may get worn and stop functioning. It could be that they still
 work in a computer or SD card reader, but not in the Raspberry.
 Once, one of the small plastic ridges between the contacts broke. I could
 fix that by simply removing most of the ridge.
+
+Sometimes an ECU fails to start because the SD card is somewhat loose.
+One theory is that this is especially likely to happen with the micro SD
+cards.
+
+If the problem is the contacts inside the raspi board, it may get better
+if a few strips of paper are put under the SD card.

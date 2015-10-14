@@ -24,7 +24,8 @@ TODO: copy text from LOG-sensor-speed
 * distance
 
 Minimum distance is 3 cm. 37xx is maximum, but it seems to mean that it
-doesn't detect the echo. 435 seems to be the useful maximum.
+doesn't detect the echo. 637 is the highest value I have received which
+represents a real distance.
 
 It seems that with very large distances, there may be no answer at all
 from the port. I don't know why that is.
@@ -51,3 +52,5 @@ GPS, I think, but it's not used
 I2C
 IMU
 six values
+
+The unit contains a compass as well.
