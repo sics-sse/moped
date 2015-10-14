@@ -120,6 +120,8 @@ public class CanEcuManager implements EcuManager {
 						int valueSize = byteArrayToInt(buffer);
 						System.out.println("valueSize " + valueSize);
 
+						if (valueSize > 256)
+						    break;
 						byte[] valueBytes = new byte[valueSize];
 						for(int v=0;v<valueSize;v++) {
 							valueBytes[v] = data[index++];

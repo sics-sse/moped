@@ -107,20 +107,29 @@ public class MQTTPublisher extends AbstractPublisher implements IPublisher {
 	 */
 	@Override
 	public boolean publish(String key, String value) {
-		if (shouldPublish(key, value)) {
-			String url = replace(connection.getLocation(), key, value);
-			String data = replace(template, key, value);
+	    if (false) {
+		// Arndt: temporary
+		// skip the actual publishing, but write on stdout what would
+		// have happened
+		System.out.println("publishing: " + key + " " + value);
+		return true;
+	    } else {
 
-			// Isolate the topic to send to from the location. We do this this
-			// late in order to be able to have topics that would reflect, for
-			// example, the name of the key being considered for a push.
-			int dblSlash = url.indexOf("//");
-			int slash = url.indexOf("/", dblSlash + 2);
-			String topic = StringUtils.trim(url.substring(slash));
+		if (shouldPublish(key, value)) {
+		    String url = replace(connection.getLocation(), key, value);
+		    String data = replace(template, key, value);
+
+		    // Isolate the topic to send to from the location. We do this this
+		    // late in order to be able to have topics that would reflect, for
+		    // example, the name of the key being considered for a push.
+		    int dblSlash = url.indexOf("//");
+		    int slash = url.indexOf("/", dblSlash + 2);
+		    String topic = StringUtils.trim(url.substring(slash));
 			
-			return connection.send(topic, data.getBytes());
+		    return connection.send(topic, data.getBytes());
 		}
 
 		return false;
+	    }
 	}
 }
