@@ -25,8 +25,7 @@ def readfile(name):
     return s
 
 def upload(s, n, v):
-#    x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/%s/target/%s-%s.jar" % (n,n,v)))
-    x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/storage/%s-%s.jar" % (n,v)))
+    x=base64.b64encode(readfile("/home/arndt/moped/moped/plugins/%s/target/%s-%s.jar" % (n,n,v)))
     x=s.uploadApp(x, n, v)
     return x
 
@@ -38,6 +37,7 @@ def uploadplus(s, n, v):
     if m:
         if m.group(1) == "0":
             print "Romizer processed 0 classes!"
+            print x
     else:
         print "Couldn't find how many classes were processed"
     #print x
