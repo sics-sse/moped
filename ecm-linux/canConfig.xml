@@ -30,4 +30,9 @@
                 <id>1284</id>
                 <function>can</function>
         </can>
+        <can>
+            <role>receiver</role>
+                <id>1292</id>
+                <function>can</function>
+        </can>
 </cans>
