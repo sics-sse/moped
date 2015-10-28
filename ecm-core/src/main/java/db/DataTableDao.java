@@ -45,9 +45,10 @@ public class DataTableDao {
 		// to check if application exists
 		if (pluginDataTable.containsKey(pluginName)) {
 			System.out.println("@ Plugin (" + pluginName
-					+ " has been installed before");
-			return;
-		} else {
+					+ ") has been installed before");
+			//return;
+		}
+		{
 			pluginDataTable.put(pluginName, dataRecord);
 			// to synchronize memory with storage
 			this.object2File(pluginDataTable);
