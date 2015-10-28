@@ -204,13 +204,14 @@ public class PluginWebServicesImpl implements PluginWebServices {
 		String configFileName = attributes.getValue("Pirte-Config");
 		if (configFileName == null)
 		    configFileName = name + ".xml";
-		//TODO: UGLY HACK (only allows one .class file)
 		String fullClassName = "";
 
 		for (Enumeration<JarEntry> entries = jar.entries(); entries.hasMoreElements(); ) {
 		    JarEntry entry = entries.nextElement();
 		    String fileName = entry.getName();
-		    if (fileName.endsWith(".class")) {
+		    // We match with appname.class to know we found the right
+		    // file.
+		    if (fileName.endsWith(appname + ".class")) {
 			String fullClassName1 = fileName.substring(0, fileName.length() - 6);
 			System.out.println("class file " + fullClassName1);
 			if (fullClassName1.endsWith(appname)) {
