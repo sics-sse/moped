@@ -16,8 +16,15 @@ public class VirtualPublishPort extends EcuVirtualRPort {
 	public void deliver(Object data) {
 		String stringVal = (String) data;
 		int splitter = stringVal.indexOf('|');
-		String key = stringVal.substring(0, splitter);
-		String value = stringVal.substring(splitter+1); 
+		String key;
+		String value;
+		if (splitter < 0) {
+		    key = "ECUPUBLISH";
+		    value = stringVal;
+		} else {
+		    key = stringVal.substring(0, splitter);
+		    value = stringVal.substring(splitter+1);
+		}
 		PIRTE.sendPublishData(key, value);
 	}
 
