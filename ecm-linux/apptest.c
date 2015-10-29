@@ -252,6 +252,13 @@ uint8* Can_Read_Package (int can_socket, uint32 can_ID){
 		  // loop here, which is not good.
 		  // The more reliable future solution is to keep separate buffers
 		  // for the possible senders.
+
+		  // Update: this needs more thought. While simultaneous
+		  // publishing works better with the change described above,
+		  // installation acknowledgements don't arrive anymore,
+		  // which is a worse problem.
+		  return NULL;
+
 		} else {
 		  //printf("infor: can_id %d\r\n", canID);
 			frameType = (frame.data[0] & FRAME_TYPE) >> 4;
