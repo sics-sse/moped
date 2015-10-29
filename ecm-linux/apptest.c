@@ -243,6 +243,15 @@ uint8* Can_Read_Package (int can_socket, uint32 can_ID){
 		  if (((frame.data[0] & FRAME_TYPE) >> 4) == FIRST_FRAME) {
 		    printf("infor: p canId not match %d %d\r\n", canID, can_ID);
 		  }
+		  // The code used to return NULL here, which meant that we
+		  // gave up just because one foreign message appeared, and
+		  // with two senders it meant that we almost never could read
+		  // a full package.
+		  // Now, instead, it may happen that the message we wait for
+		  // was lost, and no other message will come. Then we just
+		  // loop here, which is not good.
+		  // The more reliable future solution is to keep separate buffers
+		  // for the possible senders.
 		} else {
 		  //printf("infor: can_id %d\r\n", canID);
 			frameType = (frame.data[0] & FRAME_TYPE) >> 4;
