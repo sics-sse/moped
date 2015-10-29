@@ -237,14 +237,14 @@ uint8* Can_Read_Package (int can_socket, uint32 can_ID){
 	uint32 canID = 0;
 	//printf("infor: can read package\r\n");
     do{
-        //printf("infor: try to read\r\n");
 		read(can_socket, &frame, sizeof(struct can_frame));
 		canID = frame.can_id;
-		//printf("infor: can_id %d\r\n", canID);
 		if(canID != can_ID){
-            //printf("infor: p canId not match\r\n"); 
-			return NULL;;
+		  if (((frame.data[0] & FRAME_TYPE) >> 4) == FIRST_FRAME) {
+		    printf("infor: p canId not match %d %d\r\n", canID, can_ID);
+		  }
 		} else {
+		  //printf("infor: can_id %d\r\n", canID);
 			frameType = (frame.data[0] & FRAME_TYPE) >> 4;
 			switch(frameType){
 				case SINGLE_FRAME:
