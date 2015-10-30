@@ -20,7 +20,7 @@ typedef enum {
 	CONSECUTIVE_FRAME = 2
 } ISO15765FrameType;
 
-//definiton of communication type
+//definition of communication type
 typedef enum {
 	plugin_Installation_SCU = 0,
 	acknowledgement_SCU = 1,
@@ -55,7 +55,7 @@ typedef struct{
 }CanPackage;
 
 /**
- * definition of Ultasonic data package
+ * definition of Ultrasonic data package
  */
 typedef struct{
 	UInt8 size;
@@ -64,7 +64,6 @@ typedef struct{
 
 DataPackage UltraData;
 DataPackage IMUData;
-
 
 
 //All the variable used for Java should be defined here

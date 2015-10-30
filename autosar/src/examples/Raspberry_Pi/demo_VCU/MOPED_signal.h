@@ -20,7 +20,7 @@ typedef enum {
 	CONSECUTIVE_FRAME = 2
 } ISO15765FrameType;
 
-//definiton of communication type
+//definition of communication type
 typedef enum {
 	plugin_Installation_VCU = 0,
 	acknowledgement_VCU = 1,
