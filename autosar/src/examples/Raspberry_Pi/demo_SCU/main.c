@@ -27,11 +27,11 @@ extern boolean ComWrite;
 extern int runSquawk(void);
 
 void SquawkTask(void){
-	 printf("Squawk task\r\n");
+	printf("Squawk task\r\n");
 #if RUN_SQUAWK
-	 runSquawk();
+	runSquawk();
 #endif
-	 TerminateTask();
+	TerminateTask();
 }
 
 void StartupTask( void ) {
