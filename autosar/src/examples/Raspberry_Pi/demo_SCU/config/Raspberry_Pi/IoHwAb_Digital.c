@@ -6,24 +6,13 @@
  *  Created on: 28 okt 2014
  *      Author: sse
  */
-#include <stdint.h>
 #include <stdio.h>
 
 #include "IoHwAb.h"
 #include "IoHwAb_Internal.h"
 #include "IoHwAb_Digital.h"
 
-#if defined(USE_DIO)
-#include "Dio.h"
-#else
-#error "DIO Module is needed by IOHWAB"
-#endif
-
-//#if defined(USE_I2C)
 #include "mpu9150_sensor.h"
-//#endif
-
-#define IS_VALID_DIO_LEVEL(_x) ((STD_LOW == (_x)) || (STD_HIGH == (_x)))
 
 extern uint32 UltrasonicSensor_Read(void);
 Std_ReturnType UltraSensorRead(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data){
