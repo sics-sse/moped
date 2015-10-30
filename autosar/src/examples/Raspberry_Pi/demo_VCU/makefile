@@ -33,7 +33,6 @@ obj-y += $(PROJECT_C_FILES:%.c=%.o)
 build-bin-y = VCU-kernel.img
 inc-y += ..
 
-
 ifeq ($(SQUAWK), true)
 # SQUAWK paths
 J2ME_HOME = $(ROOTDIR)/../../../squawk
@@ -68,3 +67,19 @@ inc-y += $(J2ME_HOME)/vmcore/src/vm
 inc-y += $(J2ME_HOME)/vmcore/src/rts/arm-none-eabi-gcc
 
 endif
+#################### Arctic Core make system ######################
+# Following is an explanation of the most usable features 
+# of the Arctic Core make system.
+#
+# obj-y : list of object files to build.
+# VPATH : list of directories in which to
+#         look for source files.
+# inc-y : list of directories in which to
+#         look for header files.
+# libitem-y : list of libraries to include. 
+# build-exe-y : the name of build the output file.
+# ldcmdfile-y: path to linkscript, used when building "build-exe-y"
+#
+# For more information see:
+# http://arccore.com/wiki/Makesystem
+###################################################################
