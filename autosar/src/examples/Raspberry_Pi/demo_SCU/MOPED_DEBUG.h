@@ -7,15 +7,8 @@
 #include "Platform_Types.h"
 
 //FOR Actuator
-#define SPEED_PRINT_DEBUG 		false
-#define SERVO_PRINT_DEBUG 		false
-
-
-//Wheel Speed Sensor
-#define WHEEL_PRINT_DEBUG  		false
-
-//ADC sensor
-#define ADC_PRINT_DEBUG         false
+#define SPEED_PRINT_DEBUG	false
+#define SERVO_PRINT_DEBUG	false
 
 //Ultrasonic sensor
 #define DISTANCE_PRINT          false
