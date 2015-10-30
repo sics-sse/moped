@@ -40,9 +40,8 @@ void SquawkTask(void){
 
 void StartupTask( void ) {
     pi_printf("infor: start up\r\n");
-//    Mpu9150_Init();
-    EcuM_StartupTwo();
 
+    EcuM_StartupTwo();
 
 	// Startup CanIf due to ComM is missing in this example
 	CanIf_SetControllerMode(CANIF_CanIfCtrlCfg, CANIF_CS_STARTED);
@@ -50,8 +49,8 @@ void StartupTask( void ) {
 
 	 /** Setup Com stack with necessary parameters**/
 	Com_IpduGroupVector groupVector;
-	//Start the IPDU group
 	Com_ClearIpduGroupVector(groupVector);
+	//Start the IPDU group
 	Com_SetIpduGroup(groupVector, COM_PDU_GROUP_ID_TXIPDUGROUP, TRUE);
 	Com_SetIpduGroup(groupVector, COM_PDU_GROUP_ID_RXIPDUGROUP, TRUE);
 	Com_IpduGroupControl(groupVector, TRUE);
@@ -65,6 +64,7 @@ void CanFunctionTask(void) {
     printf("CanFunctionTask\r\n");
 
 	for(;;){
+
 		WaitEvent(EVENT_MASK_CanFunctionEvent);
 		ClearEvent(EVENT_MASK_CanFunctionEvent);
 #if !CAN_INTERRUPT
@@ -73,16 +73,12 @@ void CanFunctionTask(void) {
 		Com_MainFunctionRx();
 
 		if (ComWrite == true) {
-			Com_MainFunctionTx();
-			ComWrite = false;
+		  Com_MainFunctionTx();
+		  ComWrite = false;
 		}
 	}
 }
 
-
 void OsIdle( void ) {
 	for(;;) {}
 }
-
-
-
