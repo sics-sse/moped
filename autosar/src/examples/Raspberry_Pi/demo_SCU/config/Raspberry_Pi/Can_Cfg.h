@@ -71,6 +71,11 @@ typedef struct {
 
 typedef uint32_t Can_FilterMaskType;
 
+typedef enum {
+	CAN_ARC_PROCESS_TYPE_INTERRUPT,
+	CAN_ARC_PROCESS_TYPE_POLLING
+} Can_Arc_ProcessType;
+
 typedef struct Can_HardwareObjectStruct {
 	// Specifies the type (Full-CAN or Basic-CAN) of a hardware object.
 	Can_Arc_HohType CanHandleType;
@@ -103,12 +108,6 @@ typedef struct Can_HardwareObjectStruct {
 	// End Of List. Set to TRUE is this is the last object in the list.
 	boolean Can_Arc_EOL;
 } Can_HardwareObjectType;
- 
- typedef enum {
-	CAN_ARC_PROCESS_TYPE_INTERRUPT,
-	CAN_ARC_PROCESS_TYPE_POLLING
-} Can_Arc_ProcessType;
- 
 
 typedef struct {
 
