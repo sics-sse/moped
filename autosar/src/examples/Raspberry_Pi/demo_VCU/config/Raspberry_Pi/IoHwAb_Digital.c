@@ -14,10 +14,6 @@
 
 #include "MOPED_DEBUG.h"
 
-#if defined(USE_DIO)
-#include "Dio.h"
-#endif
-
 #if defined(USE_PWM)
 #include "Pwm.h"
 #endif
