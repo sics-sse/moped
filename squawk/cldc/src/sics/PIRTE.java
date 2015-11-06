@@ -22,11 +22,13 @@ import sics.port.instances.ReadPluginDataFromTCUVirtualPPort;
 import sics.port.instances.ReadSpeedInPirteVirtualPPort;
 import sics.port.instances.ReadSteerInPirteVirtualPPort;
 import sics.port.instances.VCUReadPluginDataFromSCUVirtualPPort;
+import sics.port.instances.VCUReadPluginDataFromTCUVirtualPPort;
 import sics.port.instances.VirtualAdcPPort;
 import sics.port.instances.VirtualFrontWheelPPort;
 import sics.port.instances.VirtualIMUPPort;
 import sics.port.instances.VirtualLedRPort;
 import sics.port.instances.SCUWritePluginData2VCURPort;
+import sics.port.instances.VCUWritePluginData2SCURPort;
 import sics.port.instances.VirtualPositionPPort;
 import sics.port.instances.VirtualPublishPort;
 import sics.port.instances.VirtualRearWheelPPort;
@@ -97,6 +99,8 @@ public class PIRTE {
 		vpports.put(-2, new ReadSteerInPirteVirtualPPort(-2));
 		vrports.put(0, new VirtualPublishPort(0));
 		vpports.put(1, new VCUReadPluginDataFromSCUVirtualPPort(1));
+
+		vpports.put(2, new VCUReadPluginDataFromTCUVirtualPPort(2));
 		
 		vrports.put(3, new VirtualSpeedPort(3));
 		vrports.put(4, new VirtualSteeringPort(4));
@@ -106,6 +110,7 @@ public class PIRTE {
 		vpports.put(8, new VirtualPositionPPort(8));
 		vrports.put(9, new VirtualLedRPort(9));
 		
+		vrports.put(10, new VCUWritePluginData2SCURPort(10));
 		vrports.put(11, new SCUWritePluginData2VCURPort(11));
 		
 		vpports.put(13, new VirtualUltraSonicPPort(13));
@@ -287,14 +292,15 @@ public class PIRTE {
 							channel.send(replyDataEnv4LongVal);
 							break;
 						case ChannelFrameType.STRING_VALUE_SEND:
+						    //VM.println("sending 0");
 							// Get port ID
-						    VM.println("sending 1 " + portIdBytes);
 							portIdBytes[0] = data[1];
 							portIdBytes[1] = data[2];
 							portIdBytes[2] = data[3];
 							portIdBytes[3] = data[4];
 							portId = byteArrayToInt(portIdBytes);
-						    VM.println("sending to " + portId);
+							//VM.println("sending 1 " + portIdBytes);
+							//VM.println("sending to " + portId);
 							// Get value byte size
 							byte sentValueSizeBytes[] = new byte[4];
 							sentValueSizeBytes[0] = data[5];
@@ -312,18 +318,18 @@ public class PIRTE {
 							int remotePluginPortId = linker.getPluginRPortId(portId);
 							PluginMessage pluginMessage = new PluginMessage(remotePluginPortId, sentValueStr);
 							// Arndt: 11
-							sendValue2(11, pluginMessage);
-							//							sendValue(portId, pluginMessage);
+							sendValue2(10, pluginMessage);
+							sendValue(portId, pluginMessage);
 							break;
 						case ChannelFrameType.STRING_VALUE_RECEIVE:
 							// Get port ID
-							VM.println("receiving 1 " + portIdBytes);
+							//VM.println("receiving 1 " + portIdBytes);
 							portIdBytes[0] = data[1];
 							portIdBytes[1] = data[2];
 							portIdBytes[2] = data[3];
 							portIdBytes[3] = data[4];
 							portId = byteArrayToInt(portIdBytes);
-							VM.println("receiving from " + portId);
+							//VM.println("receiving from " + portId);
 							Object replyObject = receivePluginData(portId);
 							if(replyObject == null) {
 								byte[] replyNullMsgBytes = new byte[1];
@@ -995,23 +1001,23 @@ public class PIRTE {
 	}
 	
 	public void sendValue(int pportId, PluginMessage message) {
-	    VM.println("vrports = " + vrports);
-	    VM.println("vpports = " + vpports);
-	    VM.println("sendValue 0 " + pportId);
+	    //VM.println("s vrports = " + vrports);
+	    //VM.println("s vpports = " + vpports);
+	    //VM.println("s sendValue 0 " + pportId);
 		int vrportId = linker.getVirtualRPortId(pportId);
-	    VM.println("sendValue 1 " + pportId + " " + vrportId);
+		//VM.println("s sendValue 1 " + pportId + " " + vrportId);
 		EcuVirtualRPort vrport = (EcuVirtualRPort) vrports.get(vrportId);
-	    VM.println("sendValue 2 " + pportId);
-		vrport.deliver(message);
-	    VM.println("sendValue 3 " + pportId);
+		//VM.println("s sendValue 2 " + pportId);
+	    //vrport.deliver(message);
+	    //VM.println("sendValue 3 " + pportId);
 	}
 
 	public void sendValue2(int vrportId, PluginMessage message) {
-	    VM.println("sendValue2 1 " + vrportId);
+	    //VM.println("sendValue2 1 " + vrportId);
 		EcuVirtualRPort vrport = (EcuVirtualRPort) vrports.get(vrportId);
-	    VM.println("sendValue2 2 " + vrportId);
+		//VM.println("sendValue2 2 " + vrportId);
 		vrport.deliver(message);
-	    VM.println("sendValue2 3 " + vrportId);
+		//VM.println("sendValue2 3 " + vrportId);
 	}
 
 	private int fetchIntVal(int rportId) {
@@ -1036,17 +1042,22 @@ public class PIRTE {
 	}
 	
 	private Object receivePluginData(int rportId) {
-	    VM.println("vrports = " + vrports);
-	    VM.println("vpports = " + vpports);
-	    VM.println("receivePluginData 0 " + rportId);
-	    //int vpportId = linker.getVirtualPPortId(rportId);
+	    //VM.println("vrports = " + vrports);
+	    //VM.println("vpports = " + vpports);
+	    int vpportId;
+	    vpportId = linker.getVirtualPPortId(rportId);
+	    //VM.println("receivePluginData 0 " + rportId + " " + vpportId);
 	    // Arndt
-	    int vpportId = 1;
-	    VM.println("receivePluginData 1 " + rportId + " " + vpportId);
+	    if (vpportId == -100) {
+		// Not found - then it's SCU to VCU
+		// (except when it's VCU to SCU, which doesn't work yet)
+		vpportId = 1;
+	    }
+	    //VM.println("receivePluginData 1 " + rportId + " " + vpportId);
 		EcuVirtualPPort vpport = (EcuVirtualPPort) vpports.get(vpportId);
-	    VM.println("receivePluginData 2 " + rportId);
+		//VM.println("receivePluginData 2 " + rportId);
 		Object res = vpport.deliver(rportId);
-	    VM.println("receivePluginData 3 " + rportId);
+		//VM.println("receivePluginData 3 " + rportId);
 		return res;
 	}
 
