@@ -65,8 +65,8 @@ public class Linker {
 
 
 	    Integer p = pportId2vrportId.get(new Integer(pportId));
-	    VM.println("getVirtualRPortId -> " + p);
-	    VM.println("getVirtualRPortId -> val " + p.intValue());
+	    //VM.println("getVirtualRPortId -> " + p);
+	    //VM.println("getVirtualRPortId -> val " + p.intValue());
 	    return p.intValue();
 	}
 	
@@ -74,28 +74,28 @@ public class Linker {
 	    //showtables();
 	    //VM.println("getVirtualPPortId " + rportId);
 		Integer vpportId = rportId2vpportId.get(rportId);
-//		if (vpportId == null)
-//			return -100; //TEMP
+		if (vpportId == null)
+			return -100; //TEMP
 		return vpportId.intValue();
 	}
 	
 	public int getPluginRPortId(int pportId) {
-	    showtables();
-	    VM.println("getPluginRPortId " + pportId);
+	    //showtables();
+	    //VM.println("getPluginRPortId " + pportId);
 		//TODO: What is this while-loop for???
 		Enumeration<Integer> keys = pportId2rportId.keys();
 		while(keys.hasMoreElements()) {
 			Integer from = keys.nextElement();
 			Integer to = pportId2rportId.get(from);
 
-			VM.println(" link " + from + " -> " + to);
+			//VM.println(" link " + from + " -> " + to);
 			if (from.intValue() == pportId)
 			    return to.intValue();
 		}
 		
 		Integer p = pportId2rportId.get(pportId);
-	    VM.println("getPluginRPortId -> " + p);
-	    VM.println("getPluginRPortId -> val " + p.intValue());
+		//VM.println("getPluginRPortId -> " + p);
+		//VM.println("getPluginRPortId -> val " + p.intValue());
 		return p;
 	}
 
@@ -111,6 +111,15 @@ public class Linker {
 			// from PluginPort to PluginPort and they are in the same ECU
 			VM.println("Linking " + fromPortId + " -> " + toPortId + " as P->P on the same ECU");
 			pportId2rportId.put(fromPortId, toPortId);
+			// Arndt "same ECU" is not true - this is also for
+			// SCU->VCU, which the last clause here seems to be
+			// made for, but remotePortId is never positive.
+			// 11 here could be 10, and depends on the direction
+			// SCU->VCU or the other way
+			// (so what about actually same ECU? does that work at
+			// all?)
+			pportId2vrportId.put(fromPortId, 11);
+
 		} else if (remotePortId == Configuration.VPORT2PPORT) {
 			// from VirtualPPort to PluginRPort
 			VM.println("Linking " + toPortId + " -> " + fromPortId + " as V->P");
