@@ -102,18 +102,20 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 //	printf("infor: consecutive frame readBytes = %d\r\n", CANPackage->readBytes);
 	uint16 sequenceNumber = tempBuffer[0] & SEQUENCE_NUMBER;
 
+	//printf("Can_Read_Consecutive_Frame seq %d\r\n", sequenceNumber);
+
 	if(sequenceNumber == CANPackage->nextFrameRead){
 		for (int i = 0; i < CONSECUTIVE_FRAME_SIZE; i++) {
 			CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+CF_PCI_BYTE];
 			CANPackage->indexReadEnd++;
 			CANPackage->readBytes++;
-//			printf("Index: %d (%d)\r\n",CANPackage->indexReadEnd,
-//			       CANPackage->CanReadBuffer[CANPackage->indexReadEnd-1]);
+			//			printf("Index: %d (%d)\r\n",CANPackage->indexReadEnd,
+			//			       CANPackage->CanReadBuffer[CANPackage->indexReadEnd-1]);
 			if(CANPackage->indexReadEnd >= BUFFERSIZE){
 				CANPackage->indexReadEnd = 0;
 			}
 			if(CANPackage->TotalReadSize == (CANPackage->readBytes)){
-//			  printf("endSize: %d\r\n",CANPackage->indexReadEnd);
+			  //printf("endSize: %d\r\n",CANPackage->indexReadEnd);
 				CANPackage->PackageState.Done = true;
 				CANPackage->nextFrameRead = NO_FRAME;
 				break;
@@ -149,7 +151,7 @@ void Can_Send_Single_Frame(CanPackage* CANPackage) {
 	length = (UInt8)CANPackage->TotalWriteSize;
 	//construct the first frame
 	data[0] = length;
-//	printf("infor: send single frame size: %d, data: ", data[0]);
+	printf("infor: send single frame size: %d, data: ", data[0]);
 	for (i = 0; i < length; i++) {
 		data[i + SF_PCI_BYTE] = CANPackage->CanWriteBuffer[i];
 		printf("%d ", data[i + SF_PCI_BYTE]);
@@ -158,13 +160,17 @@ void Can_Send_Single_Frame(CanPackage* CANPackage) {
 	//send single frame
 	switch(CommunicationType){
 		case plugin_Installation_VCU:
+		  printf("single frame installation VCU\r\n");
 			//
 		break;
 		case plugin_communication_VCU_to_SCU:
 			//
 
+		  printf("VCU->SCU\r\n");
+		Rte_IWrite_Pirte_WriteDataToSCU_Runnable_PirteSwcWriteDataToSCUPort9_pluginCommunicationVCUtoSCU(data);
 		break;
 		case plugin_communication_VCU_to_TCU:
+		  printf("single frame VCU to TCU\r\n");
 			//
 		break;
 
@@ -201,17 +207,18 @@ void Can_Send_First_Frame(CanPackage* CANPackage) {
 	data[1] = length2;
 	data[2] = length3;
 	data[3] = length4;
-//	printf("infor: send first frame %d, %d, %d, %d ", data[0], data[1], data[2], data[3]);
+	//printf("infor: send first frame %d, %d, %d, %d ", data[0], data[1], data[2], data[3]);
 	for (i = 0; i < FIRST_FRAME_SIZE; i++) {
 		data[i + FF_PCI_BYTE] = CANPackage->CanWriteBuffer[CANPackage->indexWriteEnd];
-//		printf("%d ", data[i + FF_PCI_BYTE]);
+		//		printf("%d ", data[i + FF_PCI_BYTE]);
 		CANPackage->indexWriteEnd++;
 //		printf("infor: writeIndex %d\r\n",CANPackage->indexWriteEnd);
 	}
-//	printf("\r\n");
+	//	printf("\r\n");
 	//send first frame
 	switch (CommunicationType) {
 	case acknowledgement_VCU:
+	  printf("first frame acknowledgementVCU\r\n");
 		//
 		break;
 
@@ -220,6 +227,7 @@ void Can_Send_First_Frame(CanPackage* CANPackage) {
 		break;
 
 	case plugin_communication_VCU_to_TCU:
+	  //printf("first frame VCU to TCU\r\n");
 		Rte_IWrite_Pirte_WriteCommunicationDataFromTCU_Runnable_PirteSwcWriteCommunicationDataToTCUPort11_pluginCommunicationVCUtoTCU(data);
 		break;
 
@@ -238,17 +246,17 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	UInt8 j;
 	UInt8 data[8];
 	UInt8 CommunicationType = CANPackage->CommunicationType;
-//	printf("infor: send consecutive frame\r\n");
+	//printf("infor: send consecutive frame\r\n");
 		//send consecutive frame, construct the first frame
 	data[0] = (uint8) (CONSECUTIVE_FRAME << 4) + (sequnceNumberWrite & 0xF);
-//	printf("%d ", data[0]);
+	//printf("%d ", data[0]);
 	for (j = 0; j < CONSECUTIVE_FRAME_SIZE; j++) {
 		data[j + CF_PCI_BYTE] = CANPackage->CanWriteBuffer[CANPackage->indexWriteEnd];
 		CANPackage->indexWriteEnd++;
 //		printf("infor: writeIndex %d\r\n",CANPackage->indexWriteEnd);
 //		printf("%d ", data[j + CF_PCI_BYTE]);
 	}
-//	printf("\r\n");
+	//	printf("\r\n");
 
 	if (sequnceNumberWrite >= 15) {
 		sequnceNumberWrite = 0;
@@ -258,6 +266,7 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	//send consecutive frame
 	switch (CommunicationType) {
 	case acknowledgement_VCU:
+	  printf("consec frame acknowledgement VCU\r\n");
 		//
 		break;
 
@@ -282,6 +291,12 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
  */
 void Can_Send_Package(CanPackage* CANPackage){
     UInt32 pakcageSize = CANPackage->TotalWriteSize;
+
+    // printf("Can_Send_Package %d %d\r\n", pakcageSize, WriteframeType);
+
+    if (pakcageSize == 0) {
+      return;
+    }
 
 	if (pakcageSize < 8) {
 		Can_Send_Single_Frame(CANPackage);
@@ -327,13 +342,21 @@ boolean plugin_new_packageFromTCU = false;
  */
 void Can_Read_Package(CanPackage* CANPackage){
 
+  static long cnt = 0;
+
     UInt8 frameType = 0;
     UInt8 tempBuffer[8];
     UInt8* pluginData = NULL;
 
     UInt8 CommunicationType = CANPackage->CommunicationType;
 
-//    printf("read package, start = %d, end = %d\r\n", CANPackage->indexReadStart, CANPackage->indexReadEnd);
+    cnt++;
+
+#if 1
+    printf("read package %ld %d, start = %d, end = %d\r\n",
+	   cnt, CommunicationType,
+	   CANPackage->indexReadStart, CANPackage->indexReadEnd);
+#endif
 
     switch(CommunicationType)
     {
@@ -354,6 +377,11 @@ void Can_Read_Package(CanPackage* CANPackage){
     	    break;
     }
     memcpy(tempBuffer, pluginData, 8);
+#if 0
+    for (int i = 0; i < 8; i++)
+      printf(" %d", tempBuffer[i]);
+    printf("\r\n");
+#endif
     //get type of frame
     frameType = (tempBuffer[0] & FRAME_TYPE) >> 4;
 //    printf("infor: frameType %d\r\n",frameType);
@@ -374,6 +402,13 @@ void Can_Read_Package(CanPackage* CANPackage){
     		//nothing
     	break;
     }
+
+#if 0
+    printf("end of read package %ld %d, start = %d, end = %d\r\n",
+	   cnt,
+	   CommunicationType,
+	   CANPackage->indexReadStart, CANPackage->indexReadEnd);
+#endif
 }
 
 static CanPackage *mm(CanPackage *x)
@@ -428,7 +463,7 @@ void Pirte_ReadInstallationDataFromTCU_Runnable(void){
 
 void Pirte_WriteAcknowledgementDataToTCU_Runnable(void){
 //	ack_data = 0xFE;
-//	printf("infor: ack %d\r\n", ack_data);
+	printf("infor: ack %d\r\n", ack_data);
 	Rte_IWrite_Pirte_WriteAcknowledgementDataToTCU_Runnable_PirteSwcWriteAcknowledgementDataToTCUPort2_acknowledgementVCU(ack_data);
 }
 
@@ -455,7 +490,7 @@ void Pirte_ReadCommunicationDataFromTCU_Runnable(void){
 //		 printf("%d ", BufferForCommunication[i]);
 //	  }
 //	  printf("//total %d\r\n", PackageReadFromTCU.indexReadEnd);
-	  PackageReadFromTCU.TotalReadSize = 0;
+//	  PackageReadFromTCU.TotalReadSize = 0;
 	  PackageReadFromTCU.indexReadEnd = 0;
 	  PackageReadFromTCU.nextFrameRead = 0;
 	  PackageReadFromTCU.PackageState.Done = false;
@@ -533,13 +568,14 @@ void Pirte_ReadDataFromSCU_Runnable(void){
 
 }
 
-static CanPackage PackageWriteToSCU;
+CanPackage PackageWriteToSCU;
 boolean init_WriteToSCU = false;
 void Pirte_WriteDataToSCU_Runnable(void){
 	if (init_WriteToSCU == false) {
 		PackageWriteToSCU.CanWriteBuffer = &ack_array[0];
 		PackageWriteToSCU.CommunicationType = plugin_communication_VCU_to_SCU;
-		PackageWriteToSCU.TotalWriteSize = 837;
+		//PackageWriteToSCU.TotalWriteSize = 837;
+		PackageWriteToSCU.TotalWriteSize = writeTotalsize;
 		PackageWriteToSCU.indexWriteStart = 0;
 		PackageWriteToSCU.indexWriteEnd = 0;
 		PackageWriteToSCU.PackageState.Done = false;
