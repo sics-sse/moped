@@ -1,6 +1,3 @@
-Warning: this has not been checked for correctness lately.
-The "fresta" thing will be renamed to "moped", I think.
-
 
 Fetch and install mysql.
 
@@ -18,10 +15,18 @@ create database fresta2 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_
     flush privileges;
 
 
-Use a saved database dump to create and populate the tables:
-mysql -uroot -proot < dump
+The wordpress GUI will only use the 'fresta' database.
+The trusted server will only use the 'fresta2' database.
+
+Use a saved database dump to create and populate the tables in 'fresta2':
+
+    mysql -uroot -proot < moped/webportal/wordpress/db_dump/db_dump.sql
+
 If the dump doesn't say "use ..." on line 1, add such a line for the
 appropriate database (mentioned in the comment further down).
+
+For setting up the 'fresta2' database, see the script
+new-server/misc/init-moped.sh.
 
 
 If you selected other than root/root for the user/password, change
