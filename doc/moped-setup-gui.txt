@@ -1,11 +1,32 @@
-Add note:
-add user: add in wp, add the user to developer and engineer
-also copy the user entry in wp_users to the database of the server
+
+Tested with wordpress 3.6 and 4.1.
 
 
+1) Install wordpress, put it in /var/www/wp
+
+2) Copy in the files from moped/webportal/wordpress
+
+cd wp
+cp -rp ~/moped/moped/webportal/wordpress/custom .
+cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/groups .
+cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/moped .
+cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/vehicle-config* .
+
+3) Add this to wp-content/themes/twentythirteen/functions.php:
+
+/** Include Moped functions */
+include(get_template_directory()."/../../../custom/moped_functions.php");
 
 
-Not written yet.
+4) Set WP_DEBUG to true in wp-config.php, in case something fails. Set it
+to false again when things work, because on some pages, there are some
+harmless but annoying warnings.
 
+5) Add https to Apache. This is not needed for moped to work, but may be
+needed for wordpress administration.
 
-Only tested with wordpress 3.6, not later
+6) Add users to wordpress. Moped users should also be added to both the
+developer and engineer groups.
+
+7) Once you have users in the wordpress user table, dump that table and
+enter it as fresta2.wp_users so the trusted server also sees the users.
