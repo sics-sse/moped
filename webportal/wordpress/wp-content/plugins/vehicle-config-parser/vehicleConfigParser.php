@@ -39,11 +39,11 @@ function vehicleConfigParser($data) {
   try  
     {  
       $ret = $client->addVehicleConfig("MOPED", $data);
-
-      if($ret->return == "true")
+      $ret = json_decode($ret);
+      if($ret->result == "true")
 	echo "<br/><font color='green'>Vehicle Configuration updated successfuflly</font><br />";
       else
-	echo "<br/><font color='red'>".$ret->return."</font><br />";
+	echo "<br/><font color='red'>".$ret->result."</font><br />";
       return $ret;
     } catch (SoapFault $exception) {  
     print $exception;
