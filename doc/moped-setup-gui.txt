@@ -11,6 +11,7 @@ cp -rp ~/moped/moped/webportal/wordpress/custom .
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/groups .
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/moped .
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/vehicle-config* .
+cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/content-mirror .
 
 3) Add this to wp-content/themes/twentythirteen/functions.php:
 
