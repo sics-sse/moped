@@ -313,10 +313,14 @@ public class MQTTConnection {
 
 
     public boolean subscribe(String filter, IMessage dispatch) {
+	System.out.println("MQTTConnectionHandler subscribe (" + filter + ")");
       client.setCallback(this);            // Arrange to receive all messages here
       try {
+	  System.out.println(" MQTT1");
         client.subscribe(filter);          // Subscribe to topic filter
+	  System.out.println(" MQTT2");
         dispatchers.put(filter, dispatch); // Remember filter for re-dispatch on arrival
+	  System.out.println(" MQTT3");
 
         return true;
       } catch (MqttException e) {
@@ -339,18 +343,25 @@ public class MQTTConnection {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
+	System.out.println("Receiving on " + topic + ": " + message);
+
       if (debug) {
         System.out.println("Receiving on " + topic + ": " + message);
       }
 
       // Looks among all existing subscriptions for the one(s) that match the
       // incoming topic and thus should be triggered with the content of the message
+      System.out.println("dispatcher: " + dispatchers.size());
+      System.out.println("dispatcher set: " + dispatchers.entrySet().size());
+
       for (Map.Entry<String,IMessage> entry : dispatchers.entrySet()) {
+	  System.out.println("testing dispatcher");
         if (MQTTSubscription.matchTopics(topic,entry.getKey())) {
+            System.out.println("Topic " + topic + " matches " + entry.getKey() + ", forwarding");
           if (debug) {
             System.out.println("Topic " + topic + " matches " + entry.getKey() + ", forwarding");
           }
-          entry.getValue().receive(message.toString());
+          entry.getValue().receive(topic + ":" + message.toString());
         }
       }
     }
