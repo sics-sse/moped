@@ -64,7 +64,7 @@ public class Main {
 
 		Rec rec = new Rec();
 
-		IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/+", null);
+		IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/to-car/+", null);
 		//receiver.unsubscribe();
 		System.out.println("subscribe Rec");
 		// Doesn't work, because there are two lists called
