@@ -26,8 +26,14 @@ harmless but annoying warnings.
 5) Add https to Apache. This is not needed for moped to work, but may be
 needed for wordpress administration.
 
-6) Add users to wordpress. Moped users should also be added to both the
+6) Make a copy of the file moped/webportal/wordpress/db_dump/fresta_dump.sql
+and replace all occurrences of "merkur.sics.se/wp" in it to what is
+appropriate for you, for example "myhost.com/wordpress".
+
+7) Enter the fresta database dump into the SQL of wordpress.
+
+8) Add users to wordpress. Moped users should also be added to both the
 developer and engineer groups.
 
-7) Once you have users in the wordpress user table, dump that table and
+9) Once you have users in the wordpress user table, dump that table and
 enter it as fresta2.wp_users so the trusted server also sees the users.
