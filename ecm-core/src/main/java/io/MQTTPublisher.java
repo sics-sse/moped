@@ -27,6 +27,8 @@ public class MQTTPublisher extends AbstractPublisher implements IPublisher {
 
 	private MQTTConnection connection = null;
 
+    public String vin = "unknown";
+
 	/**
 	 * Creates an MQTT publisher that will arrange to publish keys and their
 	 * values whenever necessary. The scheme of the URL, in other words, the
@@ -117,7 +119,9 @@ public class MQTTPublisher extends AbstractPublisher implements IPublisher {
 
 		if (shouldPublish(key, value)) {
 		    String url = replace(connection.getLocation(), key, value);
-		    String data = replace(template, key, value);
+		    String template1 = StringUtils.replace(template, "%VIN%",
+							   vin);
+		    String data = replace(template1, key, value);
 
 		    // Isolate the topic to send to from the location. We do this this
 		    // late in order to be able to have topics that would reflect, for
