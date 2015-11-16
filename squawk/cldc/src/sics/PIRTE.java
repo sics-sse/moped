@@ -100,7 +100,7 @@ public class PIRTE {
 		vrports.put(0, new VirtualPublishPort(0));
 		vpports.put(1, new VCUReadPluginDataFromSCUVirtualPPort(1));
 
-		vpports.put(2, new VCUReadPluginDataFromTCUVirtualPPort(2));
+		vpports.put(22, new VCUReadPluginDataFromTCUVirtualPPort(22));
 		
 		vrports.put(3, new VirtualSpeedPort(3));
 		vrports.put(4, new VirtualSteeringPort(4));
