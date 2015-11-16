@@ -2,6 +2,7 @@ package main;
 
 import io.PublisherFactory;
 import io.IPublisher;
+import io.MQTTPublisher; // for 'vin'
 import io.IMessage;
 import io.IReceiver;
 import io.ReceiverFactory;
@@ -17,6 +18,13 @@ import ecm.Ecm;
 import messages.PublishPacket;
 
 public class Main {
+    private static class Rec implements IMessage {
+	public void receive(String msg) {
+	    System.out.println("Rec message (" + msg + ")");
+	}
+    }
+
+
 	public static void main(String[] args) {
 
 		// Initiate ecuManager
@@ -54,9 +62,22 @@ public class Main {
 		//IoTManager iotManager = new IoTManager(publisher);
 		//		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://iot.eclipse.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"frontSpeed\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 
-		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/zeni/speed", "{\"version\":\"1.0.0\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+		Rec rec = new Rec();
 
-		IoTManager iotManager = new IoTManager(publisher);
+		IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/+", null);
+		//receiver.unsubscribe();
+		System.out.println("subscribe Rec");
+		// Doesn't work, because there are two lists called
+		// 'dispatchers'. One is the one which is used; the other
+		// is private and is the one that we add to here.
+		receiver.subscribe(rec);
+
+		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/value", "{\"version\":\"1.0.0\",\"vin\":\"%VIN%\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+
+		MQTTPublisher mqttpub = (MQTTPublisher) publisher;
+		mqttpub.vin = vin;
+
+		IoTManager iotManager = new IoTManager(publisher, receiver);
 		
 //    IPublisher publisher = PublisherFactory.publisher("ws://api.xively.com:8080/", "{\n" +
 //            "  \"method\" : \"put\",\n" +
@@ -78,10 +99,12 @@ public class Main {
 //    IoTManager iotManager = new IoTManager(publisher);
 
 		Ecm ecm = new Ecm();
+		iotManager.setEcm(ecm);
 		ecm.init(ecuManager, commuManager, iotManager, carDriver);
 		// Sometimes the mqtt manager is not ready yet, and then
 		// we crash
 		//iotManager.sendPacket(new PublishPacket("speed", "3.235"));
+
 		ecm.start();
 		//iotManager.sendPacket(new PublishPacket("speed", "3.234"));
 	}
