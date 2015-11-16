@@ -219,10 +219,16 @@ public class ClientHandler extends IoHandlerAdapter {
 				System.out.println("portLinkingContext is not null");
 				//TEMP_DBG
 				for (Iterator<LinkContextEntry> ctxtIter = portLinkingContext.iterator(); ctxtIter.hasNext(); ) {
-					LinkContextEntry ctxt = ctxtIter.next();
-					System.out.println("ctxtIter: " + ctxt.getFromPortId() + " -> " + ctxt.getToPortId() + " via " + ctxt.getRemotePortId());
-				}
+				    LinkContextEntry ctxt = ctxtIter.next();
+				    System.out.println("ctxtIter: " + ctxt.getFromPortId() + " -> " + ctxt.getToPortId() + " via " + ctxt.getRemotePortId());
 					
+				    if (pluginName.equals(manager.getEcm().subscriberName + ".suite") && ctxt.getFromPortId() == 22) {
+					manager.getEcm().subscriberPort = ctxt.getToPortId();
+					System.out.println("port " + manager.getEcm().subscriberPort + " is a subscriber");
+				    }
+				}
+
+
 			}
 
 			System.out.println("reference = " + reference);
