@@ -23,6 +23,7 @@ import messages.LoadMessage;
 import messages.Message;
 import messages.MessageType;
 import messages.PublishMessage;
+import messages.PluginMessage;
 import messages.PublishPacket;
 import messages.RestoreAckMessage;
 import messages.RestoreAckPacket;
@@ -49,6 +50,10 @@ public class Ecm {
 	// key: plug-in temporary id, value: plug-in name
 	private HashMap<Byte, String> id2name4UninstallCache = new HashMap<Byte, String>();
 	
+    // Define access methods instead of public.
+    public String subscriberName = "Comm1";
+    public int subscriberPort = -1;
+
 	public Ecm() {
 	    System.out.println("Ecm new");
 		dbDao = new DataTableDao();
@@ -97,7 +102,8 @@ public class Ecm {
 			System.out.println("installedApps: NULL!!!!!!!!!!!!!!");
 		
 		if (!installedApps.isEmpty()) {
-			String key = installedApps.keySet().iterator().next();
+		    for (Iterator<String> it1 = installedApps.keySet().iterator(); it1.hasNext(); ) {
+			String key = it1.next();
 			DataRecord rec = installedApps.get(key);
 			
 			System.out.println("Found db_key: " + key);
@@ -123,7 +129,14 @@ public class Ecm {
 				System.out.println("\tfromPortId: " + entry.getFromPortId() + 
 						"; toPortId: " + entry.getToPortId() + 
 						"; remotePortId: " + entry.getRemotePortId());
+
+				if (rec.getPluginName().equals(subscriberName + ".suite") && entry.getFromPortId() == 22) {
+					subscriberPort = entry.getToPortId();
+					System.out.println("port " + subscriberPort + " is a subscriber");
+			    }
+
 			}
+		    }
 		}
 		
 		Iterator<Entry<String, DataRecord>> iterator = installedApps.entrySet()
@@ -284,7 +297,12 @@ public class Ecm {
 			System.out.println("[" + pluginName + " loaded]");
 			break;
 		case MessageType.PLUGIN_MESSAGE:
-			System.out.println("iot subscribe message");
+			PluginMessage pluginMessage = (PluginMessage) message;
+			String val = (String) pluginMessage.getValue();
+			System.out.println("iot subscribe message: " + val);
+			System.out.println("sending to VCU:" + subscriberPort);
+			ecuManager.sendToVCU(val, subscriberPort);
+
 			break;
 		default:
 			System.out.println("Error: Wrong message type");
