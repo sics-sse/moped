@@ -67,11 +67,13 @@ public class CanEcuManager implements EcuManager {
 		while (true) {
 			for (ICanReceiver receiver : canReceivers) {
 				byte[] data = receiver.receive();
-				if(data != null) {
+				if(data != null)
+				    try {
 					byte[] parsedData = parseByteData(data[0]);
 		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 					switch (parsedData[0]) {
 					case MessageType.INSTALL_ACK:
+					    System.out.println(" plugin id " + parsedData[1]);
 						if(ecm.hasPluginInTmpDB(parsedData[1])) {
 							String pluginName = ecm
 									.getPluginNameFromTmpDB(parsedData[1]);
@@ -135,7 +137,9 @@ public class CanEcuManager implements EcuManager {
 						System.out
 								.println("Error: wrong message type from autosar");
 					}
-				}
+				    } catch (Exception e) {
+					e.printStackTrace();
+				    }
 				
 			}
 
@@ -571,6 +575,22 @@ public class CanEcuManager implements EcuManager {
 		}
 		javaCanLibrary.sendBigData(channelNumber, can_id, 8, totalSize, byteArray);
 	}
+
+    public void sendToVCU(String str, int portid) {
+	int can_id = 1129;
+	int len = str.length();
+	byte [] data = new byte[len+4];
+	// 469#06000001F4343600
+	data[0] = (byte) (portid >> 24);
+	data[1] = (byte) (portid >> 16);
+	data[2] = (byte) (portid >> 8);
+	int x = portid%256;
+	data[3] = (byte) x;
+	for (int i = 0; i < len; i++) {
+	    data[i+4] = (byte) str.charAt(i);
+	}
+	javaCanLibrary.sendBigData(channelNumber, can_id, 8, len+4, data);
+    }
 
 	@Override
 	public void setEcm(Ecm ecm) {
