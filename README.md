@@ -25,3 +25,6 @@ To get started:
 * Read everything in the "doc" directory.
 * Building is done by running new-server/misc/buildall.sh
 * Ignore the directory "server". "new-server" is the currently active code.
+
+Forum for discussion of the MOPED platform:
+http://mopedforum.prpphpbb.com
