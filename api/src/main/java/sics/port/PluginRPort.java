@@ -37,7 +37,7 @@ public class PluginRPort implements PluginPort {
 		return 0;
 	}
 
-	public int readLong() {
+	public long readLong() {
 		return 0;
 	}
 
