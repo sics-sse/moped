@@ -10,8 +10,6 @@
 #include <linux/can/raw.h>
 #include "../apptest.h"
 
-#define TCU_FILTER 0x4
-
 static int CAN_DLC = 2;
 extern int Can_Init(void);
 extern void Can_Send_Package(uint32 can_socket, struct can_frame frame, uint32 appsize, uint8* bytes);
