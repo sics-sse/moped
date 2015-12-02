@@ -363,12 +363,15 @@ public class PIRTE {
 				} catch (MailboxClosedException e) {
 					VM.println("[Server] Server seems to have gone away. Oh well. "
 									+ channel);
-					break;
+					// Arndt: experiment: return instead
+					return;
+					//break;
 				} catch (AddressClosedException e) {
+			    VM.println("AddressClosedException in plugin");
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullPointerException e) {
-				    //VM.println("NULL POINTER in ServerChannelHandler of PIRTE");
+				    VM.println("NULL POINTER in ServerChannelHandler of PIRTE");
 					e.printStackTrace();
 					try {
 					    byte[] replyNullMsgBytes = new byte[1];
@@ -382,6 +385,7 @@ public class PIRTE {
 					}
 
 				} catch (Exception e) {
+			    VM.println("Exception in plugin");
 					e.printStackTrace();
 				}
 				// finally {
@@ -400,6 +404,7 @@ public class PIRTE {
 			try {
 				serverChannel = ServerChannel.create(MAILBOX_NAME);
 			} catch (MailboxInUseException ex) {
+			    VM.println("MailboxInUseException in PIRTE");
 				throw new RuntimeException(ex.toString());
 			}
 			while (true) {
@@ -407,7 +412,12 @@ public class PIRTE {
 					aChannel = serverChannel.accept();
 					new Thread(new ServerChannelHandler(aChannel)).start();
 				} catch (IOException ex) {
+				    VM.println("IO exception in PIRTE " + ex);
+					ex.printStackTrace();
 					// ok, just close server.
+				} catch (Exception ex) {
+				    VM.println("exception in PIRTE " + ex);
+					ex.printStackTrace();
 				}
 				// finally {
 				// // no way to get here:
@@ -585,6 +595,7 @@ public class PIRTE {
 		 */
 		int nodatacount = 0;
 		while (true) {
+		    try {
 			// check how many data bytes updated
 			// count = VM.jnaReadCount();
 			// VM.print("#### count: "+count+"\r\n");
@@ -597,6 +608,7 @@ public class PIRTE {
 				//message = new byte[messageSize];
 				index = 0;
 				isConsectutive = true;
+				VM.jnaSetLED(-1, 0x21f1);
 				VM.println("Java: messageSize:" + messageSize);
 			}
 
@@ -678,6 +690,7 @@ public class PIRTE {
 
 						VM.println("plugin name size: " + pluginNameSize);
 
+						VM.println("1");
 						// Handle PlugIn Name
 						String pluginName = "";
 						for (int i = 0; i < pluginNameSize; i++) {
@@ -686,6 +699,7 @@ public class PIRTE {
 						}
 
 						//1 VM.println("plugin name: " + pluginName);
+						VM.println("2");
 
 						// Handle size of PlugIn
 						byte pluginSizeBuffer[] = new byte[4];
@@ -693,6 +707,7 @@ public class PIRTE {
 							pluginSizeBuffer[z] = message[index++];
 						}
 
+						VM.println("3");
 						int pluginSize = byteArrayToInt(pluginSizeBuffer);
 //						VM.println("@pluginSize@ " + pluginSize);
 						// Handle PlugIn
@@ -700,6 +715,7 @@ public class PIRTE {
 						for (int m = 0; m < pluginSize; m++) {
 							plugin[m] = message[index++];
 						}
+						VM.println("4");
 
 						// Handle size of port init context
 						byte portInitContextSizeBytes[] = new byte[4];
@@ -707,7 +723,9 @@ public class PIRTE {
 						portInitContextSizeBytes[1] = message[index++];
 						portInitContextSizeBytes[2] = message[index++];
 						portInitContextSizeBytes[3] = message[index++];
+						VM.println("5");
 						int portInitContextSize = byteArrayToInt(portInitContextSizeBytes);
+						VM.println("6: " + portInitContextSize + " " + index);
 
 						// Handle port init context
 						String[] portInitContext;
@@ -717,15 +735,20 @@ public class PIRTE {
 						for (int z = 0; z < portInitContextSize; z++) {
 							portInitContextBytes[z] = message[index++];
 						}
+						VM.println("7");
 						String portInitContextStr = new String(
 								portInitContextBytes);
+						VM.println("8");
 						tok = new StringTokenizer(portInitContextStr, "|");
 						int countTokens = tok.countTokens();
+						VM.println("9");
 						portInitContext = new String[countTokens];
+						VM.println("10");
 						for (int i = 0; i < countTokens; i++) {
 							portInitContext[i] = (String) tok.nextElement();
 						}
 
+						VM.println("11");
 						// Handle port link context
 						ArrayList<LinkContextEntry> linkContext = new ArrayList<LinkContextEntry>();
 						int fromPortIdTmp;
@@ -741,6 +764,7 @@ public class PIRTE {
 						portLinkContextNumBytes[2] = message[index++];
 						portLinkContextNumBytes[3] = message[index++];
 						int portLinkContextByteSize = byteArrayToInt(portLinkContextNumBytes);
+						VM.println("12 " + portLinkContextByteSize);
 						for (int y = 0; y < portLinkContextByteSize; y = y + 12) {
 							fromPortIdBytes[0] = message[index++];
 							fromPortIdBytes[1] = message[index++];
@@ -763,6 +787,7 @@ public class PIRTE {
 							VM.println("Added PLC: " + fromPortIdTmp + " -> " + toPortIdTmp + " via " + remotePortIdTmp);
 						}
 
+						VM.println("13");
 						// finish reading all executable bytes
 						VM.println("###################################");
 						VM.println("Size of Total Message Size: " + messageSize);
@@ -848,7 +873,6 @@ public class PIRTE {
 						int pluginNameSize4Uninstall = byteArrayToInt(tempSizeBytes);
 						VM.println("plugin name size: "
 								+ pluginNameSize4Uninstall);
-
 						// Handle PlugIn Name
 						String pluginName4Uninstall = "";
 						for (int i = 0; i < pluginNameSize4Uninstall; i++) {
@@ -908,6 +932,7 @@ public class PIRTE {
 					}
 				}
 		
+				VM.jnaSetLED(-1, 0x121f);
 				// update count
 				// VM.jnaUpdateCount(1);
 			} else {
@@ -938,6 +963,10 @@ public class PIRTE {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		    } catch (Exception exi) {
+			VM.println("PIRTE 1 exception " + exi);
+			exi.printStackTrace();
+		    }
 		}
 	}
 
@@ -948,6 +977,8 @@ public class PIRTE {
 
 	public static void main(String[] args) {
 		VM.print("PIRTE is running 2 ...\r\n");
+
+		VM.jnaSetLED(-1, 0x121f);
 
 		PIRTE p = new PIRTE();
 		
