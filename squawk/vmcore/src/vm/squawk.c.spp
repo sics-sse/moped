@@ -812,6 +812,8 @@ fprintf(stderr, "VM is in a blocking system call!!! WILL CRASH????");
         inStop = true;
         finalizeStreams();
 
+	jnaSetLED(-1, 0x121218);
+
         if (cleanup) {
             freeBuffers();
         }
@@ -1301,7 +1303,8 @@ void preprocessArgs(char *argv[], int *argc,
  **********************************/
 #include <signal.h>
 
-#if _MSC_VER // the old way
+//#if _MSC_VER // the old way
+#if 1 // the old way
 
 void signalHandler(int signum) {
     char* strsignal(int signum);
@@ -2087,6 +2090,8 @@ void printJavaStrSafely(Address value, char* valueName) {
 extern  void fatalInterpreterError0(char *msg, int opcode, int _iparm, ByteAddress _ip, UWordAddress _fp, UWordAddress _sp, char* file, int line) {
     Address stackHigh = com_sun_squawk_GC_ramEnd;
     boolean userStack = FALSE;
+
+    jnaSetLED(-1, 0x4141);
 
     fprintf(stderr, "fatalInterpreterError %s -- %s:%d\n", msg, file, line);
     fprintf(stderr, "    opcode: 0x%x\n", opcode);
