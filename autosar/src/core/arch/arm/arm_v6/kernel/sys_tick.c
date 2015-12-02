@@ -23,7 +23,7 @@ uint32 led_count = 0;
 
 uint32 led_tick_period = 500;
 
-uint32 led_pattern0 = 0x121f;
+uint32 led_pattern0 = 0x55;
 uint32 led_pattern = 0;
 /*
  *to proof the code is running by using the
