@@ -242,6 +242,25 @@ static void Can_ReadController_Regs(const Spi_DataType address,
 	Spi_SyncTransmit(SPI_SEQ_READ);
 }
 
+static void Can_ReadController_RxBuffer_SPI(const Spi_DataType cmd,
+								    Spi_DataType *values,
+									const uint8 dlc)
+{
+	Spi_DataType cmdbuf = cmd;
+
+	/* Check that the data length does not exceed what is allowed in one CAN frame */
+	VALIDATE_NO_RV(dlc <= CAN_MAX_CHAR_IN_MESSAGE,
+			CAN_MAINFUNCTION_READ_SERVICE_ID, CAN_E_PARAM_DLC);
+
+	/* Setup external buffers for SPI read operation (see p.65 in mcp2515_can.pdf for details) */
+	Spi_SetupEB(SPI_CH_CMD,  &cmdbuf,  NULL,   sizeof(cmdbuf));			// Tell the CAN controller that this is a read operation
+	Spi_SetupEB(SPI_CH_DATA, NULL, 	   values, dlc);					// Place the response in an array of values
+
+	/* Transmit the SPI sequence to read data (up to 8 bytes) from the CAN controller
+	 * (which increments its register address by itself) */
+	Spi_SyncTransmit(SPI_SEQ_READ);
+}
+
 /**
  * Send the read-status instruction
  *
@@ -262,6 +281,21 @@ static Spi_DataType Can_ReadController_Status(void)
 
 	/* Setup SPI external buffers for this sequence */
 	Spi_SetupEB(SPI_CH_CMD,  &cmdbuf, NULL,   sizeof(cmdbuf));			// Read status instruction (1010000)
+    Spi_SetupEB(SPI_CH_DATA, NULL,    &rxbuf, sizeof(rxbuf));			// Listen for returning data (8 bits)
+
+    /* Transmit the sequence */
+	Spi_SyncTransmit(SPI_SEQ_CMD2);
+
+	return rxbuf;
+}
+
+static Spi_DataType Can_ReadRxStatus(void)
+{
+	Spi_DataType cmdbuf = 0xB0;
+	Spi_DataType rxbuf;
+
+	/* Setup SPI external buffers for this sequence */
+	Spi_SetupEB(SPI_CH_CMD,  &cmdbuf, NULL,   sizeof(cmdbuf)); 
     Spi_SetupEB(SPI_CH_DATA, NULL,    &rxbuf, sizeof(rxbuf));			// Listen for returning data (8 bits)
 
     /* Transmit the sequence */
@@ -311,6 +345,37 @@ static void Can_ReadController_Msg(const Spi_DataType mcp_addr,
 
 	/* Read bytes that contain new data and store them */
 	Can_ReadController_Regs(mcp_addr + MCP2515_D0_OFFSET, incomingData, pduInfo->length);
+
+	/* Assign pointer to the stored data (for transmission upwards to the CanIf-layer) */
+	pduInfo->sdu = incomingData;
+}
+
+static void Can_ReadController_RxBuffer(int reg,
+								   Can_PduType* pduInfo)
+{
+  Spi_DataType mcp_addr;
+  Spi_DataType cmd;
+
+  if (reg == 0) {
+    mcp_addr = MCP2515_RXBUF_0;
+    cmd = MCP2515_READ_RX0;
+  } else {
+    mcp_addr = MCP2515_RXBUF_1;
+    cmd = MCP2515_READ_RX1;
+  }
+
+	/* Read message id */
+	pduInfo->id = Can_ReadController_MsgID(mcp_addr);
+
+	printf("pduInfo->id = %d\r\n", pduInfo->id);
+
+    /* Read the data length (in bytes) */
+	pduInfo->length = Can_ReadController_Reg(mcp_addr + MCP2515_DLC_OFFSET, MCP2515_DLC_MASK);
+
+	printf("pduInfo->length = %d\r\n", pduInfo->length);
+
+	/* Read bytes that contain new data and store them */
+	Can_ReadController_RxBuffer_SPI(cmd, incomingData, pduInfo->length);
 
 	/* Assign pointer to the stored data (for transmission upwards to the CanIf-layer) */
 	pduInfo->sdu = incomingData;
@@ -450,18 +515,19 @@ static Can_ReturnType Can_SetController_Mode(const Spi_DataType new_mode)
 
 	/* Set new mode by modifying the three highest bits in the CAN control register */
 	Can_WriteController_BitModify(MCP2515_CANCTRL, MCP2515_MODE_MASK, new_mode);
-
 	/* Verify that the new mode has been set, as advised in the datasheet */
 	buf = Can_ReadController_Reg(MCP2515_CANCTRL, MCP2515_MODE_MASK);
 
 	/* Print out the result */
 	if (buf == new_mode) {
-		CAN_DEBUG_PRINT("infor: success to set CAN control mode\r\n");
-		rv = CAN_OK;
+	  CAN_DEBUG_PRINT("infor: success to set CAN control mode %d\r\n",
+			  new_mode);
+	  rv = CAN_OK;
 	}
 	else {
-		CAN_DEBUG_PRINT("error: fail to set CAN control mode\r\n");
-		rv = CAN_NOT_OK;
+	  CAN_DEBUG_PRINT("error: fail to set CAN control mode (%d %d)\r\n",
+			  buf, new_mode);
+	  rv = CAN_NOT_OK;
 	}
 
 	return rv;
@@ -585,6 +651,9 @@ static Std_ReturnType Can_FindHoh(Can_HwHandleType hth,
  */
 static void Can_TriggerCanIf(Can_PduType *pduInfo, uint8 ctrlId) {
 	/* Get HOH pointer and message id table for the CAN controller */
+
+  //printf("Can_TriggerCanIf\r\n");
+
 	const Can_ControllerConfigType *cfgCtrlPtr = GET_CONTROLLER_CONFIG(Can_Global.channelMap[ctrlId]);
 	const Can_HardwareObjectType *hohObj = cfgCtrlPtr->Can_Arc_Hoh;
 	const Can_IdTableType *msgIdTable = cfgCtrlPtr->CanMsgIdTable;
@@ -592,19 +661,37 @@ static void Can_TriggerCanIf(Can_PduType *pduInfo, uint8 ctrlId) {
 
 	--hohObj;
 	do {
+	  //printf("trigger 1\r\n");
 		++hohObj;
 		if (hohObj->CanObjectType == CAN_OBJECT_TYPE_RECEIVE) {
 			if (GET_CALLBACKS()->RxIndication != NULL ) {
 				/* Find and set an appropriate event to notify upper layers that a CAN-message has arrived */
 				for (i=0; i<CAN_MESSAGE_TYPE_CNT; i++) {
 					if (msgIdTable[i].msgId == pduInfo->id) {
+#if 0
+					  printf("trigger event %d %d\r\n",
+						 pduInfo->id,
+						 pduInfo->sdu[0]);
+#endif
 						SetEvent(msgIdTable[i].taskId, msgIdTable[i].eventMask);
 						break;
 					}
 				}
 
 				/* Trigger a method in CanIf to forward the fetched data */
+				//printf("callback 1\r\n");
+#if 0
+				printf("trigger callback %d %d\r\n",
+				       pduInfo->id,
+				       pduInfo->sdu[0]);
+#endif
 				GET_CALLBACKS()->RxIndication(hohObj->CanObjectId, pduInfo->id, pduInfo->length, pduInfo->sdu);
+#if 0
+				printf("trigger callback done %d %d\r\n",
+				       pduInfo->id,
+				       pduInfo->sdu[0]);
+#endif
+				//printf("callback 2\r\n");
 			}
 		}
 	} while (!hohObj->Can_Arc_EOL);
@@ -744,11 +831,17 @@ void Can_InitController(uint8 ctrlId, const Can_ControllerConfigType *cfgCtrlPtr
 		}
 	}
 
+#if 0
+#define BUKTMASK	0
+#else
+#define BUKTMASK	MCP2515_RXBnCTRL_BUKT_MASK
+#endif
+
 	/* Enable both rx-buffers to receive messages with standard ids (pp. 23-28 in mcp2515_can.pdf)
 	 * and allow RXB0 to rollover (i.e. write to RXB1 if a message arrives when RXB0 is full). */
 	Can_WriteController_BitModify(MCP2515_RXB0CTRL,
-								  (MCP2515_RXBnCTLR_RXM_MASK | MCP2515_RXBnCTRL_BUKT_MASK),
-								  (MCP2515_RXBnCTRL_RXM_STD | MCP2515_RXBnCTRL_BUKT_MASK));
+								  (MCP2515_RXBnCTLR_RXM_MASK | BUKTMASK),
+								  (MCP2515_RXBnCTRL_RXM_STD | BUKTMASK));
 	Can_WriteController_BitModify(MCP2515_RXB1CTRL,
 								  MCP2515_RXBnCTLR_RXM_MASK,
 								  MCP2515_RXBnCTRL_RXM_STD);
@@ -895,68 +988,381 @@ Can_ReturnType Can_Write(Can_HwHandleType hth, Can_PduType *pduInfo) {
 	/* Send the data in PDU */
 	rv = Can_SendMessage(pduInfo);
 
+	// Arndt
+#if 0
 	/* Print out the result */
 	if (rv == E_OK) {
-		CAN_DEBUG_PRINT("infor: success to send id %d, data ", pduInfo->id);
+	  CAN_DEBUG_PRINT("infor: success to send id %d, data ", pduInfo->id);
 	}
 	else {
 		CAN_DEBUG_PRINT("error: fail to send id %d, data ", pduInfo->id);
 	}
+	CAN_DEBUG_PRINT("pdu: ");
 	for (i=0; i < pduInfo->length; i++) {
 		CAN_DEBUG_PRINT("%d ", *(pduInfo->sdu+i));
 	}
 	CAN_DEBUG_PRINT("\r\n");
-
+#endif
 	/* Return the result */
 	return (rv == E_OK) ? CAN_OK : CAN_NOT_OK;
 }
+
+extern void Mcp3008_Read(uint8 channel, uint32 *data);
+
+int in_mcp3008 = 0;
+extern int Spi_pos;
 
 /**
  * Read data in Rx-buffers, when CAN processing is driven by polling
  */
 void Can_MainFunction_Read(void) {
 	/* Locals */
+  static int count = 0;
 	Spi_DataType stat;
 	Can_PduType pduInfo;
-	uint8 i;
+	int i;
+	static int readc = 0;
+
+	count++;
 
 	const Spi_DataType rxBufRegs[MCP2515_NR_BUFFERS] = {MCP2515_RXBUF_0,					// Rx-buffer registers
 													    MCP2515_RXBUF_1};
 	const Spi_DataType rxStatBits[MCP2515_NR_BUFFERS] = {MCP2515_CANINT_RX0I,				// Rx-buffer interrupt status bits
 													     MCP2515_CANINT_RX1I};
 
+	//printf("Can_MainFunction_Read 1\r\n");
+
 	/** @req 4.0.3/CAN181 Check that the module has been initialized  */
 	VALIDATE_NO_RV((Can_Global.initRun == CAN_READY), CAN_MAINFUNCTION_READ_SERVICE_ID, CAN_E_UNINIT);
 
+	int xx = bcm2835_ReadGpioPin(&GPEDS0, GPIO_CAN_IRQ);
+
+	//printf("Can_MainFunction_Read xx %d\r\n", xx);
+
 	/* If CAN communication is defined to be interrupt-driven and
 	 * no event has been detected on the CAN interrupt pin, exit */
-	if (CAN_INTERRUPT && (bcm2835_ReadGpioPin(&GPEDS0, GPIO_CAN_IRQ) == 0x0))
-		return;
+	if (CAN_INTERRUPT && (xx == 0x0)) {
+	  readc++;
+	  xx = bcm2835_ReadGpioPin(&GPEDS0, 2);
+	  int yy = xx;
+	  xx = bcm2835_ReadGpioPin(&GPLEV0, 2);
+	  printf("%3d gpio 2 EDS = %d, LEV = %d\r\n",
+		 readc, yy, xx);
+
+	  bcm2835_ClearEventDetectPin(2);
+	  return;
+	}
+
+	if (in_mcp3008) {
+	  printf("in mcp3008: %d %d\r\n", in_mcp3008, Spi_pos);
+	}
+
+	int ctrl0;
+	int canctrl;
+	int canstat;
+	int st;
+	int id0, id1;
+	int inte;
+	int intf;
+	int eflg;
+	int rec;
+	int rxstat;
+
+	//printf("Can frame %d\r\n", count);
+
+	int ll = 0;
+
+ again:
+
+	ll++;
 
 	/* Read interrupt status bits to see if any Rx-buffer is non-empty */
 	stat = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	int stat0 = stat;
+	stat = stat&3;
+
+	if (stat == 0 && false) {
+	  printf("stat = 0 (%d)\r\n", ll);
+	  intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	  canstat = Can_ReadController_Reg(MCP2515_CANSTAT, CAN_NO_MASK);
+	  rxstat = Can_ReadRxStatus();
+	  st = Can_ReadController_Status();
+	  if (intf != 0 || canstat != 0 || rxstat != 0 || st != 0) {
+	    printf(" stat %d intf %d canstat %d rxstat %d st %d\r\n", stat, intf, canstat, rxstat, st);
+	  }
+	}
+
+#if 0
+	printf("Can_MainFunction_Read stat %d\r\n", stat);
+
+
+	ctrl0 = Can_ReadController_Reg(MCP2515_RXB0CTRL, CAN_NO_MASK);
+	canctrl = Can_ReadController_Reg(MCP2515_CANCTRL, CAN_NO_MASK);
+	canstat = Can_ReadController_Reg(MCP2515_CANSTAT, CAN_NO_MASK);
+
+#if 1
+	st = Can_ReadController_Status();
+	id0 = Can_ReadController_MsgID(rxBufRegs[0]);
+	inte = Can_ReadController_Reg(MCP2515_CANINTE, CAN_NO_MASK);
+	intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	rxstat = Can_ReadRxStatus();
+	printf(" status %d msgid %d ctrl0 %d canctrl %d canstat %d statbit0 %d e %d f %d rxstat %d\r\n",
+	       st, id, ctrl0, canctrl, canstat, rxStatBits[0],
+	       inte, intf, rxstat);
+#else
+	int st = Can_ReadController_Status();
+	int id0 = Can_ReadController_MsgID(rxBufRegs[0]);
+	printf(" status %d msgid %d ctrl0 %d canctrl %d canstat %d statbit0 %d\r\n",
+	       st, id, ctrl0, canctrl, canstat, rxStatBits[0]);
+
+#endif
+#endif
+
+	//stat = intf;
+
+	int loopcount = 0;
+	if (stat == 0) {
+	  //printf("yes, stat == 0\r\n");
+	  loopcount++;
+	  uint8 ctrlId, configId;
+	  const Can_ControllerConfigType *cfgCtrlPtr;
+
+	  if (stat0 == 4) {
+	    Can_ReadController_Msg(rxBufRegs[0], &pduInfo);
+	    printf("buffer 0: %d\r\n", pduInfo.sdu[0]);
+	    // Apparently, this can hang.
+	    Can_ReadController_Msg(rxBufRegs[1], &pduInfo);
+	    printf("buffer 1: %d\r\n", pduInfo.sdu[0]);
+	  }
+
+	  ctrl0 = Can_ReadController_Reg(MCP2515_RXB0CTRL, CAN_NO_MASK);
+	  canctrl = Can_ReadController_Reg(MCP2515_CANCTRL, CAN_NO_MASK);
+	  canstat = Can_ReadController_Reg(MCP2515_CANSTAT, CAN_NO_MASK);
+
+	  st = Can_ReadController_Status();
+	  id0 = Can_ReadController_MsgID(rxBufRegs[0]);
+	  id1 = Can_ReadController_MsgID(rxBufRegs[1]);
+	  inte = Can_ReadController_Reg(MCP2515_CANINTE, CAN_NO_MASK);
+	  intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	  eflg = Can_ReadController_Reg(MCP2515_EFLG, CAN_NO_MASK);
+	  rec = Can_ReadController_Reg(MCP2515_REC, CAN_NO_MASK);
+	  rxstat = Can_ReadRxStatus();
+	  if (loopcount == -1) {
+	    printf(" status %d msgid %d,%d ctrl0 %d canctrl %d canstat %d statbit0 %d e %d f %d\r\n",
+		   st, id0, id1, ctrl0, canctrl, canstat, rxStatBits[0],
+		   inte, intf);
+	    printf(" eflg %d rec %d rxstat %d\r\n", eflg, rec, rxstat);
+	  }
+
+
+#if 0
+	  configId = 0;
+	  cfgCtrlPtr = GET_CONTROLLER_CONFIG(configId);
+	  ctrlId = cfgCtrlPtr->CanControllerId;
+	  printf("resetting CAN 0\r\n");
+	  Can_ResetController();
+	  printf("resetting CAN d\r\n");
+	  Can_InitController(ctrlId, cfgCtrlPtr);
+	  printf("resetting CAN 1\r\n");
+
+	   ctrl0 = Can_ReadController_Reg(MCP2515_RXB0CTRL, CAN_NO_MASK);
+	   canctrl = Can_ReadController_Reg(MCP2515_CANCTRL, CAN_NO_MASK);
+	   canstat = Can_ReadController_Reg(MCP2515_CANSTAT, CAN_NO_MASK);
+	   inte = Can_ReadController_Reg(MCP2515_CANINTE, CAN_NO_MASK);
+	   intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+
+	   st = Can_ReadController_Status();
+	   id = Can_ReadController_MsgID(rxBufRegs[0]);
+	  printf(" status %d msgid %d ctrl0 %d canctrl %d canstat %d statbit0 %d e %d f %d\r\n",
+		 st, id, ctrl0, canctrl, canstat, rxStatBits[0],
+		 inte, intf);
+
+#endif
+
+	  //stat = intf;
+
+	  if (id0 == 1601 && id1 == 1601) {
+	    stat |= 1;
+	    printf("setting stat = %d\r\n", stat);
+	  }
+#if 0
+	  if (id0 == 1601)
+	    stat |= 1;
+	  if (id1 == 1601)
+	    stat |= 2;
+	  printf("setting stat = %d\r\n", stat);
+#endif
+	}
+
+	int h[2];
+	h[0] = h[1] = 0;
+
+#if 0
+	Can_ReadController_Msg(rxBufRegs[0], &pduInfo);
+	id0 = Can_ReadController_MsgID(rxBufRegs[0]);
+	printf("a buffer 0: %d %d %d\r\n", pduInfo.sdu[0], id0, stat);
+	// Apparently, this can hang.
+	Can_ReadController_Msg(rxBufRegs[1], &pduInfo);
+	id1 = Can_ReadController_MsgID(rxBufRegs[1]);
+	printf("a buffer 1: %d %d\r\n", pduInfo.sdu[0], id1);
+#endif
 
 	/* If there is data in any register, read it and clear the interrupt status bit,
 	 * so that new data can be written into the Rx-buffer */
 	for (i=0; i < MCP2515_NR_BUFFERS; i++) {
+	  //for (i=MCP2515_NR_BUFFERS-1; i >= 0 ; i--) {
+	  //printf("Can_MainFunction_Read statbits %d %d\r\n", i, rxStatBits[i]);
 		if (stat & rxStatBits[i]) {													// RXBUF_i contains data
-			Can_ReadController_Msg(rxBufRegs[i], &pduInfo);							// Read data
-			Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[i], 0);		// Clear interrupt status
+#if 0
+		  if (i > 0) {
+		    printf(" can bit %d\r\n", i);
+		  }
+#endif
+		  //printf("Can_MainFunction_Read 2 %d\r\n", pduInfo.length);
 
+			Can_ReadController_Msg(rxBufRegs[i], &pduInfo);							// Read data
+			CAN_DEBUG_PRINT("can: (%d)", i);
 			for (int i = 0; i < pduInfo.length; i++) {								// Debug print out
-				CAN_DEBUG_PRINT("%d ", *(pduInfo.sdu+i));
+			  unsigned int cod = *(pduInfo.sdu+i);
+			  int dig;
+			  char codbuf[3];
+			  dig = (cod >> 4) & 0xf;
+			  codbuf[0] = (dig < 10) ? '0' + dig : 'A' + dig - 10;
+			  dig = cod & 0xf;
+			  codbuf[1] = (dig < 10) ? '0' + dig : 'A' + dig - 10;
+			  codbuf[2] = ' ';
+			  CAN_DEBUG_PRINT(codbuf);
+			  //CAN_DEBUG_PRINT("%d ", *(pduInfo.sdu+i));
 			}
 			CAN_DEBUG_PRINT("\r\n");
 
 			/* Set event reception events and forward the CAN message upwards */
+			h[i]++;
 			Can_TriggerCanIf(&pduInfo, 0);
+
+#if 0
+			// an attempt to mark that we have read something,
+			// but these registers are not writable
+			uint8 byt[1];
+			byt[0] = 7;
+			Can_WriteController_Regs(rxBufRegs[i], byt, 1);
+#endif			
+
+			Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[i], 0);		// Clear interrupt status
+
 		}
 	}
 
+#if 0
+	Can_ReadController_Msg(rxBufRegs[0], &pduInfo);
+	id0 = Can_ReadController_MsgID(rxBufRegs[0]);
+	printf("b buffer 0: %d %d\r\n", pduInfo.sdu[0], id0);
+	// Apparently, this can hang.
+	Can_ReadController_Msg(rxBufRegs[1], &pduInfo);
+	id1 = Can_ReadController_MsgID(rxBufRegs[1]);
+	printf("b buffer 1: %d %d\r\n", pduInfo.sdu[0], id1);
+#endif
+
+	{
+#if 0
+	  int ctrl0 = Can_ReadController_Reg(MCP2515_RXB0CTRL, CAN_NO_MASK);
+	  int canctrl = Can_ReadController_Reg(MCP2515_CANCTRL, CAN_NO_MASK);
+	  int canstat = Can_ReadController_Reg(MCP2515_CANSTAT, CAN_NO_MASK);
+
+	  int st = Can_ReadController_Status();
+	  int id = Can_ReadController_MsgID(rxBufRegs[0]);
+	  int inte = Can_ReadController_Reg(MCP2515_CANINTE, CAN_NO_MASK);
+	  int intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	  int rxstat = Can_ReadRxStatus();
+	  printf("X status %d msgid %d ctrl0 %d canctrl %d canstat %d statbit0 %d e %d f %d rxstat %d\r\n",
+		 st, id, ctrl0, canctrl, canstat, rxStatBits[0],
+		 inte, intf, rxstat);
+#endif
+
+	int intf2 = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	if (intf2&3) {
+	  printf("new int f %d\r\n", intf2&3);
+	  goto again;
+	}
+
+#if 0
+	  // Are all these needed?
+	  // The 32 bit is set sometimes, too
+	Can_WriteController_Reg(MCP2515_CANINTF, 0);
+	Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[0], 0);
+	Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[1], 0);
+	Can_WriteController_Reg(MCP2515_CANINTF, 0);
+#endif
+
+	  // Read the bits and tell us if they were 1.
+
+	//int intf = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	//printf(" f %d\r\n", intf);
+	}
+
+#if 0
+	uint32 Data;
+#define MCP3008_BATTERY_CH 1
+	Mcp3008_Read(MCP3008_BATTERY_CH, &Data);
+	printf("adc %d\r\n", Data);
+#endif
+
+#if 0
+	int channel = 1; //MCP3008_BATTERY_CH
+	uint8 START = BIT(0); // Set MCP3008's start-of-transmission bit
+	uint8 CONFIG = BIT(7) | (((channel & 7) << 4));
+	uint8 rxbuf[2];
+
+	int ress = Spi_SetupEB(SPI_CH_CMD, &START, NULL, 1);
+	if (ress != 0) {
+	  printf("Spi_SetupEB returned %d\r\n", ress);
+	}
+
+	ress = Spi_SetupEB(SPI_CH_ADDR, &CONFIG, &rxbuf[0], 1);
+	if (ress != 0) {
+	  printf("Spi_SetupEB 2 returned %d\r\n", ress);
+	}
+
+ 	ress = Spi_SetupEB(SPI_CH_DATA, NULL, &rxbuf[1], 1);
+	if (ress != 0) {
+	  printf("Spi_SetupEB 3 returned %d\r\n", ress);
+	}
+
+#endif
+	//printf("Leaving Can frame %d (handled %d %d)\r\n", count, h[0], h[1]);
+#if 0
+	Can_ReadController_RxBuffer(0, &pduInfo);
+	printf("read 0: %d\r\n", pduInfo.sdu[0]);
+	Can_ReadController_RxBuffer(1, &pduInfo);
+	printf("read 1: %d\r\n", pduInfo.sdu[0]);
+#endif
+
+#if 1
 	/* In the interrupt mode, don't forget to clear the interrupt pin, when done reading */
 	if (CAN_INTERRUPT) {
+	  //printf("Can_MainFunction_Read 3\r\n");
 		bcm2835_ClearEventDetectPin(GPIO_CAN_IRQ);
 	}
+#endif
+
+	int intf2 = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	if (intf2&3) {
+	  printf("***** new int f %d\r\n", intf2&3);
+	  goto again;
+	}
+
+	if (h[0])
+	  Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[0], 0);
+	intf2 = Can_ReadController_Reg(MCP2515_CANINTF, CAN_NO_MASK);
+	if (intf2&3) {
+	  printf("***** x new int f %d\r\n", intf2&3);
+	  goto again;
+	}
+	if (h[1])
+	  Can_WriteController_BitModify(MCP2515_CANINTF, rxStatBits[1], 0);
+
+	//Can_WriteController_Reg(MCP2515_CANINTF, 0);
+
 }
 
 ///**
