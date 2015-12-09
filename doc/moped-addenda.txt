@@ -1,0 +1,55 @@
+Don't force the front wheels to change steering by hand. Doing so
+generates a current, which may be high enough to damage circuits.
+
+The small loudspeakers I bought at Clas Ohlson run without charging
+for at least 12 hours (at least when not emitting sound). 5 minutes of
+charging (whether turned on or not) gives one hour of use.
+
+The speed of the car: 20m in between 10 and 50 s.
+The lowest value for the speed port that results in movement is 7.
+Smallest circle has outer diameter 153 cm. At lowest speed, it is
+circumvented in 13s.
+
+When "ready? 0 xxx", xxx being some number, appears on ECU serial
+output, it means that the Can reception works, but PIRTE is not
+running.
+
+ACT LED blinking (the first LED on the Raspberry Pi board)
+ The LED blinks in a pattern that is described by a sequence of
+ hexadecimal digits, 1-f, representing the time the LED is on or off,
+ where f is about one second. The first nonzero digit represents the
+ LED being on.
+
+ The normal state is 121f; that is, a rapid on-off-on followed by off for
+ one second.
+
+ A plugin can set the pattern by pretending to write to ordinary LED
+ number -1. When an installation succeeds, the pattern will revert to 121f.
+
+ When a plugin started installing but failed, it changes to 21f1; that is,
+ a rapid off-on-off followed by on for one second.
+ In this state, an installation can be retried, and running plugins still
+ run.
+
+ When the virtual machine crashes (which means that plugins stop and nothing
+ can be installed), the pattern is 121218.
+
+ When the virtual machine detects a condition that makes it exit, for example
+ out of memory, the pattern is 4141. Functionally, this state is equivalent to
+ the one above.
+
+ The node may crash in such a way that the blinking stops - then the LED will
+ be either constantly on or off. It can also crash in such a way that the
+ LED flickers.
+
+ If the pattern is 55, it means that the Java virtual machine never started.
+
+Port 22 is for reading position information, sent to the VCU from the TCU
+when an external image processing server is running.
+
+When setting up the system, change new-server/settings.properties so
+it points out the MOPED directory.
+Also, change ecm-linux/settings.properties so the server will be found,
+and, after copying it to the TCU, set the VIN to something unique
+(especially relevant if you have several cars).
+
