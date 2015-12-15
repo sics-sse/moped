@@ -11,8 +11,7 @@ Sometimes I use "ECU" to refer to either of SCU and VCU.
 
 VCU is connected to the steering and driving (both actuators and
 sensors), as well as the LEDs. The speed sensors are at the inside of the
-right wheels (but one of the sensor inputs is not used and is connected to
-the steering angle instead).
+right wheels.
 
 SCU has some other sensors.
 
@@ -89,7 +88,6 @@ There are lights for indicating the power level, see moped-battery.txt.
 The cars behave slightly differently at low motor speed: one of them
 either runs smoothly or not at all at the lowest speed, and the other
 jerks a little.
-
 
 
 The colours below may be conventional or not; they are the colours used
