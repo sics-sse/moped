@@ -218,14 +218,18 @@ public class Ecm {
 		byte pluginId;
 		
 		int messageType = message.getMessageType();
-		System.out.println(">>> ecm-core/Ecm " + messageType);
+		    if (messageType != MessageType.PWM) {
+			System.out.println(">>> ecm-core/Ecm " + messageType);
+		    }
 		switch (messageType) {
 		case MessageType.INSTALL:
 		case MessageType.UNINSTALL:
 		case MessageType.RESTORE:
 		case MessageType.LOAD:
 		case MessageType.PWM:
-		    System.out.println("<<< ecm-core/Ecm " + messageType);
+		    if (messageType != MessageType.PWM) {
+			System.out.println("<<< ecm-core/Ecm " + messageType);
+		    }
 			ecuManager.sendMessage(message);
 			break;
 		case MessageType.INSTALL_ACK:
