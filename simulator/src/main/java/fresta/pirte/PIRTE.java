@@ -23,6 +23,7 @@ import fresta.port.instances.VirtualRearWheelPPort;
 import fresta.port.instances.VirtualPublishRPort;
 import fresta.port.instances.VirtualLEDRPort;
 import fresta.port.instances.VirtualVoltagePPort;
+import fresta.port.instances.VirtualPositionPPort;
 import fresta.port.instances.VirtualAcceleratorRPort;
 import fresta.port.instances.VirtualSteeringRPort;
 import autosar.RTE;
@@ -64,6 +65,7 @@ public class PIRTE implements Runnable {
 		vpports.put(new Integer(5), new VirtualFrontWheelPPort(5));
 		vpports.put(new Integer(6), new VirtualRearWheelPPort(6));
 		vpports.put(new Integer(7), new VirtualVoltagePPort(7));
+		vpports.put(new Integer(8), new VirtualPositionPPort(8));
 		vrports.put(new Integer(9), new VirtualLEDRPort(9));
 	}
 	
@@ -212,7 +214,7 @@ public class PIRTE implements Runnable {
 			    Thread runnablePlugin = runnablePlugins.get(pluginName);
 			    if (runnablePlugin != null) {
 				System.out.println("stopping earlier thread");
-				runnablePlugin.stop();
+				//runnablePlugin.stop();
 			    }
 
 			    loader = new PlugInLoader();
@@ -256,7 +258,7 @@ public class PIRTE implements Runnable {
 			Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
 			System.out.println("UNINSTALL thread " + runnablePlugin);
 			//runnablePlugins.remove(runnablePlugin);
-			runnablePlugin.stop();
+			//runnablePlugin.stop();
 			System.out.println("<<< simulator/PIRTE 1 " + messageType);
 			RTE.getInstance().addRteMessage
 			    (new UninstallAckMessage(pluginName4Uninstall));
@@ -391,6 +393,20 @@ public class PIRTE implements Runnable {
 		EcuVirtualPPort vpport = (EcuVirtualPPort) vpports.get(vpportId);
 		Integer intVal = (Integer) vpport.deliver();
 		return intVal.intValue();
+	}
+	
+	public long fetchLongVal(int rportId) {
+		int vpportId = linker.getVirtualPPortId(rportId);
+		EcuVirtualPPort vpport = (EcuVirtualPPort) vpports.get(vpportId);
+		Long longVal = (Long) vpport.deliver();
+		return longVal.longValue();
+	}
+	
+	public String fetchStringVal(int rportId) {
+		int vpportId = linker.getVirtualPPortId(rportId);
+		EcuVirtualPPort vpport = (EcuVirtualPPort) vpports.get(vpportId);
+		String val = (String) vpport.deliver();
+		return val;
 	}
 	
 	public Object fetchVal(int rportId) {
