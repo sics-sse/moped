@@ -10,7 +10,7 @@
 		<server>
 			<!--<ip>localhost</ip>-->
 			<!-- <ip>none</ip> -->
-			<ip>appz-ext.sics.se</ip>
+			<ip>localhost</ip>
 			<!--ip></ip-->
 			<socketport>9999</socketport>
 		</server>
@@ -35,18 +35,18 @@
 			</swcs>
 
 			<sensors>
-				<!-- read speed data from Speed Sensor -->
+				<!-- read speed data from front Speed Sensor -->
 				<sensor>
-					<name>readSpeed</name>
+					<name>readFrontSpeed</name>
 					<ports>
 						<port>
 							<id>5</id>
 						</port>
 					</ports>
 				</sensor>
-				<!-- read steer data from Steer Sensor -->
+				<!-- read steer data from rear Speed Sensor -->
 				<sensor>
-					<name>readSteer</name>
+					<name>readRearSpeed</name>
 					<ports>
 						<port>
 							<id>6</id>
