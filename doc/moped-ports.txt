@@ -3,8 +3,8 @@ The port numbers in use are these:
 
 sensors
 VCU
-5 readSpeed (front wheel)
-6 readSteer (rear wheel)
+5 readFrontSpeed
+6 readRearSpeed
 7 readAdc
 8 readPosition
 
