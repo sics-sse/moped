@@ -25,7 +25,9 @@ public class FakeEcuManager implements EcuManager {
 	public void sendMessage(Message message) {
 		try {
 			int messageType = message.getMessageType();
-		    System.out.println(">>> simulator/FakeEcuManager " + messageType);
+			if (messageType != MessageType.PWM) {
+			    System.out.println(">>> simulator/FakeEcuManager " + messageType);
+			}
 			switch (messageType) {
 			case MessageType.INSTALL:
 				System.out
@@ -92,6 +94,9 @@ public class FakeEcuManager implements EcuManager {
 	
 	public boolean checkSpecificConnection(int id) {
 		return false;
+	}
+
+        public void sendToVCU(String str, int portid) {
 	}
 
 	@Override
