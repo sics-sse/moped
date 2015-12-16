@@ -34,7 +34,7 @@
 	
 	<links>
 		<link>
-			<from>5</from>  <!-- Front wheel speed sensor. Alternatively, 6 can be used for rear wheel. -->
+			<from>6</from>  <!-- Rear wheel speed sensor. Alternatively, 5 can be used for front wheel. -->
 			<to>wheelSpeed</to>
 		</link>
 		<link>
