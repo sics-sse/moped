@@ -214,7 +214,7 @@ public class PIRTE implements Runnable {
 			    Thread runnablePlugin = runnablePlugins.get(pluginName);
 			    if (runnablePlugin != null) {
 				System.out.println("stopping earlier thread");
-				//runnablePlugin.stop();
+				runnablePlugin.interrupt();
 			    }
 
 			    loader = new PlugInLoader();
@@ -258,7 +258,7 @@ public class PIRTE implements Runnable {
 			Thread runnablePlugin = runnablePlugins.get(pluginName4Uninstall);
 			System.out.println("UNINSTALL thread " + runnablePlugin);
 			//runnablePlugins.remove(runnablePlugin);
-			//runnablePlugin.stop();
+			runnablePlugin.interrupt();
 			System.out.println("<<< simulator/PIRTE 1 " + messageType);
 			RTE.getInstance().addRteMessage
 			    (new UninstallAckMessage(pluginName4Uninstall));
