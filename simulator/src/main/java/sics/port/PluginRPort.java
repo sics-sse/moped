@@ -50,4 +50,12 @@ public class PluginRPort implements PluginPort {
 		return plugin.getPirte().fetchIntVal(id);
 	}
 
+	public long readLong() {
+		return plugin.getPirte().fetchLongVal(id);
+	}
+
+	public String readString() {
+		return plugin.getPirte().fetchStringVal(id);
+	}
+
 }
