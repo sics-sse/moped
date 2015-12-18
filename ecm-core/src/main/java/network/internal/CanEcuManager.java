@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import messages.InstallAckMessage;
 import messages.InstallMessage;
 import messages.LinkContextEntry;
-import messages.LinkMessage;
 import messages.LoadMessage;
 import messages.Message;
 import messages.MessageType;
@@ -230,10 +229,6 @@ public class CanEcuManager implements EcuManager {
 		case MessageType.RESTORE:
 			RestoreMessage restoreMessage = (RestoreMessage) message;
 			sendMessage(restoreMessage);
-			break;
-		case MessageType.PORT_LINK_CONTEXT_MESSAGE:
-			LinkMessage linkMessage = (LinkMessage) message;
-			sendMessage(linkMessage);
 			break;
 		case MessageType.LOAD:
 			LoadMessage loadMessage = (LoadMessage) message;
