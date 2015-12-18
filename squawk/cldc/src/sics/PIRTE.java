@@ -915,8 +915,6 @@ public class PIRTE {
 						break;
 					case MessageType.PLUGIN_MESSAGE:
 						break;
-					case MessageType.PORT_LINK_CONTEXT_MESSAGE:
-						break;
 					default:
 						VM.println("Error: Wrong message type pushed to receiving channel (" + message[0] + ")");
 						if (false) {
