@@ -19,7 +19,6 @@ import ecm.Loader;
 import messages.InstallAckMessage;
 import messages.InstallMessage;
 import messages.LinkContextEntry;
-import messages.LoadAckMessage;
 import messages.LoadMessage;
 import messages.Message;
 import messages.MessageType;
@@ -673,14 +672,6 @@ public class SocketEcuManager implements EcuManager {
 				RestoreAckMessage restoreAckMessage = new RestoreAckMessage(
 						pluginName);
 				return restoreAckMessage;
-			case MessageType.LOAD_ACK:
-				pluginNameSize = 0;
-				pluginNameSize = (data[1] << 24) | (data[2] << 16)
-						| (data[3] << 8) | data[4];
-				pluginNameBytes = new byte[pluginNameSize];
-				pluginName = new String(pluginNameBytes);
-				LoadAckMessage loadAckMessage = new LoadAckMessage(pluginName);
-				return loadAckMessage;
 			case MessageType.PLUGIN_MESSAGE:
 				break;
 			case MessageType.PUBLISH:
