@@ -335,13 +335,8 @@ public class PIRTE implements Runnable {
 			int remotePortId = pluginMessage.getRemotePortId();
 			pluginMessages.put(remotePortId, message);
 			break;
-		case MessageType.PWM:
-			PWMMessage pwmMessage = (PWMMessage) message;
-			int remoteEcuId = pwmMessage.getRemoteEcuId();
-			pluginMessages.put(remoteEcuId, message);
-			break;
 		default:
-			System.out.println("Error: wrong message type");
+			System.out.println("Error: wrong message type " + messageType);
 		}
 	}
 	
