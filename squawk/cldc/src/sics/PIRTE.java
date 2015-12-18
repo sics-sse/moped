@@ -341,6 +341,7 @@ public class PIRTE {
 								String replyReceivedValStr = (String) replyObject;
 								byte[] replyReceivedValBytes = replyReceivedValStr.getBytes();
 								int replyReceivedValBytesSize = replyReceivedValBytes.length;
+								//VM.println("received " + replyReceivedValBytesSize + " bytes " + replyReceivedValBytes[replyReceivedValBytesSize-1]);
 								// 1: type, strValBytes
 								int replyReceivedMsgSize = 1 + replyReceivedValBytesSize;
 								byte replyReceivedMsgBytes[] = new byte[replyReceivedMsgSize];
@@ -674,6 +675,7 @@ public class PIRTE {
 						messageSize = 0;
 						index = 0;
 						message = null;
+						VM.jnaSetLED(-1, 0x121f);
 						break;
 					case MessageType.INSTALL:
 					case MessageType.LOAD:
@@ -852,6 +854,7 @@ public class PIRTE {
 						messageSize = 0;
 						// Arndt, should not be needed
 						// I added it
+						VM.jnaSetLED(-1, 0x121f);
 						try {
 						    Thread.sleep(1000);
 						} catch (InterruptedException e) {
@@ -906,6 +909,7 @@ public class PIRTE {
 						isConsectutive = false;
 						message = null;
 						VM.println("The end of uninstallation handling");
+						VM.jnaSetLED(-1, 0x121f);
 						break;
 					case MessageType.RESTORE:
 						break;
@@ -932,7 +936,6 @@ public class PIRTE {
 					}
 				}
 		
-				VM.jnaSetLED(-1, 0x121f);
 				// update count
 				// VM.jnaUpdateCount(1);
 			} else {
