@@ -54,18 +54,23 @@ public abstract class AbstractReceiver extends AbstractIO {
 
 
   protected ReceiverDispatcher addDispatcher(IMessage msg) {
+      //System.out.println("addDispatcher IMessage");
+      //System.out.println(" length " + dispatchers.size());
     ReceiverDispatcher d = new ReceiverDispatcher(msg);
     dispatchers.add(d);
+    //System.out.println(" length " + dispatchers.size());
     return d;
   }
 
   protected ReceiverDispatcher addDispatcher(String ptn, int grp, IMessage msg) {
+      //System.out.println("addDispatcher IMessage ptn grp");
     ReceiverDispatcher d = new ReceiverDispatcher(ptn, grp, msg);
     dispatchers.add(d);
     return d;
   }
 
   protected ReceiverDispatcher addDispatcher(String ptn, IMessage msg) {
+      //System.out.println("addDispatcher IMessage (" + ptn + ")");
     return addDispatcher(ptn, -1, msg);
   }
 
@@ -130,6 +135,7 @@ public abstract class AbstractReceiver extends AbstractIO {
      */
     @Override
     public void receive(String msg) {
+	//System.out.println("AbstractReceiver receive (" + msg + ")");
       if (ptn == null) {
         /* No regular expression, just pass "as-is". */
         if (debug) {
