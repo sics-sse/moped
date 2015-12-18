@@ -19,12 +19,12 @@ public class MessageType extends Enum implements Serializable {
 	public static final byte UNINSTALL = 5;
 	public static final byte RESTORE = 6;
 	public static final byte PLUGIN_MESSAGE = 7;
-	public static final byte PORT_LINK_CONTEXT_MESSAGE = 8;
-	public static final byte PORT_LINK_ACK_MESSAGE = 9;
+    //public static final byte PORT_LINK_CONTEXT_MESSAGE = 8;
+    //public static final byte PORT_LINK_ACK_MESSAGE = 9;
 	public static final byte RESTORE_ACK = 10;
 	public static final byte LOAD = 11;
-	public static final byte LOAD_ACK = 12;
-	public static final byte SUBSCRIBE = 13;
+    //public static final byte LOAD_ACK = 12;
+    //public static final byte SUBSCRIBE = 13;
 	public static final byte REQUEST_ID = 14;
 	public static final byte REQUEST_ID_ACK = 15;
 	public static final byte PWM = 16;
