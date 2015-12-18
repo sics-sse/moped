@@ -18,6 +18,9 @@
  */
 void Mcp3008_Read(uint8 channel, uint32 *data)
 {
+  imask_t state;
+  Irq_Save(state);
+
 	/* SPI receive buffer */
 	uint8 rxbuf[2];
 
@@ -27,12 +30,18 @@ void Mcp3008_Read(uint8 channel, uint32 *data)
 
     /* Setup necessary external buffers for the SPI read sequence (see Spi_Lcfg.c) */
     Spi_SetupEB(SPI_CH_CMD, &START, NULL, 1);					// Set up the start bit
+
 	Spi_SetupEB(SPI_CH_ADDR, &CONFIG, &rxbuf[0], 1);			// Configure the ADC device and prepare for the response to be placed in rx-buffer
  	Spi_SetupEB(SPI_CH_DATA, NULL, &rxbuf[1], 1);				// On this channel, wait for the next response byte
 
  	/* Transmit all jobs and channels in the SPI read sequence and collect the response data */
+
  	Spi_SyncTransmit(SPI_SEQ_READ);
 
  	/* The relevant output from MCP3008 is 10 bit long, convert it to decimal */
+	//printf("Mcp3008_Read: %d %d %d\r\n", rxbuf[0], rxbuf[1], s);
+
  	*data = ((rxbuf[0] & 3) << 8) + rxbuf[1];
+
+  Irq_Restore(state);
 }
