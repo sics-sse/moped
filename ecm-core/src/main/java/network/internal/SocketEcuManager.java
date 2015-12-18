@@ -540,9 +540,15 @@ public class SocketEcuManager implements EcuManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
+    public void sendToVCU(String str, int portid) {
+	System.out.println("sendToVCU NYI");
+    }
+
 	private class NewDataHandlerThread implements Runnable {
+
 		private DataInputStream in;
 		private DataOutputStream out;
 
