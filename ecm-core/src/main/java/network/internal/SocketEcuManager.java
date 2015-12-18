@@ -19,7 +19,6 @@ import ecm.Loader;
 import messages.InstallAckMessage;
 import messages.InstallMessage;
 import messages.LinkContextEntry;
-import messages.LinkMessage;
 import messages.LoadAckMessage;
 import messages.LoadMessage;
 import messages.Message;
@@ -144,10 +143,6 @@ public class SocketEcuManager implements EcuManager {
 		case MessageType.RESTORE:
 			RestoreMessage restoreMessage = (RestoreMessage) message;
 			sendMessage(restoreMessage);
-			break;
-		case MessageType.PORT_LINK_CONTEXT_MESSAGE:
-			LinkMessage linkMessage = (LinkMessage) message;
-			sendMessage(linkMessage);
 			break;
 		case MessageType.LOAD:
 			LoadMessage loadMessage = (LoadMessage) message;
@@ -345,10 +340,6 @@ public class SocketEcuManager implements EcuManager {
 	}
 
 	private void sendMessage(RestoreMessage message) {
-
-	}
-
-	private void sendMessage(LinkMessage message) {
 
 	}
 
