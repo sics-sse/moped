@@ -112,7 +112,7 @@ public class RTE {
 		    System.out.println("<<< simulator/RTE " + messageType);
 			swc4Subscribe.getPirte().addMessage(message);
 		default:
-			System.out.println("Append other handlers.................");
+			System.out.println("Append other handlers................. " + messageType);
 		}
 		
 	}
