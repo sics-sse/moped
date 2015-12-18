@@ -295,11 +295,6 @@ public class Ecm {
 		    System.out.println("<<< ecm-core/Ecm " + messageType);
 			iotManager.sendPacket(publishPacket);
 			break;
-		case MessageType.LOAD_ACK:
-			LoadAckMessage loadAckMessage = (LoadAckMessage) message;
-			pluginName = loadAckMessage.getPluginName();
-			System.out.println("[" + pluginName + " loaded]");
-			break;
 		case MessageType.PLUGIN_MESSAGE:
 			PluginMessage pluginMessage = (PluginMessage) message;
 			String val = (String) pluginMessage.getValue();
@@ -309,7 +304,7 @@ public class Ecm {
 
 			break;
 		default:
-			System.out.println("Error: Wrong message type");
+			System.out.println("Error: Wrong message type " + messageType);
 		}
 	}
 
