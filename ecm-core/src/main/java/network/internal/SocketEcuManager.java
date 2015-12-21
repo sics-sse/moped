@@ -24,8 +24,6 @@ import messages.Message;
 import messages.MessageType;
 import messages.PWMMessage;
 import messages.PublishMessage;
-import messages.RequestIdAckMessage;
-import messages.RequestIdMessage;
 import messages.RestoreAckMessage;
 import messages.RestoreMessage;
 import messages.UninstallAckMessage;
@@ -501,38 +499,6 @@ public class SocketEcuManager implements EcuManager {
 		}
 	}
 
-	private void sendMessage(RequestIdMessage message, DataOutputStream out) {
-		int index = 0;
-		// 2: $$, 4: Size of message, 1: message type
-		byte byteArray[] = new byte[31];
-		int payload = 2 + 4 + 1;
-
-		// prepare 1 byte package type
-		byteArray[index++] = '2';
-
-		// prepare starting sign $$
-		byteArray[index++] = '$';
-		byteArray[index++] = '$';
-
-		// prepare size of message
-		byteArray[index++] = (byte) (payload >> 24);
-		byteArray[index++] = (byte) ((payload >> 16) & 0xFF);
-		byteArray[index++] = (byte) ((payload >> 8) & 0xFF);
-		byteArray[index++] = (byte) (payload & 0xFF);
-
-		// prepare Message Type
-		byteArray[index++] = MessageType.REQUEST_ID;
-
-		try {
-			System.out.println(Arrays.toString(byteArray));
-			out.write(byteArray);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
-
     public void sendToVCU(String str, int portid) {
 	System.out.println("sendToVCU NYI");
     }
@@ -548,72 +514,9 @@ public class SocketEcuManager implements EcuManager {
 		}
 
 		public void run() {
-			try {
-				// // Request ID of AUTOSAR SWC
-				RequestIdMessage requestIdMessage = new RequestIdMessage();
-				sendMessage(requestIdMessage, out);
-				int messageSize = 0;
-				byte[] message;
-				byte buff[];
-				int index = 0;
-				while (true) {
-					buff = new byte[31];
-					in.readFully(buff);
-					System.out.println("Start receiving ...");
-					byte data = buff[index++];
-					System.out.print("[" + data + "]");
-					// if (data == '$') {
-					data = buff[index++];
-					System.out.print("[" + data + "]");
-					// if (data == '$') {
-					// Receive 4-byte integer
-					byte[] tempSize = new byte[4];
-					tempSize[0] = buff[index++];
-					System.out.print("[" + tempSize[0] + "]");
-					tempSize[1] = buff[index++];
-					System.out.print("[" + tempSize[1] + "]");
-					tempSize[2] = buff[index++];
-					System.out.print("[" + tempSize[2] + "]");
-					tempSize[3] = buff[index++];
-					System.out.print("[" + tempSize[3] + "]");
-					messageSize = byteArrayToInt(tempSize);
-					message = new byte[messageSize - 6];
-					for (int i = 0; i < messageSize - 6; i++) {
-						message[i] = buff[index++];
-						System.out.print("[" + message[i] + "]");
-					}
-					System.out.println();
-					// regenerate message
-					Message newMessage = getMessage(message.length, message);
-					int messageType = newMessage.getMessageType();
-					if (messageType == MessageType.REQUEST_ID_ACK) {
-						RequestIdAckMessage requestIdAckMessage = (RequestIdAckMessage) newMessage;
-						int id = requestIdAckMessage.getId();
-						registerEcu(id);
-
-						// Load all past installed PlugIns to target
-						// ECUs
-						System.out.println("Start loading plugins ...");
-						// loadPlugins(id);
-						new Thread(new Loader(ecm, id)).start();
-					} else {
-						// handle over to ECM
-						System.out.println("ECM handle new message from ECU");
-						ecm.process(newMessage);
-						System.out.println("[SocketEcuManager-done]");
-					}
-
-					// clear context
-					index = 0;
-					messageSize = 0;
-					message = null;
-					// }
-					// }
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
+		    // Turned into just dummy code, because SocketEcuManager
+		    // is not used, and so we can't keep it up to date with
+		    // the rest.
 		}
 
 		public void registerEcu(int id) {
@@ -628,13 +531,6 @@ public class SocketEcuManager implements EcuManager {
 			byte messageType = data[0];
 		System.out.println(">>> ecm-core/SocketEcuManager " + messageType);
 			switch (messageType) {
-			case MessageType.REQUEST_ID_ACK:
-				int id = 0;
-				id = (data[1] << 24) | (data[2] << 16) | (data[3] << 8)
-						| data[4];
-				RequestIdAckMessage requestIdAckMessage = new RequestIdAckMessage(
-						id);
-				return requestIdAckMessage;
 			case MessageType.INSTALL_ACK:
 				pluginNameSize = 0;
 				pluginNameSize = (data[1] << 24) | (data[2] << 16)
