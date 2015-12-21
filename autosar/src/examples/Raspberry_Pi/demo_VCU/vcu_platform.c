@@ -69,6 +69,25 @@ void Can_Read_Single_Frame(uint8* tempBuffer, CanPackage * CANPackage){
     CANPackage->PackageState.Done = true;
 }
 
+void Can_Read_Raw_Frame(uint8* tempBuffer, CanPackage * CANPackage){
+
+	readTotalSize = 8;
+//    printf("infor (single): size %d, %d, %d, %d, %d\r\n",readTotalSize, tempBuffer[0], tempBuffer[1], tempBuffer[2], tempBuffer[3]);
+    CANPackage->TotalReadSize  = readTotalSize;
+//    printf("infor: size %d \r\n",CANPackage->TotalReadSize);
+    CANPackage->nextFrameRead = 0;
+    CANPackage->indexReadStart = 0;
+    CANPackage->indexReadEnd = 0;
+    //store the data
+    for(int i = 0; i < CANPackage->TotalReadSize; i++){
+    	CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i];
+    	CANPackage->indexReadEnd++ ;
+    	CANPackage->readBytes++;
+//    	printf("Index: %d\r\n",CANPackage->indexReadEnd);
+    }
+    CANPackage->PackageState.Done = true;
+}
+
 /**
  *
  * @param tempBuffer
@@ -78,8 +97,9 @@ void Can_Read_First_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 
 	readTotalSize = ((tempBuffer[0] & DATALENGTH_H) << 24) + (tempBuffer[1] << 16) + (tempBuffer[2] << 8) + tempBuffer[3];
 //    printf("infor (first): size %d, %d, %d, %d, %d\r\n",readTotalSize, tempBuffer[0], tempBuffer[1], tempBuffer[2], tempBuffer[3]);
+	//printf("Can_Read_First_Frame, old size %d\r\n", CANPackage->TotalReadSize);
     CANPackage->TotalReadSize  = readTotalSize;
-//    printf("infor: size %d \r\n",CANPackage->TotalReadSize);
+    //printf("infor: size %d \r\n",CANPackage->TotalReadSize);
     packageFirstFrame_Flag = true;
     CANPackage->nextFrameRead = 0;
     CANPackage->indexReadStart = 0;
@@ -102,10 +122,17 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 //	printf("infor: consecutive frame readBytes = %d\r\n", CANPackage->readBytes);
 	uint16 sequenceNumber = tempBuffer[0] & SEQUENCE_NUMBER;
 
+	if (CANPackage->TotalReadSize == 0)
+	  return;
+
 	//printf("Can_Read_Consecutive_Frame seq %d\r\n", sequenceNumber);
+	//printf(" seq %d %d\r\n", sequenceNumber, CANPackage->indexReadEnd);
 
 	if(sequenceNumber == CANPackage->nextFrameRead){
 		for (int i = 0; i < CONSECUTIVE_FRAME_SIZE; i++) {
+		  if (CANPackage->CommunicationType == plugin_communication_SCU_to_VCU) {
+		    //printf("stuff: %d %d -> %d\r\n", CANPackage->indexReadEnd, CANPackage->CanReadBuffer[CANPackage->indexReadEnd], tempBuffer[i+CF_PCI_BYTE]);
+		  }
 			CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+CF_PCI_BYTE];
 			CANPackage->indexReadEnd++;
 			CANPackage->readBytes++;
@@ -114,6 +141,9 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 			if(CANPackage->indexReadEnd >= BUFFERSIZE){
 				CANPackage->indexReadEnd = 0;
 			}
+		  if (CANPackage->CommunicationType == plugin_communication_SCU_to_VCU) {
+		    //printf("stuff sizes %d %d\r\n", CANPackage->TotalReadSize, (CANPackage->readBytes));
+		  }
 			if(CANPackage->TotalReadSize == (CANPackage->readBytes)){
 			  //printf("endSize: %d\r\n",CANPackage->indexReadEnd);
 				CANPackage->PackageState.Done = true;
@@ -130,7 +160,7 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 			CANPackage->nextFrameRead++;
 		}
 	}else{
-	  printf("consec: not same sequence number: %d %d\r\n", sequenceNumber, CANPackage->nextFrameRead);
+	  printf("consec: not same sequence number: %d %d %d\r\n", sequenceNumber, CANPackage->nextFrameRead, CANPackage->indexReadEnd);
 		//nothing
 	}
 
@@ -352,7 +382,7 @@ void Can_Read_Package(CanPackage* CANPackage){
 
     cnt++;
 
-#if 1
+#if 0
     printf("read package %ld %d, start = %d, end = %d\r\n",
 	   cnt, CommunicationType,
 	   CANPackage->indexReadStart, CANPackage->indexReadEnd);
@@ -376,20 +406,39 @@ void Can_Read_Package(CanPackage* CANPackage){
 		  printf("CommunicationType %d\r\n", CommunicationType);
     	    break;
     }
+#if 0
+    if (CANPackage->CommunicationType == plugin_communication_SCU_to_VCU) {
+      printf("vcu copy 1: ");
+      for (int i = 0; i < 8; i++)
+	printf(" %d", pluginData[i]);
+      printf("\r\n");
+    }
+#endif
     memcpy(tempBuffer, pluginData, 8);
 #if 0
-    for (int i = 0; i < 8; i++)
-      printf(" %d", tempBuffer[i]);
-    printf("\r\n");
+    if (CANPackage->CommunicationType == plugin_communication_SCU_to_VCU) {
+      printf("vcu copy 2: ");
+      for (int i = 0; i < 8; i++)
+	printf(" %d", tempBuffer[i]);
+      printf("\r\n");
+    }
 #endif
     //get type of frame
-    frameType = (tempBuffer[0] & FRAME_TYPE) >> 4;
-//    printf("infor: frameType %d\r\n",frameType);
+    if (CommunicationType == position_communication_TCU_to_VCU) {
+      frameType = 9;
+    } else {
+      frameType = (tempBuffer[0] & FRAME_TYPE) >> 4;
+    }
+    //printf("infor: frameType %d\r\n",frameType);
     switch(frameType){
+    case 9:
+    		Can_Read_Raw_Frame(tempBuffer, CANPackage);
+      break;
     	case SINGLE_FRAME:
     		Can_Read_Single_Frame(tempBuffer, CANPackage);
     	break;
     	case FIRST_FRAME:
+	  //printf("first frame: %p %p\r\n", pluginData, tempBuffer);
     		Can_Read_First_Frame(tempBuffer, CANPackage);
     	break;
 
@@ -418,10 +467,15 @@ static CanPackage *mm(CanPackage *x)
 
 static boolean plugin_install = false; //temp
 
+CanPackage PackageReadFromSCU;
+UInt32 *VCUSCUtotp;
+
 CanPackage PackageInstallation;
 void Pirte_ReadInstallationDataFromTCU_Runnable(void){
 	//first time initialization
 	if (plugin_install == false) {
+	  VCUSCUtotp = &PackageReadFromSCU.TotalReadSize;
+
 		PackageInstallation.CommunicationType = plugin_Installation_VCU;
 		PackageInstallation.indexReadStart = 0;
 		PackageInstallation.indexReadEnd = 0;
@@ -533,8 +587,25 @@ void Pirte_WriteCommunicationDataFromTCU_Runnable(void) {
 static boolean init_readFromSCU = false;
 CanPackage PackageReadFromSCU;
 boolean plugin_new_packagefromSCU = false;
+
+int write_ok = 7;
+
+UInt32 *VCUSCUtotp;
+
 void Pirte_ReadDataFromSCU_Runnable(void){
+  if (PackageReadFromSCU.TotalReadSize == 0) {
+    //printf("write ok <- 6\r\n");
+    write_ok = 6;
+  }
+
+	if (!write_ok) {
+	  //printf("write ok == 0\r\n");
+	  return;
+	}
+
 	if (init_readFromSCU == false) {
+
+	  VCUSCUtotp = &PackageReadFromSCU.TotalReadSize;
 		PackageReadFromSCU.CommunicationType = plugin_communication_SCU_to_VCU;
 		PackageReadFromSCU.indexReadStart = 0;
 		PackageReadFromSCU.indexReadEnd = 0;
@@ -549,6 +620,8 @@ void Pirte_ReadDataFromSCU_Runnable(void){
 
 	Can_Read_Package(&PackageReadFromSCU);
 
+	//printf("PackageReadFromSCU.PackageState.Done = %d\r\n",
+	//     PackageReadFromSCU.PackageState.Done);
 	if (PackageReadFromSCU.PackageState.Done == true) {
 //		printf("infor: SCU app data ");
 //		for (int i = 0; i < PackageReadFromSCU.TotalReadSize; i++) {
@@ -556,13 +629,16 @@ void Pirte_ReadDataFromSCU_Runnable(void){
 //		}
 //		printf("//total %d\r\n", PackageReadFromSCU.indexReadEnd);
 		//TODO: Why is this done here???
-//		PackageReadFromSCU.TotalReadSize = 0;
+	  //PackageReadFromSCU.TotalReadSize = 0;
 		PackageReadFromSCU.nextFrameRead = 0;
 		PackageReadFromSCU.PackageState.Done = false;
 		PackageReadFromSCU.CommunicationType = no_communication;
 		PackageReadFromSCU.CanReadBuffer = NULL;
 		PackageReadFromSCU.readBytes  = 0;
 		init_readFromSCU = false;
+
+		write_ok = 0;
+		//printf("write ok <- 0\r\n");
 
 	}
 
