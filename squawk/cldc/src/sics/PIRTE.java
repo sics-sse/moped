@@ -527,37 +527,6 @@ public class PIRTE {
 		return res;
 	}
 
-	private void sendMessage(RequestIdAckMessage message) {
-		// 2: $$, 4: total size, 1: message type, 4: id
-		int totalSize = 11;
-		byte buffer[] = new byte[totalSize];
-		int index = 0;
-
-		// assign value
-
-		// starting sign: $$
-		buffer[index++] = '$';
-		buffer[index++] = '$';
-
-		// message size
-		buffer[index++] = (byte) (totalSize >> 24);
-		buffer[index++] = (byte) ((totalSize >> 16) & 0xFF);
-		buffer[index++] = (byte) ((totalSize >> 8) & 0xFF);
-		buffer[index++] = (byte) (totalSize & 0xFF);
-
-		// message typeinstalledPluginsShortcut
-		buffer[index++] = (byte) message.getMessageType();
-
-		// id
-		int id = message.getId();
-		buffer[index++] = (byte) (id >> 24);
-		buffer[index++] = (byte) ((id >> 16) & 0xFF);
-		buffer[index++] = (byte) ((id >> 8) & 0xFF);
-		buffer[index++] = (byte) (id & 0xFF);
-
-		VM.jnaSendPackageData(totalSize, buffer);
-	}
-
 	private void sendMessage(InstallAckMessage message) {
 		byte pluginId = message.getPluginId();
 		// 2 bits: message type, 6 bits:plugin ID
@@ -661,22 +630,6 @@ public class PIRTE {
 				if (index >= messageSize) {
 					byte messageType = message[0];
 					switch (messageType) {
-					case MessageType.REQUEST_ID:
-						VM.println("Receive request id");
-						RequestIdAckMessage requestIdAckMessage = new RequestIdAckMessage(
-								2);
-						VM.println("Send request ack");
-						sendMessage(requestIdAckMessage);
-
-						// clear context
-						// isNewStart = false;
-						// isMessageReady = false;
-						// isMessageSizeReady = false;
-						messageSize = 0;
-						index = 0;
-						message = null;
-						VM.jnaSetLED(-1, 0x121f);
-						break;
 					case MessageType.INSTALL:
 					case MessageType.LOAD:
 						index = 1;
