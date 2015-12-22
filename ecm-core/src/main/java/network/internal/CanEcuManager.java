@@ -415,8 +415,10 @@ public class CanEcuManager implements EcuManager {
 		}
 		byte[] portInitContextBufferBytes = portInitContextBuffer.getBytes();
 		int portInitContextBytesSize = portInitContextBufferBytes.length;
-
 		ArrayList<LinkContextEntry> linkContext = message.getLinkContext();
+		if (linkContext == null) {
+		    System.out.println("linkContext null");
+		}
 		int portLinkContextNum = linkContext.size();
 		int portLinkContextByteSize = portLinkContextNum * 12;
 
