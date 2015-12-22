@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>volvo-rpi1</vehicleName>
+	<brand>Volvo</brand>
+	<plugins>
+		<plugin>
+			<name>PLUGINNAME.suite</name>
+			<ecu>ECUID</ecu>
+			<ports>
+<!--
+				<port>
+					<name>fs</name>
+				</port>
+				<port>
+					<name>ff</name>
+				</port>
+-->
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+<!--
+		<link>
+			<from>fs</from>
+			<to>0</to>
+		</link>
+		<link>
+			<from>5</from>
+			<to>ff</to>
+		</link>
+-->
+	</links>
+</app>
