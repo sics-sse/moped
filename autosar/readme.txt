@@ -17,13 +17,7 @@ supported by this release, see
   https://moped.sics.se/wordpress/wp-content/uploads/2014/08/MOPED.pdf
 
 For information on getting started with Arctic Core, please take a look at: 
-  http://arccore.com/wiki/Quick-start_Tutorial
-
-For more general information and help, browse the wiki at:
-  http://arccore.com/wiki/
-
-or post a question in the forum:
-  https://arccore.com/forum/
+  http://www.arccore.com
 
 
 INSTALLATION INSTRUCTIONS:
