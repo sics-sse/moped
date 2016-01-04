@@ -11,3 +11,6 @@ ant debug
 
 Put this on an Android phone somehow, via USB cable or a local web server.
 
+
+The app doesn't detect loss of connection. You have to do Disconnect and
+then setup again.

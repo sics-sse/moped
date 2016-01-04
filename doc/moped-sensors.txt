@@ -1,9 +1,10 @@
 
-* speed
+* speed (VCU, ports 5 and 6)
 
 This is computed from the frequency with which a light is turned into
-pulses by reflectors distributed evenly on the inside of a wheel. Thus,
-only the absolute value of the speed is reported.
+pulses by five reflectors distributed evenly on the inside of a wheel. Thus,
+only the absolute value of the speed is reported.  The sensors sit on the
+front (port 5) and the back (port 6) wheels on the right side.
 
 The measurements are made by a separate process, which writes a value into
 a memory cell which the sensor port then reads. So reading fast gives you
@@ -16,38 +17,38 @@ one of the back wheels by hand (the mechanics make the other wheel rotate
 in the other direction).
 
 
+If the speed sensor unit is fastened with a wire, it may happen that
+the wire gets in the way of the path of the light, causing some or all of
+the reflectors to be ignored.
+
 TODO: copy text from LOG-sensor-speed
 
-* steering
-
-
-* distance
+* distance (SCU, port 13)
 
 Minimum distance is 3 cm. 37xx is maximum, but it seems to mean that it
 doesn't detect the echo. 637 is the highest value I have received which
 represents a real distance.
 
-It seems that with very large distances, there may be no answer at all
-from the port. I don't know why that is.
-
 The area reached by the sensor has an angle of about 15 degrees in
 both directions from the forward direction. I don't know if the shape
 is conical, or if it is wider in the left-right direction that up-down.
-It points slightly upwards so it will miss the floor.
+It points slightly upwards so it will miss the floor, or if it hits
+the floor, the angle is such that the echo won't return.
 
 It seems that it only detects the echo if its angle to the reflecting surface is
 45-90 degrees.
 
 
-* battery
+* battery (VCU, port 7)
 
+Copy from LOG-sensor-battery.
 
-* position
+* position (VCU, port 8)
 
-GPS, I think, but it's not used
+There is no simple sensor for the position, but the TCU can use a camera
+and then sends position information to the VCU.
 
-
-* accelerometer/gyro
+* accelerometer/gyro (SCU, port 14)
 
 I2C
 IMU

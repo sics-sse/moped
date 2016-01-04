@@ -8,6 +8,7 @@ SCU = sensor
 VCU = vehicle
 
 Sometimes I use "ECU" to refer to either of SCU and VCU.
+[But I shouldn't]
 
 VCU is connected to the steering and driving (both actuators and
 sensors), as well as the LEDs. The speed sensors are at the inside of the

@@ -27,8 +27,8 @@ sudo apt-get install maven
 git clone https://github.com/sics-sse/moped
 
 
-In new-server/src/main/java/service/PluginWebServicePublisher.java,
-change the value of PUB_ADDRESS to use the computer's domain name
+In new-server/settings.properties,
+change the value of "serverhost" to use the computer's domain name
 instead, if you want the server to be reachable from outside.
 
 In configs/system1.xml, change
@@ -107,7 +107,7 @@ java -jar target/simulator-1.0.jar
 and the server says
     Message received on server...
     Vehicle 20UYA31581L000000 joins the connection (simulator 1)
-It will say (simulator 0) for an actual model car.
+It will say "(simulator 0)" for an actual model car, and its IP address.
 
 A window appears, and a small drawing of a car.
 
@@ -214,11 +214,13 @@ cd java
 
 You may have to use
     sudo raspi-config
-to enable SPI and/or CAN at boot time.
+to enable SPI and/or CAN at boot time. (We use both - CAN is the bus
+connecting TCU/VCU/SCU and SPI is the interface used with the CAN controller.)
 
 
 
-Create a file java/settings.properties with the following contents:
+Create a file java/settings.properties with the following contents
+(you can copy it from ecm-linux/settings.properties):
 
 LOCAL_PORT=8888
 VIN=20UYA31581L000000
@@ -228,12 +230,11 @@ SERVER_PORT=9999
 LINUX_AUTOSAR_PORT=50000
 APP_DIR=apps
 
-Use the actual name of the computer where you run the server.
+Use the actual name of the computer where you run the server for SERVER.
 Change VIN to something else.
 
 In /etc/wpa_supplicant/wpa_supplicant.conf, add the name and password
-of the network defined by the router (internet access point), in a structure
-like this:
+of the wifi network, in a structure like this:
 network={
 	ssid="network name"
 	psk="password"

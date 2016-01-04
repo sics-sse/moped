@@ -21,7 +21,7 @@ VCU
 9 writeLED
 
 SCU
-10 pubSCUData (not used)
+10 pubSCUData (not used - 0 is used for this too)
 
 In addition (see PIRTE.java):
 1 VCUReadPluginDataFromSCUVirtualPPort

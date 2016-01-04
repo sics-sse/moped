@@ -23,6 +23,8 @@ include(get_template_directory()."/../../../custom/moped_functions.php");
 to false again when things work, because on some pages, there are some
 harmless but annoying warnings.
 
+Add require_once('pluggable.php') to wp-includes/capabilities.php
+
 5) Add https to Apache. This is not needed for moped to work, but may be
 needed for wordpress administration.
 

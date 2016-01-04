@@ -3,7 +3,7 @@ At times, you think you are doing the right thing but nothing happens. Here
 are some common situations.
 
 
-A GtkTerm is running and connected to an ECU, but when the ECU starts, the
+A GtkTerm is running and connected to the VCU/SCU, but when the node starts, the
 GtkTerm shows nothing.
 If the cable has been disconnected and then inserted again, GtkTerm must be
 configured again for the right speed.
@@ -17,18 +17,18 @@ edge of the card rub on the socket when inserting it.
 
 The car starts and the TCU contacts the server, but the VCU (or SCU) doesn't
 do anything.
-It happens (one time in 20?) that an ECU doesn't boot properly when
+It happens (one time in 20?) that the VCU/SCU doesn't boot properly when
 powered on. Check if the heartbeat light is blinking. If not, reboot everything
-or just the ECU, depending on your needs.
+or just the VCU/SCU, depending on your needs.
 
 When a plugin is installed on the car, the plugin doesn't start, and other
-plugins running on the same ECU stop.
-The kernel image on an ECU must be made from the same build of the
+plugins running on the same node stop.
+The kernel image on the VCU/SCU must be made from the same build of the
 system's squawk component as is used by the server when the plugin is uploaded.
 Otherwise the so-called hash codes will differ, and the plugin can't run.
-This is reported on the console output of the ECU. Depending on which object
-needs updating, you may have to copy the current image to the ECU, and then
-in any case upload the plugin again. Note that the ECU must be restarted
+This is reported on the console output of the VCU/SCU. Depending on which object
+needs updating, you may have to copy the current image to the VCU/SCU, and then
+in any case upload the plugin again. Note that the node must be restarted
 as well, since this condition crashes it.
 
 The GUI doesn't let you install plugins, although it used to.
@@ -54,6 +54,3 @@ by both.
 The simulator and the car use different entry points. Make sure the plugin
 has a zero-argument constructor, a one-argument (String []) constructor,
 and a 'main' method.
-
-The SCU doesn't do anything at all.
-The ultrasound sensor may be loose. Make sure all its pins are connected.

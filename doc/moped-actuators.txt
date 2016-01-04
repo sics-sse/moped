@@ -1,43 +1,56 @@
 
 
-* steering
+* steering (VCU, port 4)
 
--100 to 100
+-100 (left) to 100 (right)
 
 0 should be straight ahead, but the mechanics may be such that setting
 0 after -100 makes the wheels point straight ahead, while doing so after
 100 makes them stay noticeably to the right.
 
+Minimum turning diameter: xxx
 
-* speed
+
+* speed (VCU, port 3)
 
 The value can be set to between -100 and 100. Negative numbers mean
-reversing, but setting first a positive speed and then a negative one
-will probably lead to 256+speed being used. At least 0 should be
-set explicitly. More things may be needed, but I don't understand this
-yet. Possibly the steering should be set each time, too. Suitable pauses
-are important, and it takes a while for the thing to start (at which time
-the hardware beeps to indicate this).
+reversing. At least 0 should be set explicitly. More things may be
+needed, but I don't understand this yet. Suitable pauses are
+important, and it takes a while for the thing to start (at which time
+the hardware beeps to indicate this). Setting a value of the opposite
+sign invokes an electric brake.
+
+To init the ESC, set speed to 0.
 
 Currently, the actual reverse speed is lower than the forward speed,
 for the same speed setting. This can apparently be configured
 somewhere in the motor unit.
 
-Look at AP.java, Circle.java.
+When going forward, setting the speed negative invokes a brake.
+Setting it to zero lets the car roll. In order to reverse, the car must
+be standing still first.
+
+The minimum value for which the car moves is 7.
+
+Braking distance for speed yyy: xxx
 
 
-
-* LED
+* LED (VCU)
 
 The LEDs are numbered 1 to 3. To light one, set it to 0. To extinguish,
 set it to 1.
 
 LED 1 = red
-LED 2 = left yellow (?)
-LED 3 = right yellow (?)
+LED 2 = right yellow
+LED 3 = left yellow
 
 
 Send a string like this to the port: "3|1".
+
+The ACT LED on the Raspberry Pi card can also be controlled this way,
+by using the LED number -1. The value is then not 0 or 1, but a blinking
+pattern. This can be used on the SCU as well.
+
 
 
 TODO: put all information in the table in Plugin Manual here.

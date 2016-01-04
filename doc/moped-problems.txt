@@ -1,20 +1,21 @@
 
-Occasionally, the receiving of an installation package on an ECU from
-the TCU fails, either because it never got everything (there is a
+Occasionally, the receiving of an installation package on the VCU/SCU
+from the TCU fails, either because it never got everything (there is a
 printout "ready?" followed by two numbers), or because the reading of
-frames (the smallest units of data that are sent) got out of synch (there
-is a printout "consec: not same sequence number").
+frames (the smallest units of data that are sent) got out of synch
+(there is a printout "consec: not same sequence number").
 
 Performing the same operation again will probably be successful. If the
-ECU crashed, it has to be restarted first.
+VCU/SCU crashed, it has to be restarted first.
 
 When powered by the aggregate, trying to use the servo/motor can make
 the TCU (and maybe everything) immediately restart. When by battery,
 it works well.  I think this is due to a fall in voltage, not to a
 loose connection.
 
-The ultrasonic sensor is handled in such a way that it must be
-connected in order for the SCU to run at all: if even one pin is
-disconnected, the SCU pauses or crashes.
-
 The maximum size of a plugin is 4096 bytes. This should be increased.
+[This seems not to be true, but there is certainly a limit which is not
+much larger.]
+
+If one node receives messages on the CAN bus from two different sources
+too fast, it may happen that packets get lost.

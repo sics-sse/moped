@@ -9,12 +9,10 @@ server
 
 simulator
 
-GtkTerm
+GtkTerm (or equivalent program)
  a terminal emulator for looking at serial traffic, running on a computer
 
 Android remote control
-
-Smart phone (Android or IPhone) shared internet point = router
 
 car
 
@@ -47,7 +45,7 @@ runs Linux.  The other two handles the local sensors and actuators and
 run the operating system autosar. They are called VCU and SCU. See
 moped-car.txt for specific details.
 
-The code running on the TCU is a Java program called ECM, which uses C code
+The code running on the TCU is a Java program called Ecm, which uses C code
 compiled into a sharable library libjavaCanBus.so for the communication
 with SCU and VCU (over what is called the CAN bus).
 
@@ -65,18 +63,18 @@ See moped-simulator.txt
 
 
 
-The SCU and VCU run so-called plugins, which are written in Java. When
+The VCU/SCU run so-called plugins, which are written in Java. When
 a plugin has been built, it is uploaded to the server. Then a car is
 selected and the plugin installed on it. When the plugin is installed
 on the car, it first comes to the TCU, which stores it in its file
-system and sends it on to which one of the VCU and SCU that should
-have it. When the plugin arrives in the VCU (say), the VCU starts
+system and sends it on to the VCU/SCU that should
+have it. When the plugin arrives in the VCU/SCU, the node starts
 executing it. If it stops (whether crashing or normally), it is not
-restarted automatically - nor is it if the VCU is restarted. If the
-whole car is restarted, the TCU sends its plugins again to the VCU or SCU.
+restarted automatically - nor is it if the node is restarted. If the
+whole car is restarted, the TCU sends its plugins again to the VCU/SCU.
 
 A plugin may be uninstalled, in which it is removed from the TCU, and stopped
-on the VCU, if running.
+on the VCU/SCU, if running.
 
 The upload, installation etc. operations can be done with a GUI which sends
 requests to the server, or by sending requests directly to the server using

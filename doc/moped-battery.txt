@@ -5,13 +5,20 @@ This can be done either with a LiPo battery or a DC power aggregate
 (or what the name is).
 
 On the voltage divider, there are four lights, showing the voltage. When
-all four are steadily on, the voltage is fine.
+all four are steadily on, the voltage is fine. When only the red ones are
+lit, the battery will soon run out (then all lights will flicker).
 
-TODO: copy text from LOG-sensor-battery
+See moped-sensors.txt
 
 * Charging the battery
 
 Follow the instructions carefully.
+
+It may happen that a battery depleted so nuch that it can't power the
+Raspi's anymore will elicit the message "low voltage" or something
+similar from the charger, which will then refuse to charge it. In that
+case, it has always helped so far to simply wait a few hours before
+trying again.
 
 Charging a battery fully which has been depleted so that the rpi's
 can't run anymore (it's then between 5.7 and 6.6 V) takes between 65

@@ -9,13 +9,14 @@ To run the simulator:
 cd simulator
 java -jar target/simulator-1.0.jar
 
-simulator's PIRTE defines these virtual ports:
-0 publish
+The simulator's PIRTE defines these virtual ports:
+0 publish to MQTT
 3 accelerator motorPower
 4 steering steeringAngle
 5 frontwheel vehicleSpeed
 6 rearwheel vehicleSpeed
 7 voltage voltage
+8 position
 9 LED lamp
 
 The car is drawn as a rectangle with an arrow in the front part.
@@ -29,9 +30,6 @@ and the location of the trusted server.
 
 --nowindow
 
-MQTT
-
-remote control
 
 Restrictions:
 Voltage is fake - it returns a constant.

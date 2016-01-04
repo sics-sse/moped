@@ -1,3 +1,25 @@
+I added a 4x7 LED display (7 segments, and actually a period too), which
+uses I2C. SCU has code I2C, and otherwise uses this for the ADC. It's
+probably possible to put both ADC and the display on the same I2C pins,
+after setting a different device id on the display.
+
+The MPU9150 (accelerometer) unit also has a magnetometer, so one can
+get the orientation with some additional code on the SCU.
+
+I added code for reading the value of the GPIO 2 pin (pin 3). This can be
+changed from 1 to 0 with a simple switch which grounds the pin. The code
+is not readable from Java yet.
+
+New plugin: StarAndGo, and others
+
+Sound: connected a small loudspeaker with 3.5mm audio and USB power (to
+charge internal battery) to TCU.
+
+Sending data from VCU to SCU (in the same way as SCU to VCU already works)
+is in progress, but not ready yet.
+
+
+
 Don't force the front wheels to change steering by hand. Doing so
 generates a current, which may be high enough to damage circuits.
 
@@ -8,9 +30,9 @@ charging (whether turned on or not) gives one hour of use.
 The speed of the car: 20m in between 10 and 50 s.
 The lowest value for the speed port that results in movement is 7.
 Smallest circle has outer diameter 153 cm. At lowest speed, it is
-circumvented in 13s.
+circumvented in 17s.
 
-When "ready? 0 xxx", xxx being some number, appears on ECU serial
+When "ready? 0 xxx", xxx being some number, appears on VCU/SCU serial
 output, it means that the Can reception works, but PIRTE is not
 running.
 
@@ -24,12 +46,14 @@ ACT LED blinking (the first LED on the Raspberry Pi board)
  one second.
 
  A plugin can set the pattern by pretending to write to ordinary LED
- number -1. When an installation succeeds, the pattern will revert to 121f.
+ number -1.
 
  When a plugin started installing but failed, it changes to 21f1; that is,
  a rapid off-on-off followed by on for one second.
  In this state, an installation can be retried, and running plugins still
  run.
+
+ When an installation succeeds, the pattern will revert to 121f.
 
  When the virtual machine crashes (which means that plugins stop and nothing
  can be installed), the pattern is 121218.
@@ -46,6 +70,15 @@ ACT LED blinking (the first LED on the Raspberry Pi board)
 
 Port 22 is for reading position information, sent to the VCU from the TCU
 when an external image processing server is running.
+The value is of type 'long', in the form
+(vehiclePositionX << 48)
++ (vehiclePositionY << 32)
++ (vehicleOrientation << 24)
++ (vehiclePositionQualityFactor << 16)
++ vehiclePositionAge;
+X and Y are in cm, orientation is from 0 to 255 in units of 360/256 degrees.
+quality is between 0 and 100, 100 being perfect
+
 
 When setting up the system, change new-server/settings.properties so
 it points out the MOPED directory.
@@ -53,3 +86,65 @@ Also, change ecm-linux/settings.properties so the server will be found,
 and, after copying it to the TCU, set the VIN to something unique
 (especially relevant if you have several cars).
 
+Hint: if a plugin drives the motor but doesn't set it to zero often, it
+may not start when the ESC is turned on. Then using the remote control and
+sliding the speed up and down a little gets it going.
+
+Instead of restarting SCU and reinstall UltraSonicReader, just disconnect
+its CAN cable. When putting it back, it will continue working. This is
+currently a useful thing to do so that the messages from the SCU don't
+get in the way of a plugin installation.
+
+Maybe already there:
+ start.elf bootcode.bin kernel.img
+
+ A card may be mountable and have these files with correct content, but
+ still refuse to boot.
+
+ Conversely, a card may be unrecognized by a computer, but fully working
+ as TCU.
+
+ SD cards may get worn and stop functioning. It could be that they still
+ work in a computer or SD card reader, but not in the Raspberry.
+ Once, one of the small plastic ridges between the contacts broke. I could
+ fix that by simply removing most of the ridge. It may help to put a folded
+ piece of paper under the SD card.
+
+If you intend to let the car run without cables attached, don't boot it
+with an ethernet cable attached (and then removing it), since the connection
+to MQTT, and maybe also the server, will be made using the cable.
+
+plugins/new-plugin.sh
+
+In the front wheels, the reflection reader is fastened with a piece of
+plastic-embedded metal wire which can get in the way of the light. Pull
+it into place if so. Check that the VCU reacts for each of the five
+strips.
+
+About j2me and missing things (split, maths) and the string+double bug.
+
+InterruptedException in plugins
+
+With Python:
+>>> for y in [(x["appId"],x["name"],x["installationState"],x["applicationState"]) for x in json.loads(s.listInstalledApps())["result"] if x["applicationState"] < "060"]: print y;
+... 
+(u'211', u'Comm1', u'installed', u'030-compiled')
+(u'222', u'VCUfromSCU', u'installed', u'030-compiled')
+(u'220', u'SCUtoVCU', u'installed', u'030-compiled')
+(u'244', u'LEDLighter2', u'installed', u'030-compiled')
+(u'254', u'SpeedBrake', u'installed', u'030-compiled')
+(u'321', u'UltraSonicReader', u'installed', u'030-compiled')
+(u'327', u'LEDLighter', u'installed', u'030-compiled')
+(u'343', u'Slow', u'installed', u'030-compiled')
+(u'348', u'UltraSonicReaderSquare', u'installed', u'030-compiled')
+(u'351', u'Position', u'installed', u'030-compiled')
+(u'360', u'Square', u'installed', u'030-compiled')
+(u'348', u'UltraSonicReaderSquare', u'installed', u'030-compiled')
+(u'375', u'SemiAutomaticReverseParking', u'installed', u'030-compiled')
+(u'376', u'Circle', u'installed', u'030-compiled')
+(u'386', u'CirclePos', u'installed', u'030-compiled')
+(u'387', u'FWPub', u'installed', u'030-compiled')
+(u'394', u'AllVCU', u'installed', u'030-compiled')
+
+Configuration files: settings.properties
+in new-server, ecm-linux, simulator
