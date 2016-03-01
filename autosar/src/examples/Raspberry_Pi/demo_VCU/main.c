@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include "Os.h"
 #include "Mcu.h"
 #include "arc.h"
@@ -34,12 +35,54 @@ void SquawkTask(void){
 #if RUN_SQUAWK
 		runSquawk();
 #endif
-
+		printf("Squawk task loop\r\n");
 	}
 }
 
+struct ecu_config {
+  char *mac;
+  char *conf;
+};
+
+struct ecu_config configs[] = {
+  // VCU car 1
+  {"b827eb3510df", "servo -1"},
+  // VCU car 2
+  {"b827eb3aebfd", "servo 1"},
+};
+
+int vcu_servo_direction = 1;
+
+static void parse_config(void) {
+  int i, j;
+  int matched = 0;
+
+  for (i = 0; i < sizeof(configs)/sizeof(configs[0]); i++) {
+    //printf("checking %s\r\n", configs[i].mac);
+    if (strcmp(bcm2835_mac_address, configs[i].mac) == 0) {
+      matched = 1;
+      printf("config: %s\r\n", configs[i].conf);
+      vcu_servo_direction = atoi(&configs[i].conf[6]);
+      if (vcu_servo_direction != 1 && vcu_servo_direction != -1) {
+	printf("invalid servo direction %d\r\n",
+	       vcu_servo_direction);
+	vcu_servo_direction = 1;
+      }
+      break;
+    }
+  }
+  if (!matched) {
+    printf("No configuration info was found for this ECU\r\n");
+  }
+}
+
+
 void StartupTask( void ) {
     pi_printf("infor: start up\r\n");
+
+    bcm2835_read_mac_address();
+
+    parse_config();
 
     EcuM_StartupTwo();
 
