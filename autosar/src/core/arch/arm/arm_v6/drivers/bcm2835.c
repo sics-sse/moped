@@ -304,3 +304,50 @@ int bcm2835_SetPower(enum board_power_feature feature, boolean on)
 
     return 1;
 }
+
+// I'm not at all sure that this memory is not used
+#define VC_MBOX_MEM	0x1000
+
+char bcm2835_mac_address[13];
+
+static char hexd(int x) {
+  if (x >= 10) {
+    return x-10+'a';
+  }
+  return x + '0';
+}
+
+/*
+  Most of this is adapted from
+
+http://raspberryalphaomega.org.uk/2013/01/13/how-to-read-raspberry-pi-board-revision-and-memory-size/
+
+ */
+void bcm2835_read_mac_address(void) {
+	uint32 val;
+	uint32 *place;
+	int i;
+
+	place = (uint32 *) VC_MBOX_MEM;
+
+	place[0] = 32;
+	place[1] = 0;
+	place[2] = 0x00010003;
+	place[3] = 8;
+	place[4] = 0;
+	place[5] = 0;
+	place[6] = 0;
+	bcm2835_mailbox_write(8, VC_MBOX_MEM);
+	val = bcm2835_mailbox_read(8);
+	if (place[1] == 0x80000000 && place[4] == 0x80000006) {
+	  uint8 *addr = (uint8 *) &place[5];
+	  for (i = 0; i < 6; i++) {
+	    bcm2835_mac_address[2*i] = hexd(addr[i]/16);
+	    bcm2835_mac_address[2*i+1] = hexd(addr[i]&15);
+	  }
+	  bcm2835_mac_address[12] = '\0';
+	  printf("MAC address: %s\r\n", bcm2835_mac_address);
+	} else {
+	  printf("Obtaining MAC address failed\r\n");
+	}
+}
