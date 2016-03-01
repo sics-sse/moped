@@ -777,4 +777,8 @@ void bcm2835_GpioIsr(void);
 
 void bcm2835_SetWriteOnlyGpioReg(volatile uint32* baseReg, uint32 gpio_pin);
 
+void bcm2835_read_mac_address(void);
+
+extern char bcm2835_mac_address[];
+
 #endif
