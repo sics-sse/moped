@@ -1,0 +1,12 @@
+{
+	"description": "Calibration settings for camera installation on the car with raspicam.",
+	"cameraFieldOfView": 75,
+	"cameraOffsetX": 0.04,
+	"cameraOffsetY": 0.055,
+	"cameraOffsetZ": 0.07,
+	"cameraRotation": 0.0,
+	"maxSpeed": 3.0,
+	"circleRankWeight": 0.2,
+	"minNumberOfCircles": 5,
+	"maxNumberOfCircles": 10
+}

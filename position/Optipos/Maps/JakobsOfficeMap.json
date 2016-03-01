@@ -1,0 +1,15 @@
+{
+	"description": "Map file for testing in Jakob's office. North is towards the corridor. Origo is directly under the only marker (type 19).",
+	"ceilingHeight": 2.69,
+	"markerSize": 0.11,
+	"markers": [
+		{ "x": 0.0, "y": 0.0, "o": 0.0, "t": 19 }
+	],
+	"regions": [
+		{ "x1": -2.228, "y1": -1.466, "x2": 0.894, "y2": 2.544 }
+	],
+	"numberOfFieldsPerCircle": 3,
+	"numberOfMarkerColors": 2
+}
+
+

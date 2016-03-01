@@ -1,0 +1,89 @@
+Files for the positional system.
+
+
+Old description, not fully correct anymore:
+
+
+
+navigate.py is run on the TCU
+
+OptiposCloudServer.py is run on appz-ext.sics.se
+
+OptiposRPiClient.py is run in the background on the TCU
+It periodically (a few times a second) takes a picture with the camera
+and sends it to the optipos server. It gets back a position value
+(including marker number, position, orientation and quality). My addition
+is that it appends this to a file /tmp/marker0.
+
+Code has been added temporarily to the runtime system code of the VCU,
+which sends the wheel speed (in cm/s) on the CAN bus to the TCU.
+A shell command runs on the TCU, reading from the CAN bus and appending the
+values to a file /tmp/speed.
+
+navigate.py begins by assuming the car is still and pointing in the
+0 direction. It reads gyro information 1000 times and determines a bias
+value to subtract.
+
+navigate.py runs these threads:
+ gyro thread
+ marker thread
+ speed thread
+
+The gyro thread reads at maximum speed (about 500 Hz in practice) from
+the IMU and integrates the z gyro value to give an angle. It makes the
+current orientation available in a global variable.
+
+The marker thread reads from /tmp/marker0.
+If the quality < 0.25, the marker is discarded.
+If the orientation of the car as reported with the marker is more than
+45 degrees off from what the gyro says, the marker is discarded.
+If the distance between the reported position and where we were at the
+last approved marker could not be travelled with speed less than 1.0 m/s,
+we discard the marker.
+
+It makes the position info available in a global variable. The delay
+is not handled.
+
+The speed thread reads from /tmp/speed. It makes the speed available in
+a global variable.
+
+The main thread is interactive, and the user (logged in with ssh) can
+issue commands to make the car run.
+
+The three existing simple commands are:
+ stop
+ goto
+ maketurn
+
+maketurn(angle) makes a sharp turn (90%) and keeps doing this until
+the gyro angle value is within 10 degrees of 'angle'. The turn is
+either left or right depending on the value of 'angle'.
+If this should take longer than 30s, it gives up.
+
+goto(x,y)
+refuses if (x,y) is outside the mapped area.
+if a straight line should take the car outside the map, it stops.
+steering is set to 90, angle limit to 20
+X:
+ the car makes a turn in the direction of the target until the error is
+ less than the angle limit:
+  the turning stops if we are less than 1.0m from the target
+  if we have been turning more than 100 steps, we stop turning
+ if the distance to the target is less than 1.0 m, it stops.
+ if we have looped through X ten times and the speed is 0, we assume we
+ are hindered by an obstacle and stop
+ set steering to 50 and angle limit to 10
+go back to X
+
+
+The function trip2 performs these commands in turn in a loop, stopping if
+one of the commands fails:
+    goto(0.5,18.5)
+    maketurn(250)
+    goto(0.7,17)
+    goto(0.6,11)
+    goto(0.5,6)
+    maketurn(-180)
+    goto(0.5,9)
+
+

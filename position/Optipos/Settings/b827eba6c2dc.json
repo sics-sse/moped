@@ -1,0 +1,12 @@
+{
+	"description": "Calibration settings for camera installation on jakobspi.sics.se",
+	"cameraFieldOfView": 56,
+	"cameraOffsetX": 0.0,
+	"cameraOffsetY": 0.0,
+	"cameraOffsetZ": 0.04,
+	"cameraRotation": 0.0,
+	"maxSpeed": 3.0,
+	"circleRankWeight": 0.2,
+	"minNumberOfCircles": 5,
+	"maxNumberOfCircles": 10
+}
