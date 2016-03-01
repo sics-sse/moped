@@ -37,6 +37,8 @@ void SquawkTask(void){
 void StartupTask( void ) {
     pi_printf("infor: start up\r\n");
 
+    bcm2835_read_mac_address();
+
     EcuM_StartupTwo();
 
 	// Startup CanIf due to ComM is missing in this example
