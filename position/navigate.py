@@ -1,16 +1,40 @@
+import re
 import smbus
 import time
-import thread
+import threading
 import os
 import subprocess
 import math
+import socket
+import struct
+import sys
 
+import urllib
+import urllib.parse
+import paho.mqtt.client as mosquitto
+
+def start_new_thread(f, args):
+    threading.Thread(target=f, args=args).start()
+
+global VIN
+#VIN = sys.argv[1]
+
+markerno = 0
+markercnt = 0
+
+speedsign = 1
+
+angleknown = False
 marker = None
 inspeed = 0.0
 odometer = 0
+lastodometer = None
 age = -1
 
-TARGETDIST = 0.3
+can_steer = 0
+can_speed = 0
+
+TARGETDIST = 0.5
 DEFAULTSPEED = 7
 TURNSPEED = 20
 TOOHIGHSPEED = 2.0
@@ -47,6 +71,9 @@ global px, py, pz
 global ppx, ppy, ppz
 global vx, vy, vz
 
+ppx = 0
+ppy = 0
+
 #gscale = 32768.0/250
 gscale = 32768.0/1000
 ascale = 1670.0
@@ -63,7 +90,7 @@ t0 = None
 def make_word(high, low):
     x = high*256+low
     if x >= 32768:
-	x -= 65536
+        x -= 65536
     return x
 
 def readgyro():
@@ -77,6 +104,7 @@ def readgyro():
 
     try:
 
+        tlast = time.time()
         t1 = time.time()
 
         while True:
@@ -135,10 +163,15 @@ def readgyro():
 
             # don't put too many things in this thread
 
-            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
-                    x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
+            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+                    x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
+                    dang, can_steer, can_speed, inspeed, outspeed, odometer))
 
             
+            if (t2-tlast > 0.1):
+                tolog0("")
+                tlast = t2
+
             j = angdiff/1000
             ang += j
             angdiff -= j
@@ -148,10 +181,16 @@ def readgyro():
 
 
 def tolog2(str0, stdout):
-    str = "(speed %d time %.3f) %s" % (inspeed, time.time() - t0, str0)
+    str = "(speed %d time %.3f %f %f %f) %s" % (
+        inspeed,
+        time.time() - t0,
+        ppx,
+        ppy,
+        ang,
+        str0)
     logf.write(str + "\n")
     if stdout:
-        print str
+        print(str)
 
 def tolog0(str):
     tolog2(str, False)
@@ -167,7 +206,72 @@ lastmarker0 = None
 lastpos = None
 lastpost = None
 
-#badmarkers = [7,55,25,43]
+badmarkers = [7]
+
+global mqttc
+
+global gototarget
+gototarget = None
+
+def on_message(mosq, obj, msg):
+
+    p = str(msg.payload)
+    while p[-1] == '\n' or p[-1] == '\t':
+        p = p[:-1]
+    if VIN in msg.topic:
+        return
+    sys.stdout.write(msg.topic + " " + str(msg.qos) + " " + p + "\n")
+    pl = p.split(" ")
+    x = float(pl[0])
+    y = float(pl[1])
+    #goto(x, y)
+
+def mqtt_init():
+    global mqttc
+
+    url_str = "mttq://test.mosquitto.org:1883"
+    url = urllib.parse.urlparse(url_str)
+    mqttc = mosquitto.Mosquitto()
+    mqttc.on_message = on_message
+    mqttc.connect(url.hostname, url.port)
+    # will match /sics/moped/position/car2, for example
+    mqttc.subscribe("/sics/moped/+/+", 0)
+    #mqttc.subscribe("/sics/moped/value", 0)
+
+def send_to_mqtt(x, y):
+#    mqttc.publish("/sics/moped/position/%s" % VIN, "%f %f" % (x, y))
+    pass
+
+def handle_mqtt():
+    rc = 0
+    while rc == 0:
+        rc = mqttc.loop()
+    print("rc: " + str(rc))
+
+
+def readcanspeed():
+    global can_steer, can_speed
+    oldcnt = None
+
+    while True:
+        p = subprocess.Popen("tail -1 /tmp/canspeed", stdout=subprocess.PIPE, shell=True);
+        res = p.communicate()
+        m = res[0]
+        m1 = m.split('\n')[0]
+        m = m1.split(" ")
+        cnt = int(m[2])
+        if cnt == oldcnt:
+            continue
+        oldcnt = cnt
+        can_speed1 = int(m[0])
+        if can_speed1 > 127:
+            can_speed1 -= 256
+        can_speed = can_speed1
+        can_steer1 = int(m[1])
+        if can_steer1 > 127:
+            can_steer1 -= 256
+        can_steer = can_steer1
+
 
 def readmarker():
     global marker, age, lastmarker0, markermsg
@@ -175,11 +279,14 @@ def readmarker():
     global ppx, ppy
     global ang
     global lastpos
+    global angleknown
+    global markerno
+    global markercnt
 
     while True:
         p = subprocess.Popen("tail -1 /tmp/marker0", stdout=subprocess.PIPE, shell=True);
         res = p.communicate()
-        m = res[0]
+        m = res[0].decode('ascii')
         m = m.split('\n')[0]
         if m == lastmarker0:
             tolog0("no new marker0")
@@ -204,17 +311,29 @@ def readmarker():
                 odiff -= 360
             if odiff < -180:
                 odiff += 360
-            if abs(odiff) > 45.0 and markerno != -1:
+            if angleknown and abs(odiff) > 45.0 and markerno != -1:
                 tolog("wrong marker %d %f" % (markerno, odiff))
                 markerno = -1
-            if (markerno > -1 and quality > 0.25):
+            if (markerno > -1 and quality > 0.25 and markerno not in badmarkers):
                 close = True
-                if lastpos != None:
-                    (xl, yl) = lastpos
-                    dst = dist(x, y, xl, yl)
-                    tolog0("local speed %f" % (dst/(t-lastpost)))
-                    if dst/(t-lastpost) > TOOHIGHSPEED:
-                        close = False
+                if not angleknown:
+                    ang = ori
+                angleknown = True
+
+                if True:
+                    if lastpos != None:
+                        (xl, yl) = lastpos
+                        dst = dist(x, y, xl, yl)
+                        tolog0("local speed %f" % (dst/(t-lastpost)))
+                        if dst/(t-lastpost) > TOOHIGHSPEED:
+                            close = False
+
+                dst = dist(ppx, ppy, x, y)
+                # even if somewhat correct: it causes us to lose
+                # position when we reverse
+#                if dst > 1.0 and markercnt > 10:
+#                    close = False
+                tolog0("marker dist %f" % dst)
 
                 if not close:
                     msg = "bad marker %d not close" % markerno
@@ -223,13 +342,19 @@ def readmarker():
                         markermsg = msg
                     age += 1
                 else:
+                    markercnt += 1
                     tolog0("marker1 %s %d %f %f" % (m, age, ang, ori))
-                    send_to_ground_control("pos %f %f" % (x,y))
+                    send_to_ground_control("pos %f %f %f" % (x,y,ang))
+                    send_to_mqtt(x, y)
                     lastpos = (x,y)
                     px = x
                     py = y
-                    ppx = x
-                    ppy = y
+#                    if markercnt % 20 == 1:
+                    if markercnt == 1:
+                        tolog0("adjusting pos %f %f -> %f %f" % (ppx, ppy,
+                                                                 x, y))
+                        ppx = x
+                        ppy = y
                     vx = math.sin(ang*math.pi/180)*inspeed/100
                     vy = math.cos(ang*math.pi/180)*inspeed/100
                     lastpost = t
@@ -242,21 +367,26 @@ def readmarker():
             tolog0("marker3 %d %f %f %d %f %d %f" % (-1, ppx, ppy, int(ang), 0.5, age, ang))
 
 def readspeed():
-    global inspeed, odometer
+    global inspeed, odometer, lastodometer
 
     while True:
         p = subprocess.Popen("tail -1 /tmp/speed", stdout=subprocess.PIPE, shell=True);
         res = p.communicate()
-        m = res[0]
+        m = res[0].decode('ascii')
         line = m.split('\n')[0]
         l = line.split(" ")
         inspeed = float(l[0])
+#        inspeed *= sign(outspeed)
+        inspeed *= speedsign
         odometer = int(l[1])
+        if odometer != lastodometer:
+            send_to_ground_control("odometer %d" % (odometer))
+            lastodometer = odometer
 
 def report():
     while True:
         time.sleep(2)
-        print marker + " " + str(inspeed)
+        print(marker + " " + str(inspeed))
 
 outspeed = 0.0
 steering = 0.0
@@ -265,8 +395,12 @@ steering = 0.0
 
 def drive(sp):
     global outspeed
+    global speedsign
 
     outspeed = sp
+    if sp != 0:
+        speedsign = sign(sp)
+
     if sp < 0:
         sp += 256
     st = steering
@@ -277,6 +411,10 @@ def drive(sp):
         sp, st)
     #print (sp, steering, cmd)
     os.system(cmd)
+
+def steercmd(cmd):
+    os.system(cmd)
+    tolog0("motor2 done %s" % cmd)
 
 def steer(st):
     global steering
@@ -291,7 +429,9 @@ def steer(st):
     cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
         sp, st)
     #print (outspeed, st, cmd)
-    os.system(cmd)
+    start_new_thread(steercmd, (cmd,))
+#    os.system(cmd)
+    tolog("motor2 %d steer %d" % (outspeed, st))
 
 def stop(txt = ""):
     global steering, outspeed
@@ -302,18 +442,62 @@ def stop(txt = ""):
     os.system("/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
             outspeed, steering))
 
+def connect_to_ground_control():
+    global ground_control
+
+    while True:
+        s = open_socket()
+        if not s:
+            print("no connection")
+            time.sleep(5)
+        else:
+            ground_control = s
+            break
+
+def from_ground_control():
+    while True:
+        data = ground_control.recv(1024)
+        l = data.split(" ")
+        print(data)
+        if l[0] == "go":
+            x = float(l[1])
+            y = float(l[2])
+            print(("goto", x, y))
+            goto(x, y)
+        time.sleep(1)
+
+def readvin():
+    f = open("/home/pi/can-utils/java/settings.properties")
+    for line0 in f:
+        line = line0[:-1]
+        m = re.match("VIN=(.*)", line)
+        if m:
+            return m.group(1)
+    return None
+
 def init():
+    global VIN
     global logf, goodmarkers, markermsg, rbias, xbias, ybias, zbias, t0
     global px, py, pz
     global ppx, ppy, ppz
     global vx, vy, vz
     global accf
+    global angleknown
+
+    VIN = readvin()
+    print("VIN %s" % VIN)
+
+    mqtt_init()
+
+    angleknown = False
+
+    connect_to_ground_control()
 
     logf = open("navlog", "w")
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang\n")
+    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer\n")
 
     t0 = time.time()
 
@@ -346,7 +530,7 @@ def init():
     ybias = ybias/float(ncalibrate)
     zbias = zbias/float(ncalibrate)
 
-    print "rbias = %f, xbias = %f, ybias = %f, zbias = %f" % (rbias, xbias, ybias, zbias)
+    print("rbias = %f, xbias = %f, ybias = %f, zbias = %f" % (rbias, xbias, ybias, zbias))
 
 
     px = 0.0
@@ -363,10 +547,13 @@ def init():
 
     goodmarkers = []
 
-    thread.start_new_thread(readmarker, ())
-    thread.start_new_thread(readspeed, ())
-    thread.start_new_thread(readgyro, ())
-    #thread.start_new_thread(report, ())
+    start_new_thread(readmarker, ())
+    start_new_thread(handle_mqtt, ())
+    #start_new_thread(readcanspeed, ())
+    start_new_thread(readspeed, ())
+    start_new_thread(readgyro, ())
+    start_new_thread(from_ground_control, ())
+    #start_new_thread(report, ())
 
 # treats the car as a point
 def inarea(x, y):
@@ -436,12 +623,42 @@ def getdist(x2, y2):
     m = marker.split(" ")
     x1 = float(m[1])
     y1 = float(m[2])
+
+    # NEW
+    #x1 = ppx
+    #y1 = ppy
+
     d = dist(x1, y1, x2, y2)
     tolog("we are at (%f, %f), distance to (%f, %f) is %f" % (
             x1, y1, x2, y2, d))
 
     checkwall()
     return d
+
+# rot > 0 -> turn left
+# a0 = current ang
+def check_circle(x0, y0, a0, rot):
+    obs = False
+
+    if rot < 0:
+        for i in range(0, int(-rot)):
+            a = a0+i
+            x = x0 + MINRADIUS*math.sin(math.pi/180*a)
+            y = y0 + MINRADIUS*math.cos(math.pi/180*a)
+            if not inarea(x, y):
+                obs = True
+                break
+    else:
+        for i in range(0, int(rot)):
+            a = a0-i
+            x = x0 + MINRADIUS*math.sin(math.pi/180*a)
+            y = y0 + MINRADIUS*math.cos(math.pi/180*a)
+            if not inarea(x, y):
+                obs = True
+                break
+    if obs:
+        print("obstacle if turning %f" % rot)
+    return obs
 
 # Add to marker: how long ago we got an acceptable reading
 
@@ -454,6 +671,13 @@ def makepath(x2, y2):
     m = marker.split(" ")
     x1 = float(m[1])
     y1 = float(m[2])
+
+    tolog0("makepath %f %f to %f %f" % (x1, y1, x2, y2))
+
+    # NEW
+    #x1 = ppx
+    #y1 = ppy
+
     ori = float(m[3])
     #print ('angles', ang, ori)
     ori1 = ang
@@ -461,11 +685,26 @@ def makepath(x2, y2):
     adeg = 180/math.pi*a
     adeg = 90-adeg
     adiff = (ori1-adeg+360)%360
+    if adiff > 180:
+        adiff -= 360
     angdiff = (ori-ang)%360
     if angdiff > 180:
         angdiff -= 360
     tolog0("angles %f %f %f %f %f %d" % (
             ori, ang, adeg, adiff, angdiff, int(m[0])))
+
+    if adiff > 0:
+        adiff2 = adiff-360
+    else:
+        adiff2 = adiff+360
+    obs1 = check_circle(x1, y1, ang, adiff)
+    if False:
+        if obs1:
+            obs2 = check_circle(x1, y1, ang, adiff2)
+            if obs2:
+                return False
+            else:
+                adiff = adiff2
 
     return adiff
 
@@ -549,12 +788,22 @@ def turn(x2, y2, nostop, maxst, limit):
     tolog("turn %f %f" % (x2, y2))
     adiff = 0.0
     for i in range(0,100):
+        tolog("turn-%d %f %f" % (i, x2, y2))
         d = getdist(x2, y2)
         if d < TARGETDIST:
+            tolog("reached target (distance %f)" % d)
             break
+        tolog("turn1 %d" % (i))
         adiff = makepath(x2, y2)
-        if adiff > 180:
-            adiff -= 360
+        tolog("turn2 %d" % (i))
+        if adiff == False:
+            tolog("can't turn towards target")
+            stop()
+            return False
+
+#        if adiff > 180:
+#            adiff -= 360
+# here, adiff may be between -360 and 360
         if adiff > 0:
             turn = -1
         else:
@@ -572,25 +821,28 @@ def turn(x2, y2, nostop, maxst, limit):
                 not inarea(cx-MINRADIUS, cy+MINRADIUS) or
                 not inarea(cx+MINRADIUS, cy-MINRADIUS) or
                 not inarea(cx-MINRADIUS, cy-MINRADIUS)):
-                print "can't turn!"
+                print("can't turn!")
                 stop("can't turn")
 
                 return False
 
         p = 4.0
         #steer(turn*maxst)
-        str = turn*min(p*abs(adiff), 90)
+        str = turn*min(p*abs(adiff), 80)
+        str += -10
         tolog("steering %d adiff %d" % (str, adiff))
         steer(str)
         #print adiff
         # wrong: adiff will be for example 359, not -1
         # so correct it
-        if abs(adiff) < limit:
+        if abs(adiff) < limit or abs(adiff-360) < limit:
             if not nostop:
                 stop("1")
             break
 
-        if inspeed == 0.0:
+        tolog("turn3 %d" % (i))
+
+        if inspeed == 0.0 and i > 10:
             tolog("speed is 0 (while turning), obstacle?")
             stop("2")
             return False
@@ -603,11 +855,21 @@ def gotoc(x2, y2, speed = DEFAULTSPEED):
     return goto0(x2, y2, True, speed)
 
 def goto(x2, y2, speed = DEFAULTSPEED):
-    return goto0(x2, y2, False, speed)
+    global gototarget
+
+    if gototarget != None:
+        print("Already going somewhere")
+        return False
+
+    gototarget = (x2, y2)
+    s = goto0(x2, y2, False, speed)
+    gototarget = None
+    return s
 
 def goto0(x2, y2, nostop, speed):
+
     if not inarea(x2, y2):
-        print "goal point (%f,%f) is outside area" % (x2, y2)
+        print("goal point (%f,%f) is outside area" % (x2, y2))
         stop("3")
         return False
 
@@ -649,6 +911,7 @@ def goto0(x2, y2, nostop, speed):
 
         dist = getdist(x2, y2)
         if dist < TARGETDIST:
+            tolog("reached target (distance %f)" % dist)
             if not nostop:
                 stop("6")
             return True
@@ -663,6 +926,12 @@ def goto0(x2, y2, nostop, speed):
 
         # todo: detect that we have gone outside the area, or will do so,
         # and do something about it
+
+# d > 0
+def backup(d):
+    drive(-10)
+    godist(d)
+    stop()
 
 def godist(d):
     loops = 0
@@ -707,6 +976,36 @@ def trip4():
     stop()
 
 
+path5 = [("gotoc", 0.7, 18.5),
+         ("maketurn", 220),
+         ("gotoc", 0.6, 15),
+         ("gotoc", 0.7, 6),
+         ("maketurn", -180),
+         ("gotoc", 0.7, 9)]
+
+def trip5(p = 0):
+    while True:
+        for pp in path5[p:]:
+            if pp[0] == "gotoc":
+                s = gotoc(pp[1], pp[2])
+            elif pp[0] == "maketurn":
+                s = maketurn(pp[1])
+            if not s:
+                stop("8")
+                return
+        p = 0
+
+def trip6():
+    while True:
+        s = (gotoc(1.0, 11.5) and
+             gotoc(2.5, 10.5) and
+             gotoc(1.0, 9.5) and
+             gotoc(2.5, 7.0) and
+             gotoc(1.5, 5.0))             
+        if not s:
+            stop("8")
+            break
+
 import socket
 import sys
 
@@ -714,25 +1013,51 @@ HOST = 'localhost'    # The remote host
 PORT = 50008              # The same port as used by the server
 
 s = None
-for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
-    af, socktype, proto, canonname, sa = res
-    try:
-        s = socket.socket(af, socktype, proto)
-    except socket.error, msg:
-        s = None
-        continue
-    try:
-        s.connect(sa)
-    except socket.error, msg:
-        s.close()
-        s = None
-        continue
-    break
-if s is None:
-    print 'could not open socket'
-    sys.exit(1)
 
-ground_control = s
+def open_socket():
+    global ground_control
+    for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
+        af, socktype, proto, canonname, sa = res
+        #print("res %s" % (res,))
+        try:
+            s = socket.socket(af, socktype, proto)
+        except Exception as e:
+            #print("socket %s" % e)
+            s = None
+            continue
+
+        try:
+            s.connect(sa)
+        except Exception as e:
+            #print("connect %s" % e)
+            #(socket.error, msg):
+            s.close()
+            s = None
+            continue
+        break
+    if s is None:
+        print('could not open socket')
+        return False
+
+    return s
 
 def send_to_ground_control(str):
-    s.send(str)
+    try:
+        str1 = str + "\n"
+        ground_control.send(str1.encode('ascii'))
+    except Exception as e:
+        print("send1 %s" % e)
+        connect_to_ground_control()
+
+def averagepos():
+    pxa = 0
+    pya = 0
+    n = 0
+    cnt = markercnt
+    while True:
+        if markercnt > cnt:
+            n += 1
+            pxa += px
+            pya += py
+            print("%.2f %.2f" % (pxa/n, pya/n))
+            cnt = markercnt
