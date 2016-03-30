@@ -41,11 +41,21 @@ public class AdcPub extends PlugInComponent {
 	}
 	
 	public void doFunction() {
+	    Boolean first = true;
+	    double f1 = 0.0;
+	    double gamma = 0.1;
 	    while (true) {
 		    //VM.println("[AdcPub is running]");
 			
 			String adcStr = adc.readString();
-			String pubData = "adc|" + adcStr;
+			double f = Double.parseDouble(adcStr);
+			if (first) {
+			    f1 = f;
+			    first = false;
+			} else {
+			    f1 = gamma*f + (1-gamma)*f1;
+			}
+			String pubData = "adc|" + adcStr + " " + String.valueOf(f1);
 			VM.println(pubData);
 			ap.write(pubData);
 			try {
