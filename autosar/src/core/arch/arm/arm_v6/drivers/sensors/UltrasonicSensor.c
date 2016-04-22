@@ -59,12 +59,32 @@ uint32 UltrasonicSensor_Read(void) {
 	bcm2835_ClearGpioPin(GPIO_ULTRA_TRIG);
 
 	/* Wait for the echo start and record its time */
-	while (bcm2835_ReadGpioPin(&GPLEV0, GPIO_ULTRA_ECHO) == LOW);
+	int count1 = 0;
+	/* Very occasionally, it doesn't become HIGH, maybe because we
+	   were interrupted and missed it. Make sure we don't get stuck in
+	   here. */
+	while (bcm2835_ReadGpioPin(&GPLEV0, GPIO_ULTRA_ECHO) == LOW) {
+	  count1++;
+	  if (count1 > 10000)
+	    return 0;
+	}
 	startTime = CURRENT_TIME;
 
 	/* Wait for the echo end and record the time of the echo period */
-	while (bcm2835_ReadGpioPin(&GPLEV0, GPIO_ULTRA_ECHO) == HIGH);
-	travelTime = (uint32)(CURRENT_TIME - startTime);
+	int count = 0;
+	while (bcm2835_ReadGpioPin(&GPLEV0, GPIO_ULTRA_ECHO) == HIGH) {
+	  count++;
+	  // about 3000 us/m, so the maximum range 4m = 12000 us, so let's
+	  // break when > 20000 us.
+	  // One loop here takes about 1 us.
+	  if (count > 20000)
+	    break;
+	}
+	if (count > 20000)
+	  travelTime = 200000;
+	else
+	  travelTime = (uint32)(CURRENT_TIME - startTime);
+	//printf("ultra count = %d time = %d\r\n", count, travelTime);
 
 	/* Calc the distance in cm (according to sensors datasheet) and return */
 	distance = travelTime * 0.017;
