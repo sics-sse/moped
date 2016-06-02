@@ -148,3 +148,9 @@ With Python:
 
 Configuration files: settings.properties
 in new-server, ecm-linux, simulator
+
+tvservice -o on TCU for lowering battery use
+
+Making partition bootable
+use sudo fdisk /dev/sdg
+and the commands p, a and w

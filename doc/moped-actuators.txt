@@ -8,7 +8,7 @@
 0 after -100 makes the wheels point straight ahead, while doing so after
 100 makes them stay noticeably to the right.
 
-Minimum turning diameter: xxx
+Minimum turning diameter: 166 cm
 
 
 * speed (VCU, port 3)
