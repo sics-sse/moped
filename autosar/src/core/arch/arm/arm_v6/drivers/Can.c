@@ -695,8 +695,8 @@ static void Can_TriggerCanIf(Can_PduType *pduInfo, uint8 ctrlId) {
 				for (int i = 0; i < pduInfo->length; i++) {
 				  printf(" %d", pduInfo->sdu[i]);
 				}
-#endif
 				printf("\r\n");
+#endif
 #if 0
 				printf("trigger callback %d %d\r\n",
 				       pduInfo->id,
