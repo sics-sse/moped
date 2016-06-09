@@ -21,6 +21,7 @@
 #include "Sensors.h"
 
 static uint32 pulse[2];
+static uint32 pulse_total[2];
 
 /**
  * Interrupt service routine that counts the number of detected pulses
@@ -29,15 +30,17 @@ static uint32 pulse[2];
  * is activated and a counter (unique for each wheel pair) is increased.
  */
 void SpeedSensor_Isr(void) {
-	if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_FRONT_SPEED)) {
-		pulse[FRONT_WHEEL]++;
-		bcm2835_ClearEventDetectPin(GPIO_FRONT_SPEED);
-	}
+  if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_FRONT_SPEED)) {
+    pulse[FRONT_WHEEL]++;
+    pulse_total[FRONT_WHEEL]++;
+    bcm2835_ClearEventDetectPin(GPIO_FRONT_SPEED);
+  }
 
-	if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_REAR_SPEED)) {
-		pulse[REAR_WHEEL]++;
-		bcm2835_ClearEventDetectPin(GPIO_REAR_SPEED);
-	}
+  if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_REAR_SPEED)) {
+    pulse[REAR_WHEEL]++;
+    pulse_total[REAR_WHEEL]++;
+    bcm2835_ClearEventDetectPin(GPIO_REAR_SPEED);
+  }
 }
 
 /**
@@ -98,6 +101,14 @@ uint32 Sensors_GetWheelPulse(enum Wheel wheel) {
 	}
 
 	return pulse[wheel];
+}
+
+uint32 Sensors_GetWheelPulseTotal(enum Wheel wheel) {
+	if (!SpeedSensor_IsValidWheel(wheel)) {
+		return -1;
+	}
+
+	return pulse_total[wheel];
 }
 
 /**
