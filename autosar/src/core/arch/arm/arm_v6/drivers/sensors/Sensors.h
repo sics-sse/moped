@@ -27,6 +27,7 @@ void SpeedSensor_Isr(void);
 void SpeedSensor_Init(void);
 /** Get the number of (recently) detected pulses for a wheel pair */
 uint32 Sensors_GetWheelPulse(enum Wheel wheel);
+uint32 Sensors_GetWheelPulseTotal(enum Wheel wheel);
 /** Reset pulse counter for a wheel pair */
 void Sensors_ResetWheelPulse(uint8 wheel);
 
