@@ -344,6 +344,8 @@ void bcm2835_read_mac_address(void) {
 	  printf(" %d", place[i]);
 	}
 	printf("\r\n");
+	printf("place 1: %d\r\n", place[1] & ~0x80000000);
+	printf("place 4: %d\r\n", place[4] & ~0x80000000);
 	if ((place[1] == 0x80000000 || place[1] == 0x80000001) && place[4] == 0x80000006) {
 	  uint8 *addr = (uint8 *) &place[5];
 	  for (i = 0; i < 6; i++) {
