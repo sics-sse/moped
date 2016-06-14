@@ -38,6 +38,8 @@ import threading
 import urllib.parse
 import paho.mqtt.client as mqtt
 import traceback
+import re
+import time
 
 # Imports for testing video processing
 import socket
@@ -113,7 +115,8 @@ class GenericWebServiceHandler(http.server.SimpleHTTPRequestHandler):
             content_len = int(self.headers['content-length'])
             post_body = self.rfile.read(content_len)
             result = getattr(self, "post_" + url.path[1:])(query, post_body)
-        except:
+        except Exception as e:
+            print(e)
             # If the url did not match any method, return an error
             responseCode = 404
         
@@ -201,18 +204,21 @@ class OptiposHTTPHandler(GenericWebServiceHandler):
         print('Image ' + imageFileName + ' received from ' + macAddress)
 
         # Check that there is a client handler associated, and otherwise create a new one
+        mapFileName = "unknown"
         if not (macAddress in self.clientHandler):
             mapFileName = os.path.normpath(self.mapPath + "SSECorridorMap.json")
             settingsFileName = os.path.normpath(self.settingsPath + macAddress + ".json")
             self.clientHandler[macAddress] = OptiposLib.Optipos(settingsFileName, mapFileName)
 
+        result = False
         # Process the image using Optipos
         try:
             # Get the image directly from image_data, instead of from a file.
             buffer = np.frombuffer(image_data, dtype = "uint8")
             image = cv2.imdecode(buffer, 1)
             result = self.clientHandler[macAddress].processImage(image, now)
-        except Exception as _:
+        except Exception as e:
+            print(e)
             print("Error processing image " + imageFileName + " using the map in " + mapFileName + " and settings in " + macAddress + ".json:")
             print(traceback.format_exc())
 
@@ -245,7 +251,7 @@ class OptiposHTTPHandler(GenericWebServiceHandler):
             
 
 def runWebServer():
-    httpd = socketserver.TCPServer(("", 8080), OptiposHTTPHandler)
+    httpd = socketserver.ThreadingTCPServer(("", 8080), OptiposHTTPHandler)
     print("Optipos web server running at port", 8080)
     httpd.serve_forever()    
 
@@ -299,6 +305,33 @@ def videoServer():
         server_socket.close()
 
 
+def watchdisk():
+    while True:
+        time.sleep(60)
+
+        p = subprocess.Popen("df .", stdout=subprocess.PIPE, shell=True);
+        res = p.communicate()
+
+        t = res[0].decode('ascii')
+
+        m = re.search("([0-9]+)%", t)
+        if not m:
+            print("couldn't parse df output: %s" % t)
+            continue
+
+        perc = int(m.group(1))
+        # Don't do anything even with old files if there is more than 10%
+        # disk left
+        if perc < 90:
+            continue
+            
+        # Remove image files older than 200 minutes
+        n = os.system("find Images -amin +200 | xargs rm");
+        if n != 0:
+            print("removing image files returned status %d" % n)
+
+    
+
 def main():
     # Testing of video server 
 #    videoServer()
@@ -318,6 +351,8 @@ def main():
     OptiposHTTPHandler.mqttClient = mqtt.Client()
     OptiposHTTPHandler.mqttClient.connect("iot.eclipse.org")
     OptiposHTTPHandler.mqttClient.loop_start()
+
+    threading.Thread(target=watchdisk, args=()).start()
 
     # Start a web server which returns images from connected devices
     webServer = threading.Thread(target = runWebServer)
