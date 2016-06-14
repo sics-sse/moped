@@ -165,7 +165,7 @@ int autosarFetchBackWheelSpeed(void) {
 long autosarFetchAdcData(void) {
 #if VCU
 	int volt = readAdcDataFromPort();
-	float val = volt * 5 / 1024.0 / 0.32;
+	float val = volt * 3.3 / 1024.0 / 0.32;
 	return val * 10000;
 #else
 	return 0;
