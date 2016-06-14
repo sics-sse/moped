@@ -44,6 +44,13 @@ void autosarSendAckByte(char data) {
 
 void autosarSendPackageData(int size, char* data) {
 	int i;
+
+	// pluginCommunicationTCU_Flag true means that ack_array still contains
+	// stuff that hasn't been sent yet, so we drop this package.
+	if (pluginCommunicationTCU_Flag) {
+	  return;
+	}
+
 	for (i = 0; i < size; i++) {
 		ack_array[i] = data[i];
 	}
