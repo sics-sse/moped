@@ -294,6 +294,12 @@ extern uint64 IMU_acc;
 extern uint64 IMU_gyr;
 #endif
 
+// VCU
+#if VCU
+extern boolean pluginCommunicationVCUtoSCU_Flag;
+extern CanPackage PackageWriteToSCU;
+#endif
+
 int autosarReadUltrasonicData(void) {
 #if SCU
 	return readDistanceFromPort();
@@ -312,6 +318,15 @@ void autosarWritePluginData2VCU(int size, char* value) {
 	PackageWriteToVCU.indexReadStart = 0;
 	PackageWriteToVCU.PackageState.Done = false;
     pluginCommunicationSCUtoVCU_Flag = true;
+#endif
+#if VCU
+	PackageWriteToSCU.TotalWriteSize = size;
+	PackageWriteToSCU.CanWriteBuffer = &value[0];
+	PackageWriteToSCU.CommunicationType = plugin_communication_VCU_to_SCU;
+	PackageWriteToSCU.indexWriteEnd = 0;
+	PackageWriteToSCU.indexReadStart = 0;
+	PackageWriteToSCU.PackageState.Done = false;
+    pluginCommunicationVCUtoSCU_Flag = true;
 #endif
 }
 
