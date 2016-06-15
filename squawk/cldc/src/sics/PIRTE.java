@@ -77,6 +77,9 @@ public class PIRTE {
 	// Hashtable<String, Vector<Integer>>();
 	private Linker linker;
 
+    private Isolate the_isolate;
+    private Thread the_thread;
+
 	public PIRTE() {
 		linker = new Linker(this);
 
@@ -483,6 +486,9 @@ public class PIRTE {
 		Isolate iso = new Isolate(null, extractClassName, portInitContextArray,
 				null, pluginUrl);
 
+		the_isolate = iso;
+		VM.println("plugin loadedB " + the_thread + " " + the_isolate);
+
 		VM.println("loadPlugin 2 " + extractClassName);
 		// register Isolate and name to installedPlugins
 		String shortPluginName = pluginUrl
@@ -490,8 +496,10 @@ public class PIRTE {
 		installedPlugins.put(shortPluginName, iso);
 
 		VM.println("loadPlugin 3 " + extractClassName);
-		iso.start();
-		VM.println("loadPlugin 4 " + extractClassName);
+		Thread tt;
+		tt = iso.start();
+		VM.println("loadPlugin 4 " + extractClassName + " " + tt);
+		the_thread = tt;
 		iso.join();
 		VM.println("loadPlugin 5 " + extractClassName);
 	}
@@ -784,14 +792,23 @@ public class PIRTE {
 							    .get(shortPluginName);
 							if(isolate != null) {
 							    if(!isolate.isExited()) {
-								VM.println("stopping earlier thread");								isolate.exit(1);
+								VM.println("stopping earlier thread");
+								if (isolate == the_isolate) {
+								VM.println("interrupting thread");
+								    the_thread.interrupt();
+								} else {
+								VM.println("killing isolate");
+								    isolate.exit(1);
+								}
+
 							    }
 							}
 							
 
-							new Thread(new PluginLoader(pluginName,
-									portInitContext)).start();
-							VM.print("plugin loaded\r\n");
+							the_thread = new Thread(new PluginLoader(pluginName, portInitContext));
+							the_thread.start();
+							VM.println("plugin loadedA " + the_thread + " " + the_isolate);
+
 						} catch (Exception e) {
 							VM.print(e.toString());
 							e.printStackTrace();
@@ -907,7 +924,7 @@ public class PIRTE {
 			}
 
 			try {
-			    if (true) {
+			    if (false) {
 				if (stuck > 0)
 				    Thread.sleep(5);
 				else
