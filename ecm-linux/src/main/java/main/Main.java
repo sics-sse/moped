@@ -121,7 +121,7 @@ public class Main {
 		// we crash
 		//iotManager.sendPacket(new PublishPacket("speed", "3.235"));
 
-		ecm.start();
+		ecm.start(args);
 		//iotManager.sendPacket(new PublishPacket("speed", "3.234"));
 	}
 }
