@@ -17,6 +17,8 @@
 #include "Uart.h"
 #include "MOPED_DEBUG.h"
 
+#include "mcp2515.h"
+
 #include "Can.h"
 #include "Can.h"
 #include "CanIf.h"
@@ -47,18 +49,22 @@ struct ecu_config {
 struct ecu_config configs[] = {
   // VCU car 1
   {"b827eb3510df", "servo -1"},
+  // VCU car 1 (RPi 3 card)
+  {"b827eb31395c", "servo -1"},
   // VCU car 2
   {"b827eb3aebfd", "servo 1"},
 };
 
-int vcu_servo_direction = 1;
+#define DEFAULT_SERVO_DIRECTION (-1)
+
+int vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
 
 static void parse_config(void) {
   int i, j;
   int matched = 0;
 
   for (i = 0; i < sizeof(configs)/sizeof(configs[0]); i++) {
-    //printf("checking %s\r\n", configs[i].mac);
+    printf("checking %s\r\n", configs[i].mac);
     if (strcmp(bcm2835_mac_address, configs[i].mac) == 0) {
       matched = 1;
       printf("config: %s\r\n", configs[i].conf);
@@ -66,7 +72,7 @@ static void parse_config(void) {
       if (vcu_servo_direction != 1 && vcu_servo_direction != -1) {
 	printf("invalid servo direction %d\r\n",
 	       vcu_servo_direction);
-	vcu_servo_direction = 1;
+	vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
       }
       break;
     }
@@ -77,12 +83,17 @@ static void parse_config(void) {
 }
 
 
+extern uint32 act_led_gpio;
+
 void StartupTask( void ) {
     pi_printf("infor: start up\r\n");
 
     bcm2835_read_mac_address();
 
     parse_config();
+
+    printf("ACT LED on GPIO %d\r\n", act_led_gpio);
+    printf("CAN bus frequency %d MHz\r\n", MCP2515_FREQUENCY_MHz);
 
     EcuM_StartupTwo();
 
@@ -104,7 +115,7 @@ void StartupTask( void ) {
 
 void CanFunctionTask(void) {
 
-    printf("CanFunctionTask\r\n");
+    pi_printf("CanFunctionTask\r\n");
 
 	for(;;){
 
