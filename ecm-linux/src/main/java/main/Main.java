@@ -75,7 +75,12 @@ public class Main {
 		// Doesn't work, because there are two lists called
 		// 'dispatchers'. One is the one which is used; the other
 		// is private and is the one that we add to here.
-		receiver.subscribe(rec);
+		try {
+		    receiver.subscribe(rec);
+		} catch (NullPointerException a) {
+		    receiver = null;
+		    System.out.println("Couldn't subscribe");
+		}
 
 		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://" + mqtthost + ":1883/sics/moped/value", "{\"version\":\"1.0.0\",\"vin\":\"%VIN%\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 
@@ -84,6 +89,10 @@ public class Main {
 
 		IoTManager iotManager = new IoTManager(publisher, receiver);
 		
+		if (receiver == null) {
+		    iotManager = null;
+		}
+
 //    IPublisher publisher = PublisherFactory.publisher("ws://api.xively.com:8080/", "{\n" +
 //            "  \"method\" : \"put\",\n" +
 //            "  \"resource\" : \"/feeds/803043226\",\n" +
@@ -104,7 +113,9 @@ public class Main {
 //    IoTManager iotManager = new IoTManager(publisher);
 
 		Ecm ecm = new Ecm();
-		iotManager.setEcm(ecm);
+		if (iotManager != null) {
+		    iotManager.setEcm(ecm);
+		}
 		ecm.init(ecuManager, commuManager, iotManager, carDriver);
 		// Sometimes the mqtt manager is not ready yet, and then
 		// we crash
