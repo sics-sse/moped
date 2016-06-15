@@ -25,6 +25,26 @@ uint32 led_tick_period = 500;
 
 uint32 led_pattern0 = 0x55;
 uint32 led_pattern = 0;
+
+// If RPI_B_PLUS is undefined, we have an old RPi B
+//#define RPI_B_PLUS
+
+#ifdef RPI_B_PLUS
+#define LED_BIT 47
+#define GPIO_SEL_OUTPUT 1
+#define LEDBIT1 0x00008000
+#define LEDPORT IOPORT1
+#define LIGHT_LED true
+#else
+#define LED_BIT 16
+#define GPIO_SEL_OUTPUT 0
+#define LEDBIT1 0x00010000
+#define LEDPORT IOPORT0
+#define LIGHT_LED false
+#endif
+
+uint32 act_led_gpio = LED_BIT;
+
 /*
  *to proof the code is running by using the
  *led blink 500ms/once
@@ -38,13 +58,13 @@ static void led_proof(void){
 	led_count++;
 
 	if (led_count / led_tick_period == 1) {
-	  if ((led_flag == true)){// turn on
-	    *((&IOPORT0)->gpclr) = 0x00010000;
-	    led_flag = false;
+	  if ((led_flag == LIGHT_LED)){// turn on
+	    *((&LEDPORT)->gpset) = LEDBIT1;
+	    led_flag = !LIGHT_LED;
 	    led_count = 0;
-	  }else if ((led_flag == false)) { // turn off
-	    *((&IOPORT0)->gpset) = 0x00010000;
-	    led_flag = true;
+	  }else { // turn off
+	    *((&LEDPORT)->gpclr) = LEDBIT1;
+	    led_flag = LIGHT_LED;
 	    led_count = 0;
 	  }
 	  led_pattern >>= 4;
@@ -60,8 +80,11 @@ void Bcm2835OsTick(void) {
  * Init of free running timer.
  */
 void Os_SysTickInit( void ) {
-	//TEMPORARY COMMENTED
-//	bcm2835_gpio_fnsel(ONBOARD_LED_PAD, GPFN_OUT);
+  // necessary when LED_BIT = 47, but wrong when LED_BIT = 16
+  //bcm2835_GpioFnSel(DIO_BCM2835_LED_CHANNEL, GPIO_SEL_OUTPUT);
+#ifdef RPI_B_PLUS
+  bcm2835_GpioFnSel(LED_BIT, GPIO_SEL_OUTPUT);
+#endif
 	ISR_INSTALL_ISR2("OsTick",Bcm2835OsTick,BCM2835_IRQ_ID_TIMER_0/*BCM2835_IRQ_ID_SYSTEM_TIMER3*/,6,0);
 }
 
