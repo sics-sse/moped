@@ -292,7 +292,9 @@ public class Ecm {
 					+ value);
 			PublishPacket publishPacket = new PublishPacket(key, value);
 		    System.out.println("<<< ecm-core/Ecm " + messageType);
+		    if (iotManager != null) {
 			iotManager.sendPacket(publishPacket);
+		    }
 			break;
 		case MessageType.PLUGIN_MESSAGE:
 			PluginMessage pluginMessage = (PluginMessage) message;
