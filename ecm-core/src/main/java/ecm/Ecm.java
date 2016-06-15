@@ -50,7 +50,7 @@ public class Ecm {
 	private HashMap<Byte, String> id2name4UninstallCache = new HashMap<Byte, String>();
 	
     // Define access methods instead of public.
-    public String subscriberName = "Comm1";
+    public String subscriberName = "AllVCU";
     public int subscriberPort = -1;
 
 	public Ecm() {
@@ -74,7 +74,7 @@ public class Ecm {
 
 	}
 	
-	public void start() {
+	public void start(String [] args) {
 		new Thread(ecuManager).start();
 		new Thread(carDriver).start();
 		new Thread(iotManager).start();
@@ -83,8 +83,16 @@ public class Ecm {
 		System.out.println("Ecm start");
 		// TODO: make it dynamic later
 		// loadPlugins
-		loadPlugins(2);
-		loadPlugins(3);
+		for (int i = 0; i < args.length; i++) {
+		    System.out.println("arg " + i + " " + args[i]);
+		}
+
+		if (args.length > 0 && args[0].equals("--noinstall")) {
+		    System.out.println("no plugin installation");
+		} else {
+		    loadPlugins(2);
+		    loadPlugins(3);
+		}
 	}
 	
 	public void loadPlugins(int ecuId) {
