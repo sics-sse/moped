@@ -627,6 +627,9 @@ public class PIRTE {
 				for (int n = 0; n < size; n++) {
 				    byte bb = VM.jnaFetchByte(rearIndex);
 					message[index++] = bb;
+					if (index % 1000 == 0) {
+					    VM.println(index + " bytes");
+					}
 					//VM.print(" (_" + (bb & 0xff) + "_)");
 				}
 				//VM.println("");
