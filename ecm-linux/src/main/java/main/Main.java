@@ -64,15 +64,20 @@ public class Main {
 
 		Rec rec = new Rec();
 
-		IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/to-car/+", null);
+		String mqtthost = PropertyAPI.getInstance().getProperty("MQTTHOST");
+		if (mqtthost == null) {
+		    mqtthost = "test.mosquitto.org";
+		}
+		System.out.println("mqtt host = " + mqtthost);
+		
+		IReceiver receiver = ReceiverFactory.receiver("mqtt+retain+clean://" + mqtthost + ":1883/sics/moped/to-car/+", null);
 		//receiver.unsubscribe();
-		System.out.println("subscribe Rec");
 		// Doesn't work, because there are two lists called
 		// 'dispatchers'. One is the one which is used; the other
 		// is private and is the one that we add to here.
 		receiver.subscribe(rec);
 
-		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://test.mosquitto.org:1883/sics/moped/value", "{\"version\":\"1.0.0\",\"vin\":\"%VIN%\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
+		IPublisher publisher = PublisherFactory.publisher("mqtt+retain+clean://" + mqtthost + ":1883/sics/moped/value", "{\"version\":\"1.0.0\",\"vin\":\"%VIN%\",\"datastreams\":[{\"id\":\"%key%\",\"current_value\":\"%value%\"}]}\n\t\t\t\t\t");
 
 		MQTTPublisher mqttpub = (MQTTPublisher) publisher;
 		mqttpub.vin = vin;
