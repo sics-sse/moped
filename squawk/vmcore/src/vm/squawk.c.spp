@@ -198,21 +198,21 @@ static Address lookupStaticMethod(int cid, int methodOffset);
  * The default GC chunk, NVM and RAM sizes.
  */
 #ifndef SERVICE_CHUNK_SIZE
-#define SERVICE_CHUNK_SIZE (24*1024)
+#define SERVICE_CHUNK_SIZE (36*1024)
 #endif
 
 #define TWOWORDS (HDR_BYTES_PER_WORD * 2)
 #define SERVICE_CHUNK_SIZE_MINUS2WORDS (SERVICE_CHUNK_SIZE - TWOWORDS)
 
 #ifndef DEFAULT_RAM_SIZE
-#define DEFAULT_RAM_SIZE   (128*1024) //73400320
+#define DEFAULT_RAM_SIZE   (256*1024) //73400320
 #endif
 
 /*
  * Note that DEFAULT_NVM_SIZE = 0 means don't support nvm at all
  */
 #ifndef DEFAULT_NVM_SIZE
-#define DEFAULT_NVM_SIZE   (10*1024)
+#define DEFAULT_NVM_SIZE   (100*1024)
 #endif
 #define TIMEQUANTA 1000
 
