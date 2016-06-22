@@ -546,7 +546,8 @@ def readspeed2():
         if (data[0], data[1]) == (100,4):
             if data[8] == 16:
                 parts = str(part)
-                m = re.search("rear speed x([0-9 ]+)x([0-9 ]+)", parts)
+
+                m = re.search("speed x([0-9 ]+)x([0-9 ]+) x([0-9 ]+)x([0-9 ]+)", parts)
                 if m:
                     inspeed = int(m.group(1))
                     inspeed *= speedsign
@@ -561,7 +562,14 @@ def readspeed2():
                     if odometer != lastodometer:
                         send_to_ground_control("odometer %d" % (odometer))
                         lastodometer = odometer
-                    #print("sp-odo 1 %d %d" % (sp, odo))
+                    #print("rsp-odo %d %d" % (inspeed, odometer))
+
+                    finspeed = int(m.group(3))
+                    finspeed *= speedsign
+
+                    fodometer = int(m.group(4))
+                    #print("fsp-odo %d %d" % (finspeed, fodometer))
+
                 part = b""
             part += data[9:]
         elif (data[0], data[1]) == (1,1):
@@ -687,33 +695,76 @@ def connect_to_ground_control():
                 send_to_ground_control("info %s" % VIN)
         time.sleep(5)
 
+# as linesplit in tkdraw.py, but this is a regular function
+def read_line(socket, lim):
+    buffer = socket.recv(lim)
+    print(buffer)
+    buffer = buffer.decode('ascii')
+    buffering = True
+    while buffering:
+        if "\n" in buffer:
+            (line, buffer) = buffer.split("\n", 1)
+            return line
+        else:
+            more = socket.recv(lim)
+            print(more)
+            if not more:
+                buffering = False
+            else:
+                more = more.decode("ascii")
+                buffer += more
+    if buffer:
+        return buffer
+    return None
+
+# almost the same as in tkdraw.py
+def linesplit(socket):
+    buffer = socket.recv(4096)
+    buffer = buffer.decode("ascii")
+    buffering = True
+    while buffering:
+        if "\n" in buffer:
+            (line, buffer) = buffer.split("\n", 1)
+            yield line
+        else:
+            more = socket.recv(4096)
+            more = more.decode("ascii")
+            if not more:
+                buffering = False
+            else:
+                buffer += more
+    if buffer:
+        yield buffer
+    return None
+
 def from_ground_control():
     global path
     global paused
     global parameter
+    global ground_control
 
     while True:
         if ground_control:
-            data = ground_control.recv(1024)
-            data = data.decode('ascii')
-            #print(data)
-            l = data.split(" ")
-            #print(l)
-            #print(data)
-            if l[0] == "go":
-                x = float(l[1])
-                y = float(l[2])
-                print(("goto", x, y))
-                goto(x, y)
-            elif l[0] == "path":
-                path = ast.literal_eval(data[5:])
-                print(path)
-            elif l[0] == "continue":
-                paused = False
-            elif l[0] == "parameter":
-                parameter = int(l[1])
-            else:
-                print("unknown control command %s" % data)
+            for data in linesplit(ground_control):
+                #print(data)
+                l = data.split(" ")
+                #print(l)
+                #print(data)
+                if l[0] == "go":
+                    x = float(l[1])
+                    y = float(l[2])
+                    print(("goto", x, y))
+                    goto(x, y)
+                elif l[0] == "path":
+                    path = ast.literal_eval(data[5:])
+                    print(path)
+                elif l[0] == "continue":
+                    paused = False
+                elif l[0] == "parameter":
+                    parameter = int(l[1])
+                    print("parameter %d" % parameter)
+                else:
+                    print("unknown control command %s" % data)
         time.sleep(1)
 
 def readvin():
