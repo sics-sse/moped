@@ -231,7 +231,7 @@ def update_mark(x, y):
     w.event_generate("<<CarPos>>", when="tail", x=event_nr)
 
 def esend_continue(c):
-    c.conn.send("continue")
+    c.conn.send("continue\n")
 
 scale = 30
 
@@ -346,11 +346,11 @@ def send_go(carno):
     c = cars[carno-1]
     if currentmark:
         (x, y) = currentmarkpos
-        c.conn.send("go %f %f" % (x, y))
+        c.conn.send("go %f %f\n" % (x, y))
 
 def send_path(carno, p):
     c = cars[carno-1]
-    c.conn.send("path " + str(p))
+    c.conn.send("path " + str(p) + "\n")
 
 def toggle_show_markpos():
     global show_markpos
@@ -464,7 +464,7 @@ def increase_parameter(amount):
     c = cars[currentcar-1]
     c.parameter += amount
     c.v6.set("%d" % c.parameter)
-    c.conn.send("parameter %d " % c.parameter)
+    c.conn.send("parameter %d\n" % c.parameter)
 
 def select_car(i):
     global currentcar, currentcarcircle
