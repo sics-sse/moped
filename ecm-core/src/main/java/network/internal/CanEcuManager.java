@@ -80,7 +80,7 @@ public class CanEcuManager implements EcuManager {
 									parsedData[1], pluginName);
 							ecm.process(installAckMessage);
 						} else {
-							System.out.println("There is no corresponding Plugin ID " + parsedData[1] + " in temperary DB");
+							System.out.println("There is no corresponding Plugin ID " + parsedData[1] + " in temporary DB");
 						}
 						break;
 					case MessageType.UNINSTALL_ACK:
@@ -121,7 +121,7 @@ public class CanEcuManager implements EcuManager {
 						int valueSize = byteArrayToInt(buffer);
 						System.out.println("valueSize " + valueSize);
 
-						if (valueSize > 256)
+						if (valueSize > 512)
 						    break;
 						byte[] valueBytes = new byte[valueSize];
 						for(int v=0;v<valueSize;v++) {
@@ -196,7 +196,7 @@ public class CanEcuManager implements EcuManager {
 			int len = javaCanLibrary.getPackageSize();
 			if (len > 0) {
 			    if (p == null) {
-				System.out.println("CAN receive null pointer");
+				//				System.out.println("CAN receive null pointer");
 				return null;
 			    }
 			    res = new byte[len];
