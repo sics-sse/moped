@@ -86,6 +86,8 @@ public class CarDriver implements Runnable {
 		private byte[] interpretWirelessino(String message) {
 			byte[] res = new byte[2];
 			
+			System.out.println("RC message " + message);
+
 			res[0] = Byte.parseByte(message.substring(1, 5));
 			res[1] = Byte.parseByte(message.substring(6, 10));
 				
@@ -105,6 +107,7 @@ public class CarDriver implements Runnable {
 					int nrIncomingBytes = in.available();
 					if (nrIncomingBytes > 0) {
 						/* Skip all bytes except those that represent the last speed&steer command */
+					    //System.out.println("incoming " + nrIncomingBytes);
 						in.skip(nrIncomingBytes-incomingBytes.length);
 						in.read(incomingBytes);
 						
