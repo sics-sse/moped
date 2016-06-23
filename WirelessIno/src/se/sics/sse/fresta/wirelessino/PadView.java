@@ -17,6 +17,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 
+import android.content.pm.ActivityInfo;
+import android.app.Activity;
+
 public class PadView extends SurfaceView implements Callback, Runnable {
 	private boolean run;
 	private SurfaceHolder sh;
@@ -33,6 +36,8 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 	private Bitmap bluinoBMP;
 	public static final int UMBRAL_TACTIL = 70;
 	private static String canTextL = "", canTextR = "";
+
+        private Activity host;
 
 	public PadView(Context context) {
 		super(context);
@@ -203,6 +208,8 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 							aux.right + UMBRAL_TACTIL, aux.bottom + UMBRAL_TACTIL);
 					if (aux.contains(x, y) && idMap[i] < 0) {
 						idMap[i] = pointerId;
+						host.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
 						origenX[i] = touchX[i] = x;
 						origenY[i] = touchY[i] = y;
 					}
@@ -222,6 +229,10 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 				touchX[ballId] = touchY[ballId] = -1;
 				idMap[ballId] = -1;
 				
+				if (idMap[0] == -1 && idMap[1] == -1) {
+				    host.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+				}
+
 				balls[ballId].moveToCenter();
 				transformPWM();
 //				if (balls[ballId].getmoveType() == Ball.RIGHT_BAR) {
@@ -344,6 +355,10 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+	    host = (Activity) getContext();
+
+	    host.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+
 		w = getWidth() / 60;
 		h = getHeight() / 2;
 		int left = getWidth() / 6, top = (getHeight() / 4), right = left + w, bottom = 3 * top;
