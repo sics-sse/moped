@@ -20,7 +20,7 @@ import android.view.SurfaceView;
 public class PadView extends SurfaceView implements Callback, Runnable {
 	private boolean run;
 	private SurfaceHolder sh;
-	private Paint p, pRed, pBlue, pControls;
+        private Paint p, pRed, pBlue, pYellow, pControls;
 	public Ball balls[]   = new Ball[2];
 	private int touchX[]  = new int[balls.length], 
 				touchY[]  = new int[balls.length],
@@ -54,6 +54,9 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 		pBlue = new Paint();
 		pBlue.setColor(Color.BLUE);
 		pBlue.setAntiAlias(true);
+		pYellow = new Paint();
+		pYellow.setColor(Color.YELLOW);
+		pYellow.setAntiAlias(true);
 		pControls = new Paint();
 		pControls.setColor(Color.argb(220, 100, 180, 180));
 		pControls.setAntiAlias(true);
@@ -94,6 +97,11 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 
 			canvas.drawBitmap(bluinoBMP, screen.centerX() - w * 7 / 2,
 					6 * getHeight() / 8, null);
+
+			// Arndt: this will become a signalling button
+			canvas.drawCircle(getWidth() / 4, getHeight() / 8, balls[0]
+					  .getRect().width(), pYellow);
+
 
 			drawText(canvas, p);
 		} catch (Exception e) {
@@ -183,7 +191,7 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 						Log.i(Main.TAG,
 								"+OnTouchEvent(Action_Down) SECREEETtouch!!; ");
 					if (Main.socket != null)
-						Main.send("S0008".getBytes());// secret code to run a
+						Main.send("S0008T0007");// secret code to run a
 														// secret routine in
 														// Arduino
 				}
