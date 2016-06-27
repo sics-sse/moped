@@ -1,6 +1,8 @@
 #! /bin/bash
 
 CODEBENCH=/home/arndt/moped/arm/Sourcery_CodeBench_Lite_for_ARM_EABI
+#CODEBENCH=/home/arndt/moped/arm/gcc-arm-none-eabi-4_9-2015q3
+#CODEBENCH=/home/arndt/moped/arm/gcc-arm-none-eabi-4_7-2014q2
 
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
 export PATH=$CODEBENCH/bin:$PATH
@@ -42,13 +44,16 @@ cd ..
 fi
 
 cd autosar
-export BDIR=../examples/Raspberry_Pi/demo_VCU
-./build.sh clean; ./build.sh
-mkdir -p VCU
-cp src/core/binaries/Raspberry_Pi/VCU-kernel.img VCU
 
-export BDIR=../examples/Raspberry_Pi/demo_SCU
-./build.sh clean; ./build.sh
-mkdir -p SCU
-cp src/core/binaries/Raspberry_Pi/SCU-kernel.img SCU
-cd ..
+for ecu in VCU SCU; do
+
+    for freq in 16 20; do
+
+	export BDIR=../examples/Raspberry_Pi/demo_$ecu
+	export CANFREQ=$freq
+	./build.sh clean; ./build.sh
+	mkdir -p $ecu
+	cp src/core/binaries/Raspberry_Pi/$ecu-kernel.img $ecu/$ecu-kernel-$freq.img
+
+    done
+done
