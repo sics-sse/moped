@@ -1498,11 +1498,12 @@ public final class Isolate implements Runnable {
      *
      * @throws IllegalStateException if the isolate has already been started
      */
-    public void start() {
+    public Thread start() {
         transitioningState = ALIVE;
         String isoname = new StringBuffer(mainClassName).append(" - main").toString();
         Thread t = new CrossIsolateThread(this, isoname);
         t.start();
+	return t;
     }
 
     /**
