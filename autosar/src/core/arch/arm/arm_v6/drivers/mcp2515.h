@@ -203,7 +203,7 @@ typedef enum {
  */
 
 /* The frequency of the crystal on MCP2515 (in MHz) */
-#define MCP2515_FREQUENCY_MHz			20
+//#define MCP2515_FREQUENCY_MHz			20
 
 /* The maximum BRP (at 25 kbps) also sets the upper limit of baudrates
  * that can be treated in this way (currently 1000 kbps) */
