@@ -7,8 +7,8 @@ public class Car {
 	private String brand;
 	private Ecm ecm;
 	
-	public void init() {
-		ecm.start();
+	public void init(String [] args) {
+		ecm.start(args);
 	}
 	
 	public String getName() {
