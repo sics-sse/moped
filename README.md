@@ -27,4 +27,4 @@ To get started:
 * Ignore the directory "server". "new-server" is the currently active code.
 
 Forum for discussion of the MOPED platform:
-http://mopedforum.prpphpbb.com
+http://mopedforum.prophpbb.com
