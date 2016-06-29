@@ -45,8 +45,7 @@ class WorkThread extends Thread {
         	public static void main(String[] args) {
         		VM.println("Run.main()");
         		Run autoBrake = new Run(args);
-        		autoBrake.init();
-        		autoBrake.doFunction();
+        		autoBrake.run();
         		VM.println("Run-main done");
         	}
 
@@ -57,20 +56,19 @@ class WorkThread extends Thread {
 	}
 	
 	public void run() {
-	    VM.println("Run.run()");
 	    init();
-	    doFunction();
-	    VM.println("Run-main done");
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
 	}
-
-    private Object getval(PluginRPort port) {
+	
+    private Object getval(PluginRPort port) throws InterruptedException {
 	WorkThread p = new WorkThread(ab);
 	p.start();
-	try {
-	    Thread.sleep(1000);
-	} catch (InterruptedException e) {
-	    VM.println("Interrupted.");
-	}
+	Thread.sleep(1000);
 	Object o2 = p.obj;
 	//VM.println("plupp " + o2);
 	if (p.obj != null) {
@@ -79,7 +77,7 @@ class WorkThread extends Thread {
 	return o2;
     }
 
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 	    String data;
 		
 	    VM.println("[Run is running] 2");
@@ -88,27 +86,19 @@ class WorkThread extends Thread {
 	    steering = new PluginPPort(this, "st");
 
 	    for (int j = 0; j < 1; j++) {
-		try {
-		    Thread.sleep(2000);
-		    speed.write(0);
-		    steering.write(0);
-		    Thread.sleep(2000);
+		Thread.sleep(2000);
+		speed.write(0);
+		steering.write(0);
+		Thread.sleep(2000);
 
-		    speed.write(20);
-		    steering.write(0);
-		    Thread.sleep(2000);
-		} catch (InterruptedException e) {
-		    VM.println("Interrupted.");
-		}
+		speed.write(20);
+		steering.write(0);
+		Thread.sleep(2000);
 	    }
 
 
 	    while (true) {
-		try {
-		    Thread.sleep(500);
-		} catch (InterruptedException e) {
-		    VM.println("Interrupted.");
-		}
+		Thread.sleep(500);
 
 		try {
 		    //Object obj = ab.receive();

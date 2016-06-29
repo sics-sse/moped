@@ -74,11 +74,27 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 	}
 	
 	public void run() {
-		init();
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
+
+	public void doFunction () throws InterruptedException{
 		
-		//		VM.println("SemiAutomaticReverseParking is running");
-		System.out.println("SemiAutomaticReverseParking is running");
+		VM.println("SemiAutomaticReverseParking is running");
 		
+		light.write("2|0");
+		light.write("3|1");
+
+		Thread.sleep(0000);
+
+		light.write("2|1");
+		light.write("3|0");
+
 		distance = 0;
 //		while (state != State.FINISHED) {
 		while (state != FINISHED) {
@@ -129,11 +145,7 @@ public class SemiAutomaticReverseParking extends PlugInComponent {
 			    // Done 
 				break;
 			}
-			try {
-	   			 Thread.sleep(TIME_STEP);
-			} catch (InterruptedException e) {
-				;
-			}
+			Thread.sleep(TIME_STEP);
 		}
 	}
 	
