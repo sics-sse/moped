@@ -45,15 +45,27 @@ fi
 
 cd autosar
 
-for ecu in VCU SCU; do
+# CAN card frequency and type of RPi 1 are really independent, but we choose
+# to put the new cards (frequency 16 Mhz) on the RPi 1B+ and the old
+# cards on the RPi 1B, and then we can associate the type of RPi with the
+# frequency.
+
+for ecu in SCU VCU; do
 
     for freq in 16 20; do
 
 	export BDIR=../examples/Raspberry_Pi/demo_$ecu
 	export CANFREQ=$freq
+	if [ "$freq" = 16 ];
+	then
+	    RPIBPLUS=1
+	else
+	    RPIBPLUS=0
+	fi
+	echo "RPIBPLUS = $RPIBPLUS"
+	export RPIBPLUS
 	./build.sh clean; ./build.sh
 	mkdir -p $ecu
 	cp src/core/binaries/Raspberry_Pi/$ecu-kernel.img $ecu/$ecu-kernel-$freq.img
-
     done
 done

@@ -25,7 +25,7 @@ VPATH += $(ROOTDIR)/boards/Raspberry_Pi/config
 inc-y += $(ROOTDIR)/boards/Raspberry_Pi/config
 obj-y += $(ROOTDIR)/boards/Raspberry_Pi/config/simple_stdio.o
 CFLAGS += -DSIMPLE_STDIO
-CFLAGS += -DMCP2515_FREQUENCY_MHz=$(CANFREQ)
+CFLAGS += -DMCP2515_FREQUENCY_MHz=$(CANFREQ) -DRPI_B_PLUS=$(RPIBPLUS)
 
 # Project files (adds all .c files in project root)
 PROJECT_C_FILES=$(notdir $(wildcard ../*.c))

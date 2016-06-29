@@ -26,21 +26,22 @@ uint32 led_tick_period = 500;
 uint32 led_pattern0 = 0x55;
 uint32 led_pattern = 0;
 
-// If RPI_B_PLUS is undefined, we have an old RPi B
-//#define RPI_B_PLUS
+// If RPI_B_PLUS is 0, we have an old RPi B
 
-#ifdef RPI_B_PLUS
+#if RPI_B_PLUS==1
 #define LED_BIT 47
 #define GPIO_SEL_OUTPUT 1
 #define LEDBIT1 0x00008000
 #define LEDPORT IOPORT1
 #define LIGHT_LED true
-#else
+#elif defined(RPI_B_PLUS) && RPI_B_PLUS==0
 #define LED_BIT 16
 #define GPIO_SEL_OUTPUT 0
 #define LEDBIT1 0x00010000
 #define LEDPORT IOPORT0
 #define LIGHT_LED false
+#else
+#error "RPI_B_PLUS must be 0 or 1"
 #endif
 
 uint32 act_led_gpio = LED_BIT;
@@ -82,7 +83,7 @@ void Bcm2835OsTick(void) {
 void Os_SysTickInit( void ) {
   // necessary when LED_BIT = 47, but wrong when LED_BIT = 16
   //bcm2835_GpioFnSel(DIO_BCM2835_LED_CHANNEL, GPIO_SEL_OUTPUT);
-#ifdef RPI_B_PLUS
+#if RPI_B_PLUS==1
   bcm2835_GpioFnSel(LED_BIT, GPIO_SEL_OUTPUT);
 #endif
 	ISR_INSTALL_ISR2("OsTick",Bcm2835OsTick,BCM2835_IRQ_ID_TIMER_0/*BCM2835_IRQ_ID_SYSTEM_TIMER3*/,6,0);
