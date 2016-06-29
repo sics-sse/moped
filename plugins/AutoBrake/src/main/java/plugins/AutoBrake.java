@@ -45,8 +45,7 @@ public class AutoBrake extends PlugInComponent {
 	public static void main(String[] args) {
 		VM.println("AutoBrake.main()\r\n");
 		AutoBrake autoBrake = new AutoBrake(args);
-		autoBrake.init();
-		autoBrake.doFunction();
+		autoBrake.run();
 		VM.println("AutoBrake-main done\r\n");
 	}
 
@@ -58,16 +57,20 @@ public class AutoBrake extends PlugInComponent {
 		brakeLight = new PluginPPort(this, "brakeLight");
 	}
 	
-	public void run() {}
-
-    private Object getval(PluginRPort port) {
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
+	
+    private Object getval(PluginRPort port) throws InterruptedException {
 	WorkThread p = new WorkThread(ab);
 	p.start();
-	try {
-	    Thread.sleep(3000);
-	} catch (InterruptedException e) {
-	    VM.println("Interrupted.\r\n");
-	}
+	Thread.sleep(3000);
 	Object o2 = p.obj;
 	VM.println("plupp " + o2);
 	if (p.obj != null) {
@@ -76,7 +79,7 @@ public class AutoBrake extends PlugInComponent {
 	return o2;
     }
 
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 	    String data;
 		
 	    VM.println("[AutoBrake is running] 1");
@@ -85,11 +88,7 @@ public class AutoBrake extends PlugInComponent {
 
 	    VM.println("[AutoBrake is running] 2");
 	    while (true) {
-		try {
-		    Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		    VM.println("Interrupted.\r\n");
-		}
+		Thread.sleep(1000);
 
 		try {
 		    //Object obj = ab.receive();

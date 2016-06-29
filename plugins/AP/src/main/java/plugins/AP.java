@@ -64,134 +64,130 @@ public class AP extends PlugInComponent {
 
     // TODO: check getting stuck moving backwards too
 
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 	    int s;
-		try {
-			for (int i = 0; i < 100; i++) {
+	    for (int i = 0; i < 100; i++) {
 				
-				// warmup
-				Thread.sleep(2000);
-				speed.write(0);
-				steering.write(0);
-				Thread.sleep(2000);
-				// forward
+		// warmup
+		Thread.sleep(2000);
+		speed.write(0);
+		steering.write(0);
+		Thread.sleep(2000);
+		// forward
 
-				show("speed", rspeed);
-				//show("steering", rsteer);
+		show("speed", rspeed);
+		//show("steering", rsteer);
 
-				speed.write(20);
-				steering.write(0);
-				Thread.sleep(2000);
+		speed.write(20);
+		steering.write(0);
+		Thread.sleep(2000);
 
-				s = rspeed.readInt();
-				VM.println("s = " + s);
-				if (s < 5) {
-				    VM.println("reversing");
-				    speed.write(0);
-				    steering.write(0);
-				    Thread.sleep(3000);
-				    speed.write(-10);
-				    steering.write(0);
-				    show("speed", rspeed);
-				    Thread.sleep(7000);
-				    show("speed", rspeed);
-				}
-
-				// turn left
-				speed.write(20);
-				steering.write(-80);
-				Thread.sleep(3000);
-
-				s = rspeed.readInt();
-				VM.println("s = " + s);
-				//s = 1;
-				if (s < 5) {
-				    VM.println("reversing");
-				    speed.write(0);
-				    steering.write(0);
-				    Thread.sleep(3000);
-				    speed.write(-30);
-				    steering.write(0);
-				    show("speed", rspeed);
-				    Thread.sleep(7000);
-				    show("speed", rspeed);
-				}
-
-				show("speed", rspeed);
-				//show("steering", rsteer);
-
-				// right, right
-				speed.write(20);
-				steering.write(80);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-				Thread.sleep(500);
-				show("speed", rspeed);
-
-				//show("steering", rsteer);
-
-				s = rspeed.readInt();
-				VM.println("s = " + s);
-				if (s < 5) {
-				    VM.println("reversing");
-				    speed.write(0);
-				    steering.write(0);
-				    Thread.sleep(3000);
-				    speed.write(-10);
-				    steering.write(0);
-				    show("speed", rspeed);
-				    Thread.sleep(7000);
-				    show("speed", rspeed);
-				}
-
-				// straight
-				speed.write(20);
-				steering.write(0);
-				Thread.sleep(4000);
-
-				s = rspeed.readInt();
-				VM.println("s = " + s);
-				if (s < 5) {
-				    VM.println("reversing");
-				    speed.write(0);
-				    steering.write(0);
-				    Thread.sleep(3000);
-				    speed.write(-10);
-				    steering.write(0);
-				    show("speed", rspeed);
-				    Thread.sleep(7000);
-				    show("speed", rspeed);
-				}
-
-				// stop
-				speed.write(0);
-				steering.write(0);
-				Thread.sleep(2000);
-			}
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.\r\n");
+		s = rspeed.readInt();
+		VM.println("s = " + s);
+		if (s < 5) {
+		    VM.println("reversing");
+		    speed.write(0);
+		    steering.write(0);
+		    Thread.sleep(3000);
+		    speed.write(-10);
+		    steering.write(0);
+		    show("speed", rspeed);
+		    Thread.sleep(7000);
+		    show("speed", rspeed);
 		}
+
+		// turn left
+		speed.write(20);
+		steering.write(-80);
+		Thread.sleep(3000);
+
+		s = rspeed.readInt();
+		VM.println("s = " + s);
+		//s = 1;
+		if (s < 5) {
+		    VM.println("reversing");
+		    speed.write(0);
+		    steering.write(0);
+		    Thread.sleep(3000);
+		    speed.write(-30);
+		    steering.write(0);
+		    show("speed", rspeed);
+		    Thread.sleep(7000);
+		    show("speed", rspeed);
+		}
+
+		show("speed", rspeed);
+		//show("steering", rsteer);
+
+		// right, right
+		speed.write(20);
+		steering.write(80);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+		Thread.sleep(500);
+		show("speed", rspeed);
+
+		//show("steering", rsteer);
+
+		s = rspeed.readInt();
+		VM.println("s = " + s);
+		if (s < 5) {
+		    VM.println("reversing");
+		    speed.write(0);
+		    steering.write(0);
+		    Thread.sleep(3000);
+		    speed.write(-10);
+		    steering.write(0);
+		    show("speed", rspeed);
+		    Thread.sleep(7000);
+		    show("speed", rspeed);
+		}
+
+		// straight
+		speed.write(20);
+		steering.write(0);
+		Thread.sleep(4000);
+
+		s = rspeed.readInt();
+		VM.println("s = " + s);
+		if (s < 5) {
+		    VM.println("reversing");
+		    speed.write(0);
+		    steering.write(0);
+		    Thread.sleep(3000);
+		    speed.write(-10);
+		    steering.write(0);
+		    show("speed", rspeed);
+		    Thread.sleep(7000);
+		    show("speed", rspeed);
+		}
+
+		// stop
+		speed.write(0);
+		steering.write(0);
+		Thread.sleep(2000);
+	    }
 	}
 
 //	public PluginPPort getSpeedPort() { return speed; }
@@ -202,7 +198,12 @@ public class AP extends PlugInComponent {
 //	}
 	public void run() {
 	    init();
-	    doFunction();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
 	}
 	
 }
