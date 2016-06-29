@@ -17,8 +17,7 @@ public class Platoon extends PlugInComponent {
 	public static void main(String[] args) {
 		VM.println("Platoon.main()\r\n");
 		Platoon platoon = new Platoon(args);
-		platoon.init();
-		platoon.doFunction();
+		platoon.run();
 		VM.println("Platoon-main done\r\n");
 	}
 
@@ -29,9 +28,17 @@ public class Platoon extends PlugInComponent {
 		spReader = new PluginRPort(this, "spReader");
 	}
 	
-	public void run() {}
-
-	public void doFunction() {
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
+	
+	public void doFunction() throws InterruptedException {
 		String data;
 		for (int i = 0; i < 1000; i++) {
 			VM.println("[Platoon is running]");
@@ -40,12 +47,7 @@ public class Platoon extends PlugInComponent {
 			VM.print("speed from TCU:");
 			VM.println(speedDataStr);
 //			spWriter.write(speedData);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
-			}
-
+			Thread.sleep(2000);
 		}
 	}
 }

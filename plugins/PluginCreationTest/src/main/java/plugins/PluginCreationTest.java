@@ -25,25 +25,29 @@ public class PluginCreationTest extends PlugInComponent {
     }
 
     @Override
-	public void run() {
-	initmsg();
-	VM.println(msg + "ehej1");
+    public void run() {
 	init();
+	try {
+	    doFunction();
+	} catch (InterruptedException e) {
+	    VM.println("**************** Interrupted.");
+	    return;
+	}
     }
-
+	
     @Override
 	public void init() {
 	VM.println(msg + "ehej2");
-	doFunction();
     }
 
     public static void main(String[] args) {
+	PluginCreationTest plugin = new PluginCreationTest(args);
 	initmsg();
 	VM.println(msg + "ehej3");
-	doFunction();
+	plugin.run();
     }
 
-    private static void doFunction() {
+    private void doFunction() throws InterruptedException {
     	Calendar cal = Calendar.getInstance();
     	String msg1 = msg + " " + cal.getTime() + " ";
     	//SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -51,10 +55,7 @@ public class PluginCreationTest extends PlugInComponent {
 	
 	while (true) {
 	    VM.println(msg1 + "ehej4");
-	    try {
-		Thread.sleep(5000);
-	    } catch (Exception e) {
-	    }
+	    Thread.sleep(5000);
 	}
     }
 }

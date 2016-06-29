@@ -48,8 +48,7 @@ class WorkThread extends Thread {
 	public static void main(String[] args) {
 		VM.println("Recv2.main()\r\n");
 		Recv2 publish = new Recv2(args);
-		publish.init();
-		publish.doFunction();
+		publish.run();
 		VM.println("Recv2-main done\r\n");
 	}
 
@@ -64,16 +63,21 @@ class WorkThread extends Thread {
 		as3 = new PluginPPort(this, "as3");
 	}
 	
-	public void run() {}
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
+	
 
-    private Object getval(PluginRPort port) {
+    private Object getval(PluginRPort port) throws InterruptedException {
 	WorkThread p = new WorkThread(ab);
 	p.start();
-	try {
-	    Thread.sleep(1000);
-	} catch (InterruptedException e) {
-	    VM.println("Interrupted.");
-	}
+	Thread.sleep(1000);
 	Object o2 = p.obj;
 	//VM.println("plupp " + o2);
 	if (p.obj != null) {
@@ -82,7 +86,7 @@ class WorkThread extends Thread {
 	return o2;
     }
 
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 	    Boolean pub = false;
 		String data;
 		int val = 0;
@@ -91,11 +95,7 @@ class WorkThread extends Thread {
 
 		VM.println("[Recv2 is running (waiting 10s)]");
 
-		try {
-		    Thread.sleep(10000);
-		} catch (InterruptedException e) {
-		    VM.println("Interrupted.");
-		}
+		Thread.sleep(10000);
 
 		VM.println("[Recv2 is running]");
 		while (! stop) {
@@ -116,11 +116,7 @@ class WorkThread extends Thread {
 			    if (pub)
 				pbw.write(data);
 
-			    try {
-				Thread.sleep(500);
-			    } catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
-			    }
+			    Thread.sleep(500);
 
 			    int x;
 			    if (true) {
@@ -142,11 +138,7 @@ class WorkThread extends Thread {
 				    // does it still hang if we don't publish
 				    // what we received?
 				    // answer: yes
-				    try {
-					Thread.sleep(500);
-				    } catch (InterruptedException e) {
-					VM.println("Interrupted.\r\n");
-				    }
+				    Thread.sleep(500);
 
 				    if (pub)
 					pbw.write("dist|" + x);
@@ -172,11 +164,7 @@ class WorkThread extends Thread {
 				    // does it still hang if we don't publish
 				    // what we received?
 				    // answer: yes
-				    try {
-					Thread.sleep(500);
-				    } catch (InterruptedException e) {
-					VM.println("Interrupted.\r\n");
-				    }
+				    Thread.sleep(500);
 
 				    if (pub)
 					pbw.write("dist|" + x);
@@ -188,11 +176,7 @@ class WorkThread extends Thread {
 			as3.send("71");
 			stop = true;
 
-			try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
-			}
+			Thread.sleep(5000);
 
 		}
 	}

@@ -20,14 +20,9 @@ public class PluginCreationTest2 extends PlugInComponent {
 	
 	@Override
 	public void run() {
-	    VM.println("PluginCreationTest2 running");
-
-	    //	    HelpClass c = new HelpClass();
-
-		init();
-
+	    init();
 	}
-
+	
 	@Override
 	public void init() {
 	    VM.println("PluginCreationTest2 initializing 3...");

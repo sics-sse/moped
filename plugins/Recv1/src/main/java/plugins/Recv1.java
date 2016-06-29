@@ -43,8 +43,7 @@ class WorkThread extends Thread {
 	public static void main(String[] args) {
 		VM.println("Recv1.main()\r\n");
 		Recv1 publish = new Recv1(args);
-		publish.init();
-		publish.doFunction();
+		publish.run();
 		VM.println("Recv1-main done\r\n");
 	}
 
@@ -54,9 +53,17 @@ class WorkThread extends Thread {
 		ab = new PluginRPort(this, "ab");
 	}
 	
-	public void run() {}
-
-	public void doFunction() {
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
+	
+	public void doFunction() throws InterruptedException {
 	    Boolean pub = false;
 		String data;
 		int val = 0;
@@ -95,12 +102,7 @@ class WorkThread extends Thread {
 		    //as3.send("71");
 		    //stop = true;
 
-		    try {
-			Thread.sleep(100);
-		    } catch (InterruptedException e) {
-			VM.println("Interrupted.\r\n");
-		    }
-
+		    Thread.sleep(100);
 		}
 	}
 }

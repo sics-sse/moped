@@ -17,8 +17,7 @@ public class PosPub extends PlugInComponent {
 	public static void main(String[] args) {
 		VM.println("PosPub.main()\r\n");
 		PosPub publish = new PosPub(args);
-		publish.init();
-		publish.doFunction();
+		publish.run();
 		VM.println("PosPub-main done\r\n");
 	}
 
@@ -29,9 +28,17 @@ public class PosPub extends PlugInComponent {
 		ff = new PluginRPort(this, "ff");
 	}
 
-	public void run() {}
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
 	
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 		String data;
 		for (int i = 0; i < 1000; i++) {
 			VM.println("[PosPub is running]");
@@ -40,11 +47,7 @@ public class PosPub extends PlugInComponent {
 			String val = posVal[0] + "," + posVal[1] + "," + posVal[2] + "," + posVal[3] + "," + posVal[4];
 			data = "PosPub|" + val;
 			fs.write(data);
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				VM.println("Interrupted.\r\n");
-			}
+			Thread.sleep(2000);
 		}
 	}
 	
