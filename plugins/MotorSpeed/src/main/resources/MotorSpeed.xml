@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>volvo-rpi1</vehicleName>
+	<brand>Volvo</brand>
+	<plugins>
+		<plugin>
+			<name>MotorSpeed.suite</name>
+			<ecu>2</ecu>
+			<ports>
+				<port>
+					<name>pub</name>
+				</port>
+				<port>
+					<name>bw</name>
+				</port>
+				<port>
+					<name>st</name>
+				</port>
+				<port>
+					<name>sp</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>pub</from>
+			<to>0</to>
+		</link>
+		<link>
+			<from>6</from>
+			<to>bw</to>
+		</link>
+		<link>
+			<from>sp</from>
+			<to>3</to>
+		</link>
+		<link>
+			<from>st</from>
+			<to>4</to>
+		</link>
+	</links>
+</app>

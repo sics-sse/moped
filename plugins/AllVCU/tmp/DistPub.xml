@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app>
+	<vehicleName>MOPED</vehicleName>
+	<brand>SICS</brand>
+	<plugins>
+		<plugin>
+			<name>AllVCU.suite</name>
+			<ecu>3</ecu>
+			<ports>
+				<port>
+					<name>fs</name>
+				</port>
+				<port>
+					<name>ff</name>
+				</port>
+			</ports>
+		</plugin>
+	</plugins>
+	<links>
+		<link>
+			<from>fs</from>
+			<to>0</to>
+		</link>
+		<link>
+			<from>13</from>
+			<to>ff</to>
+		</link>
+	</links>
+</app>

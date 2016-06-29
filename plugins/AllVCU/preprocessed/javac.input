@@ -1,0 +1,1 @@
+ -bootclasspath /home/arndt/moped/moped/plugins/DistPub/classes:/home/arndt/moped/moped/plugins/DistPub/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes: -d /home/arndt/moped/moped/plugins/DistPub/classes -g /home/arndt/moped/moped/plugins/DistPub/preprocessed/main/java/plugins/DistPub.java
