@@ -56,23 +56,19 @@ public class StarAndGo extends PlugInComponent {
 	return x;
     }
 
-    public void doFunction() {
+    public void doFunction() throws InterruptedException {
 	int st1 = 100; // was 70
 
-	try {
-	    VM.println("star 1");
-	    Thread.sleep(2000);
-	    speed.write(0);
-	    steering.write(st1);
+	VM.println("star 1");
+	Thread.sleep(2000);
+	speed.write(0);
+	steering.write(st1);
 
-	    VM.println("star 2");
-	    Thread.sleep(2000);
-	    speed.write(0);
-	    steering.write(st1);
-	    Thread.sleep(2000);
-	} catch (InterruptedException e) {
-	    //VM.println("Interrupted.");
-	}
+	VM.println("star 2");
+	Thread.sleep(2000);
+	speed.write(0);
+	steering.write(st1);
+	Thread.sleep(2000);
 
 	int x;
 
@@ -95,31 +91,23 @@ public class StarAndGo extends PlugInComponent {
 
 		VM.println("star33 " + count + " " + dir);
 
-		try {
-		    steering.write(dir*st1);
-		    if (dir > 0)
-			speed.write(15);
-		    else
-			speed.write(-20);
-		    Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.");
-		}
+		steering.write(dir*st1);
+		if (dir > 0)
+		    speed.write(15);
+		else
+		    speed.write(-20);
+		Thread.sleep(1000);
 
 		int frontWheelSpeedData = fw.readInt();
 
 		VM.println("star4 " + count + " " + dir*frontWheelSpeedData);
 
-		try {
-		    speed.write(0);
-		    steering.write(0);
-		    // 500 is sometimes too little for the motor to be able
-		    // to switch to the other direction in the next step
-		    // 1000 is enough, and 600 seems to be, too
-		    Thread.sleep(600);
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.");
-		}
+		speed.write(0);
+		steering.write(0);
+		// 500 is sometimes too little for the motor to be able
+		// to switch to the other direction in the next step
+		// 1000 is enough, and 600 seems to be, too
+		Thread.sleep(600);
 
 		if (dir > 0) {
 		    Object obj = ab.receive();
@@ -165,31 +153,23 @@ public class StarAndGo extends PlugInComponent {
 
 		VM.println("star5 " + count + " " + dir);
 
-		try {
-		    steering.write(dir*st1);
-		    if (dir > 0)
-			speed.write(15);
-		    else
-			speed.write(-20);
-		    Thread.sleep(1000);
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.");
-		}
+		steering.write(dir*st1);
+		if (dir > 0)
+		    speed.write(15);
+		else
+		    speed.write(-20);
+		Thread.sleep(1000);
 
 		int frontWheelSpeedData = fw.readInt();
 
 		VM.println("star4 " + count + " " + dir*frontWheelSpeedData);
 
-		try {
-		    speed.write(0);
-		    steering.write(0);
-		    // 500 is sometimes too little for the motor to be able
-		    // to switch to the other direction in the next step
-		    // 1000 is enough, and 600 seems to be, too
-		    Thread.sleep(600);
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.");
-		}
+		speed.write(0);
+		steering.write(0);
+		// 500 is sometimes too little for the motor to be able
+		// to switch to the other direction in the next step
+		// 1000 is enough, and 600 seems to be, too
+		Thread.sleep(600);
 
 		if (dir > 0) {
 		    x = readdist();
@@ -210,11 +190,7 @@ public class StarAndGo extends PlugInComponent {
 	    steering.write(0);
 	    while (true) {
 
-		try {
-		    Thread.sleep(200);
-		} catch (InterruptedException e) {
-		    //VM.println("Interrupted.");
-		}
+		Thread.sleep(200);
 
 		x = readdist();
 		VM.println("new dist " + x);
@@ -232,6 +208,12 @@ public class StarAndGo extends PlugInComponent {
 
     public void run() {
 	init();
-	doFunction();
+	try {
+	    doFunction();
+	} catch (InterruptedException e) {
+	    VM.println("**************** Interrupted.");
+	    return;
+	}
     }
+	
 }
