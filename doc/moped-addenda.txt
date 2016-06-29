@@ -13,7 +13,11 @@ is not readable from Java yet.
 New plugin: StarAndGo, and others
 
 Sound: connected a small loudspeaker with 3.5mm audio and USB power (to
-charge internal battery) to TCU.
+charge internal battery) to TCU. But taking power from the TCU is not
+a good idea. Charge the speaker separately instead.
+The small loudspeakers I bought at Clas Ohlson run without charging
+for at least 12 hours (at least when not emitting sound). 5 minutes of
+charging (whether turned on or not) gives one hour of use.
 
 Sending data from VCU to SCU (in the same way as SCU to VCU already works)
 is in progress, but not ready yet.
@@ -22,10 +26,6 @@ is in progress, but not ready yet.
 
 Don't force the front wheels to change steering by hand. Doing so
 generates a current, which may be high enough to damage circuits.
-
-The small loudspeakers I bought at Clas Ohlson run without charging
-for at least 12 hours (at least when not emitting sound). 5 minutes of
-charging (whether turned on or not) gives one hour of use.
 
 The speed of the car: 20m in between 10 and 50 s.
 The lowest value for the speed port that results in movement is 7.
@@ -154,3 +154,27 @@ tvservice -o on TCU for lowering battery use
 Making partition bootable
 use sudo fdisk /dev/sdg
 and the commands p, a and w
+
+
+When writing a plugin, don't forget super(args) in the constructor.
+
+New debugging idea: connect the serial output from the SCU to the UART of
+the TCU, and read from its /dev/ttyAMA0.
+x
+Connect UART pins on SCU to those on TCU (RX to TX, etc.)
+x
+Stopping /etc/agetty on TCU:
+sudo systemctl stop serial-getty@ttyAMA0.service
+sudo bash
+root@raspberrypi:/home/pi# cat < /dev/ttyAMA0
+x
+sudo bash
+systemctl stop serial-getty@ttyAMA0.service
+cat < /dev/ttyAMA0
+x
+/dev/ttyAMA0 is already at the right speed etc.
+x
+It works fine.
+x
+But it seems to take a bit of cpu from the other things running.
+
