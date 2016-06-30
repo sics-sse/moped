@@ -94,16 +94,11 @@ public class SocketCommunicationManager implements CommunicationManager {
 					// System.exit(-1);
 					isStart = false;
 					failCnt++;
-					
-					if (failCnt >= 30) {
-						System.out.println("Error! Giving up attempts to connect to " + server + ":" + port);
-						break;
-					}
 				}
 				
 				if (isStart) {
 					System.out.println("Connected to trusted server");
-					break;
+					//break;
 				}
 				else {
 					try {
@@ -114,10 +109,12 @@ public class SocketCommunicationManager implements CommunicationManager {
 					}
 				}
 
-			}
-			if (connectServer) {
-				session.getCloseFuture().awaitUninterruptibly();
-				connector.dispose();
+				if (connectServer && isStart) {
+				    session.getCloseFuture().awaitUninterruptibly();
+				    //connector.dispose();
+				    isStart = false;
+				    failCnt = 0;
+				}
 			}
 		}
 	}
