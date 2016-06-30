@@ -47,6 +47,7 @@ written to the card. Always do 'sync' before restarting after changing files.
 The server claims to have no contact with the car, although both are running.
 If the server is started after the car has failed to reach it, or an old instance
 of the server was stopped, no new connection is established. Restart the car.
+(This has been changed now.)
 
 A plugin can be installed and run on the actual car but not on the
 simulator, or the other way around, although it only uses ports supported
