@@ -376,6 +376,8 @@ void Pwm_SetDutyCycle(Pwm_ChannelType channel, Pwm_DutyCycleType dutyCycle)
 	Pwm_SetPeriodAndDuty(channel, pwmChannels[channel].cycle_time_us, dutyCycle);
 }
 
+int *Pwm_pulse_tab = NULL;
+
 /**
  * [SWS_Pwm_00098] - Service sets the period and the duty cycle of a PWM channel
  *
@@ -411,7 +413,13 @@ void Pwm_SetPeriodAndDuty(Pwm_ChannelType channel, Pwm_PeriodType period, Pwm_Du
 	 * Thus the second step is done first, see below, resulting in a (quite good) approximation.
 	 */
 	uint32 pulse_width = (((uint32)dutyCycle * (uint32)period) >> 15) / PWM_GRANULARITY_US;
-	Pwm_GeneratePulse(channel, 0, pulse_width);
+	uint32 pulse_width1 = pulse_width;
+
+	if (pulse_width >= 153 && pulse_width <= 199 && Pwm_pulse_tab != NULL) {
+	  pulse_width1 = Pwm_pulse_tab[pulse_width-153];
+	  //printf("pulse_width %d %d\r\n", pulse_width, pulse_width1);
+	}
+	Pwm_GeneratePulse(channel, 0, pulse_width1);
 }
 
 /************************************************************************************/
