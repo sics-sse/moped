@@ -322,12 +322,25 @@ public class PadView extends SurfaceView implements Callback, Runnable {
 		canTextL = intToString(x);
 		out = "V" + canTextL;
 		
+		int speed = x;
+
 		/* Calc and output steering values using the right bar */
 		dist = balls[1].getRect().centerX() - bar2.left;
 		x = (int) Math.ceil((Options.getInstance().getRBarValue() / (bar2.width() / dist)) - 100);
 		if (x < 0)
 			x--;
-		canTextR = intToString(x);
+
+		double lambda = x/100.0;
+		if (lambda < 0)
+		    lambda = -lambda;
+
+		double x2 = x*x/100.0;
+		if (x < 0)
+		    x2 = -x2;
+
+		int x3 = (int) (lambda*x2 + (1-lambda)*x);
+
+		canTextR = intToString(x3);
 		out += "H" + canTextR;
 
 		/* Send speed and steering values through the socket */ 
