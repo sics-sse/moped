@@ -44,20 +44,126 @@ void SquawkTask(void){
 struct ecu_config {
   char *mac;
   char *conf;
+  int *ptab;
+};
+
+// car 1
+int pulse_tab1[] = {
+  154,
+  156,
+  153,
+  155,
+  158,
+  157,
+  160,
+  159,
+  162,
+  161,
+  164,
+  167,
+  163,
+  169,
+  166,
+  165,
+  168,
+  171,
+  170,
+  173,
+  172,
+  175,
+  174,
+  177,
+  180,
+  176,
+  179,
+  182,
+  178,
+  181,
+  184,
+  183,
+  186,
+  185,
+  188,
+  187,
+  190,
+  189,
+  192,
+  195,
+  191,
+  193,
+  194,
+  197,
+  196,
+  199,
+  198,
+};
+
+// car2
+int pulse_tab2[] = {
+  154,
+  153,
+  157,
+  156,
+  155,
+  160,
+  159,
+  158,
+  162,
+  161,
+  165,
+  164,
+  168,
+  163,
+  167,
+  166,
+  170,
+  169,
+  173,
+  172,
+  171,
+  176,
+  175,
+  174,
+  178,
+  177,
+  179,
+  181,
+  180,
+  184,
+  183,
+  182,
+  187,
+  186,
+  185,
+  189,
+  188,
+  192,
+  191,
+  190,
+  193,
+  194,
+  196,
+  198,
+  199,
+  195,
+  197,
 };
 
 struct ecu_config configs[] = {
   // VCU car 1
-  {"b827eb3510df", "servo -1"},
+  {"b827eb3510df", "servo -1", pulse_tab1},
   // VCU car 1 (RPi 3 card)
-  {"b827eb31395c", "servo -1"},
+  {"b827eb31395c", "servo -1", NULL},
   // VCU car 2
-  {"b827eb3aebfd", "servo 1"},
+  {"b827eb3aebfd", "servo 1", pulse_tab2},
 };
 
 #define DEFAULT_SERVO_DIRECTION (-1)
 
 int vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
+
+// See Pwm.c
+extern int *Pwm_pulse_tab;
 
 static void parse_config(void) {
   int i, j;
@@ -69,6 +175,7 @@ static void parse_config(void) {
       matched = 1;
       printf("config: %s\r\n", configs[i].conf);
       vcu_servo_direction = atoi(&configs[i].conf[6]);
+      Pwm_pulse_tab = configs[i].ptab;
       if (vcu_servo_direction != 1 && vcu_servo_direction != -1) {
 	printf("invalid servo direction %d\r\n",
 	       vcu_servo_direction);
