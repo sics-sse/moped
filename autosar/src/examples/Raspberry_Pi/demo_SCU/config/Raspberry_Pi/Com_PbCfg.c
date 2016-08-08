@@ -131,7 +131,7 @@ SECTION_POSTBUILD_DATA const ComSignal_type ComSignal[] = {
 
 	{ // acknowledgementSCUsignal
 		.ComHandleId 				= COM_SIGNAL_ID_ACKNOWLEDGEMENTSCUSIGNAL,
-		.ComIPduHandleId 			= COM_PDU_ID_ACKNOWLEDEGMENTSCUPDU,
+		.ComIPduHandleId 			= COM_PDU_ID_ACKNOWLEDGEMENTSCUPDU,
 		.ComFirstTimeoutFactor 		= 0,
 		.ComNotification 			= COM_NO_FUNCTION_CALLOUT,
 		.ComTimeoutFactor 			= 0,
@@ -322,7 +322,7 @@ SECTION_POSTBUILD_DATA const ComIPduGroup_type ComIpduGroupRefs_pluginInstallati
 SECTION_POSTBUILD_DATA const ComIPdu_type ComIPdu[] = {	
 
 	{ // acknowledgementSCUComIPdu
-		.ArcIPduOutgoingId			= PDUR_PDU_ID_ACKNOWLEDEGMENTSCUPDU,
+		.ArcIPduOutgoingId			= PDUR_PDU_ID_ACKNOWLEDGEMENTSCUPDU,
 		.ComRxIPduCallout			= COM_NO_FUNCTION_CALLOUT,
 		.ComTxIPduCallout			= COM_NO_FUNCTION_CALLOUT,
 		.ComIPduSignalProcessing 	= IMMEDIATE,
