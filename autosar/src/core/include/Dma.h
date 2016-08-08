@@ -14,7 +14,7 @@
 typedef struct
 {
 	volatile uint32 DMA_CHANNEL_PRIORITY;
-	volatile uint32 DMA_CHANNEL_PREEMTION_ENABLE;
+	volatile uint32 DMA_CHANNEL_PREEMPTION_ENABLE;
 } Dma_ChannelConfigType;
 
 typedef enum
