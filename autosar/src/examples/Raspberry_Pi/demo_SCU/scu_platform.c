@@ -76,7 +76,7 @@ boolean pluginCommunicationSCUtoVCU_Flag = false;
 
 
 ///**
-// * definition of Ultasonic data package
+// * definition of Ultrasonic data package
 // */
 //typedef struct{
 //	UInt8 size;
@@ -85,8 +85,8 @@ boolean pluginCommunicationSCUtoVCU_Flag = false;
 //DataPackage UltraData;
 //DataPackage IMUData;
 
-UInt8 sequnceNumberWrite = 0;
-//sint8 BufferForPluginInstallaiton[1000];
+UInt8 sequenceNumberWrite = 0;
+//sint8 BufferForPluginInstallation[1000];
 //sint8 BufferForCommunication[1000];
 UInt32 readTotalSize = 0;
 UInt32 sizeIndexRead = 0;
@@ -102,7 +102,24 @@ UInt32 countWrite = 0;
 
 UInt32 sizeIndexWrite = 0;
 
-UInt8* GolbalBufferSCUtoVCU[100];
+void Can_Read_Single_Frame(uint8* tempBuffer, CanPackage * CANPackage){
+
+	readTotalSize = tempBuffer[0];
+//    printf("infor (single): size %d, %d, %d, %d, %d\r\n",readTotalSize, tempBuffer[0], tempBuffer[1], tempBuffer[2], tempBuffer[3]);
+    CANPackage->TotalReadSize  = readTotalSize;
+//    printf("infor: size %d \r\n",CANPackage->TotalReadSize);
+    CANPackage->nextFrameRead = 0;
+    CANPackage->indexReadStart = 0;
+    CANPackage->indexReadEnd = 0;
+    //store the data
+    for(int i = 0; i < CANPackage->TotalReadSize; i++){
+    	CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+SF_PCI_BYTE];
+    	CANPackage->indexReadEnd++ ;
+    	CANPackage->readBytes++;
+//    	printf("Index: %d\r\n",CANPackage->indexReadEnd);
+    }
+    CANPackage->PackageState.Done = true;
+}
 
 /**
  *
@@ -112,9 +129,9 @@ UInt8* GolbalBufferSCUtoVCU[100];
 void Can_Read_First_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 
 	readTotalSize = ((tempBuffer[0] & DATALENGTH_H) << 24) + (tempBuffer[1] << 16) + (tempBuffer[2] << 8) + tempBuffer[3];
-//    printf("infor: size %d, %d, %d, %d, %d\r\n",readTotalSize, tempBuffer[0], tempBuffer[1], tempBuffer[2], tempBuffer[3]);
+	//printf("infor: size %d, %d, %d, %d, %d\r\n",readTotalSize, tempBuffer[0], tempBuffer[1], tempBuffer[2], tempBuffer[3]);
     CANPackage->TotalReadSize  = readTotalSize;
-//    printf("infor: size %d \r\n",CANPackage->TotalReadSize);
+    //printf("infor: size %d \r\n",CANPackage->TotalReadSize);
     packageFirstFrame_Flag = true;
     CANPackage->nextFrameRead = 0;
     CANPackage->indexReadStart = 0;
@@ -124,7 +141,7 @@ void Can_Read_First_Frame(uint8* tempBuffer, CanPackage * CANPackage){
     	CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+FF_PCI_BYTE];
     	CANPackage->indexReadEnd++ ;
     	CANPackage->readBytes++;
-//    	printf("Index: %d\r\n",CANPackage->indexReadEnd);
+    	//printf("Index: %d\r\n",CANPackage->indexReadEnd);
     }
 }
 
@@ -134,7 +151,7 @@ void Can_Read_First_Frame(uint8* tempBuffer, CanPackage * CANPackage){
  * @param CANPackage
  */
 void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
-//	printf("infor: consecutive frame\r\n");
+  //printf("infor: consecutive frame\r\n");
 	uint16 sequenceNumber = tempBuffer[0] & SEQUENCE_NUMBER;
 
 	if(sequenceNumber == CANPackage->nextFrameRead){
@@ -142,12 +159,12 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 			CANPackage->CanReadBuffer[CANPackage->indexReadEnd] = tempBuffer[i+CF_PCI_BYTE];
 			CANPackage->indexReadEnd++;
 			CANPackage->readBytes++;
-//			printf("Index: %d\r\n",CANPackage->indexReadEnd);
+			//printf("Index: %d\r\n",CANPackage->indexReadEnd);
 			if(CANPackage->indexReadEnd >= BUFFERSIZE){
 				CANPackage->indexReadEnd = 0;
 			}
 			if(CANPackage->TotalReadSize == (CANPackage->readBytes)){
-//				printf("endSize: %d\r\n",CANPackage->indexReadEnd);
+			  //printf("endSize: %d\r\n",CANPackage->indexReadEnd);
 				CANPackage->PackageState.Done = true;
 				CANPackage->nextFrameRead = NO_FRAME;
 				break;
@@ -179,12 +196,12 @@ void Can_Send_Single_Frame(CanPackage* CANPackage) {
 	length = (UInt8)CANPackage->TotalWriteSize;
 	//construct the first frame
 	data[0] = length;
-	printf("infor: send single frame size: %d, data: ", data[0]);
+	//printf("infor: send single frame size: %d, data: ", data[0]);
 	for (i = 0; i < length; i++) {
 		data[i + SF_PCI_BYTE] = CANPackage->CanWriteBuffer[i];
-		printf("%d ", data[i + SF_PCI_BYTE]);
+		//printf("%d ", data[i + SF_PCI_BYTE]);
 	}
-	printf("\r\n");
+	//printf("\r\n");
 	//send single frame
 	switch(CommunicationType){
 		case acknowledgement_SCU:
@@ -217,7 +234,7 @@ void Can_Send_First_Frame(CanPackage* CANPackage) {
 	UInt32 appsize = CANPackage->TotalWriteSize;
 	UInt32 CommunicationType = CANPackage->CommunicationType;
 
-	sequnceNumberWrite = 0;
+	sequenceNumberWrite = 0;
 
 	//send first frame, calculate the data length
 	length1 = (uint8) (appsize >> 24) & 0x0F;
@@ -264,7 +281,7 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	UInt8 CommunicationType = CANPackage->CommunicationType;
 //	printf("infor: send consecutive frame\r\n");
 		//send consecutive frame, construct the first frame
-	data[0] = (uint8) (CONSECUTIVE_FRAME << 4) + (sequnceNumberWrite & 0xF);
+	data[0] = (uint8) (CONSECUTIVE_FRAME << 4) + (sequenceNumberWrite & 0xF);
 //	printf("%d ", data[0]);
 	for (j = 0; j < CONSECUTIVE_FRAME_SIZE; j++) {
 		data[j + CF_PCI_BYTE] = CANPackage->CanWriteBuffer[CANPackage->indexWriteEnd];
@@ -274,10 +291,10 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	}
 //	printf("\r\n");
 
-	if (sequnceNumberWrite >= 15) {
-		sequnceNumberWrite = 0;
+	if (sequenceNumberWrite >= 15) {
+		sequenceNumberWrite = 0;
 	} else {
-		sequnceNumberWrite++;
+		sequenceNumberWrite++;
 	}
 	//send consecutive frame
 	switch(CommunicationType){
@@ -300,9 +317,9 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 }
 
 void Can_Send_Package(CanPackage* CANPackage){
-    UInt32 pakcageSize = CANPackage->TotalWriteSize;
+    UInt32 packageSize = CANPackage->TotalWriteSize;
 
-	if (pakcageSize < 8) {
+	if (packageSize < 8) {
 		Can_Send_Single_Frame(CANPackage);
 		singleframe_Flag = true;
 	} else {
@@ -311,10 +328,10 @@ void Can_Send_Package(CanPackage* CANPackage){
 			case FIRST_FRAME:
 				//send first frame
 				Can_Send_First_Frame(CANPackage);
-				if((pakcageSize - FIRST_FRAME_SIZE)% CONSECUTIVE_FRAME_SIZE == 0){
-					countWrite = (pakcageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE;
+				if((packageSize - FIRST_FRAME_SIZE)% CONSECUTIVE_FRAME_SIZE == 0){
+					countWrite = (packageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE;
 				}else{
-					countWrite = (pakcageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE + 1;
+					countWrite = (packageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE + 1;
 				}
 				WriteframeType = CONSECUTIVE_FRAME;
 			break;
@@ -367,6 +384,9 @@ void Can_Read_Package(CanPackage* CANPackage){
     frameType = (tempBuffer[0] & FRAME_TYPE) >> 4;
 //    printf("infor: frameType %d\r\n",frameType);
     switch(frameType){
+    	case SINGLE_FRAME:
+    		Can_Read_Single_Frame(tempBuffer, CANPackage);
+    	break;
     	case FIRST_FRAME:
     		Can_Read_First_Frame(tempBuffer, CANPackage);
     	break;
@@ -395,16 +415,17 @@ void SCU_Installation_TCU_ReadRunnable(void) {
 		PackageInstallation.nextFrameRead = 0;
 		PackageInstallation.PackageState.Done = false;
 		PackageInstallation.readBytes = 0;
-		PackageInstallation.CanReadBuffer = &BufferForPluginInstallaiton[0];
+		PackageInstallation.CanReadBuffer = &BufferForPluginInstallation[0];
 		plugin_new_packageFromTCU = true;
 		init_install = true;
 	}
+	//printf("SCU_Installation_TCU_ReadRunnable\r\n");
 	Can_Read_Package(&PackageInstallation);
 	if (PackageInstallation.PackageState.Done == true) {
 	printf("ready? %d %d\n\r", PackageInstallation.indexReadStart, PackageInstallation.indexReadEnd);
 //		printf("infor: app data ");
 //		for (int i = 0; i < PackageInstallation.TotalReadSize; i++) {
-//			printf("%d ", BufferForPluginInstallaiton[i]);
+//			printf("%d ", BufferForPluginInstallation[i]);
 //		}
 //		printf("//total %d\r\n", PackageInstallation.indexReadEnd);
 		PackageInstallation.CommunicationType = no_communication;
@@ -472,7 +493,9 @@ void SCU_Communication_VCU_ReadRunnable(void){
 		printf("//total %d\r\n", PackageReadFromVCU.indexReadEnd);
 		init_readFromVCU = false;
 		//	  acknowledgementTCU_Flag = true;
-		pluginCommunicationSCUtoVCU_Flag = true;
+
+		//Arndt: commented out
+		//pluginCommunicationSCUtoVCU_Flag = true;
 	}
 }
 
