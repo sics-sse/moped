@@ -28,11 +28,11 @@ void output2(char* s, int length) {
 char autosarFetchByte(int rearIndex) {
 	char res;
 	if (PackageInstallation.indexReadStart > rearIndex) {
-		res = BufferForPluginInstallaiton[PackageInstallation.indexReadStart++];
+		res = BufferForPluginInstallation[PackageInstallation.indexReadStart++];
 		if (PackageInstallation.indexReadStart == BUFFERSIZE)
 			PackageInstallation.indexReadStart = 0;
 	} else if (PackageInstallation.indexReadStart < rearIndex) {
-		res = BufferForPluginInstallaiton[PackageInstallation.indexReadStart++];
+		res = BufferForPluginInstallation[PackageInstallation.indexReadStart++];
 	}
 	return res;
 }
@@ -57,7 +57,7 @@ char* autosarFetchNewData(int startIndex, int rearIndex) {
 		int size = BUFFERSIZE - startIndex + rearIndex;
 		char data[size];
 		for (int i = 0; i < size; i++) {
-			data[i] = BufferForPluginInstallaiton[startIndex++];
+			data[i] = BufferForPluginInstallation[startIndex++];
 			if (startIndex == BUFFERSIZE)
 				startIndex = 0;
 		}
@@ -66,7 +66,7 @@ char* autosarFetchNewData(int startIndex, int rearIndex) {
 		int size = rearIndex - startIndex;
 		char data[size];
 		for (int j = 0; j < size; j++) {
-			data[j] = BufferForPluginInstallaiton[startIndex++];
+			data[j] = BufferForPluginInstallation[startIndex++];
 		}
 		res = data;
 	}
