@@ -39,7 +39,7 @@ boolean firstframe_Flag = false;
 boolean packageFirstFrame_Flag = false;
 boolean pluginCommunicationVCUtoSCU_Flag = false;
 
-UInt8 sequnceNumberWrite = 0;
+UInt8 sequenceNumberWrite = 0;
 
 UInt32 readTotalSize;
 UInt32 countWrite;
@@ -122,8 +122,10 @@ void Can_Read_Consecutive_Frame(uint8* tempBuffer, CanPackage * CANPackage){
 //	printf("infor: consecutive frame readBytes = %d\r\n", CANPackage->readBytes);
 	uint16 sequenceNumber = tempBuffer[0] & SEQUENCE_NUMBER;
 
+#if 1
 	if (CANPackage->TotalReadSize == 0)
 	  return;
+#endif
 
 	//printf("Can_Read_Consecutive_Frame seq %d\r\n", sequenceNumber);
 	//printf(" seq %d %d\r\n", sequenceNumber, CANPackage->indexReadEnd);
@@ -223,7 +225,7 @@ void Can_Send_First_Frame(CanPackage* CANPackage) {
 	UInt8 i;
 	UInt8 data[8];
 
-	sequnceNumberWrite = 0;
+	sequenceNumberWrite = 0;
 
 	UInt32 appsize = CANPackage->TotalWriteSize;
 	UInt32 CommunicationType = CANPackage->CommunicationType;
@@ -278,7 +280,7 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	UInt8 CommunicationType = CANPackage->CommunicationType;
 	//printf("infor: send consecutive frame\r\n");
 		//send consecutive frame, construct the first frame
-	data[0] = (uint8) (CONSECUTIVE_FRAME << 4) + (sequnceNumberWrite & 0xF);
+	data[0] = (uint8) (CONSECUTIVE_FRAME << 4) + (sequenceNumberWrite & 0xF);
 	//printf("%d ", data[0]);
 	for (j = 0; j < CONSECUTIVE_FRAME_SIZE; j++) {
 		data[j + CF_PCI_BYTE] = CANPackage->CanWriteBuffer[CANPackage->indexWriteEnd];
@@ -288,10 +290,10 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
 	}
 	//	printf("\r\n");
 
-	if (sequnceNumberWrite >= 15) {
-		sequnceNumberWrite = 0;
+	if (sequenceNumberWrite >= 15) {
+		sequenceNumberWrite = 0;
 	} else {
-		sequnceNumberWrite++;
+		sequenceNumberWrite++;
 	}
 	//send consecutive frame
 	switch (CommunicationType) {
@@ -320,15 +322,15 @@ void Can_Send_Consecutive_Frame(CanPackage* CANPackage) {
  * @param CANPackage
  */
 void Can_Send_Package(CanPackage* CANPackage){
-    UInt32 pakcageSize = CANPackage->TotalWriteSize;
+    UInt32 packageSize = CANPackage->TotalWriteSize;
 
-    // printf("Can_Send_Package %d %d\r\n", pakcageSize, WriteframeType);
+    // printf("Can_Send_Package %d %d\r\n", packageSize, WriteframeType);
 
-    if (pakcageSize == 0) {
+    if (packageSize == 0) {
       return;
     }
 
-	if (pakcageSize < 8) {
+	if (packageSize < 8) {
 		Can_Send_Single_Frame(CANPackage);
 		singleframe_Flag = true;
 	} else {
@@ -337,10 +339,10 @@ void Can_Send_Package(CanPackage* CANPackage){
 			case FIRST_FRAME:
 				//send first frame
 				Can_Send_First_Frame(CANPackage);
-				if((pakcageSize - FIRST_FRAME_SIZE)% CONSECUTIVE_FRAME_SIZE == 0){
-					countWrite = (pakcageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE;
+				if((packageSize - FIRST_FRAME_SIZE)% CONSECUTIVE_FRAME_SIZE == 0){
+					countWrite = (packageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE;
 				}else{
-					countWrite = (pakcageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE + 1;
+					countWrite = (packageSize - FIRST_FRAME_SIZE)/ CONSECUTIVE_FRAME_SIZE + 1;
 				}
 				WriteframeType = CONSECUTIVE_FRAME;
 			break;
@@ -483,7 +485,7 @@ void Pirte_ReadInstallationDataFromTCU_Runnable(void){
 		PackageInstallation.nextFrameRead = 0;
 		PackageInstallation.PackageState.Done = false;
 		PackageInstallation.readBytes = 0;
-		PackageInstallation.CanReadBuffer = &BufferForPluginInstallaiton[0];
+		PackageInstallation.CanReadBuffer = &BufferForPluginInstallation[0];
 		plugin_new_packageFromTCU = true;
 		plugin_install = true;
 	}
@@ -498,7 +500,7 @@ void Pirte_ReadInstallationDataFromTCU_Runnable(void){
 	printf("ready? %d %d\n\r", PackageInstallation.indexReadStart, PackageInstallation.indexReadEnd);
 //		printf("infor: app data ");
 //		for (int i = 0; i < PackageInstallation.TotalReadSize; i++) {
-//			printf("%d ", BufferForPluginInstallaiton[i]);
+//			printf("%d ", BufferForPluginInstallation[i]);
 //		}
 //		printf("//total %d\r\n", PackageInstallation.indexReadEnd);
 		PackageInstallation.CommunicationType = no_communication;
