@@ -158,7 +158,7 @@ struct ecu_config configs[] = {
   {"b827eb3aebfd", "servo 1", pulse_tab2},
 };
 
-#define DEFAULT_SERVO_DIRECTION (-1)
+#define DEFAULT_SERVO_DIRECTION (1)
 
 int vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
 
@@ -192,8 +192,33 @@ static void parse_config(void) {
 
 extern uint32 act_led_gpio;
 
+extern int saved_r2;
+
+extern char mem1000[];
+
+static void show_memory(void) {
+  //int b = 0x1000;
+  //char *p = (char *) b;
+  char *p = (char *) mem1000;
+  int i, k;
+
+  printf("saved_r2 = %d\r\n", saved_r2);
+
+  for (k = 0; k < 64; k++) {
+    for (i = 0; i < 16; i++) {
+      printf(" %d", *p);
+      if (*p >= 'A' && *p <= 'z')
+	printf("(%c)", *p);
+      p++;
+    }
+    printf("\r\n");
+  }
+}
+
 void StartupTask( void ) {
     pi_printf("infor: start up\r\n");
+
+    show_memory();
 
     bcm2835_read_mac_address();
 
