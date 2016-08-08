@@ -57,7 +57,7 @@ final class Monitor {
     short depth;
 
     /**
-     * Flag to show if a wait occured.
+     * Flag to show if a wait occurred.
      */
     boolean hasHadWaiter;
 /*else[SMARTMONITORS]*/
