@@ -244,7 +244,7 @@ typedef struct {
  } Can_HardwareObjectType;
 
  typedef struct {
-     // Specifies the buadrate of the controller in kbps.
+     // Specifies the baudrate of the controller in kbps.
      uint32 CanControllerBaudRate;
 
      // Specifies propagation delay in time quantas.
@@ -277,7 +277,7 @@ typedef struct Can_ControllerConfig {
      // Specifies the supported baud rates
      const CanBaudrateConfType * const CanControllerSupportedBaudrates;
 
-     // Specifices the length of the CanControllerSupportedBaudrates list
+     // Specifies the length of the CanControllerSupportedBaudrates list
      uint32 CanControllerSupportedBaudratesCount;
 
      //  Reference to the CPU clock configuration, which is set in the MCU driver
