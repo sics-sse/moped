@@ -114,7 +114,7 @@
  *  @req SWS_Rte_08065 */
 #define RTE_E_OUT_OF_RANGE             137
 
-/** An error during serialization or deserialization occured.
+/** An error during serialization or deserialization occurred.
  *  @req SWS_Rte_08725 */
 #define RTE_E_SERIALIZATION_ERROR      138
 
