@@ -59,7 +59,7 @@ typedef struct{
 //All the variable used for Java should be defined here
 boolean Ack_Flag;
 UInt8 ack_data;
-sint8 BufferForPluginInstallaiton[BUFFERSIZE];
+sint8 BufferForPluginInstallation[BUFFERSIZE];
 sint8 BufferForCommunicationSCUtoVCU[BUFFERSIZE];
 sint8 BufferForCommunication[BUFFERSIZE];
 UInt8 ack_array[BUFFERSIZE];
@@ -70,14 +70,14 @@ UInt32 countRead;
 //new
 UInt32 writeTotalsize;
 
-//extern signed char driverSetSpeed;   	  	 			//TCU ----> VCU   1 byte       Peroid = 10ms     Unit:%
-//extern signed char driverSetSteering;   				//TCU ----> VCU   1 byte       Peroid = 10ms     Unit:%
+//extern signed char driverSetSpeed;   	  	 			//TCU ----> VCU   1 byte       Period = 10ms     Unit:%
+//extern signed char driverSetSteering;   				//TCU ----> VCU   1 byte       Period = 10ms     Unit:%
 //
-//extern signed short vehiclePositionX;   			 	//TCU ----> VCU   2 bytes      Peroid = 500ms    Unit:cm
-//extern signed short vehiclePositionY;  	 			 	//TCU ----> VCU   2 bytes      Peroid = 500ms    Unit:cm
+//extern signed short vehiclePositionX;   			 	//TCU ----> VCU   2 bytes      Period = 500ms    Unit:cm
+//extern signed short vehiclePositionY;  	 			 	//TCU ----> VCU   2 bytes      Period = 500ms    Unit:cm
 //
-//extern unsigned char vehicleOrientation;			    //TCU ----> VCU   1 byte       Peroid = 500ms    Unit:0...255
-//extern unsigned char vehiclePositionQualityFactor;      //TCU ----> VCU   1 byte       Peroid = 500ms    Unit:0...100%
+//extern unsigned char vehicleOrientation;			    //TCU ----> VCU   1 byte       Period = 500ms    Unit:0...255
+//extern unsigned char vehiclePositionQualityFactor;      //TCU ----> VCU   1 byte       Period = 500ms    Unit:0...100%
 //
 //extern char plugInInstallationVCU[8];                   //TCU ----> VCU   0..8 bytes   Aperiodic
 //extern char plugInInstallationSCU[8];                   //TCU ----> VCU   0..8 bytes   Aperiodic
