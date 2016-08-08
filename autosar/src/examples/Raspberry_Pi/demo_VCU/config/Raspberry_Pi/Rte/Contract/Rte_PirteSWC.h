@@ -389,7 +389,7 @@ static inline UInt32 Rte_IRead_Pirte_ReadDataFromRearWheel_Runnable_PirteSwcRead
 void Pirte_ReadDataFromSCU_Runnable(void);
 
 static inline UInt8 * Rte_IRead_Pirte_ReadDataFromSCU_Runnable_PirteSwcReadDataFromSCUPort8_pluginCommunicationSCUtoVCU(void) {
-	printf("value on port from SCU: %d\r\n", *(self->Pirte_ReadDataFromSCU_Runnable_PirteSwcReadDataFromSCUPort8_pluginCommunicationSCUtoVCU->value));
+  //	printf("value on port from SCU: %d\r\n", *(self->Pirte_ReadDataFromSCU_Runnable_PirteSwcReadDataFromSCUPort8_pluginCommunicationSCUtoVCU->value));
 	return self->Pirte_ReadDataFromSCU_Runnable_PirteSwcReadDataFromSCUPort8_pluginCommunicationSCUtoVCU->value;
 }
 
