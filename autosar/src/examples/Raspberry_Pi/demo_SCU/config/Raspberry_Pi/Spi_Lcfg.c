@@ -27,7 +27,7 @@
 
 
 #define SPI_SEQ_END_NOTIFICATION	NULL
-#define SPI_JOB_END_NOTIFICAITON	NULL
+#define SPI_JOB_END_NOTIFICATION	NULL
 
 // Notifications
 // Seq
@@ -190,7 +190,7 @@ const Spi_ChannelConfigType SpiChannelConfigData[] =
  }
 };
 
-uint32 Spi_GetChanneCnt(void ) { return sizeof(SpiChannelConfigData)/sizeof(SpiChannelConfigData[0]); }
+uint32 Spi_GetChannelCnt(void ) { return sizeof(SpiChannelConfigData)/sizeof(SpiChannelConfigData[0]); }
 
 /*************** External Devices **************/
 const Spi_ExternalDeviceType SpiExternalConfigData[] =
