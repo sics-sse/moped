@@ -7,7 +7,7 @@
  * Driver for the ultrasonic sensor (Ultrasonic Ranging Module HC - SR04).
  * The sensor works by sending out a burst of 8 sonic signals and wait
  * for its reflection. The reflected signals are spread out in function of
- * the distance to the object in front of the sensor. This spead is then
+ * the distance to the object in front of the sensor. This speed is then
  * used to calculate the distance to the object.
  *
  * The whole chain of events is activated by a short trigger signal
