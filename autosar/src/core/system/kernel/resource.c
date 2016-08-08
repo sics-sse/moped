@@ -33,7 +33,7 @@ Resource management at interrupt level is NOT supported
 
 Testing
 RM:
-1. Priority ceiling: Call GetResource() from preemtive
+1. Priority ceiling: Call GetResource() from preemptive
    task and activate a task with higher priority than the ceiling protocol.
    The higher priority task should be swapped in.
 2. Verify that you cannot allocate an internal resource with
@@ -41,7 +41,7 @@ RM:
    b) ReleaseResource()
 3. Internal resource. Allocate 1 internal resource to 3 tasks of different
    priorities. Verify that
-   a) Higher priority tasks than the group can preement
+   a) Higher priority tasks than the group can preempt
    b) For tasks which have the same or lower priority as the highest priority within a group,
       the tasks within the group behave like non preemptable tasks ( OSEK 4.6.3)
 4. Attempt to release a resource which has a lower ceiling priority
