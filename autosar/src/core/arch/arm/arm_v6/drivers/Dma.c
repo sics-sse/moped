@@ -23,7 +23,7 @@ void Dma_Init(const Dma_ConfigType *ConfigPtr)
 	for (channel = (Dma_ChannelType)0; channel < DMA_NUMBER_OF_CHANNELS; channel++)
 	{
 	    /* Enable each defined DMA channel in the GLOBAL register */
-		DMA_GLOBAL_ENABLE |= ConfigPtr->dmaChannelConfigPtr[channel].DMA_CHANNEL_PREEMTION_ENABLE;
+		DMA_GLOBAL_ENABLE |= ConfigPtr->dmaChannelConfigPtr[channel].DMA_CHANNEL_PREEMPTION_ENABLE;
 	}
 }
 
