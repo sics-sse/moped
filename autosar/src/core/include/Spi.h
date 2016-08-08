@@ -24,13 +24,13 @@
  * SPI_CHANNEL_BUFFERS_ALLOWED		1	  Int 0..2
  * SPI_DEV_ERROR_DETECT				1	  Bool
  * SPI_HW_STATUS_API				1	  Bool
- * SPI_INTERRUPTABLE_SEQ_ALLOWED	1	  Bool
+ * SPI_INTERRUPTIBLE_SEQ_ALLOWED	1	  Bool
  * SPI_LEVEL_DELIVERED				1     Int 0..2
  * SPI_VERSION_INFO_API				1     Bool
  */
 
 /* SPI container: SpiSequence
- * SpiInterruptableSequence			1     Bool
+ * SpiInterruptibleSequence			1     Bool
  * SpiSeqEndNotification 			1     Func
  * SpiSequenceId					1     Int     (name of the sequence)
  * JobAssignment					1..*  Ref to SpiJob
