@@ -97,7 +97,7 @@ typedef struct Can_HardwareObjectStruct {
 	// Specifies if the HardwareObject is used as Transmit or as Receive object
 	Can_ObjectTypeType CanObjectType;
 
-	// Reference to the filter mask that is used for hardware filtering togerther
+	// Reference to the filter mask that is used for hardware filtering together
 	// with the CAN_ID_VALUE
 	Can_FilterMaskType *CanFilterMaskRef;
 
@@ -134,7 +134,7 @@ typedef struct {
 	// Defines if a CAN controller is used in the configuration.
 	boolean CanControllerActivation;
 
-	// Specifies the buadrate of the controller in kbps.
+	// Specifies the baudrate of the controller in kbps.
 	uint32 CanControllerBaudRate;
 
 	//	Enables / disables API Can_MainFunction_Read() for handling PDU
