@@ -67,7 +67,7 @@ SECTION_POSTBUILD_DATA const CanIf_TxBufferConfigType CanIfBufferCfgData[] = {
 
 SECTION_POSTBUILD_DATA const CanIf_TxPduConfigType CanIfTxPduConfigData[] = {
 	{
-		.CanIfTxPduId 				= PDUR_REVERSE_PDU_ID_ACKNOWLEDEGMENTSCUPDU,
+		.CanIfTxPduId 				= PDUR_REVERSE_PDU_ID_ACKNOWLEDGEMENTSCUPDU,
     	.CanIfCanTxPduIdCanId 		= 1292,
     	.CanIfCanTxPduIdDlc 		= 1,
     	.CanIfCanTxPduType 			= CANIF_PDU_TYPE_STATIC,
