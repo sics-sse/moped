@@ -2,12 +2,19 @@ package mina;
 
 import service.CallMySql;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import java.net.InetSocketAddress;
+import java.net.InetAddress;
 
 import messages.PingcarPacket;
 import messages.InitPacket;
@@ -61,6 +68,9 @@ public class ServerHandler extends IoHandlerAdapter {
 	String is_sim;
 	System.out.println("Message received on server...");
 		
+	InetSocketAddress socketAddress = (InetSocketAddress) session.getRemoteAddress();
+	InetAddress inetAddress = socketAddress.getAddress();
+
 	if (packageMessage instanceof Packet) {
 	    Packet p = (Packet) packageMessage;
 	    String vin, pluginName;
@@ -78,6 +88,8 @@ public class ServerHandler extends IoHandlerAdapter {
 
 		    vehicles.put(vin, session);
 		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + is_sim + ")");
+
+		    System.out.println("from " + inetAddress.getHostAddress());
 
 		    String q11 = "update Vehicle set simulator=" + is_sim +
 			" where vin = '" + vin + "'";
@@ -117,6 +129,11 @@ public class ServerHandler extends IoHandlerAdapter {
 
 		    vehicles.put(vin, session);
 		    System.out.println("Vehicle " + vin + " joins the connection (simulator " + is_sim + ")");
+
+		    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		    Date date = new Date();
+
+		    System.out.println("from " + inetAddress.getHostAddress() + " at " + dateFormat.format(date));
 
 		    String q1 = "update Vehicle set simulator=" + is_sim +
 			" where vin = '" + vin + "'";
