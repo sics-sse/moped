@@ -14,7 +14,7 @@ d = dict()
 occupied = dict()
 waiting = dict()
 
-show_markpos = False
+show_markpos = True
 show_markpos1 = False
 
 currentcar = None
@@ -68,7 +68,8 @@ class Car:
         self.windows = []
 
         #self.parameter = 164.0
-        self.parameter = 100.0
+        #self.parameter = 100.0
+        self.parameter = 152.0
 
         v = StringVar()
         v.set("hej")
@@ -159,8 +160,10 @@ path1_2 = [('go', sp1, 1.8, 16.2),
          ('stop',),
          ('speak', 'loading done'),
          ('go', sp1, 0.6, 17),
+         ('stop',),
          ('go', sp1, 0.8, 12.0),
-         ('stop', 1.0),
+         #('stop', 1.0),
+         ('stop', 4.0),
          ('go', sp2, 2.5, 14.4),
          ('speak', 'dumping'),
          ('stop',),
@@ -168,10 +171,43 @@ path1_2 = [('go', sp1, 1.8, 16.2),
 
 path1 = path1_2
 
-path2 = [('go', sp1, 2.3, 18.0),
-         ('go', sp1, 0.5, 15.5),
-         ('go', sp1, 0.7, 13.5),
-         ('go', sp1, 2.5, 16.0)]
+path2 = [('go', sp1, 2.5, 13.4),
+         ('stop', 0.5),
+         ('go', sp1, 2.5, 14.8),
+         ('stop', 0.5),
+         ('go', sp1, 2.5, 16.2),
+         ('stop', 0.5),
+         ('go', sp1, 2.5, 17.4),
+         ('stop', 0.5),
+         ('go', sp1, 2.0, 18.7),
+         ('stop', 0.5),
+         ('go', sp1, 0.7, 17.4),
+         ('stop', 0.5),
+         ('go', sp1, 0.7, 16.2),
+         ('stop', 0.5),
+         ('go', sp1, 0.7, 14.8),
+         ('stop', 0.5),
+         ('go', sp1, 0.7, 13.4),
+         ('stop', 0.5),
+         ('go', sp1, 1.2, 12.3),
+         ('stop', 0.5)]
+
+path3 = [('go', sp1, 2.3, 13.4),
+         ('stop', 0.5),
+         ('go', sp1, 2.3, 15.4),
+         ('stop', 0.5),
+         ('go', sp1, 2.5, 17.4),
+         ('stop', 0.5),
+         ('go', sp1, 2.1, 18.7),
+         ('stop', 0.5),
+         ('go', sp1, 0.8, 17.4),
+         ('stop', 0.5),
+         ('go', sp1, 0.8, 15.4),
+         ('stop', 0.5),
+         ('go', sp1, 0.8, 13.4),
+         ('stop', 0.5),
+         ('go', sp1, 1.2, 12.3),
+         ('stop', 0.5)]
 
 def draw_path(p):
     first = True
@@ -451,6 +487,10 @@ def key_event(event):
         select_car(1)
     elif event.char == '2':
         select_car(2)
+    elif event.char == '3':
+        select_car(3)
+    elif event.char == '4':
+        select_car(4)
     elif event.char == '>':
         increase_parameter(1)
     elif event.char == '<':
@@ -671,7 +711,7 @@ w = Canvas(width=winw, height=winh, bg='white')
 w.pack(expand=YES, fill=BOTH)
 
 
-currentpath = path2
+currentpath = path3
 draw_area(w)
 
 
@@ -713,6 +753,7 @@ def linesplit(socket):
     while buffering:
         if "\n" in buffer:
             (line, buffer) = buffer.split("\n", 1)
+            #print "yielding %s from %s" % (line, str(socket))
             yield line + "\n"
         else:
             more = socket.recv(4096)
@@ -786,6 +827,7 @@ def handlerun(conn, addr):
         #print "received (%s)" % data
         l = data.split(" ")
         # mpos = from marker; d = from dead reckoning
+        #print (c, l)
         if l[0] == "mpos" or l[0] == "dpos":
             x = float(l[1])
             y = float(l[2])
@@ -818,13 +860,22 @@ def handlerun(conn, addr):
             i = int(l[1])
             i -= 1
             print "%s stopped at %d" % (c.info, i)
-            if i == 4 or i == 11 or i == 8:
-                if i == 4:
-                    j = 8
-                elif i == 8:
-                    j = 11
-                elif i == 11:
-                    j = 4
+#            if i == 4 or i == 7 or i == 9 or i == 12:
+#            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 16 or i == 18 or i == 0:
+            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 0:
+                if False:
+                    if i == 4:
+                        j = 7
+                    elif i == 7:
+                        j = 9
+                    elif i == 9:
+                        j = 12
+                    elif i == 12:
+                        j = 4
+                else:
+                    j = i+2
+                    if i == 14:
+                        j = 0
 
                 print "occupied: %s" % str(occupied)
                 print "waiting: %s" % str(waiting)
@@ -833,27 +884,31 @@ def handlerun(conn, addr):
                     print "%s %s" % (carx.info, str(carx.waitingat))
 
                 if j not in occupied:
-                    print " %d not occupied" % j
+                    print " %s not occupied" % str(j)
+                    print " continuing %s" % c.info
+                    esend_continue(c)
+                    occupied[j] = c
+
                     if i in occupied:
                         c1 = occupied[i]
                         print " %d was occupied by %s" % (i, c1.info)
                         del occupied[i]
-                        if i in waiting:
-                            print " %d was waited for" % i
-                            c2 = waiting[i]
-                            print " %s waited for %d" % (c2.info, i)
+                        wi = i
+                        while wi in waiting:
+                            print " %d was waited for" % wi
+                            c2 = waiting[wi]
+                            print " %s waited for %d" % (c2.info, wi)
                             print " continuing %s" % c2.info
-                            occupied[i] = c2
-                            if c2.waitingat in occupied:
-                                del occupied[c2.waitingat]
+                            occupied[wi] = c2
+                            wi2 = c2.waitingat
+                            if wi2 in occupied:
+                                del occupied[wi2]
                             c2.waitingat = None
                             esend_continue(c2)
-                            del waiting[i]
-                    print " continuing %s" % c.info
-                    esend_continue(c)
-                    occupied[j] = c
+                            del waiting[wi]
+                            wi = wi2
                 else:
-                    print " %d occupied, waiting" % j
+                    print " %s occupied, waiting" % str(j)
                     waiting[j] = c
                     print " waitingat %d" % i
                     c.waitingat = i
@@ -863,13 +918,13 @@ def handlerun(conn, addr):
                     s1 += " occupied: "
                     print(occupied)
                     for k in occupied:
-                        c = occupied[k]
-                        s1 += " %s@%d" % (c.info, k)
+                        c1 = occupied[k]
+                        s1 += " %s@%d" % (c1.info, k)
                 if len(waiting.keys()) != 0:
                     s1 += " waiting: "
                     for k in waiting:
-                        c = waiting[k]
-                        s1 += " %s@%d" % (c.info, k)
+                        c1 = waiting[k]
+                        s1 += " %s@%d" % (c1.info, k)
                 v5.set(s1)
 
             else:
