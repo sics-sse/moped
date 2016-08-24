@@ -34,9 +34,25 @@ static uint32 IoHwAb_Digital_CalcWheelSpeed(enum Wheel wheel, uint64 *startTime)
 	float distance, speed;
 	uint32 nrPulses = Sensors_GetWheelPulse(wheel);
 
+#if 0
+	uint32 odo;
+	char buf[100];
+	char *cp = buf;
+	odo = Sensors_GetWheelPulseTotal(wheel);
+#endif
+
 	distance = PI * WHEEL_DIAMETER * nrPulses / PULSES_PER_WHEEL_TURN;
 	time = (uint32)(CURRENT_TIME - *startTime);
 	speed = 1e6 * distance / time; //speed in cm/s
+
+#if 0
+	printf("wheel %d currenttime %d", wheel, CURRENT_TIME);
+	printf(" distance %d", (int) (1000*distance));
+	printf(" time %d", time);
+	printf(" pulses %d", nrPulses);
+	printf(" speed %d", (int) (1000*speed));
+	printf(" odo %d\r\n", odo);
+#endif
 
 	Sensors_ResetWheelPulse(wheel);
 	*startTime = CURRENT_TIME;
@@ -74,7 +90,7 @@ Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32
 	static uint64 startTime;
 	*Data = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
 
-//	printf("In IoHw_Read_RearWheelSensor, data = %lu cm\r\n", *Data);
+//	printf("In IoHw_Front_RearWheelSensor, data = %lu cm\r\n", *Data);
 
 #if WHEEL_PRINT_DEBUG
 		printf("infor: IoHW front wheel speed = %lucm/s\r\n", *Data);
@@ -93,7 +109,24 @@ Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32
  */
 Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data){
 	static uint64 startTime;
+	uint32 odo;
+	odo = Sensors_GetWheelPulseTotal(REAR_WHEEL);
 	*Data = IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime);
+
+	uint32 fData = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
+	uint32 fodo;
+	fodo = Sensors_GetWheelPulseTotal(FRONT_WHEEL);
+
+	printf("wheels %d %d %d %d\r\n", *Data, odo, fData, fodo);
+
+#if 0
+	// received by a navigation program on the TCU
+	char tbuf[200];
+	sprintf(tbuf, "speed x %3d x%d x %3d x%d x",
+		*Data, odo, fData, fodo);
+	autosarSendPackageData(strlen(tbuf), tbuf);
+#endif
+
 
 //	printf("In IoHw_Read_RearWheelSensor, data = %lu cm\r\n", *Data);
 
@@ -118,8 +151,21 @@ Std_ReturnType IoHw_WriteSpeed_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 
 	return E_OK;
 }
 
+extern int vcu_servo_direction;
+extern int steering_min,  steering_max,  steering_zero;
+
 Std_ReturnType IoHw_WriteServo_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 * DutyCycle){
-	uint32 steer = (int) ((100 + (0.55556 * ((signed char)*DutyCycle + 100) * 0.9)) * 16.38);
+  signed char servo = (signed char)*DutyCycle;
+
+  servo = vcu_servo_direction*servo;
+
+  if (servo >= 0) {
+    servo = servo/100.0*(steering_max - steering_zero) + steering_zero;
+  } else {
+    servo = servo/100.0*(steering_zero - steering_min) + steering_zero;
+  }
+
+	uint32 steer = (int) ((100 + (0.55556 * (servo + 100) * 1.0)) * 16.38);
 
 	Pwm_SetPeriodAndDuty(0, 20000, steer);
 
