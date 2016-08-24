@@ -45,6 +45,7 @@ struct ecu_config {
   char *mac;
   char *conf;
   int *ptab;
+  int steering_min, steering_max, steering_zero;
 };
 
 // car 1
@@ -151,16 +152,19 @@ int pulse_tab2[] = {
 
 struct ecu_config configs[] = {
   // VCU car 1
-  {"b827eb3510df", "servo -1", pulse_tab1},
+  {"b827eb3510df", "servo -1", pulse_tab1, -100, 100, 0},
   // VCU car 1 (RPi 3 card)
-  {"b827eb31395c", "servo -1", NULL},
+  {"b827eb31395c", "servo -1", NULL, -100, 100, 0},
   // VCU car 2
-  {"b827eb3aebfd", "servo 1", pulse_tab2},
+  {"b827eb3aebfd", "servo 1", pulse_tab2, -100, 100, 0},
+  // VCU car 6
+  {"b827eb9864ee", "servo 1", pulse_tab1, -124, 100, -29},
 };
 
 #define DEFAULT_SERVO_DIRECTION (1)
 
 int vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
+int steering_min = -100, steering_max = 100, steering_zero = 0;
 
 // See Pwm.c
 extern int *Pwm_pulse_tab;
@@ -175,6 +179,13 @@ static void parse_config(void) {
       matched = 1;
       printf("config: %s\r\n", configs[i].conf);
       vcu_servo_direction = atoi(&configs[i].conf[6]);
+      printf("steering: %d %d %d\r\n",
+	     configs[i].steering_min,
+	     configs[i].steering_max,
+	     configs[i].steering_zero);
+      steering_min = configs[i].steering_min;
+      steering_max = configs[i].steering_max;
+      steering_zero = configs[i].steering_zero;
       Pwm_pulse_tab = configs[i].ptab;
       if (vcu_servo_direction != 1 && vcu_servo_direction != -1) {
 	printf("invalid servo direction %d\r\n",
