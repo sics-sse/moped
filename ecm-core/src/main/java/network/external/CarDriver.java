@@ -44,8 +44,10 @@ public class CarDriver implements Runnable {
 			System.out.println("CarDriver server start (on ECM) ...");
 			Socket client = null;
 			while (true) {
+				System.out.println("CarDriver: listening");
 				client = server.accept();
 				mList.add(client);
+				System.out.println("CarDriver: starting new service");
 				mExecutorService.execute(new Service(client)); // start a new
 																// thread
 			}
@@ -112,8 +114,15 @@ public class CarDriver implements Runnable {
 						in.read(incomingBytes);
 						
 						/* Convert the data into a format that will be understood on the recipient side and send it */ 
-						byte[] data = interpretWirelessino(new String(incomingBytes, "UTF-8"));
-						PWMMessage pwmMessage = new PWMMessage(pwmEcuId, data);
+						String str = new String(incomingBytes, "UTF-8");
+						byte[] data = interpretWirelessino(str);
+						PWMMessage pwmMessage;
+						if (str.charAt(0) == 'S') {
+							pwmMessage = new PWMMessage(1, incomingBytes);
+						} else
+						    {
+							pwmMessage = new PWMMessage(pwmEcuId, data);
+						    }
 						ecm.process(pwmMessage);
 					}
 
@@ -121,6 +130,7 @@ public class CarDriver implements Runnable {
 				}
 			} catch (Exception e) {
 				System.out.println("Connection between cellphone and ECM was terminated");
+				e.printStackTrace();
 			}
 		}
 	}	
