@@ -69,22 +69,28 @@ public class CanEcuManager implements EcuManager {
 				if(data != null)
 				    try {
 					byte[] parsedData = parseByteData(data[0]);
-		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 					switch (parsedData[0]) {
 					case MessageType.INSTALL_ACK:
-					    System.out.println(" plugin id " + parsedData[1]);
+
+					    //System.out.println(" plugin id " + parsedData[1]);
 						if(ecm.hasPluginInTmpDB(parsedData[1])) {
+		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 							String pluginName = ecm
 									.getPluginNameFromTmpDB(parsedData[1]);
 							InstallAckMessage installAckMessage = new InstallAckMessage(
 									parsedData[1], pluginName);
 							ecm.process(installAckMessage);
 						} else {
-							System.out.println("There is no corresponding Plugin ID " + parsedData[1] + " in temporary DB");
+						    //							System.out.println("There is no corresponding Plugin ID " + parsedData[1] + " in temporary DB");
 						}
 						break;
 					case MessageType.UNINSTALL_ACK:
 						byte pluginId4Uninstall = parsedData[1];
+						if (pluginId4Uninstall == 51 && !ecm.hasPluginInUninstallCache(pluginId4Uninstall)) {
+						    // special case for a raw message sent from VCU giving speed - Ecm shouldn't really see it.
+						    break;
+						}
+		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 						if(ecm.hasPluginInUninstallCache(pluginId4Uninstall)) {
 							String pluginName = ecm.getPluginNameFromUninstallCache(pluginId4Uninstall);
 							UninstallAckMessage uninstallAckMessage = new UninstallAckMessage(pluginName);
@@ -94,6 +100,7 @@ public class CanEcuManager implements EcuManager {
 						}
 						break;
 					case MessageType.PUBLISH:
+		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 					    System.out.println("data length = " + data.length);
 						int index = 1;
 						byte[] buffer = new byte[4];
@@ -133,6 +140,7 @@ public class CanEcuManager implements EcuManager {
 						ecm.process(publishMessage);
 						break;
 					default:
+		System.out.println(">>> ecm-core/CanEcuManager " + parsedData[0]);
 						System.out
 								.println("Error: wrong message type from autosar");
 					}
@@ -552,7 +560,12 @@ public class CanEcuManager implements EcuManager {
 	private void sendMessage(PWMMessage message) {
 		PWMMessage pwmMessage = (PWMMessage) message;
 		int ecuId = pwmMessage.getRemoteEcuId();
-		int can_id = senders.get(ecuId + "-PWM");
+		int can_id;
+		if (ecuId == 1) {
+		    can_id = 1124;
+		} else {
+		    can_id = senders.get(ecuId + "-PWM");
+		}
 		byte[] data = pwmMessage.getData();
 		System.out.println(ecuId + " " + can_id + " " + Arrays.toString(data));
 		javaCanLibrary.sendData(channelNumber, can_id, data);
