@@ -52,6 +52,8 @@ can_speed = 0
 
 ground_control = None
 
+rc_button = False
+
 targetx = None
 targety = None
 
@@ -538,12 +540,17 @@ def readspeed2():
     global speedsign
     global can_steer, can_speed
     global can_ultra
+    global rc_button
 
     part = b""
     part2 = b""
     while True:
         data = canSocket.recv(1024)
-        if (data[0], data[1]) == (100,4):
+        if (data[0], data[1]) == (100,4) and data[4] == 2:
+            # length of packet is 2
+            print((data[8], data[9]))
+            rc_button = True
+        elif (data[0], data[1]) == (100,4):
             if data[8] == 16:
                 parts = str(part)
 
@@ -1331,7 +1338,8 @@ import socket
 import sys
 
 HOST = 'localhost'    # The remote host
-HOST = '192.168.43.73'
+HOST = '192.168.43.73'	# merkur on my hotspot
+HOST = '193.10.66.250'  # merkur on the SICS wifi net
 PORT = 50008              # The same port as used by the server
 
 s = None
@@ -1797,6 +1805,9 @@ def trip(path, first=0):
 
     i = 0
     while True:
+        if rc_button:
+            stop()
+            break
         j = 0
         if first > 0:
             path1 = path[first:]
