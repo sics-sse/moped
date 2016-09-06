@@ -23,6 +23,8 @@ global VIN
 parameter = 164
 parameter = 100
 
+section_status = dict()
+
 oldpos = dict()
 adjust_t = None
 
@@ -770,6 +772,14 @@ def from_ground_control():
                 elif l[0] == "parameter":
                     parameter = int(l[1])
                     print("parameter %d" % parameter)
+                # can be used so we don't have to stop if the next
+                # section is free
+                elif l[0] == "free":
+                    s = int(l[1])
+                    section_status[s] = "free"
+                elif l[0] == "occupied":
+                    s = int(l[1])
+                    section_status[s] = "occupied"
                 else:
                     print("unknown control command %s" % data)
         time.sleep(1)
@@ -1797,15 +1807,23 @@ def trip17():
         stopx(i)
         speak('dumping done')
 
+def setleds(mask, code):
+    cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
+        mask, code)
+    os.system(cmd)
+
 def trip(path, first=0):
     global paused
     global speakcount
 
     speakcount = 1
 
+    setleds(0, 7)
+
     i = 0
     while True:
         if rc_button:
+            setleds(1, 6)
             stop()
             break
         j = 0
