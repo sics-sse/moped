@@ -1,0 +1,38 @@
+tkdraw sends:
+
+continue
+ having stopped at a stop waypoint, the car is allowed to continue
+go <x> <y>
+ x and y are float; the car goes to that point
+path <path>
+ path is a list of path commands, in Python syntax
+parameter <val>
+ val is an integer, and the car first multiplies the speed with val/100
+free <i>
+ not used yet
+occupied <i>
+ not used yet
+
+
+path commands:
+('go', speed, x, y)
+('stop',)
+('stop', time)
+('speak', string)
+
+
+navigate sends:
+
+battery <voltage>
+ the battery level, low-pass filtered
+mpos <x> <y> <ang> <t> <adjust> <speed>
+ ang is the orientation in degrees, clockwise from north;
+ t is the time that the navigate process has run;
+ adjust indicates something internal to the position calculation;
+ speed is the current speed of the right side back wheel
+badmarker <x> <y>
+obstacle
+odometer <s>
+info <vin>
+heart
+stopat <i>
