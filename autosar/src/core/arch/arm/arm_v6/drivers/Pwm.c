@@ -416,7 +416,7 @@ void Pwm_SetPeriodAndDuty(Pwm_ChannelType channel, Pwm_PeriodType period, Pwm_Du
 	uint32 pulse_width1 = pulse_width;
 
 	if (pulse_width >= 153 && pulse_width <= 199 && Pwm_pulse_tab != NULL) {
-	  pulse_width1 = Pwm_pulse_tab[pulse_width-153];
+	  //pulse_width1 = Pwm_pulse_tab[pulse_width-153];
 	  //printf("pulse_width %d %d\r\n", pulse_width, pulse_width1);
 	}
 	Pwm_GeneratePulse(channel, 0, pulse_width1);
