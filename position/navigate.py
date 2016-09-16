@@ -22,6 +22,8 @@ global VIN
 
 parameter = 164
 parameter = 100
+parameter = 152
+parameter = 120
 
 section_status = dict()
 
@@ -45,12 +47,18 @@ braking = False
 angleknown = False
 marker = None
 inspeed = 0.0
+inspeed_avg = 0.0
 odometer = 0
 lastodometer = None
 age = -1
 
+limitspeed = None
+
 can_steer = 0
 can_speed = 0
+
+send_sp = 0
+send_st = 0
 
 ground_control = None
 
@@ -240,6 +248,8 @@ def readgyro0():
 
 
 def tolog2(str0, stdout):
+
+    stdout = False
 
     if targetx and targety:
         d = dist(ppx, ppy, targetx, targety)
@@ -539,6 +549,7 @@ def readmarker0():
 # constants and offsets appear.
 def readspeed2():
     global inspeed, odometer, lastodometer
+    global inspeed_avg
     global speedsign
     global can_steer, can_speed
     global can_ultra
@@ -558,8 +569,10 @@ def readspeed2():
 
                 m = re.search("speed x([0-9 ]+)x([0-9 ]+) x([0-9 ]+)x([0-9 ]+)", parts)
                 if m:
-                    inspeed = int(m.group(1))
-                    inspeed *= speedsign
+                    oinspeed = inspeed
+                    inspeed = speedsign * int(m.group(1))
+                    alpha = 0.8
+                    inspeed_avg = (1-alpha)*inspeed + alpha*oinspeed
 
                     if (inspeed == 0 and speedtime != None and
                         time.time() - speedtime > 7.0):
@@ -623,6 +636,7 @@ def report():
         print(marker + " " + str(inspeed))
 
 outspeed = 0.0
+outspeedcm = None
 steering = 0.0
 
 # error here: we normalize the argument, but not the other value
@@ -631,29 +645,34 @@ def drive(sp):
     global outspeed
     global speedsign
     global speedtime
+    global outspeedcm
 
-    # do this in readspeed2 instead
-    # maybe, but then steer will zero the speed
-    outspeed = sp
-
-    if abs(sp) >= 7:
-        speedtime = time.time()
+    if True:
+        outspeedcm = sp*2
     else:
-        speedtime = None
 
-    if sp != 0 and not braking:
-        speedsign = sign(sp)
+        # do this in readspeed2 instead
+        # maybe, but then steer will zero the speed
+        outspeed = sp
 
-    if sp < 0:
-        sp += 256
-    st = steering
-    if st < 0:
-        st += 256
-    tolog("motor %d steer %d" % (sp, steering))
-    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-        sp, st)
-    #print (sp, steering, cmd)
-    os.system(cmd)
+        if abs(sp) >= 7:
+            speedtime = time.time()
+        else:
+            speedtime = None
+
+        if sp != 0 and not braking:
+            speedsign = sign(sp)
+
+        if sp < 0:
+            sp += 256
+        st = steering
+        if st < 0:
+            st += 256
+        tolog("motor %d steer %d" % (sp, steering))
+        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+            sp, st)
+        #print (sp, steering, cmd)
+        os.system(cmd)
 
 def steercmd(cmd):
     os.system(cmd)
@@ -672,7 +691,10 @@ def steer(st):
     cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
         sp, st)
     #print (outspeed, st, cmd)
-    start_new_thread(steercmd, (cmd,))
+    if False:
+        start_new_thread(steercmd, (cmd,))
+    else:
+        dodrive(sp, st)
 #    os.system(cmd)
     tolog("motor2 %d steer %d" % (outspeed, st))
 
@@ -686,8 +708,11 @@ def stop(txt = ""):
     speedtime = None
 
     tolog("(%s) motor %d steer %d" % (txt, outspeed, steering))
-    os.system("/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-            outspeed, steering))
+    if False:
+        os.system("/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                outspeed, steering))
+    else:
+        dodrive(0, 0)
 
 def connect_to_ground_control():
     global ground_control
@@ -751,6 +776,7 @@ def from_ground_control():
     global paused
     global parameter
     global ground_control
+    global limitspeed
 
     while True:
         if ground_control:
@@ -769,6 +795,29 @@ def from_ground_control():
                     print(path)
                 elif l[0] == "continue":
                     paused = False
+                elif l[0] == "carsinfront":
+                    n = int(l[1])
+                    closest = None
+                    for i in range(0, n):
+                        dir = float(l[5*i+2])
+                        dist = float(l[5*i+3])
+                        x = float(l[5*i+4])
+                        y = float(l[5*i+5])
+                        othercar = float(l[5*i+6])
+                        if closest == None or closest > dist:
+                            closest = dist
+                    if closest:
+                        # a car length
+                        closest = closest - 0.5
+                        if closest < 0:
+                            closest = 0
+                        # 2 is our safety margin and should make for
+                        # a smoother ride
+                        limitspeed = 100*closest/0.85/2
+                        print("closest car in front: dir %f dist %f" % (
+                                dir, dist))
+                    else:
+                        limitspeed = None
                 elif l[0] == "parameter":
                     parameter = int(l[1])
                     print("parameter %d" % parameter)
@@ -873,8 +922,104 @@ def init():
     start_new_thread(readspeed2, ())
     start_new_thread(readgyro, ())
     start_new_thread(keepangle, ())
+    start_new_thread(senddrive, ())
+    start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
     #start_new_thread(report, ())
+
+def dodrive(sp, st):
+    global send_sp, send_st
+    send_sp = sp
+    send_st = st
+
+def senddrive():
+    global send_sp, send_st
+    old_sp = 0
+    old_st = 0
+    while True:
+        time.sleep(0.1)
+        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+            send_sp, send_st)
+        os.system(cmd)
+
+
+# 0 to 9
+speeds = [0, 11, 15, 19, 23, 27, 37, 41, 45, 49]
+
+def keepspeed():
+    global outspeed
+    global inspeed
+    global outspeedcm
+
+    outspeedi = 0
+
+    while True:
+        time.sleep(0.1)
+
+        if outspeedcm == None:
+            continue
+
+        spi = outspeedi
+
+        desiredspeed = outspeedcm
+
+        if limitspeed and desiredspeed > limitspeed:
+            desiredspeed = limitspeed
+
+        if desiredspeed > inspeed_avg:
+            if spi < len(speeds)-1:
+                spi += 1
+        elif desiredspeed < inspeed_avg:
+            if spi > 0:
+                spi -= 1
+
+        if True:
+            # bypass the control
+            spi = int(desiredspeed/10)
+            if spi > len(speeds)-1:
+                spi = len(speeds)-1
+
+        sp = speeds[spi]
+        outspeedi = spi
+
+        if limitspeed:
+            print("outspeedcm %d/%d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
+                    outspeedcm, limitspeed, outspeed, outspeedi, spi, sp,
+                    inspeed, inspeed_avg))
+        else:
+            print("outspeedcm %d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
+                    outspeedcm, outspeed, outspeedi, spi, sp,
+                    inspeed, inspeed_avg))
+
+
+        if outspeed == sp and sp != 0:
+#            pass
+            continue
+
+        outspeed = sp
+
+        if abs(sp) >= 7:
+            speedtime = time.time()
+        else:
+            speedtime = None
+
+        if sp != 0 and not braking:
+            speedsign = sign(sp)
+
+        if sp < 0:
+            sp += 256
+        st = steering
+        if st < 0:
+            st += 256
+        tolog("motor %d steer %d" % (sp, steering))
+        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+            sp, st)
+        print (sp, steering, cmd)
+        if False:
+            os.system(cmd)
+        else:
+            dodrive(sp, st)
+        time.sleep(1.0)
 
 def keepangle():
     while True:
@@ -888,8 +1033,8 @@ def keepangle():
         print("adiff %f" % adiff)
         s = sign(adiff)
         st = 10*abs(adiff)
-        if st > 90:
-            st = 90
+        if st > 80:
+            st = 80
         steer(st*s*speedsign - 10)
 
 # treats the car as a point
@@ -1567,8 +1712,8 @@ def goto_1(x, y):
         p = 2.0
 
         st = p*aval
-        if st > 90:
-            st = 90
+        if st > 80:
+            st = 80
         st = asgn*speedsign*st
         steer(st)
         tolog("gotoa4 steer %f" % (st))
@@ -1607,7 +1752,7 @@ def gopoint(x0, y0):
         drive(0)
     else:
 
-        steer(90*speedsign)
+        steer(80*speedsign)
 
         missed = False
         inc = 0
@@ -1837,7 +1982,14 @@ def trip(path, first=0):
                 sp = int(sp*parameter/100.0)
                 x = cmd[2]
                 y = cmd[3]
-                drive(sp)
+                spdiff = sp-outspeed
+                if spdiff > 20:
+                    # this should be done in a separate thread
+                    drive(sp-spdiff/2)
+                    time.sleep(0.5)
+                    drive(sp)
+                else:
+                    drive(sp)
                 goto_1(x, y)
             elif cmd[0] == 'stop':
                 if len(cmd) > 1:
