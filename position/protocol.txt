@@ -12,7 +12,10 @@ free <i>
  not used yet
 occupied <i>
  not used yet
-
+carsinfront <n> {<dir> <dist> <x> <y> <carnumber>}*
+ For each car at a distance of 2.0 m or less more or less in front, dir is
+ the direction to it, dist is the distance to it, x and y its position and
+ carnumber its number. n is the total number of such cars. n may be 0.
 
 path commands:
 ('go', speed, x, y)
