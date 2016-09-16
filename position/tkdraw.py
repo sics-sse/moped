@@ -53,6 +53,10 @@ class Car:
 
         self.objs = []
 
+        self.x = None
+        self.y = None
+        self.ang = None
+
         self.currentpos = None
         self.info = None
         self.colour = colours[self.n]
@@ -68,8 +72,9 @@ class Car:
         self.windows = []
 
         #self.parameter = 164.0
-        #self.parameter = 100.0
+        self.parameter = 100.0
         self.parameter = 152.0
+        self.parameter = 120.0
 
         v = StringVar()
         v.set("hej")
@@ -136,6 +141,9 @@ sp2 = -45
 
 sp1 = 30
 sp2 = -35
+
+sp1 = 15
+sp1 = 20
 
 path1_1 = [('go', sp1, 1.8, 16.2),
          ('speak', "#"),
@@ -208,6 +216,44 @@ path3 = [('go', sp1, 2.3, 13.4),
          ('stop', 0.5),
          ('go', sp1, 1.2, 12.3),
          ('stop', 0.5)]
+
+path3bis = [('go', sp1, 2.3, 13.4),
+         ('go', sp1, 2.3, 15.4),
+         ('go', sp1, 2.5, 17.4),
+         ('go', sp1, 2.1, 18.7),
+         ('go', sp1, 0.8, 17.4),
+         ('go', sp1, 0.8, 15.4),
+         ('go', sp1, 0.8, 13.4),
+         ('go', sp1, 1.2, 12.3),
+            ]
+
+path3bis2 = [('go', sp1, 2.3, 13.4),
+         ('go', sp1, 2.3, 14.4),
+         ('go', sp1, 2.3, 15.4),
+         ('go', sp1, 2.4, 16.4),
+         ('go', sp1, 2.5, 17.4),
+         ('go', sp1, 2.4, 18.0),
+         ('go', sp1, 2.1, 18.7),
+         ('go', sp1, 1.2, 18.8),
+         ('go', sp1, 0.8, 17.4),
+         ('go', sp1, 0.8, 16.4),
+         ('go', sp1, 0.8, 15.4),
+         ('go', sp1, 0.8, 14.4),
+         ('go', sp1, 0.8, 13.4),
+         ('go', sp1, 0.9, 12.7),
+         ('go', sp1, 1.2, 12.3),
+         ('go', sp1, 2.2, 12.2),
+            ]
+
+path4bis = [('go', sp1, 2.3, 13.4),
+         ('go', sp1, 2.3, 15.4),
+         ('go', sp1, 2.5, 17.4),
+         ('go', sp1, 2.1, 18.7),
+         #('go', sp1, 0.8, 17.4),
+         #('go', sp1, 0.8, 15.4),
+         ('go', sp1, 0.8, 13.4),
+         ('go', sp1, 1.2, 12.3),
+            ]
 
 def draw_path(p):
     first = True
@@ -711,7 +757,7 @@ w = Canvas(width=winw, height=winh, bg='white')
 w.pack(expand=YES, fill=BOTH)
 
 
-currentpath = path3
+currentpath = path4bis
 draw_area(w)
 
 
@@ -793,13 +839,44 @@ def deletecar(c):
 
 
 def handleheart(c, conn):
-    while True:
+    while c.alive:
         if time.time() > c.heart_seen + 60:
             print("timed out: " + c.info)
             deletecar(c)
             return
         time.sleep(5)
 
+
+def check_other_cars(c):
+    l = []
+    for ci in cars:
+        c2 = cars[ci]
+        if c2 == c:
+            continue
+        if c2.x == None:
+            continue
+        d = dist(c.x, c.y, c2.x, c2.y)
+        if d > 2.0:
+            continue
+        other = 180/math.pi*math.atan2(c2.y-c.y, c2.x-c.x)
+        other = 90-other
+        angdiff = other - c.ang%360
+        angdiff = angdiff%360
+        if angdiff > 180:
+            angdiff -= 360
+        #print (c2.y-c.y, c2.x-c.x)
+        #print (c.ang%360, other)
+        print "%d (%.2f,%.2f): other car %d (%.2f,%.2f) dist %.2f dir %.2f" % (
+            c.n, c.x, c.y,
+            c2.n, c2.x, c2.y,
+            d, angdiff)
+        if angdiff > -45 and angdiff < 45:
+            l = l + [(angdiff, d, c2.x, c2.y, c2.n)]
+
+    fronts = "carsinfront %d" % len(l)
+    for tup in l:
+        fronts = fronts + " " + ("%f %f %f %f %d" % tup)
+    c.conn.send(fronts + "\n")
 
 def handlerun(conn, addr):
     dataf = linesplit(conn)
@@ -832,6 +909,9 @@ def handlerun(conn, addr):
             x = float(l[1])
             y = float(l[2])
             ang = float(l[3])
+            c.x = x
+            c.y = y
+            c.ang = ang
             time1 = float(l[4])
             adj = int(l[5])
             # comes in as a float, but has only integer accuracy
@@ -842,6 +922,7 @@ def handlerun(conn, addr):
                 update_carpos1(x, y, ang, c)
             if l[0] == "mpos" and show_markpos1:
                 set_markerpos(x, y, c, adj)
+            check_other_cars(c)
         elif l[0] == "badmarker":
             x = float(l[1])
             y = float(l[2])
@@ -862,6 +943,7 @@ def handlerun(conn, addr):
             print "%s stopped at %d" % (c.info, i)
 #            if i == 4 or i == 7 or i == 9 or i == 12:
 #            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 16 or i == 18 or i == 0:
+            # fits path3:
             if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 0:
                 if False:
                     if i == 4:
