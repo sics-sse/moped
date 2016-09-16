@@ -39,7 +39,7 @@ void Mcp3008_Read(uint8 channel, uint32 *data)
  	Spi_SyncTransmit(SPI_SEQ_READ);
 
  	/* The relevant output from MCP3008 is 10 bit long, convert it to decimal */
-	//printf("Mcp3008_Read: %d %d %d\r\n", rxbuf[0], rxbuf[1], s);
+	//printf("Mcp3008_Read: %d %d\r\n", rxbuf[0], rxbuf[1]);
 
  	*data = ((rxbuf[0] & 3) << 8) + rxbuf[1];
 
