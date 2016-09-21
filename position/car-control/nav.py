@@ -36,8 +36,6 @@ speedtime = None
 
 speakcount = 1
 
-targetangle = None
-
 markerno = 0
 markercnt = 0
 
@@ -57,8 +55,8 @@ limitspeed = None
 can_steer = 0
 can_speed = 0
 
-send_sp = 0
-send_st = 0
+send_sp = None
+send_st = None
 
 ground_control = None
 
@@ -619,7 +617,7 @@ def report():
 
 outspeed = 0.0
 outspeedcm = None
-steering = 0.0
+steering = 0
 
 # error here: we normalize the argument, but not the other value
 
@@ -631,6 +629,7 @@ def drive(sp):
 
     if True:
         outspeedcm = sp*2
+        print("outspeedcm = %d" % outspeedcm)
     else:
 
         # do this in readspeed2 instead
@@ -677,7 +676,7 @@ def stop(txt = ""):
     global steering, outspeed
     global speedtime
 
-    steering = 0.0
+    steering = 0
     outspeed = 0.0
 
     speedtime = None
@@ -869,7 +868,6 @@ def init():
     start_new_thread(handle_mqtt, ())
     start_new_thread(readspeed2, ())
     start_new_thread(readgyro, ())
-    start_new_thread(keepangle, ())
     start_new_thread(senddrive, ())
     start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
@@ -886,8 +884,16 @@ def senddrive():
     old_st = 0
     while True:
         time.sleep(0.1)
+        if send_sp == None:
+            continue
+        sp = send_sp
+        if sp < 0:
+            sp += 256
+        st = send_st
+        if st < 0:
+            st += 256
         cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-            send_sp, send_st)
+            sp, st)
         os.system(cmd)
 
 
@@ -923,21 +929,27 @@ def keepspeed():
 
         if True:
             # bypass the control
-            spi = int(desiredspeed/10)
+            desiredspeed_sign = sign(desiredspeed)
+            desiredspeed_abs = abs(desiredspeed)
+            spi = int(desiredspeed_abs/10)
             if spi > len(speeds)-1:
                 spi = len(speeds)-1
 
         sp = speeds[spi]
         outspeedi = spi
+        # spi/outspeedi don't remember the sign
 
-        if limitspeed:
-            print("outspeedcm %d/%d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
-                    outspeedcm, limitspeed, outspeed, outspeedi, spi, sp,
-                    inspeed, inspeed_avg))
-        else:
-            print("outspeedcm %d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
-                    outspeedcm, outspeed, outspeedi, spi, sp,
-                    inspeed, inspeed_avg))
+        sp *= desiredspeed_sign
+
+        if False:
+            if limitspeed:
+                print("outspeedcm %d/%d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
+                        outspeedcm, limitspeed, outspeed, outspeedi, spi, sp,
+                        inspeed, inspeed_avg))
+            else:
+                print("outspeedcm %d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
+                        outspeedcm, outspeed, outspeedi, spi, sp,
+                        inspeed, inspeed_avg))
 
 
         if outspeed == sp and sp != 0:
@@ -962,22 +974,6 @@ def keepspeed():
         tolog("motor %d steer %d" % (sp, steering))
         dodrive(sp, st)
         time.sleep(1.0)
-
-def keepangle():
-    while True:
-        time.sleep(0.1)
-        if targetangle == None:
-            continue
-
-        adiff = (targetangle-ang)%360
-        if adiff > 180:
-            adiff -= 360
-        print("adiff %f" % adiff)
-        s = sign(adiff)
-        st = 10*abs(adiff)
-        if st > 80:
-            st = 80
-        steer(st*s*speedsign - 10)
 
 def dist(x1, y1, x2, y2):
     return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
@@ -1166,8 +1162,8 @@ def goto_1(x, y):
         p = 2.0
 
         st = p*aval
-        if st > 80:
-            st = 80
+        if st > 100:
+            st = 100
         st = asgn*speedsign*st
         steer(st)
         tolog("gotoa4 steer %f" % (st))
