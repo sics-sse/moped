@@ -9,6 +9,8 @@ import socket
 import sys
 import ast
 
+import random
+
 import urllib
 import urllib.parse
 import paho.mqtt.client as mosquitto
@@ -1296,3 +1298,26 @@ def triangle():
         goto_1(a, 0)
         goto_1(0, 0)
 
+def wander():
+    drive(0)
+    dir = 1
+    while True:
+        st = int(random.random()*200-100)
+        print("%f %f: steering %d" % (ppx, ppy, st))
+        steer(st)
+        drive(dir*11)
+        n = 0
+        # first note that we begin moving; then whether we stop
+        while n < 30:
+            print("%f %f" % (ppx, ppy))
+            time.sleep(0.1)
+            n += 1
+        steer(0)
+        while inspeed != 0 and (ppx < 2.5 and ppx > 0.5 and
+                                ppy < 19.0 and ppy > 12.0):
+            print("%f %f" % (ppx, ppy))
+            time.sleep(0.1)
+        print("%f %f" % (ppx, ppy))
+        drive(0)
+        time.sleep(2)
+        dir = -dir
