@@ -11,7 +11,7 @@ import ast
 
 import random
 
-from math import pi
+from math import pi, cos, sin, sqrt, atan2
 
 import urllib
 import urllib.parse
@@ -59,12 +59,15 @@ limitspeed = None
 can_steer = 0
 can_speed = 0
 
+last_send = None
+
 send_sp = None
 send_st = None
 
 ground_control = None
 
 rc_button = False
+remote_control = False
 
 targetx = None
 targety = None
@@ -197,8 +200,8 @@ def readgyro0():
 
             # the signs here assume that x goes to the right and y forward
 
-            x = x0*math.cos(math.pi/180*ang) - y0*math.sin(math.pi/180*ang)
-            y = x0*math.sin(math.pi/180*ang) + y0*math.cos(math.pi/180*ang)
+            x = x0*cos(pi/180*ang) - y0*sin(pi/180*ang)
+            y = x0*sin(pi/180*ang) + y0*cos(pi/180*ang)
 
             vx += x*dt
             vy += y*dt
@@ -210,8 +213,8 @@ def readgyro0():
 
             corr = 1.0
 
-            vvx = inspeed*corr/100.0*math.sin(math.pi/180*ang)
-            vvy = inspeed*corr/100.0*math.cos(math.pi/180*ang)
+            vvx = inspeed*corr/100.0*sin(pi/180*ang)
+            vvy = inspeed*corr/100.0*cos(pi/180*ang)
 
             ppx += vvx*dt
             ppy += vvy*dt
@@ -516,8 +519,8 @@ def readmarker0():
                         else:
                             ppx = x
                             ppy = y
-                    #vx = math.sin(ang*math.pi/180)*inspeed/100
-                    #vy = math.cos(ang*math.pi/180)*inspeed/100
+                    #vx = sin(ang*pi/180)*inspeed/100
+                    #vy = cos(ang*pi/180)*inspeed/100
                     lastpost = it0
                     marker = m
                     age = 0
@@ -538,7 +541,7 @@ def readspeed2():
     global speedsign
     global can_steer, can_speed
     global can_ultra
-    global rc_button
+    global rc_button, remote_control
 
     part = b""
     part2 = b""
@@ -580,8 +583,11 @@ def readspeed2():
                 part = b""
             part += data[9:]
         elif (data[0], data[1]) == (1,1):
-            #print("CAN %d %d" % (data[8], data[9]))
             sp = data[8]
+            st = data[9]
+            if last_send != None and (sp, st) != last_send:
+                tolog("remote control")
+                remote_control = True
             if sp > 128:
                 sp -= 256
             can_speed = sp
@@ -590,9 +596,9 @@ def readspeed2():
                     speedsign = -1
                 elif sp > 0:
                     speedsign = 1
-            st = data[9]
             if st > 128:
                 st -= 256
+            tolog("CAN %d %d" % (sp, st))
             can_steer = st
         elif (data[0], data[1]) == (108,4):
             # Reading DistPub this way is not a good idea, since those
@@ -665,17 +671,18 @@ def steer(st):
 
     steering = st
     sp = outspeed
-    if st < 0:
-        st += 256
-    if sp < 0:
-        sp += 256
-    tolog("motor %d steer %d" % (outspeed, st))
-    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-        sp, st)
+#    if st < 0:
+#        st += 256
+#    if sp < 0:
+#        sp += 256
+
+#    tolog("motor %d steer %d" % (outspeed, st))
+#    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+#        sp, st)
     #print (outspeed, st, cmd)
     dodrive(sp, st)
 #    os.system(cmd)
-    tolog("motor2 %d steer %d" % (outspeed, st))
+#    tolog("motor2 %d steer %d" % (outspeed, st))
 
 def stop(txt = ""):
     global steering, outspeed
@@ -885,12 +892,20 @@ def dodrive(sp, st):
 
 def senddrive():
     global send_sp, send_st
+    global last_send
     old_sp = 0
     old_st = 0
     while True:
         time.sleep(0.1)
         if send_sp == None:
             continue
+
+        if remote_control:
+            continue
+
+        send_sp = int(send_sp)
+        send_st = int(send_st)
+
         sp = send_sp
         if sp < 0:
             sp += 256
@@ -899,6 +914,8 @@ def senddrive():
             st += 256
         cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
             sp, st)
+        tolog("senddrive %d %d" % (send_sp, send_st))
+        last_send = (sp, st)
         os.system(cmd)
 
 
@@ -971,17 +988,17 @@ def keepspeed():
         if sp != 0 and not braking:
             speedsign = sign(sp)
 
-        if sp < 0:
-            sp += 256
+#        if sp < 0:
+#            sp += 256
         st = steering
-        if st < 0:
-            st += 256
-        tolog("motor %d steer %d" % (sp, steering))
+#        if st < 0:
+#            st += 256
+        tolog("motor %d steer %d" % (sp, st))
         dodrive(sp, st)
         time.sleep(1.0)
 
 def dist(x1, y1, x2, y2):
-    return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
 def sign(x):
     if x < 0:
@@ -1011,7 +1028,7 @@ def backup(d):
 def godist(d):
     loops = 0
     o1 = odometer
-    o2 = o1 + d*5/(math.pi*10.2/100)
+    o2 = o1 + d*5/(pi*10.2/100)
     while True:
         loops += 1
         if outspeed == 0.0:
@@ -1101,6 +1118,9 @@ def goto_1(x, y):
     brake_s = 0.0
 
     while True:
+        if remote_control:
+            return
+
         dist = getdist(x, y)
         if inspeed != 0:
             # Assume we are going in the direction of the target.
@@ -1131,8 +1151,8 @@ def goto_1(x, y):
 
         tolog("gotoa1 %f %f -> %f %f" % (ppx, ppy, x, y))
 
-        a = math.atan2(y-ppy, x-ppx)
-        adeg = 180/math.pi*a
+        a = atan2(y-ppy, x-ppx)
+        adeg = 180/pi*a
         adeg = 90-adeg
 
         adiff = ang - adeg
@@ -1373,7 +1393,7 @@ def wander2():
             else:
                 x = x1+l-ly-lx-ly
                 y = y1
-            ang2 = math.atan2(y-ppy, x-ppx)*180/math.pi
+            ang2 = atan2(y-ppy, x-ppx)*180/pi
             ang2 = 90-ang2
             angdiff = ang2-ang
             angdiff = angdiff%360
@@ -1457,37 +1477,37 @@ def whole3():
         goto_1(x2, y12 + 2*(y2-b-y12)/3),
         goto_1(x2, y2-b),
 
-        goto_1(x2-b+math.cos(30*pi/180)*b,
-               y2-b+math.sin(30*pi/180)*b),
-        goto_1(x2-b+math.cos(60*pi/180)*b,
-               y2-b+math.sin(60*pi/180)*b),
+        goto_1(x2-b+cos(30*pi/180)*b,
+               y2-b+sin(30*pi/180)*b),
+        goto_1(x2-b+cos(60*pi/180)*b,
+               y2-b+sin(60*pi/180)*b),
 
         goto_1(x2-b, y2),
 
         goto_1(x1+b, y2),
 
         if True:
-            goto_1(x1+b-math.cos(60*pi/180)*b,
-                   y2-b+math.sin(60*pi/180)*b),
-            goto_1(x1+b-math.cos(30*pi/180)*b,
-                   y2-b+math.sin(30*pi/180)*b),
+            goto_1(x1+b-cos(60*pi/180)*b,
+                   y2-b+sin(60*pi/180)*b),
+            goto_1(x1+b-cos(30*pi/180)*b,
+                   y2-b+sin(30*pi/180)*b),
 
         goto_1(x1, y2-b),
         goto_1(x1, y12),
         goto_1(x1, y1+b),
 
-        goto_1(x1+b-math.cos(30*pi/180)*b,
-               y1+b-math.sin(30*pi/180)*b),
-        goto_1(x1+b-math.cos(60*pi/180)*b,
-               y1+b-math.sin(60*pi/180)*b),
+        goto_1(x1+b-cos(30*pi/180)*b,
+               y1+b-sin(30*pi/180)*b),
+        goto_1(x1+b-cos(60*pi/180)*b,
+               y1+b-sin(60*pi/180)*b),
 
         goto_1(x1+b, y1),
         goto_1(x2-b, y1),
 
-        goto_1(x2-b+math.cos(60*pi/180)*b,
-               y1+b-math.sin(60*pi/180)*b),
-        goto_1(x2-b+math.cos(30*pi/180)*b,
-               y1+b-math.sin(30*pi/180)*b),
+        goto_1(x2-b+cos(60*pi/180)*b,
+               y1+b-sin(60*pi/180)*b),
+        goto_1(x2-b+cos(30*pi/180)*b,
+               y1+b-sin(30*pi/180)*b),
 
         goto_1(x2, y1+b)
 
@@ -1502,7 +1522,8 @@ def whole4(dir):
     else:
         a = 0.75
 
-    b = 1.3-a
+    # with 1.5, the points at the ends coincide
+    b = 1.5-a
 
     x1 = a
     x2 = 3.0-a
@@ -1525,21 +1546,21 @@ def whole4(dir):
             (x2, y12 + (y2-b-y12)/3),
             (x2, y12 + 2*(y2-b-y12)/3),
             (x2, y2-b),
-            (x2-b+math.cos(30*pi/180)*b, y2-b+math.sin(30*pi/180)*b),
-            (x2-b+math.cos(60*pi/180)*b, y2-b+math.sin(60*pi/180)*b),
+            (x2-b+cos(30*pi/180)*b, y2-b+sin(30*pi/180)*b),
+            (x2-b+cos(60*pi/180)*b, y2-b+sin(60*pi/180)*b),
             (x2-b, y2),
             (x1+b, y2),
-            (x1+b-math.cos(60*pi/180)*b, y2-b+math.sin(60*pi/180)*b),
-            (x1+b-math.cos(30*pi/180)*b, y2-b+math.sin(30*pi/180)*b),
+            (x1+b-cos(60*pi/180)*b, y2-b+sin(60*pi/180)*b),
+            (x1+b-cos(30*pi/180)*b, y2-b+sin(30*pi/180)*b),
             (x1, y2-b),
             (x1, y12),
             (x1, y1+b),
-            (x1+b-math.cos(30*pi/180)*b, y1+b-math.sin(30*pi/180)*b),
-            (x1+b-math.cos(60*pi/180)*b, y1+b-math.sin(60*pi/180)*b),
+            (x1+b-cos(30*pi/180)*b, y1+b-sin(30*pi/180)*b),
+            (x1+b-cos(60*pi/180)*b, y1+b-sin(60*pi/180)*b),
             (x1+b, y1),
             (x2-b, y1),
-            (x2-b+math.cos(60*pi/180)*b, y1+b-math.sin(60*pi/180)*b),
-            (x2-b+math.cos(30*pi/180)*b, y1+b-math.sin(30*pi/180)*b),
+            (x2-b+cos(60*pi/180)*b, y1+b-sin(60*pi/180)*b),
+            (x2-b+cos(30*pi/180)*b, y1+b-sin(30*pi/180)*b),
             (x2, y1+b),
             ]
 
@@ -1548,4 +1569,6 @@ def whole4(dir):
 
     while True:
         for (x, y) in path:
+            if remote_control:
+                return
             goto_1(x, y)
