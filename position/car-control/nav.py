@@ -11,6 +11,8 @@ import ast
 
 import random
 
+from math import pi
+
 import urllib
 import urllib.parse
 import paho.mqtt.client as mosquitto
@@ -69,6 +71,7 @@ targety = None
 
 #TARGETDIST = 0.3
 TARGETDIST = 0.15
+TARGETDIST = 0.25
 DEFAULTSPEED = 7
 TURNSPEED = 20
 TOOHIGHSPEED = 2.0
@@ -285,7 +288,7 @@ lastpos = None
 lastpost = None
 
 badmarkers = [0]
-#badmarkers = [7]
+#badmarkers = [5]
 
 battery = 0.0
 ultra = 0.0
@@ -334,8 +337,8 @@ def on_message(mosq, obj, msg):
 def mqtt_init():
     global mqttc
 
-    url_str = "mqtt://test.mosquitto.org:1883"
-    #url_str = "mqtt://iot.eclipse.org:1883"
+    #url_str = "mqtt://test.mosquitto.org:1883"
+    url_str = "mqtt://iot.eclipse.org:1883"
     url = urllib.parse.urlparse(url_str)
     mqttc = mosquitto.Mosquitto()
     mqttc.on_message = on_message
@@ -418,7 +421,7 @@ def readmarker0():
 #            if angleknown and abs(odiff) > 45.0 and markerno != -1:
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
-            if (markerno > -1 and quality > 0.25 and markerno not in badmarkers):
+            if (markerno > -1 and quality > 0.35 and markerno not in badmarkers):
                 close = True
                 if not angleknown:
                     ang = ori
@@ -1111,6 +1114,10 @@ def goto_1(x, y):
         else:
             brake_s = 0.6
 
+        # we should only use brake_s when we are going to stop
+        brake_s = 0.0
+
+        # 'lastdist' is never non-None now, nor 'missed'
         if lastdist != None:
             if dist < lastdist - 0.01:
                 inc = -1
@@ -1121,18 +1128,6 @@ def goto_1(x, y):
                     tolog("missed target")
                 inc = 1
                 lastdist = dist
-
-        if dist < TARGETDIST or dist < brake_s or missed:
-            if False:
-                #stop("9")
-    #            drive(-1)
-                # continue a little so it can pass the target if it wasn't
-                # there yet
-                time.sleep(0.5)
-    #            drive(-1)
-    #            time.sleep(0.2)
-                drive(0)
-            return
 
         tolog("gotoa1 %f %f -> %f %f" % (ppx, ppy, x, y))
 
@@ -1158,12 +1153,31 @@ def goto_1(x, y):
 
         #print(adiff)
 
+#        if dist < TARGETDIST or dist < brake_s or missed:
+        if abs(adiff) > 90 or dist < 0.2:
+            if False:
+                #stop("9")
+    #            drive(-1)
+                # continue a little so it can pass the target if it wasn't
+                # there yet
+                time.sleep(0.5)
+    #            drive(-1)
+    #            time.sleep(0.2)
+                drive(0)
+            return
+
+
+
         asgn = sign(adiff)
         aval = abs(adiff)
 
         p = 2.0
 
         st = p*aval
+        if VIN == "car3":
+            # special for car3. other cars may have other numbers
+            if asgn < 0:
+                st += 35
         if st > 100:
             st = 100
         st = asgn*speedsign*st
@@ -1172,7 +1186,7 @@ def goto_1(x, y):
 
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (ppx,ppy,ang,time.time()-t0, inspeed))
 
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 def stopx(i, t = 3.0):
     global braking
@@ -1298,14 +1312,21 @@ def triangle():
         goto_1(a, 0)
         goto_1(0, 0)
 
+# This function has problems: 1) it may happen that we land outside the
+# allowed area and then steer so we stay outside it, and while this happens
+# we may bump into the wall.
+# 2) if we make the buffer area big enough so we don't hit the wall due
+# to braking distance and inaccuracy in positioning, the allowed area
+# becomes so small that we can leave it during the first, curving phase.
 def wander():
+    a = 1.0
     drive(0)
     dir = 1
     while True:
         st = int(random.random()*200-100)
         print("%f %f: steering %d" % (ppx, ppy, st))
         steer(st)
-        drive(dir*11)
+        drive(dir*20)
         n = 0
         # first note that we begin moving; then whether we stop
         while n < 30:
@@ -1313,11 +1334,218 @@ def wander():
             time.sleep(0.1)
             n += 1
         steer(0)
-        while inspeed != 0 and (ppx < 2.5 and ppx > 0.5 and
-                                ppy < 19.0 and ppy > 12.0):
+        while inspeed != 0 and (ppx < 3.0-a and ppx > a and
+                                ppy < 19.7-a and ppy > 11.0 + a):
             print("%f %f" % (ppx, ppy))
             time.sleep(0.1)
         print("%f %f" % (ppx, ppy))
         drive(0)
         time.sleep(2)
         dir = -dir
+
+# We should also have a lower limit for the distance to the new point
+# as it is, we can have an angle less than 45 degrees to a point we
+# cannot reach. With a suitable limit, we can increase 45.
+def wander2():
+    a = 0.7
+    x1 = a
+    x2 = 3.0-a
+    lx = x2-x1
+    y1 = 11.0+a
+    y2 = 19.7-a
+    ly = y2-y1
+    dir = -1
+    while True:
+        drive(0)
+        time.sleep(2)
+        while True:
+            k = random.random()
+            l = k*(ly+lx+ly+lx)
+            if l < ly:
+                x = x1
+                y = y1+l
+            elif l < ly+lx:
+                x = x1+l-ly
+                y = y2
+            elif l < ly+lx+ly:
+                x = x2
+                y = y1+l-lx-ly
+            else:
+                x = x1+l-ly-lx-ly
+                y = y1
+            ang2 = math.atan2(y-ppy, x-ppx)*180/math.pi
+            ang2 = 90-ang2
+            angdiff = ang2-ang
+            angdiff = angdiff%360
+            if angdiff > 180:
+                angdiff -= 360
+            print("x = %f y = %f ang2 = %f angdiff = %f k*dir = %f" % (
+                    x, y, ang2, angdiff, k*dir))
+            if dir > 0:
+                if abs(angdiff) < 45:
+                    break
+            else:
+                if abs(angdiff) > 180-45:
+                    break
+        drive(dir*20)
+        goto_1(x, y)
+        dir = -dir
+
+def whole():
+    a = 0.5
+    b = 0.8
+    x1 = a
+    x2 = 3.0-a
+    y1 = 12+a
+    y2 = 19.7-a
+    drive(0)
+    time.sleep(2)
+    drive(20)
+    while True:
+        goto_1(x2, y2-b),
+        goto_1(x2-b, y2),
+        goto_1(x1+b, y2),
+        goto_1(x1, y2-b),
+        goto_1(x1, y1+b),
+        goto_1(x1+b, y1),
+        goto_1(x2-b, y1),
+        goto_1(x2, y1+b)
+
+def whole2():
+    a = 0.5
+    b = 0.8
+    x1 = a
+    x2 = 3.0-a
+    y1 = 12+a
+    y2 = 19.7-a
+    y12 = (y1+y2)/2
+    drive(0)
+    time.sleep(2)
+    drive(20)
+    while True:
+        goto_1(x2, y12),
+        goto_1(x2, y2-b),
+        goto_1(x2-b, y2),
+        goto_1(x1+b, y2),
+        goto_1(x1, y2-b),
+        goto_1(x1, y12),
+        goto_1(x1, y1+b),
+        goto_1(x1+b, y1),
+        goto_1(x2-b, y1),
+        goto_1(x2, y1+b)
+
+def whole3():
+    global speedsign
+    print("speedsign = %d" % speedsign)
+    speedsign = 1
+
+    a = 0.5
+    b = 0.8
+    x1 = a
+    x2 = 3.0-a
+    y1 = 12+a
+    y2 = 19.7-a
+    y12 = (y1+y2)/2
+    drive(0)
+    time.sleep(2)
+    drive(20)
+    while True:
+        goto_1(x2, y1+b + (y12-(y1+b))/3),
+        goto_1(x2, y1+b + 2*(y12-(y1+b))/3),
+        goto_1(x2, y12),
+        goto_1(x2, y12 + (y2-b-y12)/3),
+        goto_1(x2, y12 + 2*(y2-b-y12)/3),
+        goto_1(x2, y2-b),
+
+        goto_1(x2-b+math.cos(30*pi/180)*b,
+               y2-b+math.sin(30*pi/180)*b),
+        goto_1(x2-b+math.cos(60*pi/180)*b,
+               y2-b+math.sin(60*pi/180)*b),
+
+        goto_1(x2-b, y2),
+
+        goto_1(x1+b, y2),
+
+        if True:
+            goto_1(x1+b-math.cos(60*pi/180)*b,
+                   y2-b+math.sin(60*pi/180)*b),
+            goto_1(x1+b-math.cos(30*pi/180)*b,
+                   y2-b+math.sin(30*pi/180)*b),
+
+        goto_1(x1, y2-b),
+        goto_1(x1, y12),
+        goto_1(x1, y1+b),
+
+        goto_1(x1+b-math.cos(30*pi/180)*b,
+               y1+b-math.sin(30*pi/180)*b),
+        goto_1(x1+b-math.cos(60*pi/180)*b,
+               y1+b-math.sin(60*pi/180)*b),
+
+        goto_1(x1+b, y1),
+        goto_1(x2-b, y1),
+
+        goto_1(x2-b+math.cos(60*pi/180)*b,
+               y1+b-math.sin(60*pi/180)*b),
+        goto_1(x2-b+math.cos(30*pi/180)*b,
+               y1+b-math.sin(30*pi/180)*b),
+
+        goto_1(x2, y1+b)
+
+
+def whole4(dir):
+    global speedsign
+    print("speedsign = %d" % speedsign)
+    speedsign = 1
+
+    if dir == -1:
+        a = 0.25
+    else:
+        a = 0.75
+
+    b = 1.3-a
+
+    x1 = a
+    x2 = 3.0-a
+    y1 = 12+a
+    y2 = 19.7-a
+
+    if dir == -1:
+        pass
+    else:
+        y1 += 0.25
+        y2 -= 0.25
+
+    y12 = (y1+y2)/2
+    drive(0)
+    time.sleep(2)
+    drive(20)
+    path = [(x2, y1+b + (y12-(y1+b))/3),
+            (x2, y1+b + 2*(y12-(y1+b))/3),
+            (x2, y12),
+            (x2, y12 + (y2-b-y12)/3),
+            (x2, y12 + 2*(y2-b-y12)/3),
+            (x2, y2-b),
+            (x2-b+math.cos(30*pi/180)*b, y2-b+math.sin(30*pi/180)*b),
+            (x2-b+math.cos(60*pi/180)*b, y2-b+math.sin(60*pi/180)*b),
+            (x2-b, y2),
+            (x1+b, y2),
+            (x1+b-math.cos(60*pi/180)*b, y2-b+math.sin(60*pi/180)*b),
+            (x1+b-math.cos(30*pi/180)*b, y2-b+math.sin(30*pi/180)*b),
+            (x1, y2-b),
+            (x1, y12),
+            (x1, y1+b),
+            (x1+b-math.cos(30*pi/180)*b, y1+b-math.sin(30*pi/180)*b),
+            (x1+b-math.cos(60*pi/180)*b, y1+b-math.sin(60*pi/180)*b),
+            (x1+b, y1),
+            (x2-b, y1),
+            (x2-b+math.cos(60*pi/180)*b, y1+b-math.sin(60*pi/180)*b),
+            (x2-b+math.cos(30*pi/180)*b, y1+b-math.sin(30*pi/180)*b),
+            (x2, y1+b),
+            ]
+
+    if dir == 1:
+        path.reverse()
+
+    while True:
+        for (x, y) in path:
+            goto_1(x, y)
