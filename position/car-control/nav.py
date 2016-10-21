@@ -229,7 +229,6 @@ def readgyro0():
                     dang, can_steer, can_speed, inspeed, outspeed, odometer,
                     z0, r, rx, ry))
 
-            
             if (t2-tlast > 0.1):
                 tolog0("")
                 tlast = t2
@@ -501,19 +500,23 @@ def readmarker0():
                                 if doadjust:
                                     tolog0("old pp diff %f %f" % (
                                             ppxdiff, ppydiff))
-                                    ppxdiff = x-ppx
-                                    ppydiff = y-ppy
+                                    ppxdiff1 = x-ppx
+                                    ppydiff1 = y-ppy
 
-                                    ppxdiff = x-thenx
-                                    ppydiff = y-theny
-                                    angdiff = (ori-thenang)%360
+                                    ppxdiff1 = x-thenx
+                                    ppydiff1 = y-theny
+                                    angdiff1 = (ori-thenang)%360
 
-                                    ppxdiff /= 2
-                                    ppydiff /= 2
-                                    #angdiff /= 2
+                                    ppxdiff1 /= 2
+                                    ppydiff1 /= 2
+                                    #angdiff1 /= 2
+                                    ppxdiff = ppxdiff1
+                                    ppydiff = ppydiff1
+                                    angdiff = angdiff1
                             else:
                                 ppx = x
                                 ppy = y
+                            angdiff = angdiff % 360
                             if angdiff > 180:
                                 angdiff -= 360
                         else:
@@ -711,6 +714,13 @@ def connect_to_ground_control():
                 send_to_ground_control("info %s" % VIN)
         time.sleep(5)
 
+def connect_to_ecm():
+    s = open_socket2()
+
+    while True:
+        s.send("bar".encode('ascii'))
+        time.sleep(5)
+
 # almost the same as in tcontrol_comm.py
 def linesplit(socket):
     buffer = socket.recv(4096)
@@ -820,7 +830,8 @@ def init():
 
     angleknown = False
 
-    start_new_thread(connect_to_ground_control, ())
+    #start_new_thread(connect_to_ground_control, ())
+    start_new_thread(connect_to_ecm, ())
 
     logf = open("navlog", "w")
     accf = open("acclog", "w")
@@ -914,7 +925,7 @@ def senddrive():
             st += 256
         cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
             sp, st)
-        tolog("senddrive %d %d" % (send_sp, send_st))
+        #tolog("senddrive %d %d" % (send_sp, send_st))
         last_send = (sp, st)
         os.system(cmd)
 
@@ -1050,6 +1061,9 @@ HOST = '192.168.43.73'	# merkur on my hotspot
 HOST = '193.10.66.250'  # merkur on the SICS wifi net
 PORT = 50008              # The same port as used by the server
 
+ECMHOST = 'localhost'
+ECMPORT = 9002
+
 s = None
 
 def open_socket():
@@ -1067,6 +1081,32 @@ def open_socket():
             s.connect(sa)
         except Exception as e:
             #print("connect %s" % e)
+            #(socket.error, msg):
+            s.close()
+            s = None
+            continue
+        break
+    if s is None:
+        print('could not open socket')
+        return False
+
+    return s
+
+def open_socket2():
+    for res in socket.getaddrinfo(ECMHOST, ECMPORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
+        af, socktype, proto, canonname, sa = res
+        #print("res %s" % (res,))
+        try:
+            s = socket.socket(af, socktype, proto)
+        except Exception as e:
+            print("socket %s" % e)
+            s = None
+            continue
+
+        try:
+            s.connect(sa)
+        except Exception as e:
+            print("connect %s" % e)
             #(socket.error, msg):
             s.close()
             s = None
@@ -1174,7 +1214,7 @@ def goto_1(x, y):
         #print(adiff)
 
 #        if dist < TARGETDIST or dist < brake_s or missed:
-        if abs(adiff) > 90 or dist < 0.2:
+        if abs(adiff) > 90 or dist < 0.3:
             if False:
                 #stop("9")
     #            drive(-1)
@@ -1206,7 +1246,7 @@ def goto_1(x, y):
 
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (ppx,ppy,ang,time.time()-t0, inspeed))
 
-        time.sleep(0.05)
+        time.sleep(0.1)
 
 def stopx(i, t = 3.0):
     global braking
@@ -1538,7 +1578,7 @@ def whole4(dir):
 
     y12 = (y1+y2)/2
     drive(0)
-    time.sleep(2)
+    time.sleep(4)
     drive(20)
     path = [(x2, y1+b + (y12-(y1+b))/3),
             (x2, y1+b + 2*(y12-(y1+b))/3),
@@ -1553,7 +1593,15 @@ def whole4(dir):
             (x1+b-cos(60*pi/180)*b, y2-b+sin(60*pi/180)*b),
             (x1+b-cos(30*pi/180)*b, y2-b+sin(30*pi/180)*b),
             (x1, y2-b),
+
+#            (x1, y12 + 2*(y2-b-y12)/3),
+#            (x1, y12 + (y2-b-y12)/3),
+
             (x1, y12),
+
+#            (x1, y1+b + 2*(y12-(y1+b))/3),
+#            (x1, y1+b + (y12-(y1+b))/3),
+            
             (x1, y1+b),
             (x1+b-cos(30*pi/180)*b, y1+b-sin(30*pi/180)*b),
             (x1+b-cos(60*pi/180)*b, y1+b-sin(60*pi/180)*b),
