@@ -111,6 +111,10 @@ global px, py, pz
 global ppx, ppy, ppz
 global vx, vy, vz
 
+global crash
+
+crash = False
+
 ppx = 0
 ppy = 0
 
@@ -148,6 +152,7 @@ def readgyro0():
     global ppx, ppy, ppz
     global vx, vy, vz
     global angdiff, ppxdiff, ppydiff
+    global crash
 
     try:
 
@@ -195,6 +200,8 @@ def readgyro0():
             z /= ascale
 
             acc = sqrt(x*x+y*y+z*z)
+            if acc > 8.0:
+                crash = True
 
             x0 = -x
             y0 = -y
@@ -716,13 +723,6 @@ def connect_to_ground_control():
                 send_to_ground_control("info %s" % VIN)
         time.sleep(5)
 
-def connect_to_ecm():
-    s = open_socket2()
-
-    while True:
-        s.send("bar".encode('ascii'))
-        time.sleep(5)
-
 # almost the same as in tcontrol_comm.py
 def linesplit(socket):
     buffer = socket.recv(4096)
@@ -813,6 +813,26 @@ def readvin():
             return m.group(1)
     return None
 
+def connect_to_ecm():
+    global crash
+
+    s = open_socket2()
+
+    t0 = time.time()
+
+    while True:
+        if crash:
+            s.send("crash".encode('ascii'))
+            print("crash!")
+            crash = False
+
+        if False:
+            t = time.time()
+            if t-t0 > 5.0:
+                s.send("bar".encode('ascii'))
+                t0 = t
+        time.sleep(0.05)
+
 def heartbeat():
     while True:
         send_to_ground_control("heart")
@@ -832,8 +852,7 @@ def init():
 
     angleknown = False
 
-    #start_new_thread(connect_to_ground_control, ())
-    start_new_thread(connect_to_ecm, ())
+    start_new_thread(connect_to_ground_control, ())
 
     logf = open("navlog", "w")
     accf = open("acclog", "w")
@@ -896,6 +915,7 @@ def init():
     start_new_thread(senddrive, ())
     start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
+    start_new_thread(connect_to_ecm, ())
     #start_new_thread(report, ())
 
 def dodrive(sp, st):
