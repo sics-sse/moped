@@ -194,6 +194,8 @@ def readgyro0():
             y /= ascale
             z /= ascale
 
+            acc = sqrt(x*x+y*y+z*z)
+
             x0 = -x
             y0 = -y
             z0 = z
@@ -224,10 +226,10 @@ def readgyro0():
 
             # don't put too many things in this thread
 
-            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
                     x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
                     dang, can_steer, can_speed, inspeed, outspeed, odometer,
-                    z0, r, rx, ry))
+                    z0, r, rx, ry, acc))
 
             if (t2-tlast > 0.1):
                 tolog0("")
@@ -837,7 +839,7 @@ def init():
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer z0 r rx ry\n")
+    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer z0 r rx ry acc\n")
 
     t0 = time.time()
 
