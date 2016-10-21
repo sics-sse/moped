@@ -200,7 +200,7 @@ def readgyro0():
             z /= ascale
 
             acc = sqrt(x*x+y*y+z*z)
-            if acc > 8.0:
+            if acc > 5.0:
                 crash = True
 
             x0 = -x
@@ -815,6 +815,8 @@ def readvin():
 
 def connect_to_ecm():
     global crash
+    global remote_control
+    stopped = False
 
     s = open_socket2()
 
@@ -822,9 +824,14 @@ def connect_to_ecm():
 
     while True:
         if crash:
-            s.send("crash".encode('ascii'))
-            print("crash!")
-            crash = False
+            #crash = False
+            if not stopped:
+                s.send("crash".encode('ascii'))
+                print("crash!")
+                remote_control = True
+                #stop()
+                drive(0)
+                stopped = True
 
         if False:
             t = time.time()
@@ -933,8 +940,8 @@ def senddrive():
         if send_sp == None:
             continue
 
-        if remote_control:
-            continue
+#        if remote_control:
+#            continue
 
         send_sp = int(send_sp)
         send_st = int(send_st)
@@ -1580,7 +1587,7 @@ def whole4(dir):
     speedsign = 1
 
     if dir == -1:
-        a = 0.25
+        a = 0.25+0.1
     else:
         a = 0.75
 
