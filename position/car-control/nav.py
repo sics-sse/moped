@@ -432,7 +432,8 @@ def readmarker0():
 #            if angleknown and abs(odiff) > 45.0 and markerno != -1:
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
-            if (markerno > -1 and quality > 0.35 and markerno not in badmarkers):
+            if (markerno > -1 and quality > 0.35 and markerno not in badmarkers
+                and x > 0.0 and x < 3.0 and y > 0 and y < 19.7):
                 close = True
                 if not angleknown:
                     ang = ori
@@ -778,15 +779,24 @@ def from_ground_control():
                         if closest == None or closest > dist:
                             closest = dist
                     if closest:
+                        print("closest car in front1: dir %f dist %f" % (
+                                dir, closest))
                         # a car length
+                        closest = closest - 0.5
+                        # some more safety:
                         closest = closest - 0.5
                         if closest < 0:
                             closest = 0
-                        # 2 is our safety margin and should make for
+                        # 4 is our safety margin and should make for
                         # a smoother ride
-                        limitspeed = 100*closest/0.85/2
-                        print("closest car in front: dir %f dist %f" % (
-                                dir, dist))
+                        limitspeed = 100*closest/0.85/4
+                        if limitspeed < 11:
+                            limitspeed = 0
+                            setleds(3, 1)
+                        else:
+                            setleds(0, 0)
+                        print("closest car in front2: dir %f dist %f limitspeed %f" % (
+                                dir, closest, limitspeed))
                     else:
                         limitspeed = None
                 elif l[0] == "parameter":
@@ -831,6 +841,7 @@ def connect_to_ecm():
                 remote_control = True
                 #stop()
                 drive(0)
+                setleds(3, 1)
                 stopped = True
 
         if False:
@@ -979,7 +990,7 @@ def keepspeed():
 
         desiredspeed = outspeedcm
 
-        if limitspeed and desiredspeed > limitspeed:
+        if limitspeed != None and desiredspeed > limitspeed:
             desiredspeed = limitspeed
 
         if desiredspeed > inspeed_avg:
@@ -1142,7 +1153,7 @@ def open_socket2():
             continue
         break
     if s is None:
-        print('could not open socket')
+        print('could not open socket2')
         return False
 
     return s
@@ -1587,7 +1598,7 @@ def whole4(dir):
     speedsign = 1
 
     if dir == -1:
-        a = 0.25+0.1
+        a = 0.25+0.05
     else:
         a = 0.75
 
