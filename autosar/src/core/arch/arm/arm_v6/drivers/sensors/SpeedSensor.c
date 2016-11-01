@@ -23,6 +23,10 @@
 static uint32 pulse[2];
 static uint32 pulse_total[2];
 
+#define SAVED_PULSE_T	5
+uint32 pulse_t[2][SAVED_PULSE_T];
+uint32 pulse_t_n[2];
+
 /**
  * Interrupt service routine that counts the number of detected pulses
  *
@@ -30,15 +34,53 @@ static uint32 pulse_total[2];
  * is activated and a counter (unique for each wheel pair) is increased.
  */
 void SpeedSensor_Isr(void) {
+  static int readc = 0;
+
+  if (bcm2835_ReadGpioPin(&GPEDS0, 2)) {
+    readc++;
+    bcm2835_Sleep(100);
+    int yy = bcm2835_ReadGpioPin(&GPEDS0, 2);
+    int xx = bcm2835_ReadGpioPin(&GPLEV0, 2);
+    printf("%3d gpio 2 EDS = %d, LEV = %d\r\n",
+	   readc, yy, xx);
+    bcm2835_ClearEventDetectPin(2);
+  }
+
   if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_FRONT_SPEED)) {
     pulse[FRONT_WHEEL]++;
     pulse_total[FRONT_WHEEL]++;
+
+    uint64 t = CURRENT_TIME;
+    int n = pulse_t_n[FRONT_WHEEL];
+    if (n < SAVED_PULSE_T) {
+      pulse_t[FRONT_WHEEL][n] = t;
+      pulse_t_n[FRONT_WHEEL] = n + 1;
+    } else {
+      for (int i = 1; i < SAVED_PULSE_T; i++) {
+	pulse_t[FRONT_WHEEL][i-1] = pulse_t[FRONT_WHEEL][i];
+      }
+      pulse_t[FRONT_WHEEL][n-1] = t;
+    }
     bcm2835_ClearEventDetectPin(GPIO_FRONT_SPEED);
   }
 
   if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_REAR_SPEED)) {
     pulse[REAR_WHEEL]++;
     pulse_total[REAR_WHEEL]++;
+
+    uint64 t = CURRENT_TIME;
+    int n = pulse_t_n[REAR_WHEEL];
+    if (n < SAVED_PULSE_T) {
+      pulse_t[REAR_WHEEL][n] = t;
+      pulse_t_n[REAR_WHEEL] = n + 1;
+    } else {
+      for (int i = 1; i < SAVED_PULSE_T; i++) {
+	pulse_t[REAR_WHEEL][i-1] = pulse_t[REAR_WHEEL][i];
+      }
+      pulse_t[REAR_WHEEL][n-1] = t;
+    }
+
+
     bcm2835_ClearEventDetectPin(GPIO_REAR_SPEED);
   }
 }
