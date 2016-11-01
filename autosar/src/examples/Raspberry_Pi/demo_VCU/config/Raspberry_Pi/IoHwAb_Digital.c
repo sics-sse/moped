@@ -20,7 +20,7 @@
 
 #include "bcm2835.h"
 
-#define PI 	   			3.1415926f
+#define PI 	   			3.14159265f
 
 //TODO Should this conversion be done in IoHwAb or in SensorSw-C?
 /**
@@ -99,6 +99,10 @@ Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32
     return E_OK;
 }
 
+#define SAVED_PULSE_T	5
+extern uint32 pulse_t[][SAVED_PULSE_T];
+extern uint32 pulse_t_n[];
+
 //TODO: As above
 /**
  * Get the rear wheel speed
@@ -110,8 +114,11 @@ Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32
 Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data){
 	static uint64 startTime;
 	uint32 odo;
+	int i;
+
 	odo = Sensors_GetWheelPulseTotal(REAR_WHEEL);
 	*Data = IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime);
+	//*Data = 1000*odo + IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime);
 
 	uint32 fData = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
 	uint32 fodo;
@@ -119,14 +126,23 @@ Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32*
 
 	printf("wheels %d %d %d %d\r\n", *Data, odo, fData, fodo);
 
-#if 0
+#if 1
 	// received by a navigation program on the TCU
 	char tbuf[200];
+	// we put our calculation of average speed for REAR in fData
+	fData = 10.2*3.14/5/((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][0])/(SAVED_PULSE_T-1))*1000000;
 	sprintf(tbuf, "speed x %3d x%d x %3d x%d x",
 		*Data, odo, fData, fodo);
 	autosarSendPackageData(strlen(tbuf), tbuf);
 #endif
 
+#if 0
+	printf("pulse_t");
+	for (i = 0; i < pulse_t_n[REAR_WHEEL]; i++) {
+	  printf(" %ld", pulse_t[REAR_WHEEL][i]);
+	}
+	printf("\r\n");
+#endif
 
 //	printf("In IoHw_Read_RearWheelSensor, data = %lu cm\r\n", *Data);
 
@@ -158,6 +174,8 @@ Std_ReturnType IoHw_WriteServo_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 
   signed char servo = (signed char)*DutyCycle;
 
   servo = vcu_servo_direction*servo;
+
+  //servo *= 1.5;
 
   if (servo >= 0) {
     servo = servo/100.0*(steering_max - steering_zero) + steering_zero;
