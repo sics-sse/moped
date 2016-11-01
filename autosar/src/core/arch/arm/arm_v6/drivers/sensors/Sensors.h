@@ -15,7 +15,7 @@
 #define WHEELSENS_PRINT_DEBUG  	0
 
 /* Our MOPED-wheels are approximately 10 cm in diameter */
-#define WHEEL_DIAMETER 			10
+#define WHEEL_DIAMETER 			10.2
 /* Nr of pulses in each wheel turn (360 degrees) */
 #define PULSES_PER_WHEEL_TURN	5
 
