@@ -161,6 +161,10 @@ struct ecu_config configs[] = {
   {"b827eb9864ee", "servo 1", pulse_tab1, -124, 100, -29},
   // VCU car 3
   {"b827ebc93d92", "servo 1", NULL, -125, 125, 0},
+  // VCU car 4
+  {"b827ebcbdd68", "servo 1", NULL, -120, 120, 0},
+  // VCU car 5
+  {"b827eb1f2271", "servo 1", NULL, -125, 125, -21},
 };
 
 #define DEFAULT_SERVO_DIRECTION (1)
