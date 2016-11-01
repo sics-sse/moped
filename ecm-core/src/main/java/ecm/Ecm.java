@@ -29,6 +29,8 @@ import messages.RestoreAckPacket;
 import messages.UninstallAckMessage;
 import messages.UninstallAckPacket;
 import network.external.CarDriver;
+import network.external.CarMobile;
+import network.external.CarNav;
 import network.external.CommunicationManager;
 import network.external.IoTManager;
 import network.internal.EcuManager;
@@ -41,6 +43,8 @@ public class Ecm {
 	// interact with IoT server
 	private IoTManager iotManager;
 	private CarDriver carDriver;
+	private CarMobile carMobile;
+	private CarNav carNav;
 	
 	private DataTableDao dbDao;
 	// key: plug-in temporary id
@@ -53,21 +57,28 @@ public class Ecm {
     public String subscriberName = "AllVCU";
     public int subscriberPort = -1;
 
+    public int crashstatus = 0;
+    public double xpos = 0.0, ypos = 0.0;
+
 	public Ecm() {
 	    System.out.println("Ecm new");
 		dbDao = new DataTableDao();
 	}
 
 	public void init(EcuManager ecuManager, CommunicationManager commuManager,
-			 IoTManager iotManager, CarDriver carDriver) {
+			 IoTManager iotManager, CarDriver carDriver, CarMobile carMobile, CarNav carNav) {
 		this.ecuManager = ecuManager;
 		this.commuManager = commuManager;
 		this.iotManager = iotManager;
 		this.carDriver = carDriver;
+		this.carMobile = carMobile;
+		this.carNav = carNav;
 		
 		ecuManager.setEcm(this);
 		commuManager.setEcm(this);
 		carDriver.setEcm(this);
+		carMobile.setEcm(this);
+		carNav.setEcm(this);
 //		iotManager.setEcm(this);
 
 	    System.out.println("Ecm init");
@@ -77,6 +88,8 @@ public class Ecm {
 	public void start(String [] args) {
 		new Thread(ecuManager).start();
 		new Thread(carDriver).start();
+		new Thread(carMobile).start();
+		new Thread(carNav).start();
 		new Thread(iotManager).start();
 		new Thread(commuManager).start();
 		
