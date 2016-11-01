@@ -8,6 +8,8 @@ import io.IReceiver;
 import io.ReceiverFactory;
 import utils.PropertyAPI;
 import network.external.CarDriver;
+import network.external.CarMobile;
+import network.external.CarNav;
 import network.external.CommunicationManager;
 import network.external.IoTManager;
 import network.external.SocketCommunicationManager;
@@ -44,6 +46,8 @@ public class Main {
 		
 		// Initiate CarDriver APP
 		CarDriver carDriver = new CarDriver(2);
+		CarMobile carMobile = new CarMobile();
+		CarNav carNav = new CarNav();
 		
     //IReceiver rcv = ReceiverFactory.receiver("mqtt+retain+clean://iot.eclipse.org:1883/efrecon/20UYA31581L000000/speed");
     //rcv.subscribe("(\\d+)", 1, null);
@@ -116,7 +120,7 @@ public class Main {
 		if (iotManager != null) {
 		    iotManager.setEcm(ecm);
 		}
-		ecm.init(ecuManager, commuManager, iotManager, carDriver);
+		ecm.init(ecuManager, commuManager, iotManager, carDriver, carMobile, carNav);
 		// Sometimes the mqtt manager is not ready yet, and then
 		// we crash
 		//iotManager.sendPacket(new PublishPacket("speed", "3.235"));
