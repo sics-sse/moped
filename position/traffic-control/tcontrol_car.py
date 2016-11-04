@@ -96,3 +96,11 @@ class Car:
         self.v6 = v6
         self.windows.append(ww)
 
+        v7 = StringVar()
+        v7.set("hej")
+        tx7 = Label(g.w, textvariable=v7, bg="white", fg="black")
+        ww = g.w.create_window(g.graphw+20, 100*i+140, window=tx7)
+        v7.set("%d" % self.parameter)
+        self.v7 = v7
+        self.windows.append(ww)
+
