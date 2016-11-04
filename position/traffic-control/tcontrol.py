@@ -5,6 +5,8 @@ from Tkinter import *
 
 #from tcontrol_comm import *
 import tcontrol_comm
+from tcontrol_comm import update_mark
+
 
 from tcontrol_car import Car, cars
 
@@ -234,10 +236,10 @@ def addline2(w, x1, y1, x2, y2):
     return w.create_line(px1, py1, px2, py2, fill="#bbffbb", width=8)
 
 def addcircle(w, x0, y0, r, colour="black"):
-    x1 = x0 - r*math.sqrt(2)
-    x2 = x0 + r*math.sqrt(2)
-    y1 = y0 - r*math.sqrt(2)
-    y2 = y0 + r*math.sqrt(2)
+    x1 = x0 - r
+    x2 = x0 + r
+    y1 = y0 - r
+    y2 = y0 + r
     px1 = xcoord(x1)
     px2 = xcoord(x2)
     py1 = ycoord(y1)
@@ -307,7 +309,7 @@ def draw_area(w):
         addcircle(w, 1.35, 16.1, 0.04)
         addcircle(w, 1.48, 15.1, 0.04)
 
-    draw_path(currentpath)
+    #draw_path(currentpath)
 
 def send_go(carno):
     c = cars[carno-1]
@@ -347,7 +349,7 @@ def redraw_area():
     areaobjs = []
 
     clear()
-    draw_area(w)
+    draw_area(g.w)
 
 def zoom(amount):
     global scale
@@ -595,8 +597,8 @@ def carpos_event(event):
 
     elif ev[0] == "badmarker":
         (type, x, y, c) = ev
-        win = addcircle(g.w, x, y, 2.0/scale, "red")
-        c.objs.append(win)
+        #win = addcircle(g.w, x, y, 2.0/scale, "red")
+        #c.objs.append(win)
 
     elif ev[0] == "mark":
         (type, x0, y0) = ev
@@ -662,10 +664,10 @@ start_obstacles = [(1.26, 19.7-9.30),
                    (1.26+TABLE_W, 19.7-9.30),
                    (1.26, 19.7-9.30-TABLE_L),
                    (1.26+TABLE_W, 19.7-9.30-TABLE_L),
-                   (2.10, 19.7-8.09),
-                   (2.60, 19.7-7.89),
-                   (3.00-0.18, 19.7-8.19-0.14),
-                   (3.00-0.64, 19.7-8.39-0.14),]
+                   (2.10, 19.7-8.09-0.75),
+                   (2.60, 19.7-7.89-0.75),
+                   (3.00-0.18, 19.7-8.19-0.14-0.75),
+                   (3.00-0.64, 19.7-8.39-0.14-0.75),]
 #start_obstacles = []
 
 for point in start_obstacles:
@@ -676,21 +678,6 @@ for point in start_obstacles:
 
 g.w.focus_set()
 
-def deletecar(c):
-    c.alive = False
-
-    if c.currentpos != None:
-        (or1, or2, or3, or4, or5, or6) = c.currentpos
-        g.w.delete(or1)
-        g.w.delete(or2)
-        g.w.delete(or3)
-        g.w.delete(or4)
-        g.w.delete(or5)
-        g.w.delete(or6)
-    for win in c.windows:
-        g.w.delete(win)
-    del cars[c.n]
-
 
 select_car(1)
 
@@ -698,5 +685,7 @@ v5 = StringVar()
 v5.set("")
 tx5 = Label(g.w, textvariable=v5, bg="white", fg="black")
 g.w.create_window(g.graphw+20, 300, window=tx5)
+
+g.logf = open("tc_log", "w")
 
 mainloop()
