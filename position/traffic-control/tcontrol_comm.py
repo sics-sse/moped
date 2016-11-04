@@ -2,6 +2,7 @@ import thread
 import socket
 import time
 import math
+import json
 
 from tcontrol_car import Car, cars
 
@@ -41,6 +42,10 @@ def update_mark(x, y):
     g.w.event_generate("<<CarPos>>", when="tail", x=event_nr)
 
 
+
+# put in a tcontrol_util instead
+def dist(x1, y1, x2, y2):
+    return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
 
 
@@ -99,6 +104,21 @@ def handlebatterytimeout(c):
             c.v4.set("battery unknown")
         time.sleep(1)
 
+def deletecar(c):
+    c.alive = False
+
+    if c.currentpos != None:
+        (or1, or2, or3, or4, or5, or6) = c.currentpos
+        g.w.delete(or1)
+        g.w.delete(or2)
+        g.w.delete(or3)
+        g.w.delete(or4)
+        g.w.delete(or5)
+        g.w.delete(or6)
+    for win in c.windows:
+        g.w.delete(win)
+    del cars[c.n]
+
 def handleheart(c, conn):
     while c.alive:
         if time.time() > c.heart_seen + 60:
@@ -110,19 +130,58 @@ def handleheart(c, conn):
 def esend_continue(c):
     c.conn.send("continue\n")
 
+def arravg(l):
+    n = len(l)
+    sum = 0.0
+    for v in l:
+        sum += v
+    return sum/n
+
 def handlerun(conn, addr):
     dataf = linesplit(conn)
     print 'Connected %s (at %f)' % (addr, time.time())
 
-    c = Car()
+    data = dataf.next()
+    if data[-1] == "\n":
+        data = data[:-1]
+    if data[-1] == "\r":
+        data = data[:-1]
+    l = data.split(" ")
 
-    c.conn = conn
+    print l
 
-    thread.start_new_thread(handlebatterytimeout, (c,))
-    thread.start_new_thread(handleheart, (c, conn))
+    if l[0] == "info":
+        c = Car()
 
-    # in case the car waited for us to start
-    esend_continue(c)
+        c.conn = conn
+
+        thread.start_new_thread(handlebatterytimeout, (c,))
+        thread.start_new_thread(handleheart, (c, conn))
+
+        # in case the car waited for us to start
+        esend_continue(c)
+
+        car = l[1]
+        c.v3.set("car %s" % car)
+        c.info = car
+        c.addr = addr
+        print("car %s" % car)
+    elif l[0] == "list":
+        iplist = []
+        for car in cars.values():
+            iplist.append(car.addr[0])
+        conn.send(json.dumps(iplist) + "\n")
+        conn.close()
+        return
+    else:
+        conn.send("{\"error\": \"expected keyword 'info' or 'list'\"}\n")
+        conn.close()
+        return
+
+    spavg = []
+    spavgn = 50
+
+    t0 = time.time()
 
     for data in dataf:
 
@@ -148,13 +207,28 @@ def handlerun(conn, addr):
             adj = int(l[5])
             # comes in as a float, but has only integer accuracy
             insp = float(l[6])
-            c.v2.set("time %.2f" % time1)
-            c.v5.set("speed %d" % insp)
+            spavg = [insp] + spavg
+            if len(spavg) > spavgn:
+                spavg = spavg[0:spavgn]
+            spavg1 = arravg(spavg)
+
+            c.v2.set("time %.1f" % time1)
+
+            t = time.time()
+
+            #c.v5.set("speed %d" % insp)
+            if t-t0 > 1.0:
+                c.v5.set("speed %d" % round(spavg1))
+                t0 = t
+
             if l[0] == "dpos" or l[0] == "mpos" and g.show_markpos:
                 update_carpos1(x, y, ang, c)
             if l[0] == "mpos" and g.show_markpos1:
                 set_markerpos(x, y, c, adj)
             check_other_cars(c)
+
+            g.logf.write("%s %f %f %s\n" % (c.info, x, y, l[0]))
+
         elif l[0] == "badmarker":
             x = float(l[1])
             y = float(l[2])
@@ -162,11 +236,6 @@ def handlerun(conn, addr):
         elif l[0] == "odometer":
             odo = int(l[1])
             c.v.set("%d pulses = %.2f m" % (odo, float(odo)/5*math.pi*10.2/100))
-        elif l[0] == "info":
-            car = l[1]
-            c.v3.set("car %s" % car)
-            c.info = car
-            print("car %s" % car)
         elif l[0] == "heart":
             c.heart_seen = time.time()
         elif l[0] == "stopat":
@@ -247,7 +316,10 @@ def handlerun(conn, addr):
         elif l[0] == "battery":
             b = float(l[1])
             c.battery_seen = time.time()
-            c.v4.set("battery %.3f" % b)
+            c.v4.set("battery %.2f" % b)
+        elif l[0] == "markers":
+            s = " ".join(l[1:])
+            c.v7.set(s)
         else:
             print "received (%s)" % data
 
