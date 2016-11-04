@@ -28,11 +28,18 @@ parameter = 100
 parameter = 152
 parameter = 120
 
+ledcmd = None
+
 # Set, but not used yet
 section_status = dict()
 
+warningblinking = False
+
 oldpos = dict()
 adjust_t = None
+
+newsp = 1
+newspt = 0
 
 paused = False
 
@@ -49,8 +56,10 @@ braking = False
 angleknown = False
 marker = None
 inspeed = 0.0
+finspeed = 0.0
 inspeed_avg = 0.0
 odometer = 0
+fodometer = 0
 lastodometer = None
 age = -1
 
@@ -75,8 +84,6 @@ targety = None
 #TARGETDIST = 0.3
 TARGETDIST = 0.15
 TARGETDIST = 0.25
-DEFAULTSPEED = 7
-TURNSPEED = 20
 TOOHIGHSPEED = 2.0
 
 R = 0.83
@@ -153,6 +160,8 @@ def readgyro0():
     global vx, vy, vz
     global angdiff, ppxdiff, ppydiff
     global crash
+    global newsp
+    global newspt
 
     try:
 
@@ -200,8 +209,8 @@ def readgyro0():
             z /= ascale
 
             acc = sqrt(x*x+y*y+z*z)
-            if acc > 5.0:
-                crash = True
+            if acc > 9.0:
+                crash = acc
 
             x0 = -x
             y0 = -y
@@ -233,10 +242,12 @@ def readgyro0():
 
             # don't put too many things in this thread
 
-            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f\n" % (
                     x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
                     dang, can_steer, can_speed, inspeed, outspeed, odometer,
-                    z0, r, rx, ry, acc))
+                    z0, r, rx, ry, acc, finspeed, fodometer, newspt-t0, newsp, inspeed_avg))
+
+            newsp = 0
 
             if (t2-tlast > 0.1):
                 tolog0("")
@@ -348,8 +359,8 @@ def on_message(mosq, obj, msg):
 def mqtt_init():
     global mqttc
 
-    #url_str = "mqtt://test.mosquitto.org:1883"
-    url_str = "mqtt://iot.eclipse.org:1883"
+    url_str = "mqtt://test.mosquitto.org:1883"
+    #url_str = "mqtt://iot.eclipse.org:1883"
     url = urllib.parse.urlparse(url_str)
     mqttc = mosquitto.Mosquitto()
     mqttc.on_message = on_message
@@ -365,18 +376,28 @@ def send_to_mqtt(x, y):
 def handle_mqtt():
     global mqttc
 
-    mqtt_init()
-
-    i = 0
-    rc = 0
-    while rc == 0:
-        rc = mqttc.loop(5.0)
-        i += 1
-
-    if rc == 7:
-        mqttc = mosquitto.Mosquitto()
+    while True:
         mqtt_init()
 
+        i = 0
+        rc = 0
+        while rc == 0:
+            rc = mqttc.loop(5.0)
+            i += 1
+
+        print("mqttc.loop returned %d" % rc)
+        if rc == 7 or rc == 1:
+            mqttc = mosquitto.Mosquitto()
+            mqtt_init()
+
+
+ledstate = 0
+
+def blinkleds():
+    global ledstate
+
+    ledstate = (ledstate + 1)%7
+    setleds(0, ledstate)
 
 def readmarker():
     while True:
@@ -398,6 +419,8 @@ def readmarker0():
     global ppxdiff, ppydiff, angdiff
     global adjust_t
 
+    recentmarkers = []
+
     while True:
         p = subprocess.Popen("tail -1 /tmp/marker0", stdout=subprocess.PIPE, shell=True);
         res = p.communicate()
@@ -418,6 +441,8 @@ def readmarker0():
 
             doadjust = False
 
+            #blinkleds()
+
             markerno = int(m1[0])
             x = float(m1[1])
             y = float(m1[2])
@@ -433,7 +458,7 @@ def readmarker0():
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
             if (markerno > -1 and quality > 0.35 and markerno not in badmarkers
-                and x > 0.0 and x < 3.0 and y > 0 and y < 19.7):
+                and x > -0.3 and x < 3.3 and y > 0 and y < 19.7):
                 close = True
                 if not angleknown:
                     ang = ori
@@ -493,6 +518,10 @@ def readmarker0():
                     else:
                         doadjust_n = 0
                     send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,ang,time.time()-t0, doadjust_n, inspeed))
+                    recentmarkers = [str(markerno)] + recentmarkers
+                    if len(recentmarkers) > 10:
+                        recentmarkers = recentmarkers[0:10]
+                    send_to_ground_control("markers %s" % " ".join(recentmarkers))
                     #send_to_mqtt(x, y)
                     lastpos = (thenx,theny)
                     px = x
@@ -550,11 +579,13 @@ def readmarker0():
 # constants and offsets appear.
 def readspeed2():
     global inspeed, odometer, lastodometer
+    global finspeed, fodometer
     global inspeed_avg
     global speedsign
     global can_steer, can_speed
     global can_ultra
     global rc_button, remote_control
+    global newsp, newspt
 
     part = b""
     part2 = b""
@@ -568,10 +599,15 @@ def readspeed2():
             if data[8] == 16:
                 parts = str(part)
 
-                m = re.search("speed x([0-9 ]+)x([0-9 ]+) x([0-9 ]+)x([0-9 ]+)", parts)
+                m = re.search("speed x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)", parts)
                 if m:
+                    #print(parts)
                     oinspeed = inspeed
                     inspeed = speedsign * int(m.group(1))
+
+                    newsp = 1
+                    newspt = time.time()
+
                     alpha = 0.8
                     inspeed_avg = (1-alpha)*inspeed + alpha*oinspeed
 
@@ -598,9 +634,10 @@ def readspeed2():
         elif (data[0], data[1]) == (1,1):
             sp = data[8]
             st = data[9]
-            if last_send != None and (sp, st) != last_send:
-                tolog("remote control")
-                remote_control = True
+            if False:
+                if last_send != None and (sp, st) != last_send:
+                    tolog("remote control")
+                    remote_control = True
             if sp > 128:
                 sp -= 256
             can_speed = sp
@@ -652,6 +689,9 @@ def drive(sp):
     global outspeedcm
 
     if True:
+        if sp != 0 and not braking:
+            speedsign = sign(sp)
+
         outspeedcm = sp*2
         print("outspeedcm = %d" % outspeedcm)
     else:
@@ -744,12 +784,28 @@ def linesplit(socket):
         yield buffer
     return None
 
+def warningblink(state):
+    global warningblinking
+
+    if state == True:
+        if warningblinking:
+            return
+        setleds(7, 0)
+        warningblinking = True
+    else:
+        if not warningblinking:
+            return
+        setleds(0, 7)
+        warningblinking = False
+
 def from_ground_control():
     global path
     global paused
     global parameter
     global ground_control
     global limitspeed
+
+    lastreportclosest = False
 
     while True:
         if ground_control:
@@ -791,14 +847,19 @@ def from_ground_control():
                         # a smoother ride
                         limitspeed = 100*closest/0.85/4
                         if limitspeed < 11:
+                            print("setting limitspeed to 0")
                             limitspeed = 0
-                            setleds(3, 1)
+                            warningblink(True)
                         else:
-                            setleds(0, 0)
+                            print("reduced limitspeed")
                         print("closest car in front2: dir %f dist %f limitspeed %f" % (
                                 dir, closest, limitspeed))
+                        lastreportclosest = True
                     else:
                         limitspeed = None
+                        if lastreportclosest:
+                            print("no close cars")
+                        lastreportclosest = False
                 elif l[0] == "parameter":
                     parameter = int(l[1])
                     print("parameter %d" % parameter)
@@ -832,24 +893,34 @@ def connect_to_ecm():
 
     t0 = time.time()
 
+    counter = 0
+
     while True:
         if crash:
             #crash = False
             if not stopped:
-                s.send("crash".encode('ascii'))
-                print("crash!")
+                counter = 9
+                #s.send("crash".encode('ascii'))
+                print("crash: %f" % crash)
                 remote_control = True
                 #stop()
                 drive(0)
-                setleds(3, 1)
+                warningblink(True)
                 stopped = True
 
-        if False:
+        if True:
             t = time.time()
-            if t-t0 > 5.0:
-                s.send("bar".encode('ascii'))
+            if t-t0 > 1.0:
+                #s.send("bar".encode('ascii'))
+                crashacc = 0.0
+                if crash:
+                    crashacc = crash
+                s.send(('{"crash":%d, "x":%f, "y":%f, "crashacc":%f}\n' % (
+                            counter, ppx, ppy, crashacc)).encode("ascii"))
                 t0 = t
         time.sleep(0.05)
+        if counter != 9:
+            counter = (counter+1)%8
 
 def heartbeat():
     while True:
@@ -876,7 +947,7 @@ def init():
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer z0 r rx ry acc\n")
+    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg\n")
 
     t0 = time.time()
 
@@ -944,34 +1015,47 @@ def dodrive(sp, st):
 def senddrive():
     global send_sp, send_st
     global last_send
+    global ledcmd
+
     old_sp = 0
     old_st = 0
     while True:
-        time.sleep(0.1)
-        if send_sp == None:
-            continue
+        #time.sleep(0.1)
 
-#        if remote_control:
-#            continue
+        if send_sp != None:
 
-        send_sp = int(send_sp)
-        send_st = int(send_st)
+    #        if remote_control:
+    #            continue
 
-        sp = send_sp
-        if sp < 0:
-            sp += 256
-        st = send_st
-        if st < 0:
-            st += 256
-        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-            sp, st)
-        #tolog("senddrive %d %d" % (send_sp, send_st))
-        last_send = (sp, st)
-        os.system(cmd)
+            send_sp = int(send_sp)
+            send_st = int(send_st)
+
+            sp = send_sp
+            if sp < 0:
+                sp += 256
+            st = send_st
+            if st < 0:
+                st += 256
+
+            if sp == 0 or last_send != (sp, st) or True:
+                cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                    sp, st)
+                #tolog("senddrive %d %d" % (send_sp, send_st))
+                last_send = (sp, st)
+                os.system(cmd)
+
+        if ledcmd:
+            (mask, code) = ledcmd
+            print("doing setleds %d %d" % (mask, code))
+            cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
+                mask, code)
+            os.system(cmd)
+            ledcmd = None
 
 
 # 0 to 9
 speeds = [0, 11, 15, 19, 23, 27, 37, 41, 45, 49]
+# should 7 be here too?
 
 def keepspeed():
     global outspeed
@@ -992,6 +1076,9 @@ def keepspeed():
 
         if limitspeed != None and desiredspeed > limitspeed:
             desiredspeed = limitspeed
+
+        if user_pause:
+            desiredspeed = 0
 
         if desiredspeed > inspeed_avg:
             if spi < len(speeds)-1:
@@ -1038,6 +1125,9 @@ def keepspeed():
 
         if sp != 0 and not braking:
             speedsign = sign(sp)
+
+        if sp != 0:
+            warningblink(False)
 
 #        if sp < 0:
 #            sp += 256
@@ -1255,6 +1345,7 @@ def goto_1(x, y):
 
 #        if dist < TARGETDIST or dist < brake_s or missed:
         if abs(adiff) > 90 or dist < 0.3:
+#        if dist < 0.3:
             if False:
                 #stop("9")
     #            drive(-1)
@@ -1284,7 +1375,7 @@ def goto_1(x, y):
         steer(st)
         tolog("gotoa4 steer %f" % (st))
 
-        send_to_ground_control("dpos %f %f %f %f 0 %f" % (ppx,ppy,ang,time.time()-t0, inspeed))
+        send_to_ground_control("dpos %f %f %f %f 0 %f" % (ppx,ppy,ang,time.time()-t0, finspeed))
 
         time.sleep(0.1)
 
@@ -1323,9 +1414,16 @@ def speak(str):
     start_new_thread(dospeak, (str, p))
 
 def setleds(mask, code):
-    cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
-        mask, code)
-    os.system(cmd)
+    global ledcmd
+
+    print("setleds %d %d" % (mask, code))
+
+    if False:
+        cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
+            mask, code)
+        os.system(cmd)
+    else:
+        ledcmd = (mask, code)
 
 # User command
 def trip(path, first=0):
@@ -1457,7 +1555,7 @@ def wander2():
     dir = -1
     while True:
         drive(0)
-        time.sleep(2)
+        time.sleep(4)
         while True:
             k = random.random()
             l = k*(ly+lx+ly+lx)
@@ -1487,7 +1585,11 @@ def wander2():
             else:
                 if abs(angdiff) > 180-45:
                     break
-        drive(dir*20)
+            if dir > 0:
+                drive(5)
+            else:
+                drive(-5)
+        print("going to %f %f" % (x, y))
         goto_1(x, y)
         dir = -dir
 
@@ -1592,8 +1694,28 @@ def whole3():
         goto_1(x2, y1+b)
 
 
+user_pause = False
+
+def pause():
+    global user_pause
+    user_pause = True
+
+def cont():
+    global user_pause
+    user_pause = False
+
+
 def whole4(dir):
+    start_new_thread(whole4aux, (dir,))
+
+def whole4aux(dir):
     global speedsign
+    global last_send
+
+    last_send = None
+
+    setleds(0, 7)
+
     print("speedsign = %d" % speedsign)
     speedsign = 1
 
@@ -1616,10 +1738,12 @@ def whole4(dir):
         y1 += 0.25
         y2 -= 0.25
 
+    speed0 = 20
+
     y12 = (y1+y2)/2
     drive(0)
     time.sleep(4)
-    drive(20)
+    drive(speed0)
     path = [(x2, y1+b + (y12-(y1+b))/3),
             (x2, y1+b + 2*(y12-(y1+b))/3),
             (x2, y12),
@@ -1658,5 +1782,22 @@ def whole4(dir):
     while True:
         for (x, y) in path:
             if remote_control:
+                print("whole4 finished")
                 return
             goto_1(x, y)
+
+signalling = False
+
+def signal():
+    while signalling:
+        os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
+
+def ambulance(x, y):
+    global signalling
+
+    signalling = True
+    start_new_thread(signal, ())
+    drive(20)
+    goto_1(x, y)
+    signalling = False
+    drive(0)
