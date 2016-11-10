@@ -26,6 +26,7 @@
      .balign 4
 	 .globl _start
 _start:
+	str	r2, saved_r2
 	                                    /* All the following instruction should be read as: Load the address at symbol into the program counter.*/
 		 ldr  pc,reset_handler		    /*	Processor Reset handler 		-- we will have to force this on the raspi! Because this is the first instruction executed, of cause it causes an immediate branch into reset!*/
 		 ldr  pc,undefined_handler	    /* 	Undefined instruction handler 	-- processors that don't have thumb can emulate thumb!*/
@@ -55,6 +56,8 @@ irq_handler:
 fiq_handler:
 					.word FiqHandler
 
+.globl saved_r2
+saved_r2:	.word 0
 
 .code   32
 .balign 4
