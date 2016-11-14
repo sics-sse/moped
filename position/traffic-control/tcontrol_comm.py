@@ -86,10 +86,11 @@ def check_other_cars(c):
             angdiff -= 360
         #print (c2.y-c.y, c2.x-c.x)
         #print (c.ang%360, other)
-        print "%d (%.2f,%.2f): other car %d (%.2f,%.2f) dist %.2f dir %.2f" % (
-            c.n, c.x, c.y,
-            c2.n, c2.x, c2.y,
-            d, angdiff)
+        if False:
+            print "%d (%.2f,%.2f): other car %d (%.2f,%.2f) dist %.2f dir %.2f" % (
+                c.n, c.x, c.y,
+                c2.n, c2.x, c2.y,
+                d, angdiff)
         if angdiff > -45 and angdiff < 45:
             l = l + [(angdiff, d, c2.x, c2.y, c2.n)]
 
@@ -150,6 +151,8 @@ def handlerun(conn, addr):
 
     print l
 
+    warnbattery = 0
+
     if l[0] == "info":
         c = Car()
 
@@ -173,8 +176,30 @@ def handlerun(conn, addr):
         conn.send(json.dumps(iplist) + "\n")
         conn.close()
         return
+    elif l[0] == "cargoto":
+        carn = l[1]
+        found = None
+        for car in cars:
+            c = cars[car]
+            if carn == c.info:
+                found = c
+                break
+        if not found:
+            conn.send("{\"error\": \"no running car named %s\"}\n" % l[1])
+        else:
+            x = float(l[2])
+            y = float(l[3])
+            if x < 1.5:
+                x += 0.6
+            else:
+                x -= 0.6
+            l[2] = str(x)
+            c.conn.send("%s\n" % " ".join(l))
+
+        conn.close()
+        return
     else:
-        conn.send("{\"error\": \"expected keyword 'info' or 'list'\"}\n")
+        conn.send("{\"error\": \"expected keyword 'info' or 'list', got '%s'\"}\n" % l[0])
         conn.close()
         return
 
@@ -235,9 +260,14 @@ def handlerun(conn, addr):
             set_badmarkerpos(x, y, c)
         elif l[0] == "odometer":
             odo = int(l[1])
-            c.v.set("%d pulses = %.2f m" % (odo, float(odo)/5*math.pi*10.2/100))
+            c.v.set("%d pulse%s = %.2f m" % (
+                    odo, "" if odo == 1 else "s",
+                    float(odo)/5*math.pi*10.2/100))
         elif l[0] == "heart":
             c.heart_seen = time.time()
+        elif l[0] == "message":
+            s = " ".join(l[1:])
+            c.v8.set(s)
         elif l[0] == "stopat":
             i = int(l[1])
             i -= 1
@@ -316,9 +346,23 @@ def handlerun(conn, addr):
         elif l[0] == "battery":
             b = float(l[1])
             c.battery_seen = time.time()
-            c.v4.set("battery %.2f" % b)
+            if b < 6.8:
+                warnbattery = (warnbattery + 1) % 2
+            else:
+                warnbattery = 0
+            if warnbattery == 0:
+                c.v4.set("battery %.2f" % b)
+            else:
+                c.v4.set("")
         elif l[0] == "markers":
             s = " ".join(l[1:])
+            if False:
+                delim = "/-\\|"[c.markern]
+                c.markern = (c.markern + 1) % 4
+            else:
+                delim = "- "[c.markern]
+                c.markern = (c.markern + 1) % 2
+            s = delim + " " + s
             c.v7.set(s)
         else:
             print "received (%s)" % data
