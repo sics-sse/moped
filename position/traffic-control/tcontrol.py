@@ -1,5 +1,6 @@
 import time
 import math
+from math import cos, sin, pi
 
 from Tkinter import *
 
@@ -58,6 +59,44 @@ sp2 = -35
 
 sp1 = 15
 sp1 = 20
+
+def eightpoint(cy, ang):
+    cx = 1.5
+    R = 1.0
+    x = cx + R*sin(ang*pi/180)
+    y = cy + R*cos(ang*pi/180)
+    return (x, y)
+
+nodenumbers = [7, 11, 17, 24, 28, 30, 36,
+               35, 32, 27, 23, 19, 13, 6,
+               5, 10, 16, 23, 26, 29, 34,
+               33, 31, 25, 22, 18, 12, 4,
+               ]
+
+nodes = dict()
+
+def eightarc(nodenumbers, cy, angleoffset):
+    for i in range(-3, 3+1):
+        ang = 30*i
+        (x, y) = eightpoint(cy, ang+angleoffset)
+        nr = nodenumbers[0]
+        nodenumbers = nodenumbers[1:]
+        if nr not in nodes:
+            nodes[nr] = (x, y)
+    return nodenumbers
+
+def eightpath(y1, y2, y3):
+    R = 1.0
+
+    l = nodenumbers
+
+    l = eightarc(l, y1 - R, 0)
+    l = eightarc(l, y2 + R, 180)
+    l = eightarc(l, y2 - R, 0)
+    l = eightarc(l, y3 + R, 180)
+
+    for nr in nodes:
+        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
 
 path1_1 = [('go', sp1, 1.8, 16.2),
          ('speak', "#"),
@@ -169,6 +208,44 @@ path4bis = [('go', sp1, 2.3, 13.4),
          ('go', sp1, 1.2, 12.3),
             ]
 
+def whole4path(offset):
+    if False:
+        path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
+                                   6, 5, 4, 12, 18, 22, 25, 31, 33]]
+    else:
+        path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path1 = []
+    x1 = None
+    y1 = None
+    n = 0
+    for (x0, y0) in path:
+        
+        if x1 == None:
+            pass
+        else:
+            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
+            dx = x0-x1
+            dy = y0-y1
+            angle = math.atan2(dx, -dy)
+
+            x = x1
+            y = y1
+
+            path1.append(('go', 40,
+                          x+offset*cos(angle),
+                          y+offset*sin(angle)))
+
+            print("%f %f" % (x+offset*cos(angle),
+                             y+offset*sin(angle)))
+
+        x1 = x0
+        y1 = y0
+        n += 1
+# we need to finish the right way and not forget the last point
+
+    return path1
+
 def draw_path(p):
     first = True
 
@@ -233,7 +310,7 @@ def addline2(w, x1, y1, x2, y2):
     px2 = xcoord(x2)
     py1 = ycoord(y1)
     py2 = ycoord(y2)
-    return w.create_line(px1, py1, px2, py2, fill="#bbffbb", width=8)
+    return w.create_line(px1, py1, px2, py2, fill="#bbffbb", width=1)
 
 def addcircle(w, x0, y0, r, colour="black"):
     x1 = x0 - r
@@ -309,7 +386,9 @@ def draw_area(w):
         addcircle(w, 1.35, 16.1, 0.04)
         addcircle(w, 1.48, 15.1, 0.04)
 
-    #draw_path(currentpath)
+    draw_path(whole4path(0))
+    draw_path(whole4path(-0.25))
+    draw_path(whole4path(0.25))
 
 def send_go(carno):
     c = cars[carno-1]
@@ -643,6 +722,9 @@ g.w.pack(expand=YES, fill=BOTH)
 
 
 currentpath = path4bis
+
+eightpath(19.2,15.4,12.5)
+
 draw_area(g.w)
 
 
