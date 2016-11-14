@@ -8,6 +8,7 @@ import math
 import socket
 import sys
 import ast
+import json
 
 import random
 
@@ -28,12 +29,14 @@ parameter = 100
 parameter = 152
 parameter = 120
 
+detectcrashes = True
+
 ledcmd = None
 
 # Set, but not used yet
 section_status = dict()
 
-warningblinking = False
+warningblinking = None
 
 oldpos = dict()
 adjust_t = None
@@ -171,8 +174,13 @@ def readgyro0():
         while True:
             gyron += 1
 
-            high = bus.read_byte_data(address, 0x47)
-            low = bus.read_byte_data(address, 0x48)
+            if True:
+                w = bus.read_i2c_block_data(address, 0x47, 2)
+                high = w[0]
+                low = w[1]
+            else:
+                high = bus.read_byte_data(address, 0x47)
+                low = bus.read_byte_data(address, 0x48)
             r = make_word(high, low)
 
             r -= rbias
@@ -193,7 +201,8 @@ def readgyro0():
             dt = t2-t1
             t1 = t2
 
-            dang = r/gscale*dt
+            angvel = r/gscale
+            dang = angvel*dt
             ang += dang
 
             w = bus.read_i2c_block_data(address, 0x3b, 6)
@@ -209,7 +218,7 @@ def readgyro0():
             z /= ascale
 
             acc = sqrt(x*x+y*y+z*z)
-            if acc > 9.0:
+            if acc > 9.0 and detectcrashes:
                 crash = acc
 
             x0 = -x
@@ -244,7 +253,7 @@ def readgyro0():
 
             accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f\n" % (
                     x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
-                    dang, can_steer, can_speed, inspeed, outspeed, odometer,
+                    angvel, can_steer, can_speed, inspeed, outspeed, odometer,
                     z0, r, rx, ry, acc, finspeed, fodometer, newspt-t0, newsp, inspeed_avg))
 
             newsp = 0
@@ -377,19 +386,21 @@ def handle_mqtt():
     global mqttc
 
     while True:
-        mqtt_init()
-
-        i = 0
-        rc = 0
-        while rc == 0:
-            rc = mqttc.loop(5.0)
-            i += 1
-
-        print("mqttc.loop returned %d" % rc)
-        if rc == 7 or rc == 1:
-            mqttc = mosquitto.Mosquitto()
+        try:
             mqtt_init()
 
+            i = 0
+            rc = 0
+            while rc == 0:
+                rc = mqttc.loop(5.0)
+                i += 1
+
+            print("mqttc.loop returned %d" % rc)
+            if rc == 7 or rc == 1:
+                mqttc = mosquitto.Mosquitto()
+                mqtt_init()
+        except Exception as e:
+            time.sleep(5000)
 
 ledstate = 0
 
@@ -518,10 +529,6 @@ def readmarker0():
                     else:
                         doadjust_n = 0
                     send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,ang,time.time()-t0, doadjust_n, inspeed))
-                    recentmarkers = [str(markerno)] + recentmarkers
-                    if len(recentmarkers) > 10:
-                        recentmarkers = recentmarkers[0:10]
-                    send_to_ground_control("markers %s" % " ".join(recentmarkers))
                     #send_to_mqtt(x, y)
                     lastpos = (thenx,theny)
                     px = x
@@ -569,6 +576,15 @@ def readmarker0():
                     #ang = ori
             else:
                 age += 1
+
+            if accepted:
+                recentmarkers = [str(markerno)] + recentmarkers
+            else:
+                recentmarkers = ['x'] + recentmarkers
+            if len(recentmarkers) > 10:
+                recentmarkers = recentmarkers[0:10]
+            send_to_ground_control("markers %s" % " ".join(recentmarkers))
+
             if not accepted:
                 send_to_ground_control("badmarker %f %f" % (x,y))
                 tolog0("marker5 %s %d %f %f" % (m, age, ang, ori))
@@ -788,12 +804,12 @@ def warningblink(state):
     global warningblinking
 
     if state == True:
-        if warningblinking:
+        if warningblinking == True:
             return
         setleds(7, 0)
         warningblinking = True
     else:
-        if not warningblinking:
+        if warningblinking == False:
             return
         setleds(0, 7)
         warningblinking = False
@@ -835,8 +851,8 @@ def from_ground_control():
                         if closest == None or closest > dist:
                             closest = dist
                     if closest:
-                        print("closest car in front1: dir %f dist %f" % (
-                                dir, closest))
+                        #print("closest car in front1: dir %f dist %f" % (
+                         #       dir, closest))
                         # a car length
                         closest = closest - 0.5
                         # some more safety:
@@ -847,19 +863,33 @@ def from_ground_control():
                         # a smoother ride
                         limitspeed = 100*closest/0.85/4
                         if limitspeed < 11:
-                            print("setting limitspeed to 0")
+                            #print("setting limitspeed to 0")
                             limitspeed = 0
-                            warningblink(True)
+                            if outspeedcm != None and outspeedcm != 0:
+                                warningblink(True)
                         else:
-                            print("reduced limitspeed")
-                        print("closest car in front2: dir %f dist %f limitspeed %f" % (
-                                dir, closest, limitspeed))
+                            #print("reduced limitspeed")
+                            pass
+
+                        #print("closest car in front2: dir %f dist %f limitspeed %f" % (
+                                #dir, closest, limitspeed))
                         lastreportclosest = True
                     else:
                         limitspeed = None
                         if lastreportclosest:
-                            print("no close cars")
+                            #print("no close cars")
+                            pass
                         lastreportclosest = False
+                    if outspeedcm:
+                        # neither 0 nor None
+                        if limitspeed == 0:
+                            send_to_ground_control("message stopping for obstacle")
+                        elif limitspeed != None and limitspeed < outspeedcm:
+                            send_to_ground_control("message slowing for obstacle %f" % limitspeed)
+                        else:
+                            send_to_ground_control("message ")
+                    else:
+                        send_to_ground_control("message ")
                 elif l[0] == "parameter":
                     parameter = int(l[1])
                     print("parameter %d" % parameter)
@@ -871,6 +901,10 @@ def from_ground_control():
                 elif l[0] == "occupied":
                     s = int(l[1])
                     section_status[s] = "occupied"
+                elif l[0] == "cargoto":
+                    x = float(l[2])
+                    y = float(l[3])
+                    goto(x, y, l[4])
                 else:
                     print("unknown control command %s" % data)
         time.sleep(1)
@@ -894,9 +928,10 @@ def connect_to_ecm():
     t0 = time.time()
 
     counter = 0
+    crashacc = None
 
     while True:
-        if crash:
+        if crashacc:
             #crash = False
             if not stopped:
                 counter = 9
@@ -905,8 +940,28 @@ def connect_to_ecm():
                 remote_control = True
                 #stop()
                 drive(0)
+                #speak("ouch")
                 warningblink(True)
                 stopped = True
+                s112 = open_socket3()
+                sstr = ('accident %f %f %f %s\n' % (
+                        ppx, ppy, crashacc, VIN)).encode("ascii")
+                print(sstr)
+                s112.send(sstr)
+                print(sstr)
+                resp = s112.recv(1024)
+                print(resp)
+                resp = resp.decode("ascii")
+                print(resp)
+                if True:
+                    resp = json.loads(resp)
+                    print(resp)
+                    say = resp['speak']
+                else:
+                    say = resp
+                print(say)
+                speak(say)
+                s112.close()
 
         if True:
             t = time.time()
@@ -915,6 +970,7 @@ def connect_to_ecm():
                 crashacc = 0.0
                 if crash:
                     crashacc = crash
+                    send_to_ground_control("message crash %f" % crashacc)
                 s.send(('{"crash":%d, "x":%f, "y":%f, "crashacc":%f}\n' % (
                             counter, ppx, ppy, crashacc)).encode("ascii"))
                 t0 = t
@@ -941,13 +997,17 @@ def init():
 
     angleknown = False
 
+    eightpath(19.2,15.4,12.5)
+
+    setleds(0, 7)
+
     start_new_thread(connect_to_ground_control, ())
 
     logf = open("navlog", "w")
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang dang steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg\n")
+    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg\n")
 
     t0 = time.time()
 
@@ -1046,7 +1106,7 @@ def senddrive():
 
         if ledcmd:
             (mask, code) = ledcmd
-            print("doing setleds %d %d" % (mask, code))
+            #print("doing setleds %d %d" % (mask, code))
             cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
                 mask, code)
             os.system(cmd)
@@ -1248,6 +1308,38 @@ def open_socket2():
 
     return s
 
+H112HOST = "appz-ext.sics.se"
+H112PORT = 8080
+
+H112HOST = "appz-ext.sics.se"
+H112PORT = 6892
+
+def open_socket3():
+    for res in socket.getaddrinfo(H112HOST, H112PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
+        af, socktype, proto, canonname, sa = res
+        #print("res %s" % (res,))
+        try:
+            s = socket.socket(af, socktype, proto)
+        except Exception as e:
+            print("socket %s" % e)
+            s = None
+            continue
+
+        try:
+            s.connect(sa)
+        except Exception as e:
+            print("connect %s" % e)
+            #(socket.error, msg):
+            s.close()
+            s = None
+            continue
+        break
+    if s is None:
+        print('could not open socket2')
+        return False
+
+    return s
+
 def send_to_ground_control(str):
     global ground_control
 
@@ -1289,6 +1381,7 @@ def goto_1(x, y):
 
     while True:
         if remote_control:
+            print("remote_control is true")
             return
 
         dist = getdist(x, y)
@@ -1355,6 +1448,7 @@ def goto_1(x, y):
     #            drive(-1)
     #            time.sleep(0.2)
                 drive(0)
+            #print("adiff %f dist %f" % (adiff, dist))
             return
 
 
@@ -1365,7 +1459,7 @@ def goto_1(x, y):
         p = 2.0
 
         st = p*aval
-        if VIN == "car3":
+        if VIN == "car3xxx":
             # special for car3. other cars may have other numbers
             if asgn < 0:
                 st += 35
@@ -1705,24 +1799,82 @@ def cont():
     user_pause = False
 
 
+signalling = False
+
+def signal():
+    while signalling:
+        os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
+
+def goto(x, y, state):
+    start_new_thread(gotoaux, (x, y, state))
+
+def gotoaux(x, y, state):
+    global signalling
+
+    print("gotoaux %f %f %s" % (x, y, state))
+    drive(0)
+    if state == "accident":
+        signalling = True
+        start_new_thread(signal, ())
+
+    time.sleep(4)
+    drive(30)
+    goto_1(x, y)
+    signalling = False
+    drive(0)
+
 def whole4(dir):
     start_new_thread(whole4aux, (dir,))
 
-def whole4aux(dir):
-    global speedsign
-    global last_send
 
-    last_send = None
 
-    setleds(0, 7)
 
-    print("speedsign = %d" % speedsign)
-    speedsign = 1
 
-    if dir == -1:
-        a = 0.25+0.05
-    else:
-        a = 0.75
+def eightpoint(cy, ang):
+    cx = 1.5
+    R = 1.0
+    x = cx + R*sin(ang*pi/180)
+    y = cy + R*cos(ang*pi/180)
+    return (x, y)
+
+nodenumbers = [7, 11, 17, 24, 28, 30, 36,
+               35, 32, 27, 23, 19, 13, 6,
+               5, 10, 16, 23, 26, 29, 34,
+               33, 31, 25, 22, 18, 12, 4,
+               ]
+
+nodes = dict()
+
+def eightarc(nodenumbers, cy, angleoffset):
+    for i in range(-3, 3+1):
+        ang = 30*i
+        (x, y) = eightpoint(cy, ang+angleoffset)
+        nr = nodenumbers[0]
+        nodenumbers = nodenumbers[1:]
+        if nr not in nodes:
+            nodes[nr] = (x, y)
+    return nodenumbers
+
+def eightpath(y1, y2, y3):
+    R = 1.0
+
+    l = nodenumbers
+
+    l = eightarc(l, y1 - R, 0)
+    l = eightarc(l, y2 + R, 180)
+    l = eightarc(l, y2 - R, 0)
+    l = eightarc(l, y3 + R, 180)
+
+    for nr in nodes:
+        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
+
+def bezier(t, x0, xmid, x2):
+    x = (1-t)*(1-t)*x2 + 2*t*(1-t)*xmid + t*t*x0
+    return x
+
+
+def whole4path_two(offset):
+    a = 0.5
 
     # with 1.5, the points at the ends coincide
     b = 1.5-a
@@ -1732,72 +1884,250 @@ def whole4aux(dir):
     y1 = 12+a
     y2 = 19.7-a
 
-    if dir == -1:
-        pass
+    y12 = (y1+y2)/2
+    path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
+                               6, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path1 = []
+    x1 = None
+    y1 = None
+    x2 = None
+    y2 = None
+    x3 = None
+    y3 = None
+    n = 0
+    for (x0, y0) in path:
+        
+        if x1 == None or x2 == None:
+            pass
+        elif n % 4 == 3:
+            N = 15
+            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
+            for i in range(0, N+1):
+                t = 1.0*i/N
+                xmid2 = 2*x1 - x0/2 - x2/2
+                ymid2 = 2*y1 - y0/2 - y2/2
+                xmid1 = 2*x2 - x1/2 - x3/2
+                ymid1 = 2*y2 - y1/2 - y3/2
+                x_2 = bezier(t, x0, xmid2, x2)
+                y_2 = bezier(t, y0, ymid2, y2)
+                x_1 = bezier(t, x1, xmid1, x3)
+                y_1 = bezier(t, y1, ymid1, y3)
+
+                if i < 5:
+                    x = x_1
+                    y = y_1
+                elif i >= 10:
+                    x = x_2
+                    y = y_2
+                else:
+                    x = (x_1+x_2)/2
+                    y = (y_1+y_2)/2
+
+                dt = 0.001
+                dx = bezier(t+dt, x0, xmid1, x2) - x
+                dy = bezier(t+dt, y0, ymid1, y2) - y
+                angle = math.atan2(dx, -dy)
+
+                path1.append(('go', 40,
+                              x+offset*cos(angle),
+                              y+offset*sin(angle)))
+
+                print("%f %f" % (x+offset*cos(angle),
+                                 y+offset*sin(angle)))
+
+        x3 = x2
+        y3 = y2
+        x2 = x1
+        y2 = y1
+        x1 = x0
+        y1 = y0
+        n += 1
+
+    return path1
+
+def whole4path_bezier(offset):
+    a = 0.5
+
+    # with 1.5, the points at the ends coincide
+    b = 1.5-a
+
+    x1 = a
+    x2 = 3.0-a
+    y1 = 12+a
+    y2 = 19.7-a
+
+    y12 = (y1+y2)/2
+    path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
+                               6, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path1 = []
+    x1 = None
+    y1 = None
+    x2 = None
+    y2 = None
+    n = 0
+    for (x0, y0) in path:
+        
+        if x1 == None or x2 == None:
+            pass
+        elif n % 3 == 2:
+            N = 10
+            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
+            for i in range(0, N+1):
+                t = 1.0*i/N
+                xmid = 2*x1 - x0/2 - x2/2
+                ymid = 2*y1 - y0/2 - y2/2
+                x = bezier(t, x0, xmid, x2)
+                y = bezier(t, y0, ymid, y2)
+
+                dt = 0.001
+                dx = bezier(t+dt, x0, xmid, x2) - x
+                dy = bezier(t+dt, y0, ymid, y2) - y
+                angle = math.atan2(dx, -dy)
+
+                path1.append(('go', 40,
+                              x+offset*cos(angle),
+                              y+offset*sin(angle)))
+
+                if n == 8:
+                    print("%f %f" % (x+offset*cos(angle),
+                                     y+offset*sin(angle)))
+
+        x2 = x1
+        y2 = y1
+        x1 = x0
+        y1 = y0
+        n += 1
+
+    return path1
+
+def whole4path(offset):
+    if False:
+        path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
+                                   6, 5, 4, 12, 18, 22, 25, 31, 33]]
     else:
-        y1 += 0.25
-        y2 -= 0.25
+        path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
+
+    path1 = []
+    x1 = None
+    y1 = None
+    n = 0
+    for (x0, y0) in path:
+        
+        if x1 == None:
+            pass
+        else:
+            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
+            dx = x0-x1
+            dy = y0-y1
+            angle = math.atan2(dx, -dy)
+
+            x = x1
+            y = y1
+
+            path1.append(('go', 40,
+                          x+offset*cos(angle),
+                          y+offset*sin(angle)))
+
+            print("%f %f" % (x+offset*cos(angle),
+                             y+offset*sin(angle)))
+
+        x1 = x0
+        y1 = y0
+        n += 1
+# we need to finish the right way and not forget the last point
+
+    return path1
+
+def whole4aux(dir):
+    global speedsign
+    global last_send
 
     speed0 = 20
 
-    y12 = (y1+y2)/2
     drive(0)
     time.sleep(4)
     drive(speed0)
-    path = [(x2, y1+b + (y12-(y1+b))/3),
-            (x2, y1+b + 2*(y12-(y1+b))/3),
-            (x2, y12),
-            (x2, y12 + (y2-b-y12)/3),
-            (x2, y12 + 2*(y2-b-y12)/3),
-            (x2, y2-b),
-            (x2-b+cos(30*pi/180)*b, y2-b+sin(30*pi/180)*b),
-            (x2-b+cos(60*pi/180)*b, y2-b+sin(60*pi/180)*b),
-            (x2-b, y2),
-            (x1+b, y2),
-            (x1+b-cos(60*pi/180)*b, y2-b+sin(60*pi/180)*b),
-            (x1+b-cos(30*pi/180)*b, y2-b+sin(30*pi/180)*b),
-            (x1, y2-b),
 
-#            (x1, y12 + 2*(y2-b-y12)/3),
-#            (x1, y12 + (y2-b-y12)/3),
+    last_send = None
 
-            (x1, y12),
+    print("speedsign = %d" % speedsign)
+    speedsign = 1
 
-#            (x1, y1+b + 2*(y12-(y1+b))/3),
-#            (x1, y1+b + (y12-(y1+b))/3),
-            
-            (x1, y1+b),
-            (x1+b-cos(30*pi/180)*b, y1+b-sin(30*pi/180)*b),
-            (x1+b-cos(60*pi/180)*b, y1+b-sin(60*pi/180)*b),
-            (x1+b, y1),
-            (x2-b, y1),
-            (x2-b+cos(60*pi/180)*b, y1+b-sin(60*pi/180)*b),
-            (x2-b+cos(30*pi/180)*b, y1+b-sin(30*pi/180)*b),
-            (x2, y1+b),
-            ]
+    path = whole4path(dir*0.25)
 
     if dir == 1:
         path.reverse()
 
     while True:
-        for (x, y) in path:
+        for (_, _, x, y) in path:
             if remote_control:
                 print("whole4 finished")
                 return
             goto_1(x, y)
 
-signalling = False
+# we handle the area from y=10 to max y (19.7)
+def tomiddleline():
+    if abs(ppx - 1.5) < 0.3:
+        print("already near middle line: x = %f" % ppx)
+        return
 
-def signal():
-    while signalling:
-        os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
+    if ppy < 16:
+        targety = ppy + 2.0
+    else:
+        targety = ppy - 2.0
 
-def ambulance(x, y):
-    global signalling
+    sign = 1
 
-    signalling = True
-    start_new_thread(signal, ())
-    drive(20)
-    goto_1(x, y)
-    signalling = False
+    if ppx > 1.5:
+        sign = -sign
+
+    a = ang%360
+    if a > 180:
+        a -= 360
+
+    print("a %f" % a)
+
+    if a < 0:
+        sign = -sign
+
     drive(0)
+    time.sleep(4)
+    drive(sign*20)
+    goto_1(1.5, targety)
+    drive(0)
+
+def tomiddleline2():
+    global detectcrashes
+
+    detectcrashes = False
+
+    while True:
+        if ppx < 0.5 or ppx > 2.5:
+            tomiddleline()
+
+        time.sleep(2)
+
+# assume starting at xmax, ymax, pointing W
+# go to y = 12
+def zigzag():
+    N = 20
+    y = 19.5
+    dy = (19.5-12)/N
+    for i in range(0, N):
+        drive(0)
+        time.sleep(4)
+        drive(20)
+        y -= dy/2
+        goto_1(0.2, y)
+        drive(0)
+        time.sleep(4)
+        drive(-30)
+        y -= dy/2
+        goto_1(2.2, y)
+        drive(0)
