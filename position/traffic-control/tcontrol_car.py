@@ -48,10 +48,14 @@ class Car:
         self.parameter = 152.0
         self.parameter = 120.0
 
+        self.markern = 0
+
+        carinfo_h = 140
+
         v = StringVar()
         v.set("hej")
         tx = Label(g.w, textvariable=v, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+50, window=tx)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+50, window=tx)
         v.set("hopp")
         self.v = v
         self.windows.append(ww)
@@ -59,7 +63,7 @@ class Car:
         v2 = StringVar()
         v2.set("hej")
         tx2 = Label(g.w, textvariable=v2, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+65, window=tx2)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+65, window=tx2)
         v2.set("hopp")
         self.v2 = v2
         self.windows.append(ww)
@@ -67,7 +71,7 @@ class Car:
         v3 = StringVar()
         v3.set("hej")
         tx3 = Label(g.w, textvariable=v3, bg="white", fg=colours[i])
-        ww = g.w.create_window(g.graphw+20, 100*i+80, window=tx3)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+80, window=tx3)
         v3.set("hopp")
         self.v3 = v3
         self.windows.append(ww)
@@ -75,7 +79,7 @@ class Car:
         v4 = StringVar()
         v4.set("hej")
         tx4 = Label(g.w, textvariable=v4, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+95, window=tx4)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+95, window=tx4)
         v4.set("unknown")
         self.v4 = v4
         self.windows.append(ww)
@@ -83,7 +87,7 @@ class Car:
         v5 = StringVar()
         v5.set("hej")
         tx5 = Label(g.w, textvariable=v5, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+110, window=tx5)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+110, window=tx5)
         v5.set("unknown")
         self.v5 = v5
         self.windows.append(ww)
@@ -91,7 +95,7 @@ class Car:
         v6 = StringVar()
         v6.set("hej")
         tx6 = Label(g.w, textvariable=v6, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+125, window=tx6)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+125, window=tx6)
         v6.set("%d" % self.parameter)
         self.v6 = v6
         self.windows.append(ww)
@@ -99,8 +103,16 @@ class Car:
         v7 = StringVar()
         v7.set("hej")
         tx7 = Label(g.w, textvariable=v7, bg="white", fg="black")
-        ww = g.w.create_window(g.graphw+20, 100*i+140, window=tx7)
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+140, window=tx7)
         v7.set("%d" % self.parameter)
         self.v7 = v7
+        self.windows.append(ww)
+
+        v8 = StringVar()
+        v8.set("hej")
+        tx8 = Label(g.w, textvariable=v8, bg="white", fg="black")
+        ww = g.w.create_window(g.graphw+20, carinfo_h*i+155, window=tx8)
+        v8.set("")
+        self.v8 = v8
         self.windows.append(ww)
 
