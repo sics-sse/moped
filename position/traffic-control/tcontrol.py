@@ -120,7 +120,7 @@ def draw_way(offset, w, **kargs):
     path = [nodes[i] for i in ways[w]]
     draw_path(makepath(offset, path), **kargs)
 
-# If the first point is repeated as the last point, we consider tha
+# If the first point is repeated as the last point, we consider the
 # path closed, otherwise not.
 def draw_path(p, **kargs):
     first = True
@@ -136,6 +136,10 @@ def draw_path(p, **kargs):
             else:
                 (x0, y0) = (x, y)
                 first = False
+
+            l = addpoint(g.w, x, y, fill="#000000", width=1)
+            pathlist.append(l)
+
             (x1, y1) = (x, y)
 
 def list_obstacles():
@@ -170,6 +174,12 @@ def xcoord(x):
 def ycoord(y):
     return winh - (scale*y + 10 + yoffset)
 
+
+def addpoint(w, x, y, **kargs):
+    px = xcoord(x)
+    py = ycoord(y)
+#    return w.create_line(px, py, px+1, py, **kargs)
+    return w.create_oval(px-1, py-1, px+1, py+1, **kargs)
 
 def addline(w, x1, y1, x2, y2, **kargs):
     px1 = xcoord(x1)
