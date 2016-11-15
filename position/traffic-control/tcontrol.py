@@ -39,27 +39,6 @@ global currentpath
 
 obstacles = dict()
 
-sp1 = 15
-sp2 = -20
-
-sp1 = 7
-sp2 = -10
-
-sp1 = 25
-sp2 = -30
-
-sp1 = 35
-sp2 = -40
-
-sp1 = 40
-sp2 = -45
-
-sp1 = 30
-sp2 = -35
-
-sp1 = 15
-sp1 = 20
-
 def eightpoint(cy, ang):
     cx = 1.5
     R = 1.0
@@ -67,11 +46,18 @@ def eightpoint(cy, ang):
     y = cy + R*cos(ang*pi/180)
     return (x, y)
 
-nodenumbers = [7, 11, 17, 24, 28, 30, 36,
-               35, 32, 27, 23, 19, 13, 6,
-               5, 10, 16, 23, 26, 29, 34,
-               33, 31, 25, 22, 18, 12, 4,
-               ]
+piece1 = [7, 11, 17, 24, 28, 30, 36]
+piece2 = [35, 32, 27, 23, 19, 13, 6]
+piece3 = [5, 10, 16, 23, 26, 29, 34]
+piece4 = [33, 31, 25, 22, 18, 12, 4]
+
+nodenumbers = piece1 + piece2 + piece3 + piece4
+
+ways = dict()
+
+ways[1] = piece1 + [35, 34] + piece4 + [5, 6] + [piece1[0]]
+ways[3] = piece2
+ways[4] = piece3
 
 nodes = dict()
 
@@ -98,123 +84,7 @@ def eightpath(y1, y2, y3):
     for nr in nodes:
         print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
 
-path1_1 = [('go', sp1, 1.8, 16.2),
-         ('speak', "#"),
-         ('go', sp1, 2.3, 17.5),
-         ('go', sp1, 1.4, 19),
-         ('speak', 'loading'),
-         ('stop',),
-         ('speak', 'loading done'),
-         ('go', sp1, 0.6, 18),
-         ('go', sp1, 0.8, 14.0),
-         ('stop', 0.5),
-         ('go', sp2, 2.5, 14.6),
-         ('speak', 'dumping'),
-         ('stop',),
-         ('speak', 'dumping done')]
-
-path1_2 = [('go', sp1, 1.8, 16.2),
-         ('speak', "#"),
-         ('go', sp1, 2.3, 17.7),
-         ('go', sp1, 1.6, 19),
-         ('speak', 'loading'),
-         ('stop',),
-         ('speak', 'loading done'),
-         ('go', sp1, 0.6, 17),
-         ('stop',),
-         ('go', sp1, 0.8, 12.0),
-         #('stop', 1.0),
-         ('stop', 4.0),
-         ('go', sp2, 2.5, 14.4),
-         ('speak', 'dumping'),
-         ('stop',),
-         ('speak', 'dumping done')]
-
-path1 = path1_2
-
-path2 = [('go', sp1, 2.5, 13.4),
-         ('stop', 0.5),
-         ('go', sp1, 2.5, 14.8),
-         ('stop', 0.5),
-         ('go', sp1, 2.5, 16.2),
-         ('stop', 0.5),
-         ('go', sp1, 2.5, 17.4),
-         ('stop', 0.5),
-         ('go', sp1, 2.0, 18.7),
-         ('stop', 0.5),
-         ('go', sp1, 0.7, 17.4),
-         ('stop', 0.5),
-         ('go', sp1, 0.7, 16.2),
-         ('stop', 0.5),
-         ('go', sp1, 0.7, 14.8),
-         ('stop', 0.5),
-         ('go', sp1, 0.7, 13.4),
-         ('stop', 0.5),
-         ('go', sp1, 1.2, 12.3),
-         ('stop', 0.5)]
-
-path3 = [('go', sp1, 2.3, 13.4),
-         ('stop', 0.5),
-         ('go', sp1, 2.3, 15.4),
-         ('stop', 0.5),
-         ('go', sp1, 2.5, 17.4),
-         ('stop', 0.5),
-         ('go', sp1, 2.1, 18.7),
-         ('stop', 0.5),
-         ('go', sp1, 0.8, 17.4),
-         ('stop', 0.5),
-         ('go', sp1, 0.8, 15.4),
-         ('stop', 0.5),
-         ('go', sp1, 0.8, 13.4),
-         ('stop', 0.5),
-         ('go', sp1, 1.2, 12.3),
-         ('stop', 0.5)]
-
-path3bis = [('go', sp1, 2.3, 13.4),
-         ('go', sp1, 2.3, 15.4),
-         ('go', sp1, 2.5, 17.4),
-         ('go', sp1, 2.1, 18.7),
-         ('go', sp1, 0.8, 17.4),
-         ('go', sp1, 0.8, 15.4),
-         ('go', sp1, 0.8, 13.4),
-         ('go', sp1, 1.2, 12.3),
-            ]
-
-path3bis2 = [('go', sp1, 2.3, 13.4),
-         ('go', sp1, 2.3, 14.4),
-         ('go', sp1, 2.3, 15.4),
-         ('go', sp1, 2.4, 16.4),
-         ('go', sp1, 2.5, 17.4),
-         ('go', sp1, 2.4, 18.0),
-         ('go', sp1, 2.1, 18.7),
-         ('go', sp1, 1.2, 18.8),
-         ('go', sp1, 0.8, 17.4),
-         ('go', sp1, 0.8, 16.4),
-         ('go', sp1, 0.8, 15.4),
-         ('go', sp1, 0.8, 14.4),
-         ('go', sp1, 0.8, 13.4),
-         ('go', sp1, 0.9, 12.7),
-         ('go', sp1, 1.2, 12.3),
-         ('go', sp1, 2.2, 12.2),
-            ]
-
-path4bis = [('go', sp1, 2.3, 13.4),
-         ('go', sp1, 2.3, 15.4),
-         ('go', sp1, 2.5, 17.4),
-         ('go', sp1, 2.1, 18.7),
-         #('go', sp1, 0.8, 17.4),
-         #('go', sp1, 0.8, 15.4),
-         ('go', sp1, 0.8, 13.4),
-         ('go', sp1, 1.2, 12.3),
-            ]
-
-def whole4path(offset):
-    if False:
-        path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
-                                   6, 5, 4, 12, 18, 22, 25, 31, 33]]
-    else:
-        path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
-
+def makepath(offset, path):
     path1 = []
     x1 = None
     y1 = None
@@ -224,7 +94,6 @@ def whole4path(offset):
         if x1 == None:
             pass
         else:
-            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
             dx = x0-x1
             dy = y0-y1
             angle = math.atan2(dx, -dy)
@@ -236,17 +105,24 @@ def whole4path(offset):
                           x+offset*cos(angle),
                           y+offset*sin(angle)))
 
-            print("%f %f" % (x+offset*cos(angle),
-                             y+offset*sin(angle)))
-
         x1 = x0
         y1 = y0
         n += 1
-# we need to finish the right way and not forget the last point
+
+    # use the same angle as for the previous point
+    path1.append(('go', 40,
+                  x1+offset*cos(angle),
+                  y1+offset*sin(angle)))
 
     return path1
 
-def draw_path(p):
+def draw_way(offset, w, **kargs):
+    path = [nodes[i] for i in ways[w]]
+    draw_path(makepath(offset, path), **kargs)
+
+# If the first point is repeated as the last point, we consider tha
+# path closed, otherwise not.
+def draw_path(p, **kargs):
     first = True
 
     for cmd in p:
@@ -255,15 +131,12 @@ def draw_path(p):
             y = cmd[3]
 
             if not first:
-                l = addline2(g.w, x1, y1, x, y)
+                l = addline(g.w, x1, y1, x, y, **kargs)
                 pathlist.append(l)
             else:
                 (x0, y0) = (x, y)
                 first = False
             (x1, y1) = (x, y)
-
-    l = addline2(g.w, x1, y1, x0, y0)
-    pathlist.append(l)
 
 def list_obstacles():
     print obstacles.keys()
@@ -298,19 +171,12 @@ def ycoord(y):
     return winh - (scale*y + 10 + yoffset)
 
 
-def addline(w, x1, y1, x2, y2):
+def addline(w, x1, y1, x2, y2, **kargs):
     px1 = xcoord(x1)
     px2 = xcoord(x2)
     py1 = ycoord(y1)
     py2 = ycoord(y2)
-    return w.create_line(px1, py1, px2, py2)
-
-def addline2(w, x1, y1, x2, y2):
-    px1 = xcoord(x1)
-    px2 = xcoord(x2)
-    py1 = ycoord(y1)
-    py2 = ycoord(y2)
-    return w.create_line(px1, py1, px2, py2, fill="#bbffbb", width=1)
+    return w.create_line(px1, py1, px2, py2, **kargs)
 
 def addcircle(w, x0, y0, r, colour="black"):
     x1 = x0 - r
@@ -386,9 +252,12 @@ def draw_area(w):
         addcircle(w, 1.35, 16.1, 0.04)
         addcircle(w, 1.48, 15.1, 0.04)
 
-    draw_path(whole4path(0))
-    draw_path(whole4path(-0.25))
-    draw_path(whole4path(0.25))
+    for w in ways:
+        draw_way(0, w, fill="#bbffbb", width=1)
+        draw_way(-0.25, w, fill="#bbffbb", width=1)
+        draw_way(0.25, w, fill="#bbffbb", width=1)
+
+    draw_path(makepath(0, thepath), fill="#bbbbff", width=2)
 
 def send_go(carno):
     c = cars[carno-1]
@@ -721,9 +590,11 @@ g.w = Canvas(width=winw, height=winh, bg='white')
 g.w.pack(expand=YES, fill=BOTH)
 
 
-currentpath = path4bis
+currentpath = None
 
 eightpath(19.2,15.4,12.5)
+
+thepath = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
 
 draw_area(g.w)
 
