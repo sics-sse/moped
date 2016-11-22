@@ -1523,7 +1523,16 @@ def goto_1(x, y):
         if st > 100:
             st = 100
         st = asgn*speedsign*st
+
+        if False:
+            st_d = st - steering
+            if st_d > 10:
+                st = steering + 10
+            elif st_d < -10:
+                st = steering - 10
+
         steer(st)
+
         tolog("gotoa4 steer %f" % (st))
 
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (ppx,ppy,ang,time.time()-t0, finspeed))
