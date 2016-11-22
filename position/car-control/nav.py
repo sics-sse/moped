@@ -1510,7 +1510,7 @@ def goto_1(x, y):
         asgn = sign(adiff)
         aval = abs(adiff)
 
-        p = 2.0
+        p = 4.0
 
         st = p*aval
         if st > 100:
@@ -1896,11 +1896,19 @@ def eightpoint(cy, ang):
     y = cy + R*cos(ang*pi/180)
     return (x, y)
 
-nodenumbers = [7, 11, 17, 24, 28, 30, 36,
-               35, 32, 27, 23, 19, 13, 6,
-               5, 10, 16, 23, 26, 29, 34,
-               33, 31, 25, 22, 18, 12, 4,
-               ]
+piece1 = [7, 11, 17, 24, 28, 30, 36]
+piece2 = [35, 32, 27, 23, 19, 13, 6]
+piece3 = [5, 10, 16, 23, 26, 29, 34]
+piece4 = [33, 31, 25, 22, 18, 12, 4]
+
+nodenumbers = piece1 + piece2 + piece3 + piece4
+
+if False:
+    ways = dict()
+
+    ways[1] = piece1 + [35, 34] + piece4 + [5, 6] + [piece1[0]]
+    ways[3] = piece2
+    ways[4] = piece3
 
 nodes = dict()
 
@@ -1925,25 +1933,20 @@ def eightpath(y1, y2, y3):
     l = eightarc(l, y3 + R, 180)
 
     for nr in nodes:
-        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
+#        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
+        pass
 
-def whole4path(offset):
-    if False:
-        path = [nodes[i] for i in [34, 35, 36, 30, 28, 24, 17, 11, 7,
-                                   6, 5, 4, 12, 18, 22, 25, 31, 33]]
-    else:
-        path = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33]]
-
+def makepath(offset, path):
     path1 = []
     x1 = None
     y1 = None
     n = 0
-    for (x0, y0) in path:
+    i1 = None
+    for (i, (x0, y0)) in path:
         
         if x1 == None:
             pass
         else:
-            #print("p0 %f,%f p1 %f,%f p2 %f,%f" % (x0, y0, x1, y1, x2, y2))
             dx = x0-x1
             dy = y0-y1
             angle = math.atan2(dx, -dy)
@@ -1951,23 +1954,56 @@ def whole4path(offset):
             x = x1
             y = y1
 
-            path1.append(('go', 40,
+            path1.append(('go', 40, i1,
                           x+offset*cos(angle),
                           y+offset*sin(angle)))
 
-            print("%f %f" % (x+offset*cos(angle),
-                             y+offset*sin(angle)))
-
+        i1 = i
         x1 = x0
         y1 = y0
         n += 1
-# we need to finish the right way and not forget the last point
+
+    # use the same angle as for the previous point
+    path1.append(('go', 40, i1,
+                  x1+offset*cos(angle),
+                  y1+offset*sin(angle)))
 
     return path1
+
+def rev(l0):
+    l = l0[:]
+    l.reverse()
+    return l
+
+
+piece2a = [35, 32, 27]
+# via 23
+piece2b = [19, 13, 6]
+
+piece3a = [5, 10, 16]
+# via 23
+piece3b = [26, 29, 34]
+
+piece5 = [35, 34]
+piece6 = [5, 6]
+
+def randsel(a, b):
+    k = int(random.random()*2)
+    if k == 0:
+        return a
+    else:
+        return b
+
+def piece2path(p, dir):
+    path1 = [(i, nodes[i]) for i in p]
+    path = makepath(dir*0.25, path1)
+    return path
 
 def whole4aux(dir):
     global speedsign
     global last_send
+
+    # 'dir' is obsolete - it should always be -1
 
     speed0 = 20
 
@@ -1980,17 +2016,65 @@ def whole4aux(dir):
     print("speedsign = %d" % speedsign)
     speedsign = 1
 
-    path = whole4path(dir*0.25)
+    path0 = rev(piece3b) + [23]
+
+    print("path0 = %s" % str(path0))
+
+    # idea: from the current position, determine which piece we can
+    # start with
+
+    path = piece2path(path0, dir)
 
     if dir == 1:
         path.reverse()
 
     while True:
-        for (_, _, x, y) in path:
+        i1 = None
+        for (_, _, i, x, y) in path:
             if remote_control:
                 print("whole4 finished")
                 return
+            i2 = i1
+            i1 = i
             goto_1(x, y)
+
+        print("i1,i2 = %d,%d" % (i1, i2))
+
+        if (i1, i2) == (23, 26):
+            nextpiece = randsel(piece2b, rev(piece3a))
+        elif (i1, i2) == (6, 13):
+            nextpiece = piece1
+        elif (i1, i2) == (36, 30):
+            nextpiece = randsel(piece2a + [23], piece5 + piece4)
+        elif (i1, i2) == (23, 27):
+            nextpiece = randsel(rev(piece3a), piece2b)
+        elif (i1, i2) == (5, 10):
+            nextpiece = rev(piece4)
+        elif (i1, i2) == (33, 31):
+            nextpiece = randsel(rev(piece3b) + [23], rev(piece5) + rev(piece1))
+
+        elif (i1, i2) == (23, 19):
+            nextpiece = randsel(rev(piece2a), piece3b)
+        elif (i1, i2) == (23, 16):
+            nextpiece = randsel(rev(piece2a), piece3b)
+        elif (i1, i2) == (4, 12):
+            nextpiece = randsel(piece6 + piece1, piece3a + [23])
+        elif (i1, i2) == (7, 11):
+            nextpiece = randsel(rev(piece6) + rev(piece4), rev(piece2b) + [23])
+        elif (i1, i2) == (35, 32):
+            nextpiece = rev(piece1)
+        elif (i1, i2) == (34, 29):
+            nextpiece = piece4
+        else:
+            drive(0)
+            return
+
+        # idea: let the connecting node always be a part in both
+        # pieces; then we get a free check whether they actually go
+        # together
+
+        print("nextpiece = %s" % str(nextpiece))
+        path = piece2path(nextpiece, dir)
 
 # we handle the area from y=10 to max y (19.7)
 def tomiddleline():
@@ -2052,6 +2136,7 @@ def zigzag():
         y -= dy/2
         goto_1(2.2, y)
         drive(0)
+
 
 def roundblock(speed = 20):
     drive(speed)
@@ -2234,3 +2319,6 @@ def initpos():
     crash = False
     crashacc = None
     remote_control = False
+
+def gohome():
+    return godir(2.5, 12, 0)
