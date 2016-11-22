@@ -1124,6 +1124,8 @@ def senddrive():
     global last_send
     global ledcmd
 
+    first0done = False
+
     old_sp = 0
     old_st = 0
     while True:
@@ -1144,13 +1146,15 @@ def senddrive():
             if st < 0:
                 st += 256
 
-            if sp == 0 or last_send != (sp, st) or True:
-                cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-                    sp, st)
-                #tolog("senddrive %d %d" % (send_sp, send_st))
-                last_send = (sp, st)
-                os.system(cmd)
-
+            if not senddriveinhibited:
+                if (sp == 0 and not first0done) or last_send != (sp, st):
+                    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                        sp, st)
+                    #tolog("senddrive %d %d" % (send_sp, send_st))
+                    last_send = (sp, st)
+                    os.system(cmd)
+                    if sp == 0:
+                        first0done = True
         if ledcmd:
             (mask, code) = ledcmd
             #print("doing setleds %d %d" % (mask, code))
