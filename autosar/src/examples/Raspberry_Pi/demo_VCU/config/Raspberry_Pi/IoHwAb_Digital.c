@@ -124,13 +124,19 @@ Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32*
 	uint32 fodo;
 	fodo = Sensors_GetWheelPulseTotal(FRONT_WHEEL);
 
-	printf("wheels %d %d %d %d\r\n", *Data, odo, fData, fodo);
+	//	printf("wheels %d %d %d %d\r\n", *Data, odo, fData, fodo);
 
 #if 1
 	// received by a navigation program on the TCU
 	char tbuf[200];
 	// we put our calculation of average speed for REAR in fData
-	fData = 10.2*3.14/5/((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][0])/(SAVED_PULSE_T-1))*1000000;
+	uint64 curt = CURRENT_TIME;
+	uint64 avgt = ((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][0])/(SAVED_PULSE_T-1));
+	if (curt - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] > 2000000) {
+	  fData = 0.0;
+	} else {
+	  fData = 10.2*3.14/5/avgt*1000000;
+	}
 	sprintf(tbuf, "speed x %3d x%d x %3d x%d x",
 		*Data, odo, fData, fodo);
 	autosarSendPackageData(strlen(tbuf), tbuf);
@@ -175,14 +181,15 @@ Std_ReturnType IoHw_WriteServo_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 
 
   servo = vcu_servo_direction*servo;
 
-  //servo *= 1.5;
-
+#if 0
+  servo *= 1.5;
+#else
   if (servo >= 0) {
     servo = servo/100.0*(steering_max - steering_zero) + steering_zero;
   } else {
     servo = servo/100.0*(steering_zero - steering_min) + steering_zero;
   }
-
+#endif
 	uint32 steer = (int) ((100 + (0.55556 * (servo + 100) * 1.0)) * 16.38);
 
 	Pwm_SetPeriodAndDuty(0, 20000, steer);
