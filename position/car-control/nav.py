@@ -2060,6 +2060,15 @@ def zigzag():
         goto_1(2.2, y)
         drive(0)
 
+def roundblock(speed = 20):
+    drive(speed)
+    while True:
+        goto_1(8,12.8)
+        goto_1(8.5,17.7)
+        goto_1(2,18.2)
+        goto_1(1.0,13.5)
+        goto_1(2.0,12.8)
+
 def initpos():
     global markercnt, angleknown, crash, crashacc, remote_control
 
