@@ -924,7 +924,7 @@ def connect_to_ecm():
 
     s = open_socket2()
 
-    t0 = time.time()
+    ecmt0 = time.time()
 
     counter = 0
     crashacc = None
@@ -964,7 +964,7 @@ def connect_to_ecm():
 
         if True:
             t = time.time()
-            if t-t0 > 1.0:
+            if t-ecmt0 > 1.0:
                 #s.send("bar".encode('ascii'))
                 crashacc = 0.0
                 if crash:
@@ -972,7 +972,7 @@ def connect_to_ecm():
                     send_to_ground_control("message crash %f" % crashacc)
                 s.send(('{"crash":%d, "x":%f, "y":%f, "crashacc":%f}\n' % (
                             counter, ppx, ppy, crashacc)).encode("ascii"))
-                t0 = t
+                ecmt0 = t
         time.sleep(0.05)
         if counter != 9:
             counter = (counter+1)%8
