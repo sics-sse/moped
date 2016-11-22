@@ -1226,15 +1226,8 @@ def keepspeed():
         sp *= desiredspeed_sign
 
         if False:
-            if limitspeed:
-                print("outspeedcm %d/%d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
-                        outspeedcm, limitspeed, outspeed, outspeedi, spi, sp,
-                        inspeed, inspeed_avg))
-            else:
-                print("outspeedcm %d outspeed %d outspeedi %d spi %d sp %d inspeed %d inspeed_avg %f" % (
-                        outspeedcm, outspeed, outspeedi, spi, sp,
-                        inspeed, inspeed_avg))
-
+            print("outspeedcm %f finspeed %f outspeedi %d spi %d sp %f outspeed %f" % (
+                    outspeedcm, finspeed, outspeedi, spi, sp, outspeed))
 
         if outspeed == sp and sp != 0:
 #            pass
