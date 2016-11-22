@@ -1520,10 +1520,6 @@ def goto_1(x, y):
         p = 2.0
 
         st = p*aval
-        if VIN == "car3xxx":
-            # special for car3. other cars may have other numbers
-            if asgn < 0:
-                st += 35
         if st > 100:
             st = 100
         st = asgn*speedsign*st
