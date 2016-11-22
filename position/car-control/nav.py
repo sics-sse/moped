@@ -141,6 +141,8 @@ dang = None
 gyron = 0
 
 rbias = 0
+rxbias = 0
+rybias = 0
 
 t0 = None
 
@@ -190,10 +192,13 @@ def readgyro0():
             high = bus.read_byte_data(address, 0x45)
             low = bus.read_byte_data(address, 0x46)
             ry = make_word(high, low)
+            ry -= rybias
 
-            high = bus.read_byte_data(address, 0x43)
-            low = bus.read_byte_data(address, 0x44)
+            w = bus.read_i2c_block_data(address, 0x43, 2)
+            high = w[0]
+            low = w[1]
             rx = make_word(high, low)
+            rx -= rxbias
 
             # make the steering and the angle go in the same direction
             # now positive is clockwise
@@ -994,6 +999,7 @@ def heartbeat():
 def init():
     global VIN
     global logf, goodmarkers, markermsg, rbias, xbias, ybias, zbias, t0
+    global rxbias, rybias
     global px, py, pz
     global ppx, ppy, ppz
     global vx, vy, vz
@@ -1018,6 +1024,7 @@ def init():
     accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg\n")
 
     t0 = time.time()
+    print("t0 = %f" % t0)
 
     tolog("init")
 
@@ -1034,6 +1041,16 @@ def init():
         r = make_word(high, low)
         rbias += r
 
+        high = bus.read_byte_data(address, 0x43)
+        low = bus.read_byte_data(address, 0x44)
+        r = make_word(high, low)
+        rxbias += r
+
+        high = bus.read_byte_data(address, 0x45)
+        low = bus.read_byte_data(address, 0x46)
+        r = make_word(high, low)
+        rybias += r
+
         w = bus.read_i2c_block_data(address, 0x3b, 6)
         x = make_word(w[0], w[1])
         y = make_word(w[2], w[3])
@@ -1044,11 +1061,13 @@ def init():
 
 
     rbias = rbias/float(ncalibrate)
+    rxbias = rxbias/float(ncalibrate)
+    rybias = rybias/float(ncalibrate)
     xbias = xbias/float(ncalibrate)
     ybias = ybias/float(ncalibrate)
     zbias = zbias/float(ncalibrate)
 
-    print("rbias = %f, xbias = %f, ybias = %f, zbias = %f" % (rbias, xbias, ybias, zbias))
+    print("rbias = %f, rxbias = %f, rybias = %f, xbias = %f, ybias = %f, zbias = %f" % (rbias, rxbias, rybias, xbias, ybias, zbias))
 
 
     px = 0.0
