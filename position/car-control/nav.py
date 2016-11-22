@@ -12,7 +12,7 @@ import json
 
 import random
 
-from math import pi, cos, sin, sqrt, atan2
+from math import pi, cos, sin, sqrt, atan2, acos, asin
 
 import urllib
 import urllib.parse
