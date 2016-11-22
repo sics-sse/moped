@@ -121,9 +121,8 @@ global px, py, pz
 global ppx, ppy, ppz
 global vx, vy, vz
 
-global crash
-
 crash = False
+crashacc = None
 
 ppx = 0
 ppy = 0
@@ -919,7 +918,7 @@ def readvin():
     return None
 
 def connect_to_ecm():
-    global crash
+    global crash, crashacc
     global remote_control
     stopped = False
 
@@ -1990,3 +1989,12 @@ def zigzag():
         y -= dy/2
         goto_1(2.2, y)
         drive(0)
+
+def initpos():
+    global markercnt, angleknown, crash, crashacc, remote_control
+
+    markercnt = 0
+    angleknown = False
+    crash = False
+    crashacc = None
+    remote_control = False
