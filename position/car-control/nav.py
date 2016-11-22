@@ -38,7 +38,8 @@ section_status = dict()
 
 warningblinking = None
 
-oldpos = dict()
+#oldpos = dict()
+oldpos = None
 adjust_t = None
 
 newsp = 1
@@ -270,8 +271,9 @@ def readgyro0():
             ppx += ppxi
             ppy += ppyi
 
-            t2_10 = int(t2*10)/10.0
-            oldpos[t2_10] = (ppx, ppy, ang)
+            if oldpos != None:
+                t2_10 = int(t2*10)/10.0
+                oldpos[t2_10] = (ppx, ppy, ang)
 
             # don't put too many things in this thread
 
@@ -459,6 +461,7 @@ def readmarker0():
     global markercnt
     global ppxdiff, ppydiff, angdiff
     global adjust_t
+    global oldpos
 
     recentmarkers = []
 
@@ -504,6 +507,9 @@ def readmarker0():
                 close = True
                 if not angleknown:
                     ang = ori
+                    ppx = x
+                    ppy = y
+                    oldpos = dict()
                 angleknown = True
 
                 it0 = float(m1[5])
@@ -522,11 +528,11 @@ def readmarker0():
                             it0, adjust_t))
                     send_to_ground_control("mpos %f %f %f %f 0 %f" % (x,y,ang,time.time()-t0, inspeed))
                     continue
-                elif it0_10 in oldpos:
+                elif oldpos != None and it0_10 in oldpos:
                     (thenx, theny, thenang) = oldpos[it0_10]
                     doadjust = True
                     tolog0("POS: position then: %f %f" % (thenx, theny))
-                else:
+                elif oldpos != None:
                     tolog0("POS: can't use oldpos")                    
                     continue
 
@@ -589,16 +595,19 @@ def readmarker0():
                                     #angdiff1 /= 2
                                     ppxdiff = ppxdiff1
                                     ppydiff = ppydiff1
+                                    #print("3 ppydiff := %f" % ppydiff)
                                     angdiff = angdiff1
                             else:
                                 ppx = x
                                 ppy = y
+                                #print("1 ppy := %f" % ppy)
                             angdiff = angdiff % 360
                             if angdiff > 180:
                                 angdiff -= 360
                         else:
                             ppx = x
                             ppy = y
+                            #print("2 ppy := %f" % ppy)
                     #vx = sin(ang*pi/180)*inspeed/100
                     #vy = cos(ang*pi/180)*inspeed/100
                     lastpost = it0
@@ -608,6 +617,10 @@ def readmarker0():
             else:
                 age += 1
 
+            if False:
+                print("marker good=%s %d = (%f,%f) (%f, %f) %f %f" % (
+                        str(accepted), markerno, x, y,
+                        ppx, ppy, finspeed, inspeed))
             if accepted:
                 recentmarkers = [str(markerno)] + recentmarkers
             else:
@@ -2249,18 +2262,14 @@ def godir(x1, y1, ang1):
                 x3 = cx2 - R*sin(cang)
                 y3 = cy2 - R*cos(cang)
                 print(((x2, y2), (x3, y3)))
-
-
-
-
-                # do we need the point where the second circle touches the final
-                # line, too?
                 xstart = ppx
                 ystart = ppy
                 drive(0)
                 time.sleep(4)
                 drive(sp*forw2)
                 first = True
+                # Use (x1, cy2) as help point, so we don't turn the wrong
+                # way.
                 for (x, y) in [(x2, y2), (x1, cy2), (x3, y3), (x1, y1)]:
                     if False:
                         if not first:
@@ -2288,15 +2297,14 @@ def godir(x1, y1, ang1):
                 x3 = cx2 - R*cos(cang)
                 y3 = cy2 + R*sin(cang)
                 print(((x2, y2), (x3, y3)))
-                # do we need the point where the second circle touches the final
-                # line, too?
-                # TODO yes, we may turn the wrong way otherwise
                 xstart = ppx
                 ystart = ppy
                 drive(0)
                 time.sleep(4)
                 drive(sp*forw2)
                 first = True
+                # Use (x1, cy2) as help point, so we don't turn the wrong
+                # way.
                 for (x, y) in [(x2, y2), (x1, cy2), (x3, y3), (x1, y1)]:
                     if False:
                         if not first:
