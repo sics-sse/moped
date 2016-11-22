@@ -19,7 +19,7 @@ import urllib.parse
 import paho.mqtt.client as mosquitto
 
 def start_new_thread(f, args):
-    threading.Thread(target=f, args=args).start()
+    threading.Thread(target=f, args=args, daemon=True).start()
 
 global VIN
 #VIN = sys.argv[1]
