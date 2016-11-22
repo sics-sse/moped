@@ -1200,20 +1200,23 @@ def keepspeed():
         if user_pause:
             desiredspeed = 0
 
-        if desiredspeed > inspeed_avg:
+        if desiredspeed > finspeed:
             if spi < len(speeds)-1:
                 spi += 1
-        elif desiredspeed < inspeed_avg:
+        elif desiredspeed < finspeed:
             if spi > 0:
                 spi -= 1
 
+        desiredspeed_sign = sign(desiredspeed)
+        desiredspeed_abs = abs(desiredspeed)
         if True:
             # bypass the control
-            desiredspeed_sign = sign(desiredspeed)
-            desiredspeed_abs = abs(desiredspeed)
             spi = int(desiredspeed_abs/10)
             if spi > len(speeds)-1:
                 spi = len(speeds)-1
+            sleeptime = 1
+        else:
+            sleeptime = 3
 
         sp = speeds[spi]
         outspeedi = spi
@@ -1256,7 +1259,7 @@ def keepspeed():
 #            st += 256
         tolog("motor %d steer %d" % (sp, st))
         dodrive(sp, st)
-        time.sleep(1.0)
+        time.sleep(sleeptime)
 
 def dist(x1, y1, x2, y2):
     return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
