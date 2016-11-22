@@ -275,10 +275,16 @@ def readgyro0():
 
             # don't put too many things in this thread
 
-            accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f\n" % (
-                    x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
-                    angvel, can_steer, can_speed, inspeed, outspeed, odometer,
-                    z0, r, rx, ry, acc, finspeed, fodometer, newspt-t0, newsp, inspeed_avg))
+            if False:
+                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f %d %f %d\n" % (
+                        x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
+                        angvel, can_steer, can_speed, inspeed, outspeed, odometer,
+                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, inspeed_avg, totals, dstatus, can_ultra, can_ultra_count))
+            else:
+                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f\n" % (
+                        x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
+                        angvel, can_steer, can_speed, inspeed, outspeed, odometer,
+                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, inspeed_avg, can_ultra))
 
             newsp = 0
 
@@ -1033,7 +1039,10 @@ def init():
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg\n")
+    if False:
+        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg totals dtatus can_ultra can_ultra_count\n")
+    else:
+        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg can_ultra\n")
 
     t0 = time.time()
     print("t0 = %f" % t0)
