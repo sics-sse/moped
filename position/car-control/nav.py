@@ -2069,6 +2069,170 @@ def roundblock(speed = 20):
         goto_1(1.0,13.5)
         goto_1(2.0,12.8)
 
+# going clockwise from a1, does a2 come before a3?
+def between(a1, a2, a3):
+    a21 = (a2-a1)%360
+    if a21 < 0:
+        a21 += 360
+    a31 = (a3-a1)%360
+    if a31 < 0:
+        a31 += 360
+    b = (a21 < a31)
+    print("between %f %f %f -> %f %f -> %s" % (a1, a2, a3, a21, a31, str(b)))
+    return b
+
+def godir(x1, y1, ang1):
+    # The "final line" is the line passing through (x1, y1) with angle ang1.
+    # When the car is on it with angle ang1, it can simply go straight to
+    # (x1, y1).
+
+    print((ppx, ppy, ang))
+
+    # can the car turn without hitting the wall?
+    # use only the original corridor, not the eastern one
+    dx = R*cos(ang*pi/180)
+    dy = -R*sin(ang*pi/180)
+    turnings = []
+    # TODO: admit also partial circles
+    for dir in [-1, 1]:
+        cx = ppx + dir*dx
+        cy = ppy + dir*dy
+        if cx > R and cx < 3.0-R and cy > 12.0+R and cy < 19.7-R:
+            turnings.append((dir, cx, cy, -180, 180))
+        # convention: first angle to second angle, going clockwise, spans
+        # the available arc (so min and max are not useful words)
+        elif cx < R and cy > 12.0+R and cy < 19.7-R:
+            turnings.append((dir, cx, cy,
+                             -asin(cx/R)*180/pi,
+                             180+asin(cx/R)*180/pi))
+        elif cx > 3.0-R and cy > 12.0+R and cy < 19.7-R:
+            turnings.append((dir, cx, cy,
+                             asin((3.0-cx)/R)*180/pi,
+                             180-asin((3-cx)/R)*180/pi))
+        # TODO: upper and lower edge, and hitting two edges
+
+    print(turnings)
+
+    if turnings == []:
+        return False
+
+    # On the line of circle centers which goes parallel to the final
+    # line, find a point which is further away than R from one of the
+    # centers in 'turnings'.
+
+    # Assume ang1 = 0 now.
+
+    # One line of circle centers is x = x1-R.
+
+    sp = 30
+
+    ymid = (12.0+19.7)/2
+    cx2 = x1-R
+    if cy > ymid:
+        cy2 = (12.0+ymid)/2
+    else:
+        cy2 = (19.7+ymid)/2
+
+    # TODO: we must also consider the twin circle to the right of the final
+    # line. use it if x2 > x1
+
+    # forw2 is the final direction when arriving at (x1, y1)
+    if cy2 > y1:
+        forw2 = -1
+    else:
+        forw2 = 1
+
+    # Currently, we can always turn so that we are in the correct
+    # direction from the start.
+    forw1 = forw2
+
+    for (dir, cx, cy, minang, maxang) in turnings:
+
+        print("dir = %d forw2 = %d" % (dir, forw2))
+        if dir == 1:
+            if forw2 == -1:
+                cxmid = (cx+cx2)/2
+                cymid = (cy+cy2)/2
+                cang = atan2(cx2-cx, cy2-cy)
+                cang2 = acos(R/dist(cxmid, cymid, cx2, cy2))
+                print("cx2,cy2 = %f %f" % (cx2, cy2))
+                print("cang cang2 %f %f" % (cang*180/pi, cang2*180/pi))
+                print((cang*180/pi, cang2*180/pi))
+                cang = cang2 + cang
+                ang21 = ang-90
+                ang2 = 180/pi*cang
+                print("angles %f %f %f %f" % (minang, ang2, ang21, maxang))
+                if minang != -180 or maxang != 180:
+                    if (not between(minang, ang2, ang21) or
+                        not between(ang2, ang21, maxang)):
+                        continue
+                x2 = cx + R*sin(cang)
+                y2 = cy + R*cos(cang)
+                x3 = cx2 - R*sin(cang)
+                y3 = cy2 - R*cos(cang)
+                print(((x2, y2), (x3, y3)))
+
+
+
+
+                # do we need the point where the second circle touches the final
+                # line, too?
+                xstart = ppx
+                ystart = ppy
+                drive(0)
+                time.sleep(4)
+                drive(sp*forw2)
+                first = True
+                for (x, y) in [(x2, y2), (x1, cy2), (x3, y3), (x1, y1)]:
+                    if False:
+                        if not first:
+                            drive(0)
+                            time.sleep(4)
+                            drive(sp*forw2)
+                    goto_1(x, y)
+                    first = False
+                drive(0)
+                return True
+            else:
+                pass
+        else:
+            if forw2 == -1:
+                cang = atan2(cx2-cx, cy2-cy)
+                ang21 = ang+90
+                ang2 = 180/pi*cang-90
+                print("angles %f %f %f %f" % (minang, ang21, ang2, maxang))
+                if minang != -180 or maxang != 180:
+                    if (not between(minang, ang21, ang2) or
+                        not between(ang21, ang2, maxang)):
+                        continue
+                x2 = cx - R*cos(cang)
+                y2 = cy + R*sin(cang)
+                x3 = cx2 - R*cos(cang)
+                y3 = cy2 + R*sin(cang)
+                print(((x2, y2), (x3, y3)))
+                # do we need the point where the second circle touches the final
+                # line, too?
+                # TODO yes, we may turn the wrong way otherwise
+                xstart = ppx
+                ystart = ppy
+                drive(0)
+                time.sleep(4)
+                drive(sp*forw2)
+                first = True
+                for (x, y) in [(x2, y2), (x1, cy2), (x3, y3), (x1, y1)]:
+                    if False:
+                        if not first:
+                            drive(0)
+                            time.sleep(4)
+                            drive(sp*forw2)
+                    goto_1(x, y)
+                    first = False
+                drive(0)
+                return True
+            else:
+                pass
+    return False
+
 def initpos():
     global markercnt, angleknown, crash, crashacc, remote_control
 
