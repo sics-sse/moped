@@ -78,6 +78,8 @@ last_send = None
 send_sp = None
 send_st = None
 
+dstatus = 0
+
 ground_control = None
 
 rc_button = False
@@ -169,6 +171,7 @@ def readgyro0():
     global newsp
     global newspt
     global totals
+    global dstatus
 
     try:
 
@@ -199,6 +202,18 @@ def readgyro0():
             low = w[1]
             rx = make_word(high, low)
             rx -= rxbias
+
+            if False:
+                if rx > 120 and finspeed != 0 and dstatus != 2:
+                    inhibitdodrive()
+                    dstatus = 2
+                    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                        246, 0)
+                    os.system(cmd)
+    #                dodrive(0, 0)
+                    print("stopped")
+                    drive(0)
+
 
             # make the steering and the angle go in the same direction
             # now positive is clockwise
@@ -1098,6 +1113,14 @@ def dodrive(sp, st):
     global send_sp, send_st
     send_sp = sp
     send_st = st
+
+global senddriveinhibited
+senddriveinhibited = False
+
+def inhibitdodrive():
+    global senddriveinhibited
+    senddriveinhibited = True
+
 
 def senddrive():
     global send_sp, send_st
