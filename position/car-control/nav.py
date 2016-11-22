@@ -66,6 +66,8 @@ fodometer = 0
 lastodometer = None
 age = -1
 
+totals = 0
+
 limitspeed = None
 
 can_steer = 0
@@ -164,6 +166,7 @@ def readgyro0():
     global crash
     global newsp
     global newspt
+    global totals
 
     try:
 
@@ -242,8 +245,14 @@ def readgyro0():
             vvx = inspeed*corr/100.0*sin(pi/180*ang)
             vvy = inspeed*corr/100.0*cos(pi/180*ang)
 
-            ppx += vvx*dt
-            ppy += vvy*dt
+            ppxi = vvx*dt
+            ppyi = vvy*dt
+
+#            ds = sqrt(ppxi*ppxi+ppyi*ppyi)
+#            totals += ds
+
+            ppx += ppxi
+            ppy += ppyi
 
             t2_10 = int(t2*10)/10.0
             oldpos[t2_10] = (ppx, ppy, ang)
