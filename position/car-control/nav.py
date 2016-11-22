@@ -181,13 +181,9 @@ def readgyro0():
         while True:
             gyron += 1
 
-            if True:
-                w = bus.read_i2c_block_data(address, 0x47, 2)
-                high = w[0]
-                low = w[1]
-            else:
-                high = bus.read_byte_data(address, 0x47)
-                low = bus.read_byte_data(address, 0x48)
+            w = bus.read_i2c_block_data(address, 0x47, 2)
+            high = w[0]
+            low = w[1]
             r = make_word(high, low)
 
             r -= rbias
@@ -627,7 +623,7 @@ def readspeed2():
     global inspeed_avg
     global speedsign
     global can_steer, can_speed
-    global can_ultra
+    global can_ultra, can_ultra_count
     global rc_button, remote_control
     global newsp, newspt
 
@@ -711,6 +707,7 @@ def readspeed2():
 
                     #print((cnt,d))
                     can_ultra = d/100.0
+                    can_ultra_count = cnt
                 part2 = b""
             part2 += data[9:]
             
