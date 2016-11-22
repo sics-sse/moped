@@ -499,7 +499,8 @@ def readmarker0():
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
             if (markerno > -1 and quality > 0.35 and markerno not in badmarkers
-                and x > -0.3 and x < 3.3 and y > 0 and y < 19.7):
+                and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
+                or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5)):
                 close = True
                 if not angleknown:
                     ang = ori
@@ -1174,7 +1175,7 @@ def senddrive():
 
 
 # 0 to 9
-speeds = [0, 11, 15, 19, 23, 27, 37, 41, 45, 49]
+speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49]
 # should 7 be here too?
 
 def keepspeed():
