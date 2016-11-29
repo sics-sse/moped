@@ -31,6 +31,10 @@ parameter = 100
 parameter = 152
 parameter = 120
 
+allangles = False
+ignoremarkers = False
+
+detectcrashes = False
 detectcrashes = True
 
 ledcmd = None
@@ -58,6 +62,11 @@ markercnt = 0
 
 speedsign = 1
 braking = False
+
+global mxmin
+global mxmax
+global mymin
+global mymax
 
 angleknown = False
 marker = None
@@ -107,6 +116,9 @@ bus = smbus.SMBus(1)
 
 address = 0x68
 
+def Write_Sensor(reg, val):
+    bus.write_byte_data(address, reg, val)
+
 bus.write_byte_data(address, 0x6b, 0)
 bus.read_byte_data(address, 0x75)
 
@@ -115,6 +127,93 @@ bus.read_byte_data(address, 0x75)
 
 bus.write_byte_data(address, 0x1a, 1)
 bus.write_byte_data(address, 0x1b, 16)
+
+MPU9150_SMPLRT_DIV = 0x19 # 25
+MPU9150_CONFIG = 0x1a # 26
+MPU9150_GYRO_CONFIG = 0x1b
+MPU9150_ACCEL_CONFIG = 0x1c
+MPU9150_FIFO_EN = 0x23
+MPU9150_I2C_MST_CTRL = 0x24
+MPU9150_I2C_SLV0_ADDR = 0x25
+MPU9150_I2C_SLV0_REG = 0x26
+MPU9150_I2C_SLV0_CTRL = 0x27
+MPU9150_I2C_SLV1_ADDR = 0x28
+MPU9150_I2C_SLV1_REG = 0x29
+MPU9150_I2C_SLV1_CTRL = 0x2a
+MPU9150_I2C_SLV1_DO = 0x64
+MPU9150_I2C_MST_DELAY_CTRL = 0x67 # 103
+MPU9150_I2C_SLV4_CTRL = 0x34 # 52
+MPU9150_USER_CTRL = 0x6a #106
+
+def sleep(x):
+    if True:
+        time.sleep(x)
+
+def imuinit():
+
+    bus.write_byte_data(address, 0x6b, 0x80)
+    sleep(0.1)
+    bus.write_byte_data(address, 0x6b, 0)
+
+    b = bus.read_byte_data(address, 0x49)
+    print("read byte %#x" % b)
+
+    sleep(0.1)
+    Write_Sensor(MPU9150_I2C_SLV0_ADDR, 0x8C);
+    b = bus.read_byte_data(address, 0x49)
+    print("read byte %#x" % b)
+
+    sleep(0.1)
+    Write_Sensor(MPU9150_I2C_SLV0_CTRL, 0x88);
+    sleep(0.1)
+    b = bus.read_byte_data(address, 0x49)
+    print("read byte %#x" % b)
+
+    Write_Sensor(MPU9150_USER_CTRL, 0x20);
+    sleep(0.1)
+
+    while True:
+        b = bus.read_byte_data(address, 0x49)
+        print("read byte %#x" % b)
+        if b == 0x48:
+            break
+
+    if True:
+        # this did the trick:
+        Write_Sensor(MPU9150_CONFIG, 0x02);
+        # maybe important:
+        Write_Sensor(MPU9150_GYRO_CONFIG, 0x08);
+        sleep(0.1)
+
+        Write_Sensor(MPU9150_SMPLRT_DIV, 0x7);
+        sleep(0.1)
+
+        Write_Sensor(MPU9150_I2C_SLV1_ADDR, 0x0C);
+        sleep(0.1)
+        # Set where reading at slave 1 starts
+        Write_Sensor(MPU9150_I2C_SLV1_REG, 0x0A);
+        sleep(0.1)
+        # Enable at set length to 1
+        Write_Sensor(MPU9150_I2C_SLV1_CTRL, 0x81);
+        sleep(0.1)
+
+        # overvride register
+        Write_Sensor(MPU9150_I2C_SLV1_DO, 0x01);
+        sleep(0.1)
+
+        # set delay rate
+        Write_Sensor(MPU9150_I2C_MST_DELAY_CTRL, 0x03);
+        sleep(0.1)
+        # set i2c slv4 delay
+        Write_Sensor(MPU9150_I2C_SLV4_CTRL, 0x04);
+        sleep(0.1)
+
+
+
+imuinit()
+
+bus.write_byte_data(address, MPU9150_CONFIG, 1)
+bus.write_byte_data(address, MPU9150_GYRO_CONFIG, 16)
 
 dt = 1.0/836
 # when reading gyro in the main thread:
@@ -155,6 +254,10 @@ def make_word(high, low):
     x = high*256+low
     if x >= 32768:
         x -= 65536
+    return x
+
+def make_word2(high, low):
+    x = high*256+low
     return x
 
 def readgyro():
@@ -279,16 +382,38 @@ def readgyro0():
 
             # don't put too many things in this thread
 
+            w = bus.read_i2c_block_data(address, 0x4c, 6)
+            mx0 = make_word(w[1], w[0])
+            my0 = make_word(w[3], w[2])
+            mz0 = make_word(w[5], w[4])
+
+            mx = float((mx0-mxmin))/(mxmax-mxmin)*2 - 1
+            my = float((my0-mymin))/(mymax-mymin)*2 - 1
+            mz = mz0
+
+            quot = (mx+my)/sqrt(2)
+            if quot > 1.0:
+                quot = 1.0
+            if quot < -1.0:
+                quot = -1.0
+            mang = (asin(quot))*180/pi+45
+            if mx < my:
+                mang = 270-mang
+                mang = mang%360
+
+            mang = -mang
+            mang = mang%360
+
             if False:
                 accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f %d %f %d\n" % (
                         x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
                         angvel, can_steer, can_speed, inspeed, outspeed, odometer,
                         z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, inspeed_avg, totals, dstatus, can_ultra, can_ultra_count))
             else:
-                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f\n" % (
+                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %d %d\n" % (
                         x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
                         angvel, can_steer, can_speed, inspeed, outspeed, odometer,
-                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, inspeed_avg, can_ultra))
+                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, mang, mx0, my0))
 
             newsp = 0
 
@@ -313,7 +438,7 @@ def readgyro0():
 
     except Exception as e:
         tolog("exception in readgyro: " + str(e))
-
+        print("exception in readgyro: " + str(e))
 
 def tolog2(str0, stdout):
 
@@ -451,6 +576,7 @@ def readmarker():
             readmarker0()
         except Exception as e:
             tolog("readmarker exception %s" % str(e))
+            print("readmarker exception %s" % str(e))
 
 def readmarker0():
     global marker, age, lastmarker0, markermsg
@@ -477,6 +603,9 @@ def readmarker0():
             continue
 
         lastmarker0 = m
+
+        if ignoremarkers:
+            continue
 
         tolog0("marker0 %s age %d" % (m, age))
         m1 = m.split(" ")
@@ -1039,9 +1168,29 @@ def init():
     global vx, vy, vz
     global accf
     global angleknown
+    global mxmin, mxmax, mymin, mymax
 
     VIN = readvin()
     print("VIN %s" % VIN)
+
+    if VIN == "car5":
+        mxmin = -99
+        mxmax = -40
+        mymin = 100
+        mymax = 152
+
+    if VIN == "car3":
+        mxmin = -20
+        mxmax = 39
+        mymin = 37
+        mymax = 85
+
+    # fake, just to make them defined
+    if VIN == "car4":
+        mxmin = 0
+        mxmax = 100
+        mymin = 0
+        mymax = 100
 
     angleknown = False
 
@@ -1058,7 +1207,7 @@ def init():
     if False:
         accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg totals dtatus can_ultra can_ultra_count\n")
     else:
-        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg can_ultra\n")
+        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp mang mx0 my0\n")
 
     t0 = time.time()
     print("t0 = %f" % t0)
@@ -1078,15 +1227,16 @@ def init():
         r = make_word(high, low)
         rbias += r
 
-        high = bus.read_byte_data(address, 0x43)
-        low = bus.read_byte_data(address, 0x44)
-        r = make_word(high, low)
-        rxbias += r
+        if False:
+            high = bus.read_byte_data(address, 0x43)
+            low = bus.read_byte_data(address, 0x44)
+            r = make_word(high, low)
+            rxbias += r
 
-        high = bus.read_byte_data(address, 0x45)
-        low = bus.read_byte_data(address, 0x46)
-        r = make_word(high, low)
-        rybias += r
+            high = bus.read_byte_data(address, 0x45)
+            low = bus.read_byte_data(address, 0x46)
+            r = make_word(high, low)
+            rybias += r
 
         w = bus.read_i2c_block_data(address, 0x3b, 6)
         x = make_word(w[0], w[1])
@@ -1095,7 +1245,6 @@ def init():
         xbias += x
         ybias += y
         zbias += z
-
 
     rbias = rbias/float(ncalibrate)
     rxbias = rxbias/float(ncalibrate)
@@ -1506,8 +1655,7 @@ def goto_1(x, y):
         #print(adiff)
 
 #        if dist < TARGETDIST or dist < brake_s or missed:
-        if abs(adiff) > 90 or dist < 0.3:
-#        if dist < 0.3:
+        if (not allangles and abs(adiff) > 90) or dist < 0.3:
             if False:
                 #stop("9")
     #            drive(-1)
@@ -2182,17 +2330,49 @@ def gohome():
         return l
     forw2 = -1
     sp = 30
+    first = True
+    dir0 = 0
+    for (x, y, dir) in l[1:]:
+        if dir != dir0:
+            drive(0)
+            time.sleep(4)
+            drive(sp*dir)
+        dir0 = dir
+        print("going to %f %f %d" % (x, y, dir))
+        goto_1(x, y)
+    drive(0)
+
+def calmag():
+    global mxmin, mxmax, mymin, mymax
+
+    first = True
+
     drive(0)
     time.sleep(4)
-    drive(sp*forw2)
-    first = True
-    for (x, y) in l[1:]:
-        if False:
-            if not first:
-                drive(0)
-                time.sleep(4)
-                drive(sp*forw2)
-        print("going to %f %f" % (x, y))
-        goto_1(x, y)
-        first = False
+    steer(-100)
+    drive(20)
+
+    t0 = time.time()
+
+    while time.time() < t0 + 20:
+        w = bus.read_i2c_block_data(address, 0x4c, 6)
+        print(w)
+        mx = make_word(w[1], w[0])
+        my = make_word(w[3], w[2])
+        if first:
+            mxmin = mx
+            mxmax = mx
+            mymin = my
+            mymax = my
+            first = False
+        if mxmin > mx:
+            mxmin = mx
+        if mxmax < mx:
+            mxmax = mx
+        if mymin > my:
+            mymin = my
+        if mymax < my:
+            mymax = my
+
     drive(0)
+    print((mxmin, mxmax, mymin, mymax))
