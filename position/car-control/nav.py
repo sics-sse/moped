@@ -517,7 +517,8 @@ def on_message(mosq, obj, msg):
             if m:
             #print("battery %s" % m.group(1))
                 battery = float(m.group(1))
-                send_to_ground_control("battery %f" % battery)
+                if battery < 20:
+                    send_to_ground_control("battery %f" % battery)
         return
 
     # We still read this, but we don't use 'ultra' - we use 'can_ultra'
