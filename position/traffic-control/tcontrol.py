@@ -81,15 +81,17 @@ def eightpath(y1, y2, y3):
     l = eightarc(l, y2 - R, 0)
     l = eightarc(l, y3 + R, 180)
 
-    for nr in nodes:
-        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
+    if False:
+        for nr in nodes:
+            print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
 
 def makepath(offset, path):
     path1 = []
     x1 = None
     y1 = None
     n = 0
-    for (x0, y0) in path:
+    i1 = None
+    for (i, (x0, y0)) in path:
         
         if x1 == None:
             pass
@@ -101,24 +103,29 @@ def makepath(offset, path):
             x = x1
             y = y1
 
-            path1.append(('go', 40,
+            path1.append(('go', 40, i1,
                           x+offset*cos(angle),
                           y+offset*sin(angle)))
 
+        i1 = i
         x1 = x0
         y1 = y0
         n += 1
 
     # use the same angle as for the previous point
-    path1.append(('go', 40,
+    path1.append(('go', 40, i1,
                   x1+offset*cos(angle),
                   y1+offset*sin(angle)))
 
     return path1
 
 def draw_way(offset, w, **kargs):
-    path = [nodes[i] for i in ways[w]]
-    draw_path(makepath(offset, path), **kargs)
+    path = [(i, nodes[i]) for i in ways[w]]
+    p = makepath(offset, path)
+    if offset != 0:
+        for (_, _, i, x, y) in p:
+            print "%f %d %f %f" % (offset, i, x, y)
+    draw_path(p, **kargs)
 
 # If the first point is repeated as the last point, we consider the
 # path closed, otherwise not.
@@ -127,8 +134,9 @@ def draw_path(p, **kargs):
 
     for cmd in p:
         if cmd[0] == 'go':
-            x = cmd[2]
-            y = cmd[3]
+            i = cmd[2]
+            x = cmd[3]
+            y = cmd[4]
 
             if not first:
                 l = addline(g.w, x1, y1, x, y, **kargs)
@@ -604,7 +612,7 @@ currentpath = None
 
 eightpath(19.2,15.4,12.5)
 
-thepath = [nodes[i] for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
+thepath = [(i, nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
 
 draw_area(g.w)
 
