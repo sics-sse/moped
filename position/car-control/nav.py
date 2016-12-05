@@ -279,6 +279,15 @@ def readgyro0():
     global totals
     global dstatus
 
+    x = 0.0
+    y = 0.0
+    x0 = 0.0
+    y0 = 0.0
+    z0 = 0.0
+    rx = 0.0
+    ry = 0.0
+    acc = 0.0
+
     try:
 
         tlast = time.time()
@@ -294,16 +303,17 @@ def readgyro0():
 
             r -= rbias
 
-            high = bus.read_byte_data(address, 0x45)
-            low = bus.read_byte_data(address, 0x46)
-            ry = make_word(high, low)
-            ry -= rybias
+            if True:
+                high = bus.read_byte_data(address, 0x45)
+                low = bus.read_byte_data(address, 0x46)
+                ry = make_word(high, low)
+                ry -= rybias
 
-            w = bus.read_i2c_block_data(address, 0x43, 2)
-            high = w[0]
-            low = w[1]
-            rx = make_word(high, low)
-            rx -= rxbias
+                w = bus.read_i2c_block_data(address, 0x43, 2)
+                high = w[0]
+                low = w[1]
+                rx = make_word(high, low)
+                rx -= rxbias
 
             if False:
                 if rx > 120 and finspeed != 0 and dstatus != 2:
@@ -329,38 +339,39 @@ def readgyro0():
             dang = angvel*dt
             ang += dang
 
-            w = bus.read_i2c_block_data(address, 0x3b, 6)
-            x = make_word(w[0], w[1])
-            x -= xbias
-            y = make_word(w[2], w[3])
-            y -= ybias
-            z = make_word(w[4], w[5])
-            z -= zbias
+            if True:
+                w = bus.read_i2c_block_data(address, 0x3b, 6)
+                x = make_word(w[0], w[1])
+                x -= xbias
+                y = make_word(w[2], w[3])
+                y -= ybias
+                z = make_word(w[4], w[5])
+                z -= zbias
 
-            x /= ascale
-            y /= ascale
-            z /= ascale
+                x /= ascale
+                y /= ascale
+                z /= ascale
 
-            acc = sqrt(x*x+y*y+z*z)
-            if acc > 9.0 and detectcrashes:
-                crash = acc
+                acc = sqrt(x*x+y*y+z*z)
+                if acc > 9.0 and detectcrashes:
+                    crash = acc
 
-            x0 = -x
-            y0 = -y
-            z0 = z
+                x0 = -x
+                y0 = -y
+                z0 = z
 
-            # the signs here assume that x goes to the right and y forward
+                # the signs here assume that x goes to the right and y forward
 
-            x = x0*cos(pi/180*ang) - y0*sin(pi/180*ang)
-            y = x0*sin(pi/180*ang) + y0*cos(pi/180*ang)
+                x = x0*cos(pi/180*ang) - y0*sin(pi/180*ang)
+                y = x0*sin(pi/180*ang) + y0*cos(pi/180*ang)
 
-            vx += x*dt
-            vy += y*dt
-            vz += z*dt
+                vx += x*dt
+                vy += y*dt
+                vz += z*dt
 
-            px += vx*dt
-            py += vy*dt
-            pz += vz*dt
+                px += vx*dt
+                py += vy*dt
+                pz += vz*dt
 
             corr = 1.0
 
@@ -370,8 +381,9 @@ def readgyro0():
             ppxi = vvx*dt
             ppyi = vvy*dt
 
-#            ds = sqrt(ppxi*ppxi+ppyi*ppyi)
-#            totals += ds
+            if True:
+                ds = sqrt(ppxi*ppxi+ppyi*ppyi)
+                totals += ds
 
             ppx += ppxi
             ppy += ppyi
@@ -382,38 +394,34 @@ def readgyro0():
 
             # don't put too many things in this thread
 
-            w = bus.read_i2c_block_data(address, 0x4c, 6)
-            mx0 = make_word(w[1], w[0])
-            my0 = make_word(w[3], w[2])
-            mz0 = make_word(w[5], w[4])
+            if False:
+                w = bus.read_i2c_block_data(address, 0x4c, 6)
+                mx0 = make_word(w[1], w[0])
+                my0 = make_word(w[3], w[2])
+                mz0 = make_word(w[5], w[4])
 
-            mx = float((mx0-mxmin))/(mxmax-mxmin)*2 - 1
-            my = float((my0-mymin))/(mymax-mymin)*2 - 1
-            mz = mz0
+                mx = float((mx0-mxmin))/(mxmax-mxmin)*2 - 1
+                my = float((my0-mymin))/(mymax-mymin)*2 - 1
+                mz = mz0
 
-            quot = (mx+my)/sqrt(2)
-            if quot > 1.0:
-                quot = 1.0
-            if quot < -1.0:
-                quot = -1.0
-            mang = (asin(quot))*180/pi+45
-            if mx < my:
-                mang = 270-mang
+                quot = (mx+my)/sqrt(2)
+                if quot > 1.0:
+                    quot = 1.0
+                if quot < -1.0:
+                    quot = -1.0
+                mang = (asin(quot))*180/pi+45
+                if mx < my:
+                    mang = 270-mang
+                    mang = mang%360
+
+                mang = -mang
                 mang = mang%360
 
-            mang = -mang
-            mang = mang%360
-
-            if False:
-                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %f %d %f %d\n" % (
+            if True:
+                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
                         x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
                         angvel, can_steer, can_speed, inspeed, outspeed, odometer,
-                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, inspeed_avg, totals, dstatus, can_ultra, can_ultra_count))
-            else:
-                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %d %f %d %d\n" % (
-                        x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang,
-                        angvel, can_steer, can_speed, inspeed, outspeed, odometer,
-                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, newsp, mang, mx0, my0))
+                        z0, r, rx, ry, acc, finspeed, fodometer, t2-t0, can_ultra))
 
             newsp = 0
 
@@ -593,6 +601,8 @@ def readmarker0():
 
     recentmarkers = []
 
+    markertime = None
+
     while True:
         p = subprocess.Popen("tail -1 /tmp/marker0", stdout=subprocess.PIPE, shell=True);
         res = p.communicate()
@@ -632,9 +642,16 @@ def readmarker0():
 #            if angleknown and abs(odiff) > 45.0 and markerno != -1:
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
-            if (markerno > -1 and quality > 0.35 and markerno not in badmarkers
-                and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
-                or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5)):
+            if markertime == None or t-markertime > 10:
+                #markertime = t
+                skipmarker = False
+            else:
+                skipmarker = True
+
+            if ((markerno > -1 and quality > 0.35 and markerno not in badmarkers
+                 and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
+                 or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5))
+                and not skipmarker):
                 close = True
                 if not angleknown:
                     ang = ori
@@ -1019,10 +1036,10 @@ def from_ground_control():
                     n = int(l[1])
                     closest = None
                     for i in range(0, n):
-                        dir = float(l[5*i+2])
+                        #dir = float(l[5*i+2])
                         dist = float(l[5*i+3])
-                        x = float(l[5*i+4])
-                        y = float(l[5*i+5])
+                        #x = float(l[5*i+4])
+                        #y = float(l[5*i+5])
                         othercar = float(l[5*i+6])
                         if closest == None or closest > dist:
                             closest = dist
@@ -1037,6 +1054,9 @@ def from_ground_control():
                             closest = 0
                         # 4 is our safety margin and should make for
                         # a smoother ride
+                        if limitspeed == None:
+                            print("car in front")
+                        tolog("car in front")
                         limitspeed = 100*closest/0.85/4
                         if limitspeed < 11:
                             #print("setting limitspeed to 0")
@@ -1204,10 +1224,7 @@ def init():
     accf = open("acclog", "w")
     #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, vx, vy, px, py, x0, y0, vvx, vvy, ppx, ppy, ang))
-    if False:
-        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp inspavg totals dtatus can_ultra can_ultra_count\n")
-    else:
-        accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t newsp mang mx0 my0\n")
+    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t can_ultra\n")
 
     t0 = time.time()
     print("t0 = %f" % t0)
@@ -1340,7 +1357,6 @@ def senddrive():
 
 # 0 to 9
 speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49]
-# should 7 be here too?
 
 def keepspeed():
     global outspeed
@@ -1667,7 +1683,8 @@ def goto_1(x, y):
                 drive(0)
             #print("adiff %f dist %f" % (adiff, dist))
             if dist < 0.3:
-                print("dist < 0.3")
+                #print("dist < 0.3")
+                pass
             if abs(adiff) > 90:
                 print("adiff = %f" % adiff)
             return
@@ -2195,52 +2212,63 @@ def whole4aux(dir):
     if dir == 1:
         path.reverse()
 
+    i1 = -1
+
     while True:
-        i1 = None
-        for (_, _, i, x, y) in path:
-            if remote_control:
-                print("whole4 finished")
-                return
-            i2 = i1
-            i1 = i
-            goto_1(x, y)
+        i10 = path[-1][2]
+        i2 = path[-2][2]
 
-        print("i1,i2 = %d,%d" % (i1, i2))
-
-        if (i1, i2) == (23, 26):
+        if (i10, i2) == (23, 26):
             nextpiece = randsel(piece2b, rev(piece3a))
-        elif (i1, i2) == (6, 13):
+        elif (i10, i2) == (6, 13):
             nextpiece = piece1
-        elif (i1, i2) == (36, 30):
+        elif (i10, i2) == (36, 30):
             nextpiece = randsel(piece2a + [23], piece5 + piece4)
-        elif (i1, i2) == (23, 27):
+        elif (i10, i2) == (23, 27):
             nextpiece = randsel(rev(piece3a), piece2b)
-        elif (i1, i2) == (5, 10):
+        elif (i10, i2) == (5, 10):
             nextpiece = rev(piece4)
-        elif (i1, i2) == (33, 31):
-            nextpiece = randsel(rev(piece3b) + [23], rev(piece5) + rev(piece1))
+        elif (i10, i2) == (33, 31):
+            nextpiece = randsel(rev(piece3b) + [23],
+                                rev(piece5) + rev(piece1))
 
-        elif (i1, i2) == (23, 19):
+        elif (i10, i2) == (23, 19):
             nextpiece = randsel(rev(piece2a), piece3b)
-        elif (i1, i2) == (23, 16):
+        elif (i10, i2) == (23, 16):
             nextpiece = randsel(rev(piece2a), piece3b)
-        elif (i1, i2) == (4, 12):
+        elif (i10, i2) == (4, 12):
             nextpiece = randsel(piece6 + piece1, piece3a + [23])
-        elif (i1, i2) == (7, 11):
-            nextpiece = randsel(rev(piece6) + rev(piece4), rev(piece2b) + [23])
-        elif (i1, i2) == (35, 32):
+        elif (i10, i2) == (7, 11):
+            nextpiece = randsel(rev(piece6) + rev(piece4),
+                                rev(piece2b) + [23])
+        elif (i10, i2) == (35, 32):
             nextpiece = rev(piece1)
-        elif (i1, i2) == (34, 29):
+        elif (i10, i2) == (34, 29):
             nextpiece = piece4
         else:
             drive(0)
             return
 
+        print("nextpiece = %s" % str(nextpiece))
+
+        for j in range(0, len(path)):
+            (_, _, i, x, y) = path[j]
+            if remote_control:
+                print("whole4 finished")
+                return
+            i2 = i1
+            i1 = i
+            if j == len(path)-1:
+                i3 = nextpiece[0]
+            else:
+                (_, _, i3, _, _) = path[j+1]
+            send_to_ground_control("between %d %d %d" % (i2, i1, i3))
+            goto_1(x, y)
+
         # idea: let the connecting node always be a part in both
         # pieces; then we get a free check whether they actually go
         # together
 
-        print("nextpiece = %s" % str(nextpiece))
         path = piece2path(nextpiece, dir)
 
 # we handle the area from y=10 to max y (19.7)
@@ -2376,3 +2404,15 @@ def calmag():
 
     drive(0)
     print((mxmin, mxmax, mymin, mymax))
+
+def reset():
+    global remote_control, rc_button, warningblinking, markerno, markercnt
+    global angleknown
+
+    remote_control = False
+    rc_button = False
+    warningblinking = False
+    setleds(0,7)
+    markerno = 0
+    markercnt = 0
+    angleknown = False
