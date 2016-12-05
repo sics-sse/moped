@@ -67,7 +67,7 @@ def linesplit(socket):
         yield buffer
 
 
-def check_other_cars(c):
+def check_other_cars1(c):
     l = []
     for ci in cars:
         c2 = cars[ci]
@@ -92,6 +92,60 @@ def check_other_cars(c):
                 c2.n, c2.x, c2.y,
                 d, angdiff)
         if angdiff > -45 and angdiff < 45:
+            l = l + [(angdiff, d, c2.x, c2.y, c2.n)]
+
+    fronts = "carsinfront %d" % len(l)
+    for tup in l:
+        fronts = fronts + " " + ("%f %f %f %f %d" % tup)
+    c.conn.send(fronts + "\n")
+
+def converging(c1, c2):
+    n1 = c1.nextnode
+    n2 = c2.nextnode
+    l1 = c1.lastnode
+    l2 = c2.lastnode
+    if n1 != n2:
+        return False
+    if n1 == 5:
+        return (l1 != 4 and l2 != 4)
+    if n1 == 6:
+        return (l1 != 7 and l2 != 7)
+    if n1 == 35:
+        return (l1 != 36 and l2 != 36)
+    if n1 == 34:
+        return (l1 != 33 and l2 != 33)
+    return False
+
+global doprint
+
+def check_other_cars(c):
+    l = []
+    doprint = None
+
+    for ci in cars:
+        c2 = cars[ci]
+        if c2 == c:
+            continue
+
+        if (c.lastnode == -1 or c2.lastnode == -1 or
+            c.nextnode == -1 or c2.nextnode == -1):
+            continue
+
+        if (c.nextnode == c2.lastnode and c.nextnode != -1 and
+            c2.nextnode != c.lastnode) or (
+            c.info < c2.info and c.nextnode == 23 and
+            c2.nextnode == 23
+            ) or (
+            c.nextnode == c2.nextnode and c.lastnode == c2.lastnode
+            ) or (
+            c.info < c2.info and converging(c, c2)
+            ):
+            d = 0.2
+            angdiff = 0
+            stri = "car in front of car %s: %s" % (c.info, c2.info)
+            if doprint != stri:
+                print(stri)
+                doprint = stri
             l = l + [(angdiff, d, c2.x, c2.y, c2.n)]
 
     fronts = "carsinfront %d" % len(l)
@@ -364,6 +418,18 @@ def handlerun(conn, addr):
                 c.markern = (c.markern + 1) % 2
             s = delim + " " + s
             c.v7.set(s)
+        elif l[0] == "between":
+            i1 = int(l[1])
+            i2 = int(l[2])
+            c.lastnode = i1
+            c.nextnode = i2
+            if len(l) > 3:
+                c.nextnode2 = int(l[3])
+            else:
+                c.nextnode2 = -1
+            
+            print("%s between %d and %d (then %d)" % (
+                    c.info, i1, i2, c.nextnode2))
         else:
             print "received (%s)" % data
 
