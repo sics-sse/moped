@@ -48,6 +48,10 @@ class Car:
         self.parameter = 152.0
         self.parameter = 120.0
 
+        self.lastnode = -1
+        self.nextnode = -1
+        self.nextnode2 = -1
+
         self.markern = 0
 
         carinfo_h = 140
