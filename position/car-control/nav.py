@@ -620,6 +620,9 @@ def readmarker0():
 
         tolog0("marker0 %s age %d" % (m, age))
         m1 = m.split(" ")
+        if len(m1) != 7:
+            print("bad marker line")
+            continue
         if m1 == "":
             age += 1
         else:
@@ -2417,3 +2420,6 @@ def reset():
     markerno = 0
     markercnt = 0
     angleknown = False
+    crash = False
+    crashacc = None
+    # should we reset the connect_to_ecm thread somehow?
