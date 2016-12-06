@@ -2082,17 +2082,6 @@ def rev(l0):
     return l
 
 
-piece2a = [35, 32, 27]
-# via 23
-piece2b = [19, 13, 6]
-
-piece3a = [5, 10, 16]
-# via 23
-piece3b = [26, 29, 34]
-
-piece5 = [35, 34]
-piece6 = [5, 6]
-
 def randsel(a, b):
     k = int(random.random()*2)
     if k == 0:
