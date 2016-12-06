@@ -54,6 +54,8 @@ class Car:
 
         self.markern = 0
 
+        self.timeout = 60
+
         carinfo_h = 140
 
         v = StringVar()
