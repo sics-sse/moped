@@ -7,6 +7,17 @@ def eightpoint(cy, ang):
     y = cy + R*cos(ang*pi/180)
     return (x, y)
 
+piece2a = [35, 32, 27]
+# via 23
+piece2b = [19, 13, 6]
+
+piece3a = [5, 10, 16]
+# via 23
+piece3b = [26, 29, 34]
+
+piece5 = [35, 34]
+piece6 = [5, 6]
+
 piece1 = [7, 11, 17, 24, 28, 30, 36]
 piece2 = [35, 32, 27, 23, 19, 13, 6]
 piece3 = [5, 10, 16, 23, 26, 29, 34]
