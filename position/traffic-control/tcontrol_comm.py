@@ -117,10 +117,11 @@ def converging(c1, c2):
     return False
 
 global doprint
+doprint = None
 
 def check_other_cars(c):
+    global doprint
     l = []
-    doprint = None
 
     for ci in cars:
         c2 = cars[ci]
@@ -131,18 +132,73 @@ def check_other_cars(c):
             c.nextnode == -1 or c2.nextnode == -1):
             continue
 
+        cpair = (c.lastnode, c.nextnode)
+        c2pair = (c2.lastnode, c2.nextnode)
+
         if (c.nextnode == c2.lastnode and c.nextnode != -1 and
-            c2.nextnode != c.lastnode) or (
-            c.info < c2.info and c.nextnode == 23 and
-            c2.nextnode == 23
-            ) or (
-            c.nextnode == c2.nextnode and c.lastnode == c2.lastnode
-            ) or (
-            c.info < c2.info and converging(c, c2)
-            ):
+            c2.nextnode != c.lastnode and c.nextnode2 == c2.nextnode) or (
+            ((cpair == (33, 34) and c.nextnode == 29) or
+             cpair == (34, 29)) and (c2pair == (36, 35) or
+                                     c2pair == (35, 32) or
+                                     c2pair == (35, 34) or
+                                     c2pair == (32, 27) or
+                                     c2pair == (27, 23))) or (
+            ((cpair == (7, 6) and c.nextnode == 13) or
+             cpair == (6, 13)) and (c2pair == (4, 5) or
+                                    c2pair == (5, 10) or
+                                    c2pair == (5, 6) or
+                                    c2pair == (10, 16) or
+                                    c2pair == (16, 23))) or (
+            # when we will turn right, this makes us unnecessarily stop:
+            # (and we should replace this with a distance comparison,
+            # and also not always brake when entering 36-35 when a car
+            # is in 35-34)
+            # (in our crossing, the one turning left doesn't need to
+            # give way to the one turning right, but in a real crossing,
+            # it does)
+            (cpair == (36, 35) or
+             cpair == (35, 32) or
+             cpair == (35, 34)) and (c2pair == (7, 6) or
+                                     c2pair == (6, 13) or
+                                     c2pair == (13, 19) or
+                                     c2pair == (19, 23) or
+                                     c2pair == (23, 27) or
+                                     c2pair == (23, 26))) or (
+            (cpair == (36, 35) and c.nextnode == 34 or
+             cpair == (35, 34)) and (c2pair == (4, 5) or
+                                     c2pair == (5, 10) or
+                                     c2pair == (10, 16) or
+                                     c2pair == (16, 23) or
+                                     c2pair == (23, 27) or
+                                     c2pair == (27, 32) or
+                                     c2pair == (23, 26) or
+                                     c2pair == (26, 29))) or (
+            (cpair == (4, 5) or
+             cpair == (5, 6) or
+             cpair == (5, 10)) and (c2pair == (33, 34) or
+                                    c2pair == (34, 29) or
+                                    c2pair == (29, 26) or
+                                    c2pair == (26, 23) or
+                                    c2pair == (23, 16) or
+                                    c2pair == (23, 19))) or (
+            (cpair == (4, 5) and c.nextnode == 6 or
+             cpair == (5, 6)) and (c2pair == (36, 35) or
+                                   c2pair == (35, 32) or
+                                   c2pair == (32, 27) or
+                                   c2pair == (27, 23) or
+                                   c2pair == (23, 16) or
+                                   c2pair == (16, 10) or
+                                   c2pair == (23, 19) or
+                                   c2pair == (19, 13))) or (
+            # left turn, crossing - this must get a better solution:
+            cpair == (19, 23) and c2pair == (34, 29) and c.info < c2.info) or (
+            cpair == (26, 23) and c2pair == (6, 13) and c.info < c2.info):
             d = 0.2
             angdiff = 0
-            stri = "car in front of car %s: %s" % (c.info, c2.info)
+            stri = "car in front of car %s: %s: %s" % (
+                c.info, c2.info,
+                str(((c.lastnode, c.nextnode),
+                     (c2.lastnode, c2.nextnode))))
             if doprint != stri:
                 print(stri)
                 doprint = stri
@@ -176,7 +232,7 @@ def deletecar(c):
 
 def handleheart(c, conn):
     while c.alive:
-        if time.time() > c.heart_seen + 60:
+        if time.time() > c.heart_seen + c.timeout:
             print("timed out: " + c.info)
             deletecar(c)
             return
@@ -223,6 +279,8 @@ def handlerun(conn, addr):
         c.info = car
         c.addr = addr
         print("car %s" % car)
+        if len(l) > 2:
+            c.timeout = int(l[2])
     elif l[0] == "list":
         iplist = []
         for car in cars.values():
@@ -253,7 +311,7 @@ def handlerun(conn, addr):
         conn.close()
         return
     else:
-        conn.send("{\"error\": \"expected keyword 'info' or 'list', got '%s'\"}\n" % l[0])
+        conn.send("{\"error\": \"expected keyword 'info', 'list' or 'cargoto', got '%s'\"}\n" % l[0])
         conn.close()
         return
 
