@@ -83,6 +83,7 @@ age = -1
 totals = 0
 
 limitspeed = None
+limitspeed0 = "notset"
 
 can_steer = 0
 can_speed = 0
@@ -1019,6 +1020,7 @@ def from_ground_control():
     global parameter
     global ground_control
     global limitspeed
+    global heartn_r
 
     lastreportclosest = False
 
@@ -1107,6 +1109,11 @@ def from_ground_control():
                     x = float(l[2])
                     y = float(l[3])
                     goto(x, y, l[4])
+                elif l[0] == "heartecho":
+                    t1 = float(l[1])
+                    t2 = float(l[2])
+                    heartn_r = int(l[3])
+                    #print("heartecho %.3f %.3f %.3f %d" % (time.time() - t0, t1, t2, heartn_r))
                 else:
                     print("unknown control command %s" % data)
         time.sleep(1)
@@ -1180,9 +1187,32 @@ def connect_to_ecm():
         if counter != 9:
             counter = (counter+1)%8
 
+heartn = -1
+heartn_r = -1
+
 def heartbeat():
+    global heartn
+    global limitspeed, limitspeed0
+
     while True:
-        send_to_ground_control("heart")
+        heartn += 1
+        send_to_ground_control("heart %.3f %d" % (time.time()-t0, heartn))
+
+        if heartn-heartn_r > 1:
+            print("waiting for heart echo %d %d" % (heartn, heartn_r))
+
+        if heartn-heartn_r > 3:
+            if limitspeed0 == "notset":
+                print("setting speed to 0 during network pause")
+                limitspeed0 = limitspeed
+                limitspeed = 0.0
+
+        if heartn-heartn_r < 2:
+            if limitspeed0 != "notset":
+                print("restoring speed limit to %s after network pause" % (str(limitspeed0)))
+                limitspeed = limitspeed0
+                limitspeed0 = "notset"
+
         time.sleep(5)
 
 def init():
@@ -1396,7 +1426,7 @@ def keepspeed():
 
         desiredspeed_sign = sign(desiredspeed)
         desiredspeed_abs = abs(desiredspeed)
-        if True:
+        if False:
             # bypass the control
             spi = int(desiredspeed_abs/10)
             if spi > len(speeds)-1:
@@ -2089,9 +2119,9 @@ def randsel(a, b):
     else:
         return b
 
-def piece2path(p, dir):
+def piece2path(p, dir, offset):
     path1 = [(i, nodes[i]) for i in p]
-    path = makepath(dir*0.25, path1)
+    path = makepath(dir*offset, path1)
     return path
 
 def whole4aux(dir):
@@ -2118,7 +2148,14 @@ def whole4aux(dir):
     # idea: from the current position, determine which piece we can
     # start with
 
-    path = piece2path(path0, dir)
+    path = piece2path(path0, dir, 0.25)
+    lpath = piece2path(path0, dir, 0.0)
+    rpath = piece2path(path0, dir, 0.5)
+
+    lx = None
+    ly = None
+    rx = None
+    ry = None
 
     if dir == 1:
         path.reverse()
@@ -2160,7 +2197,7 @@ def whole4aux(dir):
             drive(0)
             return
 
-        print("nextpiece = %s" % str(nextpiece))
+        #print("nextpiece = %s" % str(nextpiece))
 
         for j in range(0, len(path)):
             (_, _, i, x, y) = path[j]
@@ -2174,13 +2211,25 @@ def whole4aux(dir):
             else:
                 (_, _, i3, _, _) = path[j+1]
             send_to_ground_control("between %d %d %d" % (i2, i1, i3))
+            lxprev = lx
+            rxprev = rx
+            lyprev = ly
+            ryprev = ry
+            (_, _, _, lx, ly) = lpath[j]
+            (_, _, _, rx, ry) = rpath[j]
+            if lxprev != None:
+                print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
+                        lxprev, lyprev, lx, ly,
+                        rxprev, ryprev, rx, ry))
             goto_1(x, y)
 
         # idea: let the connecting node always be a part in both
         # pieces; then we get a free check whether they actually go
         # together
 
-        path = piece2path(nextpiece, dir)
+        path = piece2path(nextpiece, dir, 0.25)
+        lpath = piece2path(nextpiece, dir, 0.0)
+        rpath = piece2path(nextpiece, dir, 0.5)
 
 # we handle the area from y=10 to max y (19.7)
 def tomiddleline():
