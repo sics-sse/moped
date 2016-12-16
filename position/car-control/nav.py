@@ -70,6 +70,8 @@ global mxmax
 global mymin
 global mymax
 
+currentbox = None
+
 angleknown = False
 marker = None
 inspeed = 0.0
@@ -1637,6 +1639,41 @@ canNetwork = "can0"
 canFrameID = 1025
 canSocket = initializeCAN(canNetwork)
 
+def checkbox1(x, y, tup, leftp):
+    (lxprev, lyprev, lx, ly) = tup
+
+    dlx = lx-lxprev
+    dly = ly-lyprev
+    a = atan2(dlx, dly)
+    lx1 = lxprev + dlx*cos(a) - dly*sin(a)
+    ly1 = lyprev + dlx*sin(a) + dly*cos(a)
+
+    dx = x-lxprev
+    dy = y-lyprev
+    x1 = lxprev + dx*cos(a) - dy*sin(a)
+    y1 = lyprev + dx*sin(a) + dy*cos(a)
+
+    if False:
+        if y1 >= lyprev and y1 <= ly1:
+            if leftp:
+                print("%f %f [%f %f]" % (x, y, lxprev, x1))
+                if lxprev > x1:
+                    speak("ee")
+            else:
+                # when leftp==False, we have really rxprev etc.
+                print("%f %f         [%f %f]" % (x, y, x1, lxprev))
+                if lxprev < x1:
+                    speak("oo")
+
+def checkpos():
+    if currentbox == None:
+        return
+    x = ppx
+    y = ppy
+    checkbox1(x, y, currentbox[0], True)
+    checkbox1(x, y, currentbox[1], False)
+
+
 def goto_1(x, y):
     global targetx, targety
 
@@ -1653,6 +1690,8 @@ def goto_1(x, y):
         if remote_control:
             print("remote_control is true")
             return
+
+        checkpos()
 
         dist = getdist(x, y)
         if inspeed != 0:
@@ -2127,6 +2166,7 @@ def piece2path(p, dir, offset):
 def whole4aux(dir):
     global speedsign
     global last_send
+    global currentbox
 
     # 'dir' is obsolete - it should always be -1
 
@@ -2149,8 +2189,8 @@ def whole4aux(dir):
     # start with
 
     path = piece2path(path0, dir, 0.25)
-    lpath = piece2path(path0, dir, 0.0)
-    rpath = piece2path(path0, dir, 0.5)
+    lpath = piece2path(path0, dir, 0.15)
+    rpath = piece2path(path0, dir, 0.35)
 
     lx = None
     ly = None
@@ -2221,6 +2261,8 @@ def whole4aux(dir):
                 print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
                         lxprev, lyprev, lx, ly,
                         rxprev, ryprev, rx, ry))
+                currentbox = [(lxprev, lyprev, lx, ly),
+                              (rxprev, ryprev, rx, ry)]
             goto_1(x, y)
 
         # idea: let the connecting node always be a part in both
@@ -2228,8 +2270,8 @@ def whole4aux(dir):
         # together
 
         path = piece2path(nextpiece, dir, 0.25)
-        lpath = piece2path(nextpiece, dir, 0.0)
-        rpath = piece2path(nextpiece, dir, 0.5)
+        lpath = piece2path(nextpiece, dir, 0.15)
+        rpath = piece2path(nextpiece, dir, 0.35)
 
 # we handle the area from y=10 to max y (19.7)
 def tomiddleline():
