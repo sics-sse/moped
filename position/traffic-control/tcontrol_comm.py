@@ -377,6 +377,10 @@ def handlerun(conn, addr):
                     float(odo)/5*math.pi*10.2/100))
         elif l[0] == "heart":
             c.heart_seen = time.time()
+            c.heart_t = float(l[1])
+            c.heart_n = int(l[2])
+            c.conn.send("heartecho %.3f %.3f %d\n" % (
+                    c.heart_seen - c.t0, c.heart_t, c.heart_n))
         elif l[0] == "message":
             s = " ".join(l[1:])
             c.v8.set(s)
