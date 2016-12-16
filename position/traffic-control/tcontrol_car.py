@@ -33,6 +33,9 @@ class Car:
         self.colour = colours[self.n]
         self.battery_seen = 0
         self.heart_seen = time.time()
+        self.heart_t = None
+
+        self.t0 = time.time()
 
         self.alive = True
 
