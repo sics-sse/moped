@@ -1,4 +1,4 @@
-from math import cos, sin, pi, atan2
+from math import cos, sin, pi, atan2, sqrt
 
 def eightpoint(cy, ang):
     cx = 1.5
@@ -92,3 +92,84 @@ def makepath(offset, path):
 
     return path1
 
+# A position of a car in the road network is indicated by what two nodes
+# A and B it is between, and how far as a fraction from A.
+# From this it is easy to get coordinates, and which piece it is.
+def plan(p0, p1):
+    return False
+
+if __name__ == "__main__":
+    eightpath(19.2,15.4,12.5)
+
+neighbours = dict()
+
+pieces = [[6,7,11,17,24,28,30,36,35],
+          [5,4,12,18,22,25,31,33,34],
+          [35, 32, 27, 23],
+          [23, 19, 13, 6],
+          [5, 10, 16, 23],
+          [23, 26, 29, 34],
+          [35, 34],
+          [5, 6]]
+
+distances = dict()
+
+# also in nav.py
+def dist(x1, y1, x2, y2):
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+
+for piece in pieces:
+    lastn = None
+    for n in piece:
+        if lastn != None:
+            if not n in neighbours:
+                neighbours[n] = []
+            neighbours[n] = neighbours[n] + [lastn]
+            if not lastn in neighbours:
+                neighbours[lastn] = []
+            neighbours[lastn] = neighbours[lastn] + [n]
+            d = dist(nodes[n][0], nodes[n][1],
+                     nodes[lastn][0], nodes[lastn][1])
+            distances[(n, lastn)] = d
+            distances[(lastn, n)] = d
+        lastn = n
+
+def paths(n0, n1, n2=None, nz=None):
+    extendpath([n0], n1, 0.0, n2, nz)
+
+def extendpath(p, goaln, d0, n2, nz):
+    nlast1 = p[-1]
+
+    if nlast1 == goaln:
+        if nz == None or p[-2] == nz:
+            print("%f %s" % (d0, str(p)))
+            return
+
+    for n in neighbours[nlast1]:
+        if n in p:
+            continue
+
+        if len(p) == 1 and n2 != None and n != n2:
+            continue
+
+        newp = p + [n]
+        if len(newp) >= 3:
+            newp3 = newp[-3:]
+            if newp3 == [19, 23, 16]:
+                continue
+            if newp3 == [16, 23, 19]:
+                continue
+            if newp3 == [26, 23, 27]:
+                continue
+            if newp3 == [27, 23, 26]:
+                continue
+            if newp3 == [5, 6, 13]:
+                continue
+            if newp3 == [6, 5, 10]:
+                continue
+            if newp3 == [34, 35, 32]:
+                continue
+            if newp3 == [35, 34, 29]:
+                continue
+
+        extendpath(p + [n], goaln, d0 + distances[(nlast1, n)], n2, nz)
