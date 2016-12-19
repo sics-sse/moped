@@ -12,6 +12,7 @@ import json
 
 from godircalc import godir
 
+import eight
 from eight import *
 
 import random
@@ -1252,7 +1253,7 @@ def init():
 
     angleknown = False
 
-    eightpath(19.2,15.4,12.5)
+    eightinit()
 
     setleds(0, 7)
 
@@ -1428,7 +1429,7 @@ def keepspeed():
 
         desiredspeed_sign = sign(desiredspeed)
         desiredspeed_abs = abs(desiredspeed)
-        if False:
+        if True:
             # bypass the control
             spi = int(desiredspeed_abs/10)
             if spi > len(speeds)-1:
@@ -1666,6 +1667,10 @@ def checkbox1(x, y, tup, leftp):
                     speak("oo")
 
 def checkpos():
+    pos = findpos(ppx,ppy,ang)
+    print((ppx,ppy,ang),pos)
+
+
     if currentbox == None:
         return
     x = ppx
@@ -2151,11 +2156,25 @@ def rev(l0):
     return l
 
 
+randdict = dict()
+
 def randsel(a, b):
-    k = int(random.random()*2)
-    if k == 0:
+    astr = str(a)
+    bstr = str(b)
+    if astr not in randdict:
+        randdict[astr] = 0
+    if bstr not in randdict:
+        randdict[bstr] = 0
+
+    an = randdict[astr]
+    bn = randdict[bstr]
+
+    k = int(random.random()*(an+bn+2))
+    if k <= bn:
+        randdict[astr] = randdict[astr] + 1
         return a
     else:
+        randdict[bstr] = randdict[bstr] + 1
         return b
 
 def piece2path(p, dir, offset):
@@ -2258,9 +2277,10 @@ def whole4aux(dir):
             (_, _, _, lx, ly) = lpath[j]
             (_, _, _, rx, ry) = rpath[j]
             if lxprev != None:
-                print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
-                        lxprev, lyprev, lx, ly,
-                        rxprev, ryprev, rx, ry))
+                if False:
+                    print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
+                            lxprev, lyprev, lx, ly,
+                            rxprev, ryprev, rx, ry))
                 currentbox = [(lxprev, lyprev, lx, ly),
                               (rxprev, ryprev, rx, ry)]
             goto_1(x, y)
@@ -2272,6 +2292,57 @@ def whole4aux(dir):
         path = piece2path(nextpiece, dir, 0.25)
         lpath = piece2path(nextpiece, dir, 0.15)
         rpath = piece2path(nextpiece, dir, 0.35)
+
+def gopath(path0):
+    global speedsign
+    global last_send
+    global currentbox
+
+    dir = -1
+
+    last_send = None
+
+    print("speedsign = %d" % speedsign)
+    speedsign = 1
+
+    path = piece2path(path0, dir, 0.25)
+    lpath = piece2path(path0, dir, 0.15)
+    rpath = piece2path(path0, dir, 0.35)
+
+    lx = None
+    ly = None
+    rx = None
+    ry = None
+
+    i1 = -1
+
+    for j in range(0, len(path)):
+        (_, _, i, x, y) = path[j]
+        if remote_control:
+            print("whole4 finished")
+            return
+        i2 = i1
+        i1 = i
+        if j == len(path)-1:
+            i3 = -1
+        else:
+            (_, _, i3, _, _) = path[j+1]
+        send_to_ground_control("between %d %d %d" % (i2, i1, i3))
+        lxprev = lx
+        rxprev = rx
+        lyprev = ly
+        ryprev = ry
+        (_, _, _, lx, ly) = lpath[j]
+        (_, _, _, rx, ry) = rpath[j]
+        if lxprev != None:
+            if False:
+                print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
+                        lxprev, lyprev, lx, ly,
+                        rxprev, ryprev, rx, ry))
+            currentbox = [(lxprev, lyprev, lx, ly),
+                          (rxprev, ryprev, rx, ry)]
+        goto_1(x, y)
+
 
 # we handle the area from y=10 to max y (19.7)
 def tomiddleline():
