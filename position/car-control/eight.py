@@ -92,47 +92,15 @@ def makepath(offset, path):
 
     return path1
 
+# also in nav.py
+def dist(x1, y1, x2, y2):
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+
 # A position of a car in the road network is indicated by what two nodes
 # A and B it is between, and how far as a fraction from A.
 # From this it is easy to get coordinates, and which piece it is.
 def plan(p0, p1):
     return False
-
-if __name__ == "__main__":
-    eightpath(19.2,15.4,12.5)
-
-neighbours = dict()
-
-pieces = [[6,7,11,17,24,28,30,36,35],
-          [5,4,12,18,22,25,31,33,34],
-          [35, 32, 27, 23],
-          [23, 19, 13, 6],
-          [5, 10, 16, 23],
-          [23, 26, 29, 34],
-          [35, 34],
-          [5, 6]]
-
-distances = dict()
-
-# also in nav.py
-def dist(x1, y1, x2, y2):
-    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
-
-for piece in pieces:
-    lastn = None
-    for n in piece:
-        if lastn != None:
-            if not n in neighbours:
-                neighbours[n] = []
-            neighbours[n] = neighbours[n] + [lastn]
-            if not lastn in neighbours:
-                neighbours[lastn] = []
-            neighbours[lastn] = neighbours[lastn] + [n]
-            d = dist(nodes[n][0], nodes[n][1],
-                     nodes[lastn][0], nodes[lastn][1])
-            distances[(n, lastn)] = d
-            distances[(lastn, n)] = d
-        lastn = n
 
 def paths(n0, n1, n2=None, nz=None):
     extendpath([n0], n1, 0.0, n2, nz)
@@ -173,3 +141,95 @@ def extendpath(p, goaln, d0, n2, nz):
                 continue
 
         extendpath(p + [n], goaln, d0 + distances[(nlast1, n)], n2, nz)
+
+# for the selected segment, the biggest of di and dj must be minimal
+def findpos(x, y, ang):
+    minq = 1000
+    mindidjmax = 1000
+    found = None
+    for (i, j) in distances:
+        d = distances[(i, j)]
+        (xi, yi) = nodes[i]
+        (xj, yj) = nodes[j]
+        di = dist(xi, yi, x, y)
+        dj = dist(xj, yj, x, y)
+        p = (di+dj)/d
+        didjmax = max(di,dj)
+
+        a = atan2(xj-xi, yj-yi)*180/pi
+
+        da = a-ang
+        da = da%360
+        if da > 180:
+            da -= 360
+
+        da1 = abs(da)
+        if da1 > 180-30:
+            da1 = 180-da1
+        q = didjmax/0.5 + da1/30 + (di+dj)
+
+        #print((i, j, q, di, dj, d, (a,ang%360), (xi, yi), (x, y), (xj, yj)))
+
+        if ((found == None or minq > q) and
+#            di < 1.2*d and dj < 1.2*d and
+            dj*dj < di*di+d*d and di*di < dj*dj+d*d and
+            (abs(da) < 45 or abs(da) > 180-45)):
+            minq = q
+            found = (i, j, (i, j, di, dj, d, di+dj, di/(di+dj)))
+
+    if not found:
+        return None
+    (i, j, p2) = found
+    (xi, yi) = nodes[i]
+    (xj, yj) = nodes[j]
+    a = atan2(xj-xi, yj-yi)*180/pi
+
+    da = a-ang
+    da = da%360
+    if da > 180:
+        da -= 360
+    if abs(da) < 45:
+        return (i, j, p2)
+    elif abs(da) > 180-45:
+        return (j, i, p2)
+    else:
+        return (i, j, "unknown", da)
+
+global distances
+
+def eightinit():
+    global distances
+
+    eightpath(19.2,15.4,12.5)
+
+    neighbours = dict()
+
+    pieces = [[6,7,11,17,24,28,30,36,35],
+              [5,4,12,18,22,25,31,33,34],
+              [35, 32, 27, 23],
+              [23, 19, 13, 6],
+              [5, 10, 16, 23],
+              [23, 26, 29, 34],
+              [35, 34],
+              [5, 6]]
+
+    distances = dict()
+
+    for piece in pieces:
+        lastn = None
+        for n in piece:
+            if lastn != None:
+                if not n in neighbours:
+                    neighbours[n] = []
+                neighbours[n] = neighbours[n] + [lastn]
+                if not lastn in neighbours:
+                    neighbours[lastn] = []
+                neighbours[lastn] = neighbours[lastn] + [n]
+                d = dist(nodes[n][0], nodes[n][1],
+                         nodes[lastn][0], nodes[lastn][1])
+                distances[(n, lastn)] = d
+                distances[(lastn, n)] = d
+            lastn = n
+
+if __name__ == "__main__":
+    eightinit()
