@@ -200,6 +200,7 @@ def draw_area(w):
         draw_way(0.25, w, fill="#bbffbb", width=1)
 
     draw_path(makepath(0, thepath), fill="#bbbbff", width=2)
+    draw_path(makepath(0, thepath2), fill="#bbbbff", width=2)
 
 def send_go(carno):
     c = cars[carno-1]
@@ -537,6 +538,8 @@ currentpath = None
 eightpath(19.2,15.4,12.5)
 
 thepath = [(i, nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
+
+thepath2 = [(i, nodes[i]) for i in [3, 4]]
 
 draw_area(g.w)
 
