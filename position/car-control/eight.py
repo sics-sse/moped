@@ -23,6 +23,9 @@ piece2 = [35, 32, 27, 23, 19, 13, 6]
 piece3 = [5, 10, 16, 23, 26, 29, 34]
 piece4 = [33, 31, 25, 22, 18, 12, 4]
 
+piece7 = [3, 4]
+
+# for the geometric 8 only
 nodenumbers = piece1 + piece2 + piece3 + piece4
 
 # 'ways' is not used in nav.py
@@ -31,6 +34,7 @@ ways = dict()
 ways[1] = piece1 + [35, 34] + piece4 + [5, 6] + [piece1[0]]
 ways[3] = piece2
 ways[4] = piece3
+ways[2] = piece7
 
 nodes = dict()
 
@@ -53,6 +57,9 @@ def eightpath(y1, y2, y3):
     l = eightarc(l, y2 + R, 180)
     l = eightarc(l, y2 - R, 0)
     l = eightarc(l, y3 + R, 180)
+
+    # 0.5 fits with the constants in 'eightpoint'
+    nodes[3] = (0.5, 8.0)
 
     for nr in nodes:
 #        print("%d %f %f" % (nr, nodes[nr][0], nodes[nr][1]))
@@ -139,6 +146,10 @@ def extendpath(p, goaln, d0, n2, nz):
                 continue
             if newp3 == [35, 34, 29]:
                 continue
+            if newp3 == [3, 4, 12]:
+                continue
+            if newp3 == [12, 4, 3]:
+                continue
 
         extendpath(p + [n], goaln, d0 + distances[(nlast1, n)], n2, nz)
 
@@ -196,9 +207,10 @@ def findpos(x, y, ang):
         return (i, j, "unknown", da)
 
 global distances
+global neightbours
 
 def eightinit():
-    global distances
+    global distances, neighbours
 
     eightpath(19.2,15.4,12.5)
 
@@ -211,7 +223,8 @@ def eightinit():
               [5, 10, 16, 23],
               [23, 26, 29, 34],
               [35, 34],
-              [5, 6]]
+              [5, 6],
+              [3, 4]]
 
     distances = dict()
 
