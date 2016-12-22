@@ -226,6 +226,7 @@ typedef unsigned long irqmask;
 /****************************************************************************/
 /* Common GPIOs */
 #define GPIO_SPI0_CE1			7				// SPI, chip select 1
+#define GPIO_PWM_STEERING2		7				// PWM-actuator for second servo
 #define GPIO_SPI0_CE0			8				// SPI, chip select 0
 #define GPIO_SPI0_MISO			9				// SPI, master input
 #define GPIO_SPI0_MOSI			10				// SPI, master output
