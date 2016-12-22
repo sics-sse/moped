@@ -73,7 +73,7 @@ static uint32 data[MAX_DATA_LENGTH];
 static Dma_CBType dmaCbs[MAX_CB_LENGTH];
 
 /* Connection between PWM channels and GPIO pins */
-static uint8 pwmGpios[PWM_NUMBER_OF_CHANNELS] = {GPIO_PWM_SPEED, GPIO_PWM_STEERING};
+static uint8 pwmGpios[PWM_NUMBER_OF_CHANNELS] = {GPIO_PWM_SPEED, GPIO_PWM_STEERING, GPIO_PWM_STEERING2};
 
 /************************************************************************************/
 /*									Local method declarations 						*/
