@@ -179,20 +179,30 @@ extern int steering_min,  steering_max,  steering_zero;
 Std_ReturnType IoHw_WriteServo_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 * DutyCycle){
   signed char servo = (signed char)*DutyCycle;
 
-  servo = vcu_servo_direction*servo;
+  int channel = 0;
+
+  if (servo > 100 || servo < -100) {
+    channel = 2;
+    servo = (servo-101)*100/26;
+  }
+
+  if (channel == 0) {
+    servo = vcu_servo_direction*servo;
 
 #if 0
-  servo *= 1.5;
+    servo *= 1.5;
 #else
-  if (servo >= 0) {
-    servo = servo/100.0*(steering_max - steering_zero) + steering_zero;
-  } else {
-    servo = servo/100.0*(steering_zero - steering_min) + steering_zero;
-  }
+    if (servo >= 0) {
+      servo = servo/100.0*(steering_max - steering_zero) + steering_zero;
+    } else {
+      servo = servo/100.0*(steering_zero - steering_min) + steering_zero;
+    }
 #endif
+  }
+
 	uint32 steer = (int) ((100 + (0.55556 * (servo + 100) * 1.0)) * 16.38);
 
-	Pwm_SetPeriodAndDuty(0, 20000, steer);
+	Pwm_SetPeriodAndDuty(channel, 20000, steer);
 
 #if SERVO_PRINT_DEBUG
 	printf("infor: write servo data %d to PWM driver: \r\n", steer);
