@@ -54,6 +54,7 @@ typedef uint16 Pwm_PeriodType;
 typedef enum {
 	PWM_CHANNEL0 = 0,
 	PWM_CHANNEL1,
+	PWM_CHANNEL2,
     PWM_NUMBER_OF_CHANNELS   //how many channels can we have? 2 for PWM and 15 for DMA
 } Pwm_NamedChannelsType;
 
