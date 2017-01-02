@@ -125,7 +125,19 @@ address = 0x68
 def Write_Sensor(reg, val):
     bus.write_byte_data(address, reg, val)
 
-bus.write_byte_data(address, 0x6b, 0)
+smbusinit = False
+
+for i in range(0, 3):
+    try:
+        bus.write_byte_data(address, 0x6b, 0)
+        smbusinit = True
+    except Exception as e:
+        print(e)
+
+if not smbusinit:
+    print("couldn't init IMU")
+    exit(0)
+
 bus.read_byte_data(address, 0x75)
 
 #bus.write_byte_data(address, 0x1a, 5)
@@ -449,6 +461,7 @@ def readgyro0():
             ppy += j
             ppydiff -= j
 
+            time.sleep(0.00001)
 
     except Exception as e:
         tolog("exception in readgyro: " + str(e))
@@ -493,6 +506,9 @@ lastpost = None
 
 badmarkers = [0]
 #badmarkers = [5]
+
+goodmarkers = [25, 10, 43]
+goodmarkers = None
 
 battery = 0.0
 ultra = 0.0
@@ -652,13 +668,15 @@ def readmarker0():
 #            if angleknown and abs(odiff) > 45.0 and markerno != -1:
 #                tolog("wrong marker %d %f" % (markerno, odiff))
 #                markerno = -1
-            if markertime == None or t-markertime > 10:
+            if markertime == None or t-markertime > 5:
                 #markertime = t
                 skipmarker = False
             else:
                 skipmarker = True
 
-            if ((markerno > -1 and quality > 0.35 and markerno not in badmarkers
+            if ((markerno > -1 and quality > 0.35
+                 and markerno not in badmarkers
+                 and (goodmarkers == None or markerno in goodmarkers)
                  and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
                  or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5))
                 and not skipmarker):
@@ -792,6 +810,8 @@ def readmarker0():
                 tolog0("marker5 %s %d %f %f" % (m, age, ang, ori))
 #            tolog0("marker2 %d %f %f %d %f %d %f" % (-1, px, py, int(ang), 0.5, age, ang))
 #            tolog0("marker3 %d %f %f %d %f %d %f" % (-1, ppx, ppy, int(ang), 0.5, age, ang))
+        time.sleep(0.00001)
+
 
 # The code here is a bit ad-hoc. We need to find out why the various
 # constants and offsets appear.
@@ -888,7 +908,8 @@ def readspeed2():
                     can_ultra_count = cnt
                 part2 = b""
             part2 += data[9:]
-            
+
+        time.sleep(0.00001)            
 
 def report():
     while True:
@@ -1220,7 +1241,7 @@ def heartbeat():
 
 def init():
     global VIN
-    global logf, goodmarkers, markermsg, rbias, xbias, ybias, zbias, t0
+    global logf, markermsg, rbias, xbias, ybias, zbias, t0
     global rxbias, rybias
     global px, py, pz
     global ppx, ppy, ppz
@@ -1324,8 +1345,6 @@ def init():
     vy = 0.0
     vz = 0.0
 
-    goodmarkers = []
-
     start_new_thread(readmarker, ())
     start_new_thread(handle_mqtt, ())
     start_new_thread(readspeed2, ())
@@ -1359,7 +1378,9 @@ def senddrive():
     old_sp = 0
     old_st = 0
     while True:
-        #time.sleep(0.1)
+        time.sleep(0.00001)
+
+        #print((send_st,send_sp))
 
         if send_sp != None:
 
@@ -1376,11 +1397,13 @@ def senddrive():
             if st < 0:
                 st += 256
 
+            #print(last_send)
             if not senddriveinhibited:
                 if (sp == 0 and not first0done) or last_send != (sp, st):
                     cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
                         sp, st)
                     #tolog("senddrive %d %d" % (send_sp, send_st))
+                    #print("senddrive %d %d" % (send_sp, send_st))
                     last_send = (sp, st)
                     os.system(cmd)
                     if sp == 0:
@@ -1668,7 +1691,7 @@ def checkbox1(x, y, tup, leftp):
 
 def checkpos():
     pos = findpos(ppx,ppy,ang)
-    print((ppx,ppy,ang),pos)
+    #print((ppx,ppy,ang),pos)
 
 
     if currentbox == None:
@@ -2293,12 +2316,10 @@ def whole4aux(dir):
         lpath = piece2path(nextpiece, dir, 0.15)
         rpath = piece2path(nextpiece, dir, 0.35)
 
-def gopath(path0):
+def gopath(path0, dir=-1):
     global speedsign
     global last_send
     global currentbox
-
-    dir = -1
 
     last_send = None
 
@@ -2492,3 +2513,66 @@ def reset():
     crash = False
     crashacc = None
     # should we reset the connect_to_ecm thread somehow?
+
+def corridor():
+    drive(0)
+    time.sleep(4)
+    while True:
+        drive(30)
+        goto_1(22, 5.1)
+        drive(0)
+        time.sleep(4)
+        drive(-40)
+        goto_1(16, 5.1)
+        drive(0)
+        time.sleep(4)
+
+servotime = 0.5
+
+def turnservo():
+    plupp = 2
+    while True:
+        if plupp == 0:
+            for i in range(-127, -100):
+                steer(i)
+                time.sleep(1.0/50)
+            for i in range(101, 128):
+                steer(i)
+                time.sleep(1.0/50)
+
+            for i in range(127, 100, -1):
+                steer(i)
+                time.sleep(1.0/50)
+            for i in range(-101, -128, -1):
+                steer(i)
+                time.sleep(1.0/50)
+        elif plupp == 1:
+            for i in range(-127, -100, 8):
+                steer(i)
+                time.sleep(1.0/5)
+            for i in range(101, 128, 8):
+                steer(i)
+                time.sleep(1.0/5)
+
+            for i in range(127, 100, -8):
+                steer(i)
+                time.sleep(1.0/5)
+            for i in range(-101, -128, -8):
+                steer(i)
+                time.sleep(1.0/5)
+        elif plupp == 2:
+            steer(-127)
+            time.sleep(servotime)
+            steer(127)
+            time.sleep(servotime)
+
+# we start at point 6
+def overtake():
+    drive(0)
+    time.sleep(4)
+    drive(20)
+    while True:
+        gopath([6,5,4,12,18,22,25,31,33])
+        gopath([34,35],1)
+        gopath([36,30,28,24,17,11,7])
+
