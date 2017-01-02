@@ -233,12 +233,6 @@ imuinit()
 bus.write_byte_data(address, MPU9150_CONFIG, 1)
 bus.write_byte_data(address, MPU9150_GYRO_CONFIG, 16)
 
-dt = 1.0/836
-# when reading gyro in the main thread:
-dt = 1.0/50
-# when using a thread for reading gyro:
-dt = 1.0/678*1.3487
-
 # px etc. is the dead reckoning from the IMU acc and gyro
 # ppx etc. is the dead reckoning from wheel speed and gyro
 global px, py, pz
