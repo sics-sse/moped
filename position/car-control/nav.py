@@ -16,13 +16,18 @@ from eight import *
 
 import nav_imu
 
+import nav_log
+from nav_log import *
+
+from nav_util import *
+
+import nav_mqtt
+import nav_tc
+from nav_tc import send_to_ground_control
+
 import random
 
 from math import pi, cos, sin, sqrt, atan2, acos, asin
-
-import urllib
-import urllib.parse
-import paho.mqtt.client as mosquitto
 
 def start_new_thread(f, args):
     threading.Thread(target=f, args=args, daemon=True).start()
@@ -32,6 +37,11 @@ class globals:
     pass
 
 g = globals()
+
+nav_imu.g = g
+nav_log.g = g
+nav_mqtt.g = g
+nav_tc.g = g
 
 g.bus = nav_imu.bus
 g.imuaddress = nav_imu.imuaddress
@@ -153,220 +163,6 @@ g.zbias = 0
 
 g.t0 = None
 
-def make_word(high, low):
-    x = high*256+low
-    if x >= 32768:
-        x -= 65536
-    return x
-
-def make_word2(high, low):
-    x = high*256+low
-    return x
-
-def readgyro():
-    while True:
-        tolog("starting readgyro")
-        readgyro0()
-
-def readgyro0():
-    #gscale = 32768.0/250
-    gscale = 32768.0/1000
-    ascale = 1670.0
-
-    x = 0.0
-    y = 0.0
-    x0 = 0.0
-    y0 = 0.0
-    z0 = 0.0
-    rx = 0.0
-    ry = 0.0
-    acc = 0.0
-
-    try:
-
-        tlast = time.time()
-        t1 = time.time()
-
-        while True:
-            w = g.bus.read_i2c_block_data(g.imuaddress, 0x47, 2)
-            high = w[0]
-            low = w[1]
-            r = make_word(high, low)
-
-            r -= g.rbias
-
-            if True:
-                high = g.bus.read_byte_data(g.imuaddress, 0x45)
-                low = g.bus.read_byte_data(g.imuaddress, 0x46)
-                ry = make_word(high, low)
-                ry -= g.rybias
-
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x43, 2)
-                high = w[0]
-                low = w[1]
-                rx = make_word(high, low)
-                rx -= g.rxbias
-
-            if False:
-                if rx > 120 and g.finspeed != 0 and g.dstatus != 2:
-                    inhibitdodrive()
-                    g.dstatus = 2
-                    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
-                        246, 0)
-                    os.system(cmd)
-    #                dodrive(0, 0)
-                    print("stopped")
-                    drive(0)
-
-
-            # make the steering and the angle go in the same direction
-            # now positive is clockwise
-            r = -r
-
-            t2 = time.time()
-            dt = t2-t1
-            t1 = t2
-
-            angvel = r/gscale
-            dang = angvel*dt
-            g.ang += dang
-
-            if True:
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
-                x = make_word(w[0], w[1])
-                x -= g.xbias
-                y = make_word(w[2], w[3])
-                y -= g.ybias
-                z = make_word(w[4], w[5])
-                z -= g.zbias
-
-                x /= ascale
-                y /= ascale
-                z /= ascale
-
-                acc = sqrt(x*x+y*y+z*z)
-                if acc > 9.0 and g.detectcrashes:
-                    g.crash = acc
-
-                x0 = -x
-                y0 = -y
-                z0 = z
-
-                # the signs here assume that x goes to the right and y forward
-
-                x = x0*cos(pi/180*g.ang) - y0*sin(pi/180*g.ang)
-                y = x0*sin(pi/180*g.ang) + y0*cos(pi/180*g.ang)
-
-                g.vx += x*dt
-                g.vy += y*dt
-                g.vz += z*dt
-
-                g.px += g.vx*dt
-                g.py += g.vy*dt
-                g.pz += g.vz*dt
-
-            corr = 1.0
-
-            vvx = g.inspeed*corr/100.0*sin(pi/180*g.ang)
-            vvy = g.inspeed*corr/100.0*cos(pi/180*g.ang)
-
-            ppxi = vvx*dt
-            ppyi = vvy*dt
-
-            if True:
-                ds = sqrt(ppxi*ppxi+ppyi*ppyi)
-                g.totals += ds
-
-            g.ppx += ppxi
-            g.ppy += ppyi
-
-            if g.oldpos != None:
-                t2_10 = int(t2*10)/10.0
-                g.oldpos[t2_10] = (g.ppx, g.ppy, g.ang)
-
-            # don't put too many things in this thread
-
-            if False:
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x4c, 6)
-                mx0 = make_word(w[1], w[0])
-                my0 = make_word(w[3], w[2])
-                mz0 = make_word(w[5], w[4])
-
-                mx = float((mx0-g.mxmin))/(g.mxmax-g.mxmin)*2 - 1
-                my = float((my0-g.mymin))/(g.mymax-g.mymin)*2 - 1
-                mz = mz0
-
-                quot = (mx+my)/sqrt(2)
-                if quot > 1.0:
-                    quot = 1.0
-                if quot < -1.0:
-                    quot = -1.0
-                mang = (asin(quot))*180/pi+45
-                if mx < my:
-                    mang = 270-mang
-                    mang = mang%360
-
-                mang = -mang
-                mang = mang%360
-
-            if True:
-                g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
-                        x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang,
-                        angvel, g.can_steer, g.can_speed, g.inspeed, g.outspeed, g.odometer,
-                        z0, r, rx, ry, acc, g.finspeed, g.fodometer, t2-g.t0, g.can_ultra))
-
-            if (t2-tlast > 0.1):
-                tolog0("")
-                tlast = t2
-
-            j = g.angdiff/1000
-            g.ang += j
-            g.angdiff -= j
-
-            #print("pp diff %f %f" % (g.ppxdiff, g.ppydiff))
-
-            j = g.ppxdiff/100
-            g.ppx += j
-            g.ppxdiff -= j
-
-            j = g.ppydiff/100
-            g.ppy += j
-            g.ppydiff -= j
-
-            time.sleep(0.00001)
-
-    except Exception as e:
-        tolog("exception in readgyro: " + str(e))
-        print("exception in readgyro: " + str(e))
-
-def tolog2(str0, stdout):
-
-    stdout = False
-
-    if g.targetx and g.targety:
-        d = dist(g.ppx, g.ppy, g.targetx, g.targety)
-    else:
-        d = -1
-
-    str = "(speed %d time %.3f %f %f %f %f %f %3f) %s" % (
-        g.inspeed,
-        time.time() - g.t0,
-        g.ppx,
-        g.ppy,
-        g.ang,
-        d,
-        g.battery,
-        g.can_ultra,
-        str0)
-    g.logf.write(str + "\n")
-    if stdout:
-        print(str)
-
-def tolog0(str):
-    tolog2(str, False)
-
-def tolog(str):
-    tolog2(str, True)
 
 g.markermsg = None
 
@@ -386,76 +182,6 @@ g.ultra = 0.0
 g.can_ultra = 0.0
 
 g.mqttc = None
-
-def on_message(mosq, obj, msg):
-    p = str(msg.payload)
-    while p[-1] == '\n' or p[-1] == '\t':
-        p = p[:-1]
-
-    # ignore our own position
-    if g.VIN in msg.topic:
-        return
-
-    #sys.stdout.write(msg.topic + " " + str(msg.qos) + " " + p + "\n")
-# "adc","current_value":"7.7142 7.630128199403445"
-
-    m = re.search('"adc","current_value":"', p)
-    if m:
-        m1 = re.search('"vin":"%s"' % g.VIN, p)
-        if m1:
-            # since the second value can be garbage
-            m = re.search('"adc","current_value":"[0-9.]+ ([0-9.]+)"', p)
-            if m:
-            #print("battery %s" % m.group(1))
-                g.battery = float(m.group(1))
-                if g.battery < 20:
-                    send_to_ground_control("battery %f" % g.battery)
-        return
-
-    # We still read this, but we don't use 'ultra' - we use 'can_ultra'
-    m = re.search('"DistPub","current_value":"', p)
-    if m:
-        m1 = re.search('"vin":"%s"' % g.VIN, p)
-        if m1:
-            # since the second value can be garbage
-            m = re.search('"DistPub","current_value":"[0-9]+ ([0-9]+)"', p)
-            if m:
-                g.ultra = float(m.group(1))
-        return
-
-
-def mqtt_init():
-    url_str = "mqtt://test.mosquitto.org:1883"
-    #url_str = "mqtt://iot.eclipse.org:1883"
-    url = urllib.parse.urlparse(url_str)
-    g.mqttc = mosquitto.Mosquitto()
-    g.mqttc.on_message = on_message
-    g.mqttc.connect(url.hostname, url.port)
-    # will match /sics/moped/position/car2, for example
-    g.mqttc.subscribe("/sics/moped/+/+", 0)
-    g.mqttc.subscribe("/sics/moped/value", 0)
-
-def send_to_mqtt(x, y):
-    g.mqttc.publish("/sics/moped/position/%s" % g.VIN, "%f %f" % (x, y))
-    pass
-
-def handle_mqtt():
-    while True:
-        try:
-            mqtt_init()
-
-            i = 0
-            rc = 0
-            while rc == 0:
-                rc = g.mqttc.loop(5.0)
-                i += 1
-
-            print("mqttc.loop returned %d" % rc)
-            if rc == 7 or rc == 1:
-                g.mqttc = mosquitto.Mosquitto()
-                mqtt_init()
-        except Exception as e:
-            time.sleep(5000)
 
 g.ledstate = 0
 
@@ -595,7 +321,7 @@ def readmarker0():
                     else:
                         doadjust_n = 0
                     send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,g.ang,time.time()-g.t0, doadjust_n, g.inspeed))
-                    #send_to_mqtt(x, y)
+                    #nav_mqtt.send_to_mqtt(x, y)
                     g.lastpos = (thenx,theny)
                     g.px = x
                     g.py = y
@@ -863,8 +589,6 @@ def warningblink(state):
         g.warningblinking = False
 
 def from_ground_control():
-    global path
-
     lastreportclosest = False
 
     while True:
@@ -880,7 +604,9 @@ def from_ground_control():
                     print(("goto is not implemented", x, y))
                 elif l[0] == "path":
                     path = ast.literal_eval(data[5:])
+                    print("Received path from traffic control:")
                     print(path)
+                    # currently, we don't do anything with this path
                 elif l[0] == "continue":
                     g.paused = False
                 elif l[0] == "carsinfront":
@@ -1101,64 +827,12 @@ def init():
 
     tolog("init")
 
-    g.rbias = 0
-    g.xbias = 0
-    g.ybias = 0
-    g.zbias = 0
-
-    # computing angbias would be better
-    ncalibrate = 100
-    for i in range(0, ncalibrate):
-        high = g.bus.read_byte_data(g.imuaddress, 0x47)
-        low = g.bus.read_byte_data(g.imuaddress, 0x48)
-        r = make_word(high, low)
-        g.rbias += r
-
-        if False:
-            high = g.bus.read_byte_data(g.imuaddress, 0x43)
-            low = g.bus.read_byte_data(g.imuaddress, 0x44)
-            r = make_word(high, low)
-            g.rxbias += r
-
-            high = g.bus.read_byte_data(g.imuaddress, 0x45)
-            low = g.bus.read_byte_data(g.imuaddress, 0x46)
-            r = make_word(high, low)
-            g.rybias += r
-
-        w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
-        x = make_word(w[0], w[1])
-        y = make_word(w[2], w[3])
-        z = make_word(w[4], w[5])
-        g.xbias += x
-        g.ybias += y
-        g.zbias += z
-
-    g.rbias = g.rbias/float(ncalibrate)
-    g.rxbias = g.rxbias/float(ncalibrate)
-    g.rybias = g.rybias/float(ncalibrate)
-    g.xbias = g.xbias/float(ncalibrate)
-    g.ybias = g.ybias/float(ncalibrate)
-    g.zbias = g.zbias/float(ncalibrate)
-
-    print("rbias = %f, rxbias = %f, rybias = %f, xbias = %f, ybias = %f, zbias = %f" % (g.rbias, g.rxbias, g.rybias, g.xbias, g.ybias, g.zbias))
-
-
-    g.px = 0.0
-    g.py = 0.0
-    g.pz = 0.0
-
-    g.ppx = 0.0
-    g.ppy = 0.0
-    g.ppz = 0.0
-
-    g.vx = 0.0
-    g.vy = 0.0
-    g.vz = 0.0
+    nav_imu.calibrate_imu()
 
     start_new_thread(readmarker, ())
-    start_new_thread(handle_mqtt, ())
+    start_new_thread(nav_mqtt.handle_mqtt, ())
     start_new_thread(readspeed2, ())
-    start_new_thread(readgyro, ())
+    start_new_thread(nav_imu.readgyro, ())
     start_new_thread(senddrive, ())
     start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
@@ -1294,16 +968,6 @@ def keepspeed():
         dodrive(sp, st)
         time.sleep(sleeptime)
 
-def dist(x1, y1, x2, y2):
-    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
-
-def sign(x):
-    if x < 0:
-        return -1
-    if x > 0:
-        return 1
-    return 0
-
 def getdist(x2, y2):
     # NEW
     x1 = g.ppx
@@ -1430,18 +1094,6 @@ def open_socket3():
         return False
 
     return s
-
-def send_to_ground_control(str):
-    if not g.ground_control:
-        return
-
-    try:
-        str1 = str + "\n"
-        g.ground_control.send(str1.encode('ascii'))
-    except Exception as e:
-        print("send1 %s" % e)
-        g.ground_control = None
-#        connect_to_ground_control()
 
 def initializeCAN(network):
     """
@@ -2229,39 +1881,6 @@ def gohome():
         print("going to %f %f %d" % (x, y, dir))
         goto_1(x, y)
     drive(0)
-
-def calmag():
-    first = True
-
-    drive(0)
-    time.sleep(4)
-    steer(-100)
-    drive(20)
-
-    t0 = time.time()
-
-    while time.time() < t0 + 20:
-        w = g.bus.read_i2c_block_data(g.imuaddress, 0x4c, 6)
-        print(w)
-        mx = make_word(w[1], w[0])
-        my = make_word(w[3], w[2])
-        if first:
-            g.mxmin = mx
-            g.mxmax = mx
-            g.mymin = my
-            g.mymax = my
-            first = False
-        if g.mxmin > mx:
-            g.mxmin = mx
-        if g.mxmax < mx:
-            g.mxmax = mx
-        if g.mymin > my:
-            g.mymin = my
-        if g.mymax < my:
-            g.mymax = my
-
-    drive(0)
-    print((g.mxmin, g.mxmax, g.mymin, g.mymax))
 
 def reset():
     g.remote_control = False
