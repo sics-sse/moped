@@ -1,5 +1,4 @@
 import re
-import smbus
 import time
 import threading
 import os
@@ -14,6 +13,8 @@ from godircalc import godir
 
 import eight
 from eight import *
+
+import nav_imu
 
 import random
 
@@ -31,6 +32,9 @@ class globals:
     pass
 
 g = globals()
+
+g.bus = nav_imu.bus
+g.imuaddress = nav_imu.imuaddress
 
 g.VIN = None
 #g.VIN = sys.argv[1]
@@ -110,135 +114,9 @@ g.remote_control = False
 g.targetx = None
 g.targety = None
 
-#TARGETDIST = 0.3
-TARGETDIST = 0.15
-TARGETDIST = 0.25
-TOOHIGHSPEED = 2.0
+g.logf = None
+g.accf = None
 
-R = 0.83
-
-YMAX = 19.7
-
-global logf
-global accf
-
-bus = smbus.SMBus(1)
-
-address = 0x68
-
-def Write_Sensor(reg, val):
-    bus.write_byte_data(address, reg, val)
-
-def imuinit0():
-    smbusinit = False
-
-    for i in range(0, 3):
-        try:
-            bus.write_byte_data(address, 0x6b, 0)
-            smbusinit = True
-        except Exception as e:
-            print(e)
-
-    if not smbusinit:
-        print("couldn't init IMU")
-        exit(0)
-
-imuinit0()
-
-bus.read_byte_data(address, 0x75)
-
-#bus.write_byte_data(address, 0x1a, 5)
-#bus.write_byte_data(address, 0x1b, 0)
-
-bus.write_byte_data(address, 0x1a, 1)
-bus.write_byte_data(address, 0x1b, 16)
-
-MPU9150_SMPLRT_DIV = 0x19 # 25
-MPU9150_CONFIG = 0x1a # 26
-MPU9150_GYRO_CONFIG = 0x1b
-MPU9150_ACCEL_CONFIG = 0x1c
-MPU9150_FIFO_EN = 0x23
-MPU9150_I2C_MST_CTRL = 0x24
-MPU9150_I2C_SLV0_ADDR = 0x25
-MPU9150_I2C_SLV0_REG = 0x26
-MPU9150_I2C_SLV0_CTRL = 0x27
-MPU9150_I2C_SLV1_ADDR = 0x28
-MPU9150_I2C_SLV1_REG = 0x29
-MPU9150_I2C_SLV1_CTRL = 0x2a
-MPU9150_I2C_SLV1_DO = 0x64
-MPU9150_I2C_MST_DELAY_CTRL = 0x67 # 103
-MPU9150_I2C_SLV4_CTRL = 0x34 # 52
-MPU9150_USER_CTRL = 0x6a #106
-
-def sleep(x):
-    if True:
-        time.sleep(x)
-
-def imuinit():
-
-    bus.write_byte_data(address, 0x6b, 0x80)
-    sleep(0.1)
-    bus.write_byte_data(address, 0x6b, 0)
-
-    b = bus.read_byte_data(address, 0x49)
-    print("read byte %#x" % b)
-
-    sleep(0.1)
-    Write_Sensor(MPU9150_I2C_SLV0_ADDR, 0x8C);
-    b = bus.read_byte_data(address, 0x49)
-    print("read byte %#x" % b)
-
-    sleep(0.1)
-    Write_Sensor(MPU9150_I2C_SLV0_CTRL, 0x88);
-    sleep(0.1)
-    b = bus.read_byte_data(address, 0x49)
-    print("read byte %#x" % b)
-
-    Write_Sensor(MPU9150_USER_CTRL, 0x20);
-    sleep(0.1)
-
-    while True:
-        b = bus.read_byte_data(address, 0x49)
-        print("read byte %#x" % b)
-        if b == 0x48:
-            break
-
-    if True:
-        # this did the trick:
-        Write_Sensor(MPU9150_CONFIG, 0x02);
-        # maybe important:
-        Write_Sensor(MPU9150_GYRO_CONFIG, 0x08);
-        sleep(0.1)
-
-        Write_Sensor(MPU9150_SMPLRT_DIV, 0x7);
-        sleep(0.1)
-
-        Write_Sensor(MPU9150_I2C_SLV1_ADDR, 0x0C);
-        sleep(0.1)
-        # Set where reading at slave 1 starts
-        Write_Sensor(MPU9150_I2C_SLV1_REG, 0x0A);
-        sleep(0.1)
-        # Enable at set length to 1
-        Write_Sensor(MPU9150_I2C_SLV1_CTRL, 0x81);
-        sleep(0.1)
-
-        # overvride register
-        Write_Sensor(MPU9150_I2C_SLV1_DO, 0x01);
-        sleep(0.1)
-
-        # set delay rate
-        Write_Sensor(MPU9150_I2C_MST_DELAY_CTRL, 0x03);
-        sleep(0.1)
-        # set i2c slv4 delay
-        Write_Sensor(MPU9150_I2C_SLV4_CTRL, 0x04);
-        sleep(0.1)
-
-
-
-imuinit()
-
-bus.write_byte_data(address, MPU9150_CONFIG, 1)
-bus.write_byte_data(address, MPU9150_GYRO_CONFIG, 16)
 
 # px etc. is the dead reckoning from the IMU acc and gyro
 # ppx etc. is the dead reckoning from wheel speed and gyro
@@ -310,7 +188,7 @@ def readgyro0():
         t1 = time.time()
 
         while True:
-            w = bus.read_i2c_block_data(address, 0x47, 2)
+            w = g.bus.read_i2c_block_data(g.imuaddress, 0x47, 2)
             high = w[0]
             low = w[1]
             r = make_word(high, low)
@@ -318,12 +196,12 @@ def readgyro0():
             r -= g.rbias
 
             if True:
-                high = bus.read_byte_data(address, 0x45)
-                low = bus.read_byte_data(address, 0x46)
+                high = g.bus.read_byte_data(g.imuaddress, 0x45)
+                low = g.bus.read_byte_data(g.imuaddress, 0x46)
                 ry = make_word(high, low)
                 ry -= g.rybias
 
-                w = bus.read_i2c_block_data(address, 0x43, 2)
+                w = g.bus.read_i2c_block_data(g.imuaddress, 0x43, 2)
                 high = w[0]
                 low = w[1]
                 rx = make_word(high, low)
@@ -354,7 +232,7 @@ def readgyro0():
             g.ang += dang
 
             if True:
-                w = bus.read_i2c_block_data(address, 0x3b, 6)
+                w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
                 x = make_word(w[0], w[1])
                 x -= g.xbias
                 y = make_word(w[2], w[3])
@@ -409,7 +287,7 @@ def readgyro0():
             # don't put too many things in this thread
 
             if False:
-                w = bus.read_i2c_block_data(address, 0x4c, 6)
+                w = g.bus.read_i2c_block_data(g.imuaddress, 0x4c, 6)
                 mx0 = make_word(w[1], w[0])
                 my0 = make_word(w[3], w[2])
                 mz0 = make_word(w[5], w[4])
@@ -432,10 +310,10 @@ def readgyro0():
                 mang = mang%360
 
             if True:
-                accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+                g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
                         x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang,
-                        angvel, g.can_steer, g.can_speed, g.inspeed, outspeed, g.odometer,
-                        z0, r, rx, ry, acc, g.finspeed, g.fodometer, t2-g.t0, can_ultra))
+                        angvel, g.can_steer, g.can_speed, g.inspeed, g.outspeed, g.odometer,
+                        z0, r, rx, ry, acc, g.finspeed, g.fodometer, t2-g.t0, g.can_ultra))
 
             if (t2-tlast > 0.1):
                 tolog0("")
@@ -477,10 +355,10 @@ def tolog2(str0, stdout):
         g.ppy,
         g.ang,
         d,
-        battery,
-        can_ultra,
+        g.battery,
+        g.can_ultra,
         str0)
-    logf.write(str + "\n")
+    g.logf.write(str + "\n")
     if stdout:
         print(str)
 
@@ -490,29 +368,26 @@ def tolog0(str):
 def tolog(str):
     tolog2(str, True)
 
-global markermsg
-markermsg = None
+g.markermsg = None
 
-lastmarker0 = None
+g.lastmarker0 = None
 
-lastpos = None
-lastpost = None
+g.lastpos = None
+g.lastpost = None
 
-badmarkers = [0]
-#badmarkers = [5]
+g.badmarkers = [0]
+#g.badmarkers = [5]
 
-goodmarkers = [25, 10, 43]
-goodmarkers = None
+g.goodmarkers = [25, 10, 43]
+g.goodmarkers = None
 
-battery = 0.0
-ultra = 0.0
-can_ultra = 0.0
+g.battery = 0.0
+g.ultra = 0.0
+g.can_ultra = 0.0
 
-global mqttc
+g.mqttc = None
 
 def on_message(mosq, obj, msg):
-    global battery, ultra
-
     p = str(msg.payload)
     while p[-1] == '\n' or p[-1] == '\t':
         p = p[:-1]
@@ -532,9 +407,9 @@ def on_message(mosq, obj, msg):
             m = re.search('"adc","current_value":"[0-9.]+ ([0-9.]+)"', p)
             if m:
             #print("battery %s" % m.group(1))
-                battery = float(m.group(1))
-                if battery < 20:
-                    send_to_ground_control("battery %f" % battery)
+                g.battery = float(m.group(1))
+                if g.battery < 20:
+                    send_to_ground_control("battery %f" % g.battery)
         return
 
     # We still read this, but we don't use 'ultra' - we use 'can_ultra'
@@ -545,30 +420,26 @@ def on_message(mosq, obj, msg):
             # since the second value can be garbage
             m = re.search('"DistPub","current_value":"[0-9]+ ([0-9]+)"', p)
             if m:
-                ultra = float(m.group(1))
+                g.ultra = float(m.group(1))
         return
 
 
 def mqtt_init():
-    global mqttc
-
     url_str = "mqtt://test.mosquitto.org:1883"
     #url_str = "mqtt://iot.eclipse.org:1883"
     url = urllib.parse.urlparse(url_str)
-    mqttc = mosquitto.Mosquitto()
-    mqttc.on_message = on_message
-    mqttc.connect(url.hostname, url.port)
+    g.mqttc = mosquitto.Mosquitto()
+    g.mqttc.on_message = on_message
+    g.mqttc.connect(url.hostname, url.port)
     # will match /sics/moped/position/car2, for example
-    mqttc.subscribe("/sics/moped/+/+", 0)
-    mqttc.subscribe("/sics/moped/value", 0)
+    g.mqttc.subscribe("/sics/moped/+/+", 0)
+    g.mqttc.subscribe("/sics/moped/value", 0)
 
 def send_to_mqtt(x, y):
-    mqttc.publish("/sics/moped/position/%s" % g.VIN, "%f %f" % (x, y))
+    g.mqttc.publish("/sics/moped/position/%s" % g.VIN, "%f %f" % (x, y))
     pass
 
 def handle_mqtt():
-    global mqttc
-
     while True:
         try:
             mqtt_init()
@@ -576,23 +447,21 @@ def handle_mqtt():
             i = 0
             rc = 0
             while rc == 0:
-                rc = mqttc.loop(5.0)
+                rc = g.mqttc.loop(5.0)
                 i += 1
 
             print("mqttc.loop returned %d" % rc)
             if rc == 7 or rc == 1:
-                mqttc = mosquitto.Mosquitto()
+                g.mqttc = mosquitto.Mosquitto()
                 mqtt_init()
         except Exception as e:
             time.sleep(5000)
 
-ledstate = 0
+g.ledstate = 0
 
 def blinkleds():
-    global ledstate
-
-    ledstate = (ledstate + 1)%7
-    setleds(0, ledstate)
+    g.ledstate = (g.ledstate + 1)%7
+    setleds(0, g.ledstate)
 
 def readmarker():
     while True:
@@ -604,8 +473,7 @@ def readmarker():
             print("readmarker exception %s" % str(e))
 
 def readmarker0():
-    global lastmarker0, markermsg
-    global lastpos, lastpost
+    TOOHIGHSPEED = 2.0
 
     recentmarkers = []
 
@@ -616,11 +484,11 @@ def readmarker0():
         res = p.communicate()
         m = res[0].decode('ascii')
         m = m.split('\n')[0]
-        if m == lastmarker0:
+        if m == g.lastmarker0:
             tolog0("no new marker0")
             continue
 
-        lastmarker0 = m
+        g.lastmarker0 = m
 
         if g.ignoremarkers:
             continue
@@ -660,8 +528,8 @@ def readmarker0():
                 skipmarker = True
 
             if ((g.markerno > -1 and quality > 0.35
-                 and g.markerno not in badmarkers
-                 and (goodmarkers == None or g.markerno in goodmarkers)
+                 and g.markerno not in g.badmarkers
+                 and (g.goodmarkers == None or g.markerno in g.goodmarkers)
                  and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
                  or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5))
                 and not skipmarker):
@@ -698,11 +566,11 @@ def readmarker0():
                     continue
 
                 if True:
-                    if lastpos != None:
-                        (xl, yl) = lastpos
+                    if g.lastpos != None:
+                        (xl, yl) = g.lastpos
                         dst = dist(thenx, theny, xl, yl)
-                        tolog0("local speed %f" % (dst/(t-lastpost)))
-                        if dst/(t-lastpost) > TOOHIGHSPEED:
+                        tolog0("local speed %f" % (dst/(t-g.lastpost)))
+                        if dst/(t-g.lastpost) > TOOHIGHSPEED:
                             close = False
 
                 dst = dist(g.ppx, g.ppy, x, y)
@@ -714,9 +582,9 @@ def readmarker0():
 
                 if not close:
                     msg = "bad marker %d not close" % g.markerno
-                    if msg != markermsg:
+                    if msg != g.markermsg:
                         tolog(msg)
-                        markermsg = msg
+                        g.markermsg = msg
                     g.age += 1
                 else:
                     accepted = True
@@ -728,7 +596,7 @@ def readmarker0():
                         doadjust_n = 0
                     send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,g.ang,time.time()-g.t0, doadjust_n, g.inspeed))
                     #send_to_mqtt(x, y)
-                    lastpos = (thenx,theny)
+                    g.lastpos = (thenx,theny)
                     g.px = x
                     g.py = y
                     if True:
@@ -771,7 +639,7 @@ def readmarker0():
                             #print("2 ppy := %f" % g.ppy)
                     #g.vx = sin(g.ang*pi/180)*g.inspeed/100
                     #g.vy = cos(g.ang*pi/180)*g.inspeed/100
-                    lastpost = it0
+                    g.lastpost = it0
                     g.age = 0
                     #g.ang = ori
             else:
@@ -800,12 +668,10 @@ def readmarker0():
 # The code here is a bit ad-hoc. We need to find out why the various
 # constants and offsets appear.
 def readspeed2():
-    global can_ultra, can_ultra_count
-
     part = b""
     part2 = b""
     while True:
-        data = canSocket.recv(1024)
+        data = g.canSocket.recv(1024)
         if (data[0], data[1]) == (100,4) and data[4] == 2:
             # length of packet is 2
             print((data[8], data[9]))
@@ -878,34 +744,32 @@ def readspeed2():
                     d = int(m.group(2))
 
                     #print((cnt,d))
-                    can_ultra = d/100.0
+                    g.can_ultra = d/100.0
+                    # not used:
                     can_ultra_count = cnt
                 part2 = b""
             part2 += data[9:]
 
         time.sleep(0.00001)            
 
-outspeed = 0.0
-outspeedcm = None
-steering = 0
+g.outspeed = 0.0
+g.outspeedcm = None
+g.steering = 0
 
 # error here: we normalize the argument, but not the other value
 
 def drive(sp):
-    global outspeed
-    global outspeedcm
-
     if True:
         if sp != 0 and not g.braking:
             g.speedsign = sign(sp)
 
-        outspeedcm = sp*2
-        print("outspeedcm = %d" % outspeedcm)
+        g.outspeedcm = sp*2
+        print("outspeedcm = %d" % g.outspeedcm)
     else:
 
         # do this in readspeed2 instead
         # maybe, but then steer will zero the speed
-        outspeed = sp
+        g.outspeed = sp
 
         if abs(sp) >= 7:
             g.speedtime = time.time()
@@ -917,53 +781,51 @@ def drive(sp):
 
         if sp < 0:
             sp += 256
-        st = steering
+        st = g.steering
         if st < 0:
             st += 256
-        tolog("motor %d steer %d" % (sp, steering))
+        tolog("motor %d steer %d" % (sp, g.steering))
         cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
             sp, st)
-        #print (sp, steering, cmd)
+        #print (sp, g.steering, cmd)
         os.system(cmd)
 
 def steer(st):
-    global steering
-
-    steering = st
-    sp = outspeed
+    g.steering = st
+    sp = g.outspeed
 #    if st < 0:
 #        st += 256
 #    if sp < 0:
 #        sp += 256
 
-#    tolog("motor %d steer %d" % (outspeed, st))
+#    tolog("motor %d steer %d" % (g.outspeed, st))
 #    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
 #        sp, st)
-    #print (outspeed, st, cmd)
+    #print (g.outspeed, st, cmd)
     dodrive(sp, st)
 #    os.system(cmd)
-#    tolog("motor2 %d steer %d" % (outspeed, st))
+#    tolog("motor2 %d steer %d" % (g.outspeed, st))
 
 def stop(txt = ""):
-    global steering, outspeed
-
-    steering = 0
-    outspeed = 0.0
+    g.steering = 0
+    g.outspeed = 0.0
 
     g.speedtime = None
 
-    tolog("(%s) motor %d steer %d" % (txt, outspeed, steering))
+    tolog("(%s) motor %d steer %d" % (txt, g.outspeed, g.steering))
     dodrive(0, 0)
+
+g.s = None
 
 def connect_to_ground_control():
     while True:
         if not g.ground_control:
-            s = open_socket()
-            if not s:
+            g.s = open_socket()
+            if not g.s:
                 print("no connection")
             else:
                 print("connection opened")
-                g.ground_control = s
+                g.ground_control = g.s
                 start_new_thread(from_ground_control, ())
                 send_to_ground_control("info %s" % g.VIN)
         time.sleep(5)
@@ -1002,7 +864,6 @@ def warningblink(state):
 
 def from_ground_control():
     global path
-    global heartn_r
 
     lastreportclosest = False
 
@@ -1051,7 +912,7 @@ def from_ground_control():
                         if g.limitspeed < 11:
                             #print("setting limitspeed to 0")
                             g.limitspeed = 0
-                            if outspeedcm != None and outspeedcm != 0:
+                            if g.outspeedcm != None and g.outspeedcm != 0:
                                 warningblink(True)
                         else:
                             #print("reduced limitspeed")
@@ -1066,11 +927,11 @@ def from_ground_control():
                             #print("no close cars")
                             pass
                         lastreportclosest = False
-                    if outspeedcm:
+                    if g.outspeedcm:
                         # neither 0 nor None
                         if g.limitspeed == 0:
                             send_to_ground_control("message stopping for obstacle")
-                        elif g.limitspeed != None and g.limitspeed < outspeedcm:
+                        elif g.limitspeed != None and g.limitspeed < g.outspeedcm:
                             send_to_ground_control("message slowing for obstacle %f" % g.limitspeed)
                         else:
                             send_to_ground_control("message ")
@@ -1094,8 +955,8 @@ def from_ground_control():
                 elif l[0] == "heartecho":
                     t1 = float(l[1])
                     t2 = float(l[2])
-                    heartn_r = int(l[3])
-                    #print("heartecho %.3f %.3f %.3f %d" % (time.time() - g.t0, t1, t2, heartn_r))
+                    g.heartn_r = int(l[3])
+                    #print("heartecho %.3f %.3f %.3f %d" % (time.time() - g.t0, t1, t2, g.heartn_r))
                 else:
                     print("unknown control command %s" % data)
         time.sleep(1)
@@ -1167,26 +1028,24 @@ def connect_to_ecm():
         if counter != 9:
             counter = (counter+1)%8
 
-heartn = -1
-heartn_r = -1
+g.heartn = -1
+g.heartn_r = -1
 
 def heartbeat():
-    global heartn
-
     while True:
-        heartn += 1
-        send_to_ground_control("heart %.3f %d" % (time.time()-g.t0, heartn))
+        g.heartn += 1
+        send_to_ground_control("heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
-        if heartn-heartn_r > 1:
-            print("waiting for heart echo %d %d" % (heartn, heartn_r))
+        if g.heartn-g.heartn_r > 1:
+            print("waiting for heart echo %d %d" % (g.heartn, g.heartn_r))
 
-        if heartn-heartn_r > 3:
+        if g.heartn-g.heartn_r > 3:
             if g.limitspeed0 == "notset":
                 print("setting speed to 0 during network pause")
                 g.limitspeed0 = g.limitspeed
                 g.limitspeed = 0.0
 
-        if heartn-heartn_r < 2:
+        if g.heartn-g.heartn_r < 2:
             if g.limitspeed0 != "notset":
                 print("restoring speed limit to %s after network pause" % (str(g.limitspeed0)))
                 g.limitspeed = g.limitspeed0
@@ -1194,10 +1053,9 @@ def heartbeat():
 
         time.sleep(5)
 
-def init():
-    global logf, markermsg
-    global accf
+g.canSocket = None
 
+def init():
     g.VIN = readvin()
     print("VIN %s" % g.VIN)
 
@@ -1220,6 +1078,10 @@ def init():
         g.mymin = 0
         g.mymax = 100
 
+    canNetwork = "can0"
+    canFrameID = 1025
+    g.canSocket = initializeCAN(canNetwork)
+
     g.angleknown = False
 
     eightinit()
@@ -1228,11 +1090,11 @@ def init():
 
     start_new_thread(connect_to_ground_control, ())
 
-    logf = open("navlog", "w")
-    accf = open("acclog", "w")
-    #accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+    g.logf = open("navlog", "w")
+    g.accf = open("acclog", "w")
+    #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
-    accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t can_ultra\n")
+    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t can_ultra\n")
 
     g.t0 = time.time()
     print("t0 = %f" % g.t0)
@@ -1247,23 +1109,23 @@ def init():
     # computing angbias would be better
     ncalibrate = 100
     for i in range(0, ncalibrate):
-        high = bus.read_byte_data(address, 0x47)
-        low = bus.read_byte_data(address, 0x48)
+        high = g.bus.read_byte_data(g.imuaddress, 0x47)
+        low = g.bus.read_byte_data(g.imuaddress, 0x48)
         r = make_word(high, low)
         g.rbias += r
 
         if False:
-            high = bus.read_byte_data(address, 0x43)
-            low = bus.read_byte_data(address, 0x44)
+            high = g.bus.read_byte_data(g.imuaddress, 0x43)
+            low = g.bus.read_byte_data(g.imuaddress, 0x44)
             r = make_word(high, low)
             g.rxbias += r
 
-            high = bus.read_byte_data(address, 0x45)
-            low = bus.read_byte_data(address, 0x46)
+            high = g.bus.read_byte_data(g.imuaddress, 0x45)
+            low = g.bus.read_byte_data(g.imuaddress, 0x46)
             r = make_word(high, low)
             g.rybias += r
 
-        w = bus.read_i2c_block_data(address, 0x3b, 6)
+        w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
         x = make_word(w[0], w[1])
         y = make_word(w[2], w[3])
         z = make_word(w[4], w[5])
@@ -1306,12 +1168,10 @@ def dodrive(sp, st):
     g.send_sp = sp
     g.send_st = st
 
-global senddriveinhibited
-senddriveinhibited = False
+g.senddriveinhibited = False
 
 def inhibitdodrive():
-    global senddriveinhibited
-    senddriveinhibited = True
+    g.senddriveinhibited = True
 
 
 def senddrive():
@@ -1339,7 +1199,7 @@ def senddrive():
                 st += 256
 
             #print(g.last_send)
-            if not senddriveinhibited:
+            if not g.senddriveinhibited:
                 if (sp == 0 and not first0done) or g.last_send != (sp, st):
                     cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
                         sp, st)
@@ -1358,29 +1218,26 @@ def senddrive():
             g.ledcmd = None
 
 
-# 0 to 9
-speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49]
-
 def keepspeed():
-    global outspeed
-    global outspeedcm
-
     outspeedi = 0
+
+    # 0 to 9
+    speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49]
 
     while True:
         time.sleep(0.1)
 
-        if outspeedcm == None:
+        if g.outspeedcm == None:
             continue
 
         spi = outspeedi
 
-        desiredspeed = outspeedcm
+        desiredspeed = g.outspeedcm
 
         if g.limitspeed != None and desiredspeed > g.limitspeed:
             desiredspeed = g.limitspeed
 
-        if user_pause:
+        if g.user_pause:
             desiredspeed = 0
 
         if desiredspeed > g.finspeed:
@@ -1409,13 +1266,13 @@ def keepspeed():
 
         if False:
             print("outspeedcm %f finspeed %f outspeedi %d spi %d sp %f outspeed %f" % (
-                    outspeedcm, g.finspeed, outspeedi, spi, sp, outspeed))
+                    g.outspeedcm, g.finspeed, outspeedi, spi, sp, g.outspeed))
 
-        if outspeed == sp and sp != 0:
+        if g.outspeed == sp and sp != 0:
 #            pass
             continue
 
-        outspeed = sp
+        g.outspeed = sp
 
         if abs(sp) >= 7:
             g.speedtime = time.time()
@@ -1430,7 +1287,7 @@ def keepspeed():
 
 #        if sp < 0:
 #            sp += 256
-        st = steering
+        st = g.steering
 #        if st < 0:
 #            st += 256
         tolog("motor %d steer %d" % (sp, st))
@@ -1471,7 +1328,7 @@ def godist(d):
     o2 = o1 + d*5/(pi*10.2/100)
     while True:
         loops += 1
-        if outspeed == 0.0:
+        if g.outspeed == 0.0:
             tolog("motor needed in godist")
             return False
         if g.inspeed == 0.0 and loops > 20:
@@ -1485,17 +1342,12 @@ def godist(d):
 import socket
 import sys
 
-HOST = 'localhost'    # The remote host
-HOST = '192.168.43.73'	# merkur on my hotspot
-HOST = '193.10.66.250'  # merkur on the SICS wifi net
-PORT = 50008              # The same port as used by the server
-
-ECMHOST = 'localhost'
-ECMPORT = 9002
-
-s = None
-
 def open_socket():
+    HOST = 'localhost'    # The remote host
+    HOST = '192.168.43.73'	# merkur on my hotspot
+    HOST = '193.10.66.250'  # merkur on the SICS wifi net
+    PORT = 50008              # The same port as used by the server
+
     for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
         af, socktype, proto, canonname, sa = res
         #print("res %s" % (res,))
@@ -1522,6 +1374,9 @@ def open_socket():
     return s
 
 def open_socket2():
+    ECMHOST = 'localhost'
+    ECMPORT = 9002
+
     for res in socket.getaddrinfo(ECMHOST, ECMPORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
         af, socktype, proto, canonname, sa = res
         #print("res %s" % (res,))
@@ -1547,10 +1402,10 @@ def open_socket2():
 
     return s
 
-H112HOST = "appz-ext.sics.se"
-H112PORT = 6892
-
 def open_socket3():
+    H112HOST = "appz-ext.sics.se"
+    H112PORT = 6892
+
     for res in socket.getaddrinfo(H112HOST, H112PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
         af, socktype, proto, canonname, sa = res
         #print("res %s" % (res,))
@@ -1597,10 +1452,6 @@ def initializeCAN(network):
     s.bind((network,))
     return s
 
-canNetwork = "can0"
-canFrameID = 1025
-canSocket = initializeCAN(canNetwork)
-
 def checkbox1(x, y, tup, leftp):
     (lxprev, lyprev, lx, ly) = tup
 
@@ -1643,6 +1494,10 @@ def checkpos():
 def goto_1(x, y):
     g.targetx = x
     g.targety = y
+
+    #TARGETDIST = 0.3
+    TARGETDIST = 0.15
+    TARGETDIST = 0.25
 
     missed = False
     inc = 0
@@ -1741,11 +1596,11 @@ def goto_1(x, y):
         st = asgn*g.speedsign*st
 
         if False:
-            st_d = st - steering
+            st_d = st - g.steering
             if st_d > 10:
-                st = steering + 10
+                st = g.steering + 10
             elif st_d < -10:
-                st = steering - 10
+                st = g.steering - 10
 
         steer(st)
 
@@ -1818,7 +1673,7 @@ def trip(path, first=0):
                 sp = int(sp*g.parameter/100.0)
                 x = cmd[2]
                 y = cmd[3]
-                spdiff = sp-outspeed
+                spdiff = sp-g.outspeed
                 if spdiff > 20:
                     # this should be done in a separate thread
                     drive(sp-spdiff/2)
@@ -2060,39 +1915,35 @@ def whole3():
         goto_1(x2, y1+b)
 
 
-user_pause = False
+g.user_pause = False
 
 def pause():
-    global user_pause
-    user_pause = True
+    g.user_pause = True
 
 def cont():
-    global user_pause
-    user_pause = False
+    g.user_pause = False
 
 
-signalling = False
+g.signalling = False
 
 def signal():
-    while signalling:
+    while g.signalling:
         os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
 
 def goto(x, y, state):
     start_new_thread(gotoaux, (x, y, state))
 
 def gotoaux(x, y, state):
-    global signalling
-
     print("gotoaux %f %f %s" % (x, y, state))
     drive(0)
     if state == "accident":
-        signalling = True
+        g.signalling = True
         start_new_thread(signal, ())
 
     time.sleep(4)
     drive(30)
     goto_1(x, y)
-    signalling = False
+    g.signalling = False
     drive(0)
 
 def whole4(dir):
@@ -2105,25 +1956,25 @@ def rev(l0):
     return l
 
 
-randdict = dict()
+g.randdict = dict()
 
 def randsel(a, b):
     astr = str(a)
     bstr = str(b)
-    if astr not in randdict:
-        randdict[astr] = 0
-    if bstr not in randdict:
-        randdict[bstr] = 0
+    if astr not in g.randdict:
+        g.randdict[astr] = 0
+    if bstr not in g.randdict:
+        g.randdict[bstr] = 0
 
-    an = randdict[astr]
-    bn = randdict[bstr]
+    an = g.randdict[astr]
+    bn = g.randdict[bstr]
 
     k = int(random.random()*(an+bn+2))
     if k <= bn:
-        randdict[astr] = randdict[astr] + 1
+        g.randdict[astr] = g.randdict[astr] + 1
         return a
     else:
-        randdict[bstr] = randdict[bstr] + 1
+        g.randdict[bstr] = g.randdict[bstr] + 1
         return b
 
 def piece2path(p, dir, offset):
@@ -2390,7 +2241,7 @@ def calmag():
     t0 = time.time()
 
     while time.time() < t0 + 20:
-        w = bus.read_i2c_block_data(address, 0x4c, 6)
+        w = g.bus.read_i2c_block_data(g.imuaddress, 0x4c, 6)
         print(w)
         mx = make_word(w[1], w[0])
         my = make_word(w[3], w[2])
@@ -2437,9 +2288,9 @@ def corridor():
         drive(0)
         time.sleep(4)
 
-servotime = 0.5
-
 def turnservo():
+    servotime = 0.5
+
     plupp = 2
     while True:
         if plupp == 0:
