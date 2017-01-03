@@ -839,6 +839,7 @@ def init():
     start_new_thread(connect_to_ecm, ())
 
 def dodrive(sp, st):
+    #print("dodrive %d %d" % (sp, st))
     g.send_sp = sp
     g.send_st = st
 
@@ -1956,3 +1957,68 @@ def overtake():
         gopath([34,35],1)
         gopath([36,30,28,24,17,11,7])
 
+def overtake2(a, b, skip=False):
+
+    path0 = [6,5,4,12,18,22,25,31,33,34,35,36,30,28,24,17,11,7]
+    ia = None
+    ib = None
+    for i in range(0, len(path0)):
+        if path0[i] == a:
+            ia = i
+        if path0[i] == b:
+            ib = i
+    if ia == None:
+        print("Can't find node %d" % a)
+        return False
+    if ib == None:
+        print("Can't find node %d" % b)
+        return False
+
+    if ia > ib:
+        path0.reverse()
+        ia = len(path0)-1-ia
+        ib = len(path0)-1-ib
+
+    path1 = path0[:ia]
+    path2 = path0[ia:ib+1]
+    if skip:
+        path3 = path0[ib+2:]
+    else:
+        path3 = path0[ib+1:]
+
+    print((path1, path2, path3))
+
+    drive(0)
+    time.sleep(4)
+    drive(20)
+
+    try:
+        while True:
+            gopath(path1)
+            gopath(path2,1)
+            gopath(path3)
+    except KeyboardInterrupt as e:
+        print(e)
+        drive(0)
+
+def replay(file):
+    f = open(file)
+    t0then = None
+    for line0 in f:
+        line = line0[:-1]
+        l = line.split(" ")
+        st = float(l[0])
+        sp = float(l[1])
+        t = float(l[2])
+        if t0then == None:
+            t0then = t
+            t0now = time.time()
+        else:
+            dt = t - t0then + t0now - time.time()
+            if dt < 0:
+                print("negative time %f" % dt)
+            else:
+                time.sleep(dt)
+        dodrive(sp, st)
+
+    f.close()
