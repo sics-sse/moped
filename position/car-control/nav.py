@@ -27,6 +27,8 @@ from nav_tc import send_to_ground_control
 import nav_signal
 from nav_signal import signal, blinkleds, warningblink, setleds, speak
 
+import nav_comm
+
 import random
 
 from math import pi, cos, sin, sqrt, atan2, acos, asin
@@ -42,6 +44,9 @@ nav_log.g = g
 nav_mqtt.g = g
 nav_tc.g = g
 nav_signal.g = g
+nav_comm.g = g
+
+g.s = None
 
 g.bus = nav_imu.bus
 g.imuaddress = nav_imu.imuaddress
@@ -535,21 +540,10 @@ def stop(txt = ""):
     tolog("(%s) motor %d steer %d" % (txt, g.outspeed, g.steering))
     dodrive(0, 0)
 
-g.s = None
-
-def readvin():
-    f = open("/home/pi/can-utils/java/settings.properties")
-    for line0 in f:
-        line = line0[:-1]
-        m = re.match("VIN=(.*)", line)
-        if m:
-            return m.group(1)
-    return None
-
 def connect_to_ecm():
     stopped = False
 
-    s = open_socket2()
+    s = nav_comm.open_socket2()
 
     ecmt0 = time.time()
 
@@ -569,7 +563,7 @@ def connect_to_ecm():
                 #speak("ouch")
                 warningblink(True)
                 stopped = True
-                s112 = open_socket3()
+                s112 = nav_comm.open_socket3()
                 sstr = ('accident %f %f %f %s\n' % (
                         g.ppx, g.ppy, g.crashacc, g.VIN)).encode("ascii")
                 print(sstr)
@@ -630,6 +624,24 @@ def heartbeat():
         time.sleep(5)
 
 g.canSocket = None
+
+def initializeCAN(network):
+    """
+    Initializes the CAN network, and returns the resulting socket.
+    """
+    # create a raw socket and bind it to the given CAN interface
+    s = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
+    s.bind((network,))
+    return s
+
+def readvin():
+    f = open("/home/pi/can-utils/java/settings.properties")
+    for line0 in f:
+        line = line0[:-1]
+        m = re.match("VIN=(.*)", line)
+        if m:
+            return m.group(1)
+    return None
 
 def init():
     g.VIN = readvin()
@@ -832,97 +844,6 @@ def getdist(x2, y2):
 
     return d
 
-# d > 0
-# User command
-def backup(d):
-    drive(-10)
-    godist(d)
-    stop()
-
-def godist(d):
-    loops = 0
-    o1 = g.odometer
-    o2 = o1 + d*5/(pi*10.2/100)
-    while True:
-        loops += 1
-        if g.outspeed == 0.0:
-            tolog("motor needed in godist")
-            return False
-        if g.inspeed == 0.0 and loops > 20:
-            tolog("speed 0 in godist; obstacle?")
-            return False
-        o = g.odometer
-        if o >= o2:
-            return True
-        time.sleep(0.1)
-
-def open_socket2():
-    ECMHOST = 'localhost'
-    ECMPORT = 9002
-
-    for res in socket.getaddrinfo(ECMHOST, ECMPORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
-        af, socktype, proto, canonname, sa = res
-        #print("res %s" % (res,))
-        try:
-            s = socket.socket(af, socktype, proto)
-        except Exception as e:
-            print("socket %s" % e)
-            s = None
-            continue
-
-        try:
-            s.connect(sa)
-        except Exception as e:
-            print("connect %s" % e)
-            #(socket.error, msg):
-            s.close()
-            s = None
-            continue
-        break
-    if s is None:
-        print('could not open socket2')
-        return False
-
-    return s
-
-def open_socket3():
-    H112HOST = "appz-ext.sics.se"
-    H112PORT = 6892
-
-    for res in socket.getaddrinfo(H112HOST, H112PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
-        af, socktype, proto, canonname, sa = res
-        #print("res %s" % (res,))
-        try:
-            s = socket.socket(af, socktype, proto)
-        except Exception as e:
-            print("socket %s" % e)
-            s = None
-            continue
-
-        try:
-            s.connect(sa)
-        except Exception as e:
-            print("connect %s" % e)
-            #(socket.error, msg):
-            s.close()
-            s = None
-            continue
-        break
-    if s is None:
-        print('could not open socket2')
-        return False
-
-    return s
-
-def initializeCAN(network):
-    """
-    Initializes the CAN network, and returns the resulting socket.
-    """
-    # create a raw socket and bind it to the given CAN interface
-    s = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
-    s.bind((network,))
-    return s
-
 def checkbox1(x, y, tup, leftp):
     (lxprev, lyprev, lx, ly) = tup
 
@@ -1079,6 +1000,33 @@ def goto_1(x, y):
 
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
 
+        time.sleep(0.1)
+
+#============================================================
+# User commands
+
+# d > 0
+# User command
+def backup(d):
+    drive(-10)
+    godist(d)
+    stop()
+
+def godist(d):
+    loops = 0
+    o1 = g.odometer
+    o2 = o1 + d*5/(pi*10.2/100)
+    while True:
+        loops += 1
+        if g.outspeed == 0.0:
+            tolog("motor needed in godist")
+            return False
+        if g.inspeed == 0.0 and loops > 20:
+            tolog("speed 0 in godist; obstacle?")
+            return False
+        o = g.odometer
+        if o >= o2:
+            return True
         time.sleep(0.1)
 
 def stopx(i, t = 3.0):
