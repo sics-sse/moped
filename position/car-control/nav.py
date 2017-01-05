@@ -1,6 +1,5 @@
 import re
 import time
-import threading
 import os
 import subprocess
 import math
@@ -25,12 +24,12 @@ import nav_mqtt
 import nav_tc
 from nav_tc import send_to_ground_control
 
+import nav_signal
+from nav_signal import signal, blinkleds, warningblink, setleds, speak
+
 import random
 
 from math import pi, cos, sin, sqrt, atan2, acos, asin
-
-def start_new_thread(f, args):
-    threading.Thread(target=f, args=args, daemon=True).start()
 
 
 class globals:
@@ -42,6 +41,7 @@ nav_imu.g = g
 nav_log.g = g
 nav_mqtt.g = g
 nav_tc.g = g
+nav_signal.g = g
 
 g.bus = nav_imu.bus
 g.imuaddress = nav_imu.imuaddress
@@ -62,12 +62,8 @@ g.ignoremarkers = False
 g.detectcrashes = False
 g.detectcrashes = True
 
-g.ledcmd = None
-
 # Set, but not used yet
 g.section_status = dict()
-
-g.warningblinking = None
 
 #g.oldpos = dict()
 g.oldpos = None
@@ -76,8 +72,6 @@ g.adjust_t = None
 g.paused = False
 
 g.speedtime = None
-
-g.speakcount = 1
 
 g.markerno = 0
 g.markercnt = 0
@@ -184,10 +178,10 @@ g.can_ultra = 0.0
 g.mqttc = None
 
 g.ledstate = 0
-
-def blinkleds():
-    g.ledstate = (g.ledstate + 1)%7
-    setleds(0, g.ledstate)
+g.signalling = False
+g.warningblinking = None
+g.ledcmd = None
+g.speakcount = 1
 
 def readmarker():
     while True:
@@ -576,18 +570,6 @@ def linesplit(socket):
         yield buffer
     return None
 
-def warningblink(state):
-    if state == True:
-        if g.warningblinking == True:
-            return
-        setleds(7, 0)
-        g.warningblinking = True
-    else:
-        if g.warningblinking == False:
-            return
-        setleds(0, 7)
-        g.warningblinking = False
-
 def from_ground_control():
     lastreportclosest = False
 
@@ -897,7 +879,9 @@ def keepspeed():
     outspeedi = 0
 
     # 0 to 9
-    speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49]
+    speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49,
+              # 93 to 100 haven't been run yet
+              53, 57, 73, 77, 81, 85, 89, 93, 97, 100]
 
     while True:
         time.sleep(0.1)
@@ -1282,27 +1266,6 @@ def stopx(i, t = 3.0):
 
     g.braking = False
 
-def dospeak(s, p):
-    if '#' in s:
-        s = s.replace('#', str(g.speakcount))
-    os.system("espeak -a500 -p%d '%s' >/dev/null 2>&1" % (p, s))
-
-def speak(str):
-    p = 50
-    if g.VIN == "car2":
-        p = 80
-    start_new_thread(dospeak, (str, p))
-
-def setleds(mask, code):
-    print("setleds %d %d" % (mask, code))
-
-    if False:
-        cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
-            mask, code)
-        os.system(cmd)
-    else:
-        g.ledcmd = (mask, code)
-
 # User command
 def trip(path, first=0):
     g.speakcount = 1
@@ -1576,12 +1539,6 @@ def pause():
 def cont():
     g.user_pause = False
 
-
-g.signalling = False
-
-def signal():
-    while g.signalling:
-        os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
 
 def goto(x, y, state):
     start_new_thread(gotoaux, (x, y, state))
@@ -2022,3 +1979,51 @@ def replay(file):
         dodrive(sp, st)
 
     f.close()
+
+def goround():
+    drive(0)
+    time.sleep(4)
+
+    steer(-100)
+
+    for i in range(7, 50, 10):
+        drive(i)
+        time.sleep(3)
+
+    for i in range(50, 101):
+        drive(i)
+        time.sleep(20)
+
+    drive(0)
+
+def gooval(extra=20):
+    start_new_thread(goovalaux, (extra,))
+
+global perc
+
+def goovalaux(extra=20):
+    global perc
+
+    drive(0)
+    time.sleep(4)
+    sp = 30
+    drive(sp)
+
+    if sp < 35:
+        perc = 0.8
+    else:
+        perc = 0.6
+
+    while True:
+        steer(0)
+        goto_1(2.2, 17)
+        steer(-100)
+        # 250 comes from pi*80 (cm)
+        # it's the outer radius, but so is the speed we get
+        print("finspeed1 %f dang1 %f" % (g.finspeed, g.dang))
+        time.sleep(250.0/g.finspeed*perc)
+        print("finspeed2 %f dang2 %f" % (g.finspeed, g.dang))
+        steer(0)
+        goto_1(0.8, 13)
+        steer(-100)
+        time.sleep(250.0/g.finspeed*perc)
