@@ -201,8 +201,8 @@ def readgyro0():
             t1 = t2
 
             angvel = r/gscale
-            dang = angvel*dt
-            g.ang += dang
+            g.dang = angvel*dt
+            g.ang += g.dang
 
             if True:
                 w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
