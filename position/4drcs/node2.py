@@ -7,21 +7,34 @@ from util import dist
 from node import Node
 
 class Node2(Node):
-    def task(self, t):
-        print("Node2: task %s" % str(t))
+    def task(self, taskl):
+        print("Node2: task %s" % str(taskl))
 
-        # t = [('goto', x, y, eta), ...]
-        # There may be a future goal at t[1] but we won't use it,
+        # taskl = [('goto', x, y, eta), ...]
+        # There may be a future goal at taskl[1] but we won't use it,
         # since we don't make subgoals here.
-        t1 = t[0]
-        x = t1[1]
-        y = t1[2]
-        eta = t1[3]
+        task = taskl[0]
+        x = task[1]
+        y = task[2]
+        eta = task[3]
         print("eta = %f" % eta)
 
         while True:
-            # This is the wrong place to set speed
-            self.wm.v = 0.5
+            di = dist(x, y, self.wm.x, self.wm.y)
+            t = time.time()
+            if self.wm.v == 0:
+                etaerror = 0
+            else:
+                etaerror = di/self.wm.v - (eta+self.wm.t0-t)
+
+            if abs(etaerror) > 0.1 or self.wm.v == 0:
+                vnew = di/(eta+self.wm.t0-t)
+                if vnew-self.wm.v > 0.05:
+                    vnew = self.wm.v + 0.05
+                elif vnew-self.wm.v < -0.05:
+                    vnew = self.wm.v - 0.05
+
+                self.wm.v = vnew
 
             a = atan2(x-self.wm.x, y-self.wm.y)*180/pi
             d = a - self.wm.ang
@@ -33,8 +46,10 @@ class Node2(Node):
             c = self.wm.v*2
             self.wm.angv = min(d*c, maxangv)
 
-            logging.print("%f %f %f %f" % (self.wm.x, self.wm.y, self.wm.ang, d))
+            logging.print("%f %f %f %f %f %f" % (
+                    self.wm.x, self.wm.y, self.wm.ang, d, self.wm.v,
+                    etaerror))
             time.sleep(0.1)
             # Report status, neutrally, but should we not check whether we
             # are done?
-            yield((dist(x, y, self.wm.x, self.wm.y), d))
+            yield((di, d))
