@@ -27,13 +27,43 @@ class Node2(Node):
             else:
                 etaerror = di/self.wm.v - (eta+self.wm.t0-t)
 
+            vnew = None
+
             if abs(etaerror) > 0.1 or self.wm.v == 0:
                 vnew = di/(eta+self.wm.t0-t)
-                if vnew-self.wm.v > 0.05:
-                    vnew = self.wm.v + 0.05
-                elif vnew-self.wm.v < -0.05:
-                    vnew = self.wm.v - 0.05
+                if vnew < 0:
+                    vnew = None
 
+                if False:
+                    if vnew-self.wm.v > 0.05:
+                        vnew = self.wm.v + 0.05
+                    elif vnew-self.wm.v < -0.05:
+                        vnew = self.wm.v - 0.05
+
+            if self.wm.obstacledist != None:
+                # 0.7 is an ad hoc parameter. If it is 1.0, we will go
+                # a few cm into the stationary car in front
+                # It seems we may do that anyway, so just brake hard when
+                # too close.
+                di2 = self.wm.obstacledist - 0.5
+                if di2 < 0:
+                    di2 = 0
+                vnew1 = di2
+#                if self.wm.obstacledist < 0.2:
+#                    vnew1 = 0.0
+                if vnew == None:
+                    if vnew1 < self.wm.v:
+                        vnew = vnew1
+                else:
+                    if vnew1 < vnew:
+                        vnew = vnew1
+                if vnew != None:
+                    print("%s: reducing speed to %f" % (
+                            self.vehicle.name, vnew))
+                if vnew != None and vnew < 0.01 and vnew > 0.0:
+                    return
+
+            if vnew != None:
                 self.wm.v = vnew
 
             a = atan2(x-self.wm.x, y-self.wm.y)*180/pi
@@ -42,11 +72,13 @@ class Node2(Node):
             if d > 180:
                 d -= 360
 
-            maxangv = 360/((2*pi*0.8)/self.wm.v)
+            maxangv = 360/(2*pi*0.8)*self.wm.v
             c = self.wm.v*2
             self.wm.angv = min(d*c, maxangv)
 
-            logging.print("%f %f %f %f %f %f" % (
+            logging.print("%f %s %f %f %f %f %f %f" % (
+                    time.time() - self.wm.t0,
+                    self.vehicle.name,
                     self.wm.x, self.wm.y, self.wm.ang, d, self.wm.v,
                     etaerror))
             time.sleep(0.1)
