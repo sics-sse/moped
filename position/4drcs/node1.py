@@ -4,11 +4,18 @@ from util import *
 
 from node import Node
 
-path = [(1, 1),
-        (3, 1),
-        (3, 3),
-        (2, 4),
-        (1, 3)]
+path1 = [(1, 1),
+         (3, 1),
+         (3, 3),
+         (2, 4),
+         (1, 3)]
+
+path2 = [(0, 2),
+         (4, 2),
+         (6, 4),
+         (4, 6),
+         (2, 4),
+         (1, 3)]
 
 class Node1(Node):
     def task(self, t):
@@ -17,14 +24,23 @@ class Node1(Node):
 
         # t = ('goto', n)
         n = t[1]
+        if n == 1:
+            path = path1
+        else:
+            path = path2
 
+
+        initialsleep = 0
+        if self.vehicle.name == "1" and False:
+            initialsleep = 5
+            time.sleep(initialsleep)
 
         x0 = self.wm.x
         y0 = self.wm.y
 
         # missing: generating several plans, and having them judged
         p = []
-        eta0 = 0.0
+        eta0 = initialsleep
         for coords in path:
             x = coords[0]
             y = coords[1]
@@ -66,4 +82,9 @@ class Node1(Node):
                     break
 
         # This is the wrong place to set speed
+        # Maybe not, but we should check that we are where we are supposed
+        # to be.
         self.wm.v = 0.0
+
+        # It should be part of a plan to stop precisely at the right
+        # point, taking braking distance into account.
