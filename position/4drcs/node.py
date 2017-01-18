@@ -1,6 +1,7 @@
 class Node:
-    def __init__(self, wm):
+    def __init__(self, vehicle):
         print("Node")
         self.lower = None
         self.upper = None
-        self.wm = wm
+        self.vehicle = vehicle
+        self.wm = vehicle.wm
