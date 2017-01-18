@@ -23,7 +23,7 @@ for line0 in f:
     line = line0[:-1]
 
     l = line.split(" ")
-    data.append((l[0], float(l[1]), float(l[2]), float(l[3])))
+    data.append((l[1], float(l[2]), float(l[3]), float(l[4]), float(l[0])))
 
 currentpos = dict()
 
@@ -89,6 +89,7 @@ def carpos_event(event):
     y = ev[2]
     ang = ev[3]
     name = ev[4]
+    t = ev[5]
 
     px = xcoord(x)
     py = ycoord(y)
@@ -153,12 +154,16 @@ def carpos_event(event):
 def playdata():
     global event_nr
 
+    lastt = 0
+
     for tup in data:
-        (name, x, y, ang) = tup
+        (name, x, y, ang, t) = tup
+        if t > lastt:
+            time.sleep(t-lastt)
+            lastt = t
         event_nr += 1
-        d[event_nr] = ("mpos", x, y, ang, name)
+        d[event_nr] = ("mpos", x, y, ang, name, t)
         w.event_generate("<<CarPos>>", when="tail", x=event_nr)
-        time.sleep(0.05)
 
 
 w = Canvas(width=winw, height=winh, bg='white')
