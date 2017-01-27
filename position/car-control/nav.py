@@ -2,7 +2,6 @@ import re
 import time
 import os
 import subprocess
-import math
 import socket
 import sys
 import ast
@@ -31,7 +30,7 @@ import nav_comm
 
 import random
 
-from math import pi, cos, sin, sqrt, atan2, acos, asin
+from math import pi, cos, sin, sqrt, atan2, acos, asin, log
 
 
 class globals:
@@ -347,8 +346,9 @@ def readmarker0():
                                     ppxdiff1 /= 2
                                     ppydiff1 /= 2
                                     #angdiff1 /= 2
-                                    g.ppxdiff = ppxdiff1
-                                    g.ppydiff = ppydiff1
+                                    if True:
+                                        g.ppxdiff = ppxdiff1
+                                        g.ppydiff = ppydiff1
                                     #print("3 ppydiff := %f" % g.ppydiff)
                                     g.angdiff = angdiff1
                             else:
@@ -699,6 +699,23 @@ def init():
     start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
     start_new_thread(connect_to_ecm, ())
+    #start_new_thread(distancebeep, ())
+
+def distancebeep():
+    while True:
+        dist = g.can_ultra
+        if dist != None:
+            if dist > 2.0:
+                w = 1.0
+            elif dist < 0.1:
+                w = 0.05
+            else:
+                w = log(dist/0.085)/log(23.4)
+            n = int(1/w)+1
+            for i in range(0, n):
+                nav_signal.obstaclebeep()
+                time.sleep(w)
+        time.sleep(0.05)
 
 def dodrive(sp, st):
     #print("dodrive %d %d" % (sp, st))
@@ -1369,11 +1386,6 @@ def randsel(a, b):
         g.randdict[bstr] = g.randdict[bstr] + 1
         return b
 
-def piece2path(p, dir, offset):
-    path1 = [(i, nodes[i]) for i in p]
-    path = makepath(dir*offset, path1)
-    return path
-
 def whole4aux(dir):
 
     # 'dir' is obsolete - it should always be -1
@@ -1778,27 +1790,27 @@ def goround():
 
     drive(0)
 
-def gooval(extra=20):
-    start_new_thread(goovalaux, (extra,))
-
 global perc
 
-def goovalaux(extra=20):
+def gooval(perc0):
+    start_new_thread(goovalaux, (perc0,))
+
+def goovalaux(perc0):
     global perc
+
+    perc = perc0
+
+    g.goodmarkers = [25]
 
     drive(0)
     time.sleep(4)
     sp = 30
     drive(sp)
 
-    if sp < 35:
-        perc = 0.8
-    else:
-        perc = 0.6
-
     while True:
         steer(0)
-        goto_1(2.2, 17)
+        goto_1(1.9, 17)
+        print("marker %s" % (str(g.lastpos)))
         steer(-100)
         # 250 comes from pi*80 (cm)
         # it's the outer radius, but so is the speed we get
@@ -1806,6 +1818,6 @@ def goovalaux(extra=20):
         time.sleep(250.0/g.finspeed*perc)
         print("finspeed2 %f dang2 %f" % (g.finspeed, g.dang))
         steer(0)
-        goto_1(0.8, 13)
+        goto_1(0.5, 13)
         steer(-100)
         time.sleep(250.0/g.finspeed*perc)
