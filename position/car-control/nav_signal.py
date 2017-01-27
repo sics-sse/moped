@@ -6,6 +6,9 @@ def signal():
     while g.signalling:
         os.system("(python tone2.py 8000 3000 1200;python tone2.py 8000 3000 1000) 2>/dev/null")
 
+def obstaclebeep():
+    os.system("python tone2.py 16000 3000 2400 2>/dev/null")
+
 def dospeak(s, p):
     if '#' in s:
         s = s.replace('#', str(g.speakcount))
