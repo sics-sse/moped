@@ -352,6 +352,8 @@ def button1_event(event):
 def dist(x1, y1, x2, y2):
     return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
+# find which point in currentpath is closest to where we clicked
+# set markedpoint to its index in currentpath
 def button2_event(event):
     global markedpoint
 
@@ -370,6 +372,8 @@ def button2_event(event):
         i += 1
     print "markedpoint %d" % markedpoint
 
+# if a point in currentpath has been selected with button2, move it to where
+# we clicked now
 def button3_event(event):
     global markedpoint
 
