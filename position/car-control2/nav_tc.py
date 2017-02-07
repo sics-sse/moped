@@ -1,8 +1,10 @@
 import socket
+import time
 
-from nav_log import *
+from nav_log import tolog, tolog0
+from nav_util import start_new_thread
 
-from nav_signal import warningblink
+import nav_signal
 
 def connect_to_ground_control():
     while True:
@@ -88,7 +90,7 @@ def from_ground_control():
                             #print("setting limitspeed to 0")
                             g.limitspeed = 0
                             if g.outspeedcm != None and g.outspeedcm != 0:
-                                warningblink(True)
+                                nav_signal.warningblink(True)
                         else:
                             #print("reduced limitspeed")
                             pass

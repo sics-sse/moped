@@ -1,6 +1,6 @@
 import time
 
-from nav_util import *
+from nav_util import dist
 
 def tolog2(str0, stdout):
 

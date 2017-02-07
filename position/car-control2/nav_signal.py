@@ -1,6 +1,6 @@
 import os
 
-from nav_util import *
+from nav_util import start_new_thread
 
 def signal():
     while g.signalling:

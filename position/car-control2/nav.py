@@ -7,16 +7,14 @@ import sys
 import ast
 import json
 
-from godircalc import godir
-
 import eight
 
 import nav_imu
 
 import nav_log
-from nav_log import *
+from nav_log import tolog, tolog0
 
-from nav_util import *
+from nav_util import sign, dist, start_new_thread
 
 import nav_mqtt
 import nav_tc

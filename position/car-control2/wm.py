@@ -1,9 +1,12 @@
+import time
 import re
 import subprocess
 
 from nav_tc import send_to_ground_control
 
-from nav_log import *
+from nav_log import tolog, tolog0
+
+from nav_util import dist
 
 import nav_signal
 
