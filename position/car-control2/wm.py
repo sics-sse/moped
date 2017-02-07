@@ -9,6 +9,7 @@ from nav_log import tolog, tolog0
 from nav_util import dist
 
 import nav_signal
+import driving
 
 def readmarker():
     while True:
@@ -243,7 +244,7 @@ def readspeed2():
                         time.time() - g.speedtime > 7.0):
                         nav_signal.speak("obstacle")
                         send_to_ground_control("obstacle")
-                        drive(0)
+                        driving.drive(0)
 
                     g.odometer = int(m.group(2))
                     if g.odometer != g.lastodometer:
