@@ -232,7 +232,7 @@ def findpos(x, y, ang):
         return (i, j, "unknown", da)
 
 global distances
-global neightbours
+global neighbours
 
 def eightinit():
     global distances, neighbours

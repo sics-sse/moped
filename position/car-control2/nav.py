@@ -10,7 +10,6 @@ import json
 from godircalc import godir
 
 import eight
-from eight import *
 
 import nav_imu
 
@@ -380,7 +379,7 @@ def init():
 
     g.angleknown = False
 
-    eightinit()
+    eight.eightinit()
 
     setleds(0, 7)
 
@@ -579,7 +578,7 @@ def checkbox1(x, y, tup, leftp):
                     speak("oo")
 
 def checkpos():
-    pos = findpos(g.ppx,g.ppy,g.ang)
+    pos = eight.findpos(g.ppx,g.ppy,g.ang)
     #print((g.ppx,g.ppy,g.ang),pos)
 
 
@@ -784,17 +783,17 @@ def whole4aux(dir):
     print("speedsign = %d" % g.speedsign)
     g.speedsign = 1
 
-    #path0 = rev(piece3b) + [23]
-    path0 = rev(piece5) + rev(piece1)
+    #path0 = rev(eight.piece3b) + [23]
+    path0 = rev(eight.piece5) + rev(eight.piece1)
 
     print("path0 = %s" % str(path0))
 
     # idea: from the current position, determine which piece we can
     # start with
 
-    path = piece2path(path0, dir, 0.25)
-    lpath = piece2path(path0, dir, 0.15)
-    rpath = piece2path(path0, dir, 0.35)
+    path = eight.piece2path(path0, dir, 0.25)
+    lpath = eight.piece2path(path0, dir, 0.15)
+    rpath = eight.piece2path(path0, dir, 0.35)
 
     lx = None
     ly = None
@@ -809,45 +808,45 @@ def whole4aux(dir):
     while True:
         i10 = path[-1][2]
         # from eight.py:
-        if interleave == 2:
+        if eight.interleave == 2:
             i2 = path[-3][2]
         else:
             i2 = path[-2][2]
 
         if (i10, i2) == (23, 26):
-            nextpiece = randsel(piece2b, rev(piece3a))
-            #nextpiece = rev(piece3a)
+            nextpiece = randsel(eight.piece2b, rev(eight.piece3a))
+            #nextpiece = rev(eight.piece3a)
         elif (i10, i2) == (6, 13):
-            nextpiece = piece1
+            nextpiece = eight.piece1
         elif (i10, i2) == (36, 30):
-            nextpiece = randsel(piece2a + [23], piece5 + piece4)
-            #nextpiece = piece5 + piece4
+            nextpiece = randsel(eight.piece2a + [23], eight.piece5 + eight.piece4)
+            #nextpiece = eight.piece5 + eight.piece4
         elif (i10, i2) == (23, 27):
-            nextpiece = randsel(rev(piece3a), piece2b)
-            #nextpiece = piece2b
+            nextpiece = randsel(rev(eight.piece3a), eight.piece2b)
+            #nextpiece = eight.piece2b
         elif (i10, i2) == (5, 10):
-            nextpiece = rev(piece4)
+            nextpiece = rev(eight.piece4)
         elif (i10, i2) == (33, 31):
-            nextpiece = randsel(rev(piece3b) + [23],
-                                rev(piece5) + rev(piece1))
-            #nextpiece = rev(piece5) + rev(piece1)
+            nextpiece = randsel(rev(eight.piece3b) + [23],
+                                rev(eight.piece5) + rev(eight.piece1))
+            #nextpiece = rev(eight.piece5) + rev(eight.piece1)
         elif (i10, i2) == (23, 19):
-            nextpiece = randsel(rev(piece2a), piece3b)
-            #nextpiece = piece3b
+            nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
+            #nextpiece = eight.piece3b
         elif (i10, i2) == (23, 16):
-            nextpiece = randsel(rev(piece2a), piece3b)
-            #nextpiece = rev(piece2a)
+            nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
+            #nextpiece = rev(eight.piece2a)
         elif (i10, i2) == (4, 12):
-            #nextpiece = randsel(piece6 + piece1, piece3a + [23])
-            nextpiece = piece3a + [23]
+            #nextpiece = randsel(eight.piece6 + eight.piece1, eight.piece3a + [23])
+            nextpiece = eight.piece3a + [23]
         elif (i10, i2) == (7, 11):
-            nextpiece = randsel(rev(piece6) + rev(piece4),
-                                rev(piece2b) + [23])
-            #nextpiece = rev(piece2b) + [23]
+            nextpiece = randsel(rev(eight.piece6) + rev(eight.piece4),
+                                rev(eight.piece2b) + [23])
+            #nextpiece = rev(eight.piece2b) + [23]
         elif (i10, i2) == (35, 32):
-            nextpiece = rev(piece1)
+            nextpiece = rev(eight.piece1)
         elif (i10, i2) == (34, 29):
-            nextpiece = piece4
+            nextpiece = eight.piece4
         else:
             drive(0)
             return
@@ -885,9 +884,9 @@ def whole4aux(dir):
         # pieces; then we get a free check whether they actually go
         # together
 
-        path = piece2path(nextpiece, dir, 0.25)
-        lpath = piece2path(nextpiece, dir, 0.15)
-        rpath = piece2path(nextpiece, dir, 0.35)
+        path = eight.piece2path(nextpiece, dir, 0.25)
+        lpath = eight.piece2path(nextpiece, dir, 0.15)
+        rpath = eight.piece2path(nextpiece, dir, 0.35)
 
 def initpos():
     g.markercnt = 0
