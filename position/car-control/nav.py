@@ -245,7 +245,9 @@ def readmarker0():
 #            if g.angleknown and abs(odiff) > 45.0 and g.markerno != -1:
 #                tolog("wrong marker %d %f" % (g.markerno, odiff))
 #                g.markerno = -1
-            if markertime == None or t-markertime > 5:
+
+#            if markertime == None or t-markertime > 5:
+            if markertime == None:
                 #markertime = t
                 skipmarker = False
             else:
@@ -1401,7 +1403,8 @@ def whole4aux(dir):
     print("speedsign = %d" % g.speedsign)
     g.speedsign = 1
 
-    path0 = rev(piece3b) + [23]
+    #path0 = rev(piece3b) + [23]
+    path0 = rev(piece5) + rev(piece1)
 
     print("path0 = %s" % str(path0))
 
@@ -1424,31 +1427,42 @@ def whole4aux(dir):
 
     while True:
         i10 = path[-1][2]
-        i2 = path[-2][2]
+        # from eight.py:
+        if interleave == 2:
+            i2 = path[-3][2]
+        else:
+            i2 = path[-2][2]
 
         if (i10, i2) == (23, 26):
             nextpiece = randsel(piece2b, rev(piece3a))
+            #nextpiece = rev(piece3a)
         elif (i10, i2) == (6, 13):
             nextpiece = piece1
         elif (i10, i2) == (36, 30):
             nextpiece = randsel(piece2a + [23], piece5 + piece4)
+            #nextpiece = piece5 + piece4
         elif (i10, i2) == (23, 27):
             nextpiece = randsel(rev(piece3a), piece2b)
+            #nextpiece = piece2b
         elif (i10, i2) == (5, 10):
             nextpiece = rev(piece4)
         elif (i10, i2) == (33, 31):
             nextpiece = randsel(rev(piece3b) + [23],
                                 rev(piece5) + rev(piece1))
-
+            #nextpiece = rev(piece5) + rev(piece1)
         elif (i10, i2) == (23, 19):
             nextpiece = randsel(rev(piece2a), piece3b)
+            #nextpiece = piece3b
         elif (i10, i2) == (23, 16):
             nextpiece = randsel(rev(piece2a), piece3b)
+            #nextpiece = rev(piece2a)
         elif (i10, i2) == (4, 12):
-            nextpiece = randsel(piece6 + piece1, piece3a + [23])
+            #nextpiece = randsel(piece6 + piece1, piece3a + [23])
+            nextpiece = piece3a + [23]
         elif (i10, i2) == (7, 11):
             nextpiece = randsel(rev(piece6) + rev(piece4),
                                 rev(piece2b) + [23])
+            #nextpiece = rev(piece2b) + [23]
         elif (i10, i2) == (35, 32):
             nextpiece = rev(piece1)
         elif (i10, i2) == (34, 29):
