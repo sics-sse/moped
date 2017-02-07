@@ -39,8 +39,8 @@ def gotoaux(x, y, state):
     g.signalling = False
     driving.drive(0)
 
-def whole4(dir):
-    start_new_thread(whole4aux, (dir,))
+def whole4():
+    start_new_thread(whole4aux, ())
 
 
 def rev(l0):
@@ -68,9 +68,7 @@ def randsel(a, b):
         g.randdict[bstr] = g.randdict[bstr] + 1
         return b
 
-def whole4aux(dir):
-
-    # 'dir' is obsolete - it should always be -1
+def whole4aux():
 
     speed0 = 20
 
@@ -91,27 +89,24 @@ def whole4aux(dir):
     # idea: from the current position, determine which piece we can
     # start with
 
-    path = eight.piece2path(path0, dir, 0.25)
-    lpath = eight.piece2path(path0, dir, 0.15)
-    rpath = eight.piece2path(path0, dir, 0.35)
-
     lx = None
     ly = None
     rx = None
     ry = None
 
-    if dir == 1:
-        path.reverse()
-
     i1 = -1
 
+    nextpiece = path0
+
     while True:
-        i10 = path[-1][2]
+        i10 = nextpiece[-1]
         # from eight.py:
         if eight.interleave == 2:
-            i2 = path[-3][2]
+            i2 = nextpiece[-3]
         else:
-            i2 = path[-2][2]
+            i2 = nextpiece[-2]
+
+        thispiece = nextpiece
 
         if (i10, i2) == (23, 26):
             nextpiece = randsel(eight.piece2b, rev(eight.piece3a))
@@ -151,40 +146,76 @@ def whole4aux(dir):
             driving.drive(0)
             return
 
-        #print("nextpiece = %s" % str(nextpiece))
+        print("thispiece = %s" % str(thispiece))
 
-        for j in range(0, len(path)):
-            (_, _, i, x, y) = path[j]
-            if g.remote_control:
-                print("whole4 finished")
-                return
-            i2 = i1
-            i1 = i
-            if j == len(path)-1:
-                i3 = nextpiece[0]
-            else:
-                (_, _, i3, _, _) = path[j+1]
-            nav_tc.send_to_ground_control("between %d %d %d" % (i2, i1, i3))
-            lxprev = lx
-            rxprev = rx
-            lyprev = ly
-            ryprev = ry
-            (_, _, _, lx, ly) = lpath[j]
-            (_, _, _, rx, ry) = rpath[j]
-            if lxprev != None:
-                if False:
-                    print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
-                            lxprev, lyprev, lx, ly,
-                            rxprev, ryprev, rx, ry))
-                g.currentbox = [(lxprev, lyprev, lx, ly),
-                                (rxprev, ryprev, rx, ry)]
-            nav2.goto_1(x, y)
+        # For the box computation, we should tell gopath what
+        # nextpiece[0] is, too
+        gopath(thispiece)
 
         # idea: let the connecting node always be a part in both
         # pieces; then we get a free check whether they actually go
         # together
 
-        path = eight.piece2path(nextpiece, dir, 0.25)
-        lpath = eight.piece2path(nextpiece, dir, 0.15)
-        rpath = eight.piece2path(nextpiece, dir, 0.35)
+def gopath(path0):
+    g.last_send = None
 
+    #print("speedsign = %d" % g.speedsign)
+    g.speedsign = 1
+
+    path = eight.piece2path(path0, -0.25)
+    lpath = eight.piece2path(path0, -0.15)
+    rpath = eight.piece2path(path0, -0.35)
+
+    lx = None
+    ly = None
+    rx = None
+    ry = None
+
+    i1 = -1
+
+    for j in range(0, len(path)):
+        (_, _, i, x, y) = path[j]
+        if g.remote_control:
+            print("whole4 finished")
+            return
+        i2 = i1
+        i1 = i
+        if j == len(path)-1:
+            i3 = -1
+        else:
+            (_, _, i3, _, _) = path[j+1]
+        nav_tc.send_to_ground_control("between %d %d %d" % (i2, i1, i3))
+        lxprev = lx
+        rxprev = rx
+        lyprev = ly
+        ryprev = ry
+        (_, _, _, lx, ly) = lpath[j]
+        (_, _, _, rx, ry) = rpath[j]
+        if lxprev != None:
+            if False:
+                print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
+                        lxprev, lyprev, lx, ly,
+                        rxprev, ryprev, rx, ry))
+            g.currentbox = [(lxprev, lyprev, lx, ly),
+                            (rxprev, ryprev, rx, ry)]
+        nav2.goto_1(x, y)
+
+def travel(n0, n1, n2 = None, nz=None):
+    routes = eight.paths(n0, n1, n2, nz)
+    if routes == []:
+        print("no route found")
+        return False
+
+    # Value judgment: pick the shortest
+    routes.sort()
+    (d, r) = routes[0]
+
+    print("travel1")
+    driving.drive(20)
+    print("travel2")
+    gopath(r)
+    print("travel3")
+    driving.drive(0)
+    print("travel4")
+
+    return True
