@@ -7,40 +7,62 @@ def eightpoint(cy, ang):
     y = cy + R*cos(ang*pi/180)
     return (x, y)
 
-piece2a = [35, 32, 27]
-# via 23
-piece2b = [19, 13, 6]
-
-piece3a = [5, 10, 16]
-# via 23
-piece3b = [26, 29, 34]
-
-piece5 = [35, 34]
-piece6 = [5, 6]
-
 piece1 = [7, 11, 17, 24, 28, 30, 36]
 piece2 = [35, 32, 27, 23, 19, 13, 6]
 piece3 = [5, 10, 16, 23, 26, 29, 34]
 piece4 = [33, 31, 25, 22, 18, 12, 4]
 
-piece7 = [3, 4]
+piece5 = [35, 34]
+piece6 = [5, 6]
 
-# for the geometric 8 only
-nodenumbers = piece1 + piece2 + piece3 + piece4
+piece7 = [3, 4]
 
 # 'ways' is not used in nav.py
 ways = dict()
+
+nodes = dict()
+
+def fillinlist(l):
+    n = 3
+    for j in range(2*n, 0, -1):
+        l[j:j] = [100+l[j]]
+    return l
+
+interleave = 1
+#interleave = 2
+
+if interleave == 2:
+    piece1 = fillinlist(piece1)
+    piece2 = fillinlist(piece2)
+    piece3 = fillinlist(piece3)
+    piece4 = fillinlist(piece4)
+
+piece2a = [35, 32, 27]
+piece2a = piece2[0:3*interleave]
+# via 23
+piece2b = [19, 13, 6]
+piece2b = piece2[3*interleave+1:]
+
+piece3a = [5, 10, 16]
+piece3a = piece3[0:3*interleave]
+# via 23
+piece3b = [26, 29, 34]
+piece3b = piece3[3*interleave+1:]
 
 ways[1] = piece1 + [35, 34] + piece4 + [5, 6] + [piece1[0]]
 ways[3] = piece2
 ways[4] = piece3
 ways[2] = piece7
 
-nodes = dict()
+# for the geometric 8 only
+nodenumbers = piece1 + piece2 + piece3 + piece4
 
 def eightarc(nodenumbers, cy, angleoffset):
-    for i in range(-3, 3+1):
-        ang = 30*i
+    # assume len(nodenumbers) == 7, 2*n+1 == 7
+    n = 3
+    k = interleave
+    for i in range(-n*k, n*k+1):
+        ang = 90.0/(n*k)*i
         (x, y) = eightpoint(cy, ang+angleoffset)
         nr = nodenumbers[0]
         nodenumbers = nodenumbers[1:]
@@ -51,12 +73,10 @@ def eightarc(nodenumbers, cy, angleoffset):
 def eightpath(y1, y2, y3):
     R = 1.0
 
-    l = nodenumbers
-
-    l = eightarc(l, y1 - R, 0)
-    l = eightarc(l, y2 + R, 180)
-    l = eightarc(l, y2 - R, 0)
-    l = eightarc(l, y3 + R, 180)
+    eightarc(piece1, y1 - R, 0)
+    eightarc(piece2, y2 + R, 180)
+    eightarc(piece3, y2 - R, 0)
+    eightarc(piece4, y3 + R, 180)
 
     # 0.5 fits with the constants in 'eightpoint'
     nodes[3] = (0.5, 8.0)
@@ -98,6 +118,11 @@ def makepath(offset, path):
                   y1+offset*sin(angle)))
 
     return path1
+
+def piece2path(p, dir, offset):
+    path1 = [(i, nodes[i]) for i in p]
+    path = makepath(dir*offset, path1)
+    return path
 
 # also in nav.py
 def dist(x1, y1, x2, y2):
