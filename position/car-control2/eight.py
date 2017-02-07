@@ -119,9 +119,9 @@ def makepath(offset, path):
 
     return path1
 
-def piece2path(p, dir, offset):
+def piece2path(p, offset):
     path1 = [(i, nodes[i]) for i in p]
-    path = makepath(dir*offset, path1)
+    path = makepath(offset, path1)
     return path
 
 # also in nav.py
@@ -135,15 +135,15 @@ def plan(p0, p1):
     return False
 
 def paths(n0, n1, n2=None, nz=None):
-    extendpath([n0], n1, 0.0, n2, nz)
+    return extendpath([n0], n1, 0.0, n2, nz, [])
 
-def extendpath(p, goaln, d0, n2, nz):
+def extendpath(p, goaln, d0, n2, nz, acc):
     nlast1 = p[-1]
 
     if nlast1 == goaln:
         if nz == None or p[-2] == nz:
-            print("%f %s" % (d0, str(p)))
-            return
+            #print("%f %s" % (d0, str(p)))
+            return acc + [(d0, p)]
 
     for n in neighbours[nlast1]:
         if n in p:
@@ -176,7 +176,10 @@ def extendpath(p, goaln, d0, n2, nz):
             if newp3 == [12, 4, 3]:
                 continue
 
-        extendpath(p + [n], goaln, d0 + distances[(nlast1, n)], n2, nz)
+        acc = extendpath(p + [n], goaln, d0 + distances[(nlast1, n)],
+                         n2, nz, acc)
+
+    return acc
 
 # for the selected segment, the biggest of di and dj must be minimal
 def findpos(x, y, ang):
