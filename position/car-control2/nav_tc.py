@@ -1,5 +1,6 @@
 import socket
 import time
+import ast
 
 from nav_log import tolog, tolog0
 from nav_util import start_new_thread
