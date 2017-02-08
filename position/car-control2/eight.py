@@ -1,5 +1,7 @@
 from math import cos, sin, pi, atan2, sqrt
 
+from nav_util import rev
+
 def eightpoint(cy, ang):
     cx = 1.5
     R = 1.0
@@ -53,6 +55,8 @@ ways[1] = piece1 + [35, 34] + piece4 + [5, 6] + [piece1[0]]
 ways[3] = piece2
 ways[4] = piece3
 ways[2] = piece7
+
+
 
 # for the geometric 8 only
 nodenumbers = piece1 + piece2 + piece3 + piece4
@@ -146,6 +150,8 @@ def extendpath(p, goaln, d0, n2, nz, acc):
             return acc + [(d0, p)]
 
     for n in neighbours[nlast1]:
+        # Here, we should not look for only p, but for the sequence
+        # [p[-1], n]
         if n in p:
             continue
 
@@ -178,6 +184,67 @@ def extendpath(p, goaln, d0, n2, nz, acc):
 
         acc = extendpath(p + [n], goaln, d0 + distances[(nlast1, n)],
                          n2, nz, acc)
+
+    return acc
+
+def paths_p(n0, n1, n2=None, nz=None):
+    return extendpath_p([n0], n1, 0.0, n2, nz, [])
+
+def neighbours_p(n):
+    l = []
+    for (a, b) in pieces:
+        if a == n:
+            (_, d) = pieces[(a,b)]
+            l.append((b, d))
+    return l
+
+def extendpath_p(p, goaln, d0, n2, nz, acc):
+    nlast1 = p[-1]
+
+    if nlast1 == goaln:
+        if nz == None or p[-2] == nz:
+            #print("%f %s" % (d0, str(p)))
+            return acc + [(d0, p)]
+
+    for (n, d) in neighbours_p(nlast1):
+        # Here, we should not look for only p, but for the sequence
+        # [p[-1], n]
+        if n in p:
+            continue
+
+        if len(p) == 1 and n2 != None and n != n2:
+            continue
+
+        newp = p + [n]
+        if len(newp) >= 3:
+            newp3 = newp[-3:]
+            if newp3 == [6, 23, 5]:
+                continue
+            if newp3 == [5, 23, 6]:
+                continue
+            if newp3 == [34, 23, 35]:
+                continue
+            if newp3 == [35, 23, 34]:
+                continue
+            if newp3 == [5, 6, 23]:
+                continue
+            if newp3 == [6, 5, 23]:
+                continue
+            if newp3 == [34, 35, 23]:
+                continue
+            if newp3 == [35, 34, 23]:
+                continue
+            if newp3 == [23, 35, 34]:
+                continue
+            if newp3 == [23, 34, 35]:
+                continue
+            if newp3 == [3, 4, 34]:
+                continue
+            if newp3 == [34, 4, 3]:
+                continue
+
+        acc = extendpath_p(p + [n], goaln, d0 + d,
+                           n2, nz, acc)
 
     return acc
 
@@ -236,27 +303,30 @@ def findpos(x, y, ang):
 
 global distances
 global neighbours
+global pieces
 
 def eightinit():
-    global distances, neighbours
+    global distances, neighbours, pieces
 
     eightpath(19.2,15.4,12.5)
 
     neighbours = dict()
 
-    pieces = [[6,7,11,17,24,28,30,36,35],
-              [5,4,12,18,22,25,31,33,34],
-              [35, 32, 27, 23],
-              [23, 19, 13, 6],
-              [5, 10, 16, 23],
-              [23, 26, 29, 34],
-              [35, 34],
-              [5, 6],
-              [3, 4]]
+    piecelist = [[6,7,11,17,24,28,30,36,35],
+                 [5,4,12,18,22,25,31,33,34],
+                 [35, 32, 27, 23],
+                 [23, 19, 13, 6],
+                 [5, 10, 16, 23],
+                 [23, 26, 29, 34],
+                 [35, 34],
+                 [5, 6],
+                 [3, 4]]
 
     distances = dict()
+    pieces = dict()
 
-    for piece in pieces:
+    for piece in piecelist:
+        dtot = 0
         lastn = None
         for n in piece:
             if lastn != None:
@@ -270,7 +340,11 @@ def eightinit():
                          nodes[lastn][0], nodes[lastn][1])
                 distances[(n, lastn)] = d
                 distances[(lastn, n)] = d
+                dtot += d
             lastn = n
+
+        pieces[(piece[0],piece[-1])] = (piece[1:-1], dtot)
+        pieces[(piece[-1],piece[0])] = (rev(piece[1:-1]), dtot)
 
 if __name__ == "__main__":
     eightinit()
