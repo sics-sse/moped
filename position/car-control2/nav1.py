@@ -60,9 +60,7 @@ def whole4aux():
     g.speedsign = 1
 
     #path0 = rev(eight.piece3b) + [23]
-    path0 = rev(eight.piece5) + rev(eight.piece1)
-
-    print("path0 = %s" % str(path0))
+    #path0 = rev(eight.piece5) + rev(eight.piece1)
 
     # idea: from the current position, determine which piece we can
     # start with
@@ -74,7 +72,8 @@ def whole4aux():
 
     i1 = -1
 
-    nextpiece = path0
+    nextpiece = [34, 35, 6]
+    nextpiece_e = eight.insert_waypoints_l(nextpiece)
 
     while True:
         i10 = nextpiece[-1]
@@ -84,47 +83,49 @@ def whole4aux():
         else:
             i2 = nextpiece[-2]
 
-        thispiece = nextpiece
+        thispiece = nextpiece_e
 
-        if (i10, i2) == (23, 26):
-            nextpiece = randsel(eight.piece2b, rev(eight.piece3a))
+        if (i10, i2) == (23, 34):
+            nextpiece = randsel([23, 6], [23, 5])
             #nextpiece = rev(eight.piece3a)
-        elif (i10, i2) == (6, 13):
-            nextpiece = eight.piece1
-        elif (i10, i2) == (36, 30):
-            nextpiece = randsel(eight.piece2a + [23], eight.piece5 + eight.piece4)
+        elif (i10, i2) == (6, 23):
+            nextpiece = [6, 35]
+        elif (i10, i2) == (35, 6):
+            nextpiece = randsel([35, 23], [35, 34, 5])
             #nextpiece = eight.piece5 + eight.piece4
-        elif (i10, i2) == (23, 27):
-            nextpiece = randsel(rev(eight.piece3a), eight.piece2b)
+        elif (i10, i2) == (23, 35):
+            nextpiece = randsel([23, 5], [23, 6])
             #nextpiece = eight.piece2b
-        elif (i10, i2) == (5, 10):
-            nextpiece = rev(eight.piece4)
-        elif (i10, i2) == (33, 31):
-            nextpiece = randsel(rev(eight.piece3b) + [23],
-                                rev(eight.piece5) + rev(eight.piece1))
+        elif (i10, i2) == (5, 23):
+            nextpiece = [5, 34]
+        elif (i10, i2) == (34, 5):
+            nextpiece = randsel([34, 23],
+                                [34, 35, 6])
             #nextpiece = rev(eight.piece5) + rev(eight.piece1)
-        elif (i10, i2) == (23, 19):
-            nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
+        elif (i10, i2) == (23, 6):
+            nextpiece = randsel([23, 35], [23, 34])
             #nextpiece = eight.piece3b
-        elif (i10, i2) == (23, 16):
+        elif (i10, i2) == (23, 5):
             #nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
             #nextpiece = rev(eight.piece2a)
             # temporarily avoid going 16-23-27
-            nextpiece = eight.piece3b
-        elif (i10, i2) == (4, 12):
-            nextpiece = randsel(eight.piece6 + eight.piece1, eight.piece3a + [23])
+            nextpiece = [23, 34]
+        elif (i10, i2) == (5, 34):
+            nextpiece = randsel([5, 6, 35], [5, 23])
             #nextpiece = eight.piece3a + [23]
-        elif (i10, i2) == (7, 11):
-            nextpiece = randsel(rev(eight.piece6) + rev(eight.piece4),
-                                rev(eight.piece2b) + [23])
+        elif (i10, i2) == (6, 35):
+            nextpiece = randsel([6, 5, 34],
+                                [6, 23])
             #nextpiece = rev(eight.piece2b) + [23]
-        elif (i10, i2) == (35, 32):
-            nextpiece = rev(eight.piece1)
-        elif (i10, i2) == (34, 29):
-            nextpiece = eight.piece4
+        elif (i10, i2) == (35, 23):
+            nextpiece = [35, 6]
+        elif (i10, i2) == (34, 23):
+            nextpiece = [34, 5]
         else:
             driving.drive(0)
             return
+
+        nextpiece_e = eight.insert_waypoints_l(nextpiece)
 
         print("thispiece = %s" % str(thispiece))
 
