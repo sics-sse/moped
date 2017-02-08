@@ -103,7 +103,7 @@ def makepath(offset, path):
             x = x1
             y = y1
 
-            path1.append(('go', 40, i1,
+            path1.append((i1,
                           x+offset*cos(angle),
                           y+offset*sin(angle)))
 
@@ -113,7 +113,7 @@ def makepath(offset, path):
         n += 1
 
     # use the same angle as for the previous point
-    path1.append(('go', 40, i1,
+    path1.append((i1,
                   x1+offset*cos(angle),
                   y1+offset*sin(angle)))
 
