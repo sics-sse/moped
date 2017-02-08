@@ -181,3 +181,20 @@ def goto_1(x, y):
                 g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
 
         time.sleep(0.1)
+
+def goto(x, y, state):
+    start_new_thread(gotoaux, (x, y, state))
+
+def gotoaux(x, y, state):
+    print("gotoaux %f %f %s" % (x, y, state))
+    driving.drive(0)
+    if state == "accident":
+        g.signalling = True
+        start_new_thread(signal, ())
+
+    time.sleep(4)
+    driving.drive(30)
+    nav2.goto_1(x, y)
+    g.signalling = False
+    driving.drive(0)
+
