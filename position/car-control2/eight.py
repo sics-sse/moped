@@ -187,14 +187,86 @@ def extendpath(p, goaln, d0, n2, nz, acc):
 
     return acc
 
+def isdecisionpoint(n):
+    for (a, b) in pieces:
+        if a == n:
+            return True
+    return False
+
+# A piece goes from a over the list l to b
+# n0 is in l
+# Sum the distances from a to n0, and from n0 to b
+def partdist(n0, a, b, l):
+    da = 0
+    db = distances[(b, l[-1])]
+    before_n0 = True
+    lastn = a
+    for n in l:
+        if before_n0:
+            da += distances[(lastn, n)]
+        else:
+            db += distances[(lastn, n)]
+        lastn = n
+        if n == n0:
+            before_n0 = False
+    return (da, db)
+
+# If n0 or n1 are not decision points, n2 and nz are still to be
+# decision points.
 def paths_p(n0, n1, n2=None, nz=None):
-    return extendpath_p([n0], n1, 0.0, n2, nz, [])
+    extra0 = None
+    n0x = n0
+    for (a, b) in pieces:
+        (l, dtot) = pieces[(a, b)]
+        if n0 in l:
+            (da, db) = partdist(n0, a, b, l)
+            #print(("dist", da, db, dtot))
+            extra0 = (a, b, da, db)
+            n0x = a
+            break
+
+    extra1 = None
+    n1x = n1
+    for (a, b) in pieces:
+        (l, dtot) = pieces[(a, b)]
+        if n1 in l:
+            (da, db) = partdist(n1, a, b, l)
+            #print(("dist", da, db, dtot))
+            extra1 = (a, b, da, db)
+            n1x = b
+            break
+
+    #print (extra0, extra1, n0x, n1x)
+
+    pl0 = extendpath_p([n0x], n1x, 0.0, n2, nz, [])
+    pl = []
+    for (d, l) in pl0:
+        if extra0:
+            (a, b, da, db) = extra0
+            if l[1] == b:
+                l = [n0] + l[1:]
+                d -= da
+            else:
+                # we should make sure that (b,a) is also possible
+                l = [n0] + l
+                d += da
+        if extra1:
+            (a, b, da, db) = extra1
+            if l[-2] == a:
+                l = l[:-1] + [n1]
+                d -= db
+            else:
+                l = l + [n1]
+                d += db
+        pl.append((d, l))
+
+    return pl
 
 def neighbours_p(n):
     l = []
     for (a, b) in pieces:
         if a == n:
-            (_, d) = pieces[(a,b)]
+            (_, d) = pieces[(a, b)]
             l.append((b, d))
     return l
 
