@@ -211,6 +211,8 @@ def partdist(n0, a, b, l):
             before_n0 = False
     return (da, db)
 
+# Bug: going only within one piece doesn't work.
+
 # If n0 or n1 are not decision points, n2 and nz are still to be
 # decision points.
 def paths_p(n0, n1, n2=None, nz=None):
@@ -417,6 +419,41 @@ def eightinit():
 
         pieces[(piece[0],piece[-1])] = (piece[1:-1], dtot)
         pieces[(piece[-1],piece[0])] = (rev(piece[1:-1]), dtot)
+
+# a and b are known to be in the same piece
+# Return a list l of waypoints where l[0] == a and l[-1] == b
+def insert_waypoints(a, b):
+    if (a, b) in pieces:
+        (l, _) = pieces[(a, b)]
+        l = [a] + l + [b]
+        return l
+
+    for (a1, b1) in pieces:
+        (l, _) = pieces[(a1, b1)]
+        l = [a1] + l + [b1]
+        if a not in l:
+            continue
+        if b not in l:
+            continue
+        ia = l.index(a)
+        ib = l.index(b)
+        if ia > ib:
+            continue
+        return l[ia:ib+1]
+
+    # what should we do? throw exception?
+    return None
+
+# Apply insert_waypoints to successive pairs in l0
+def insert_waypoints_l(l0):
+    lastn = l0[0]
+    l = [lastn]
+    for n in l0[1:]:
+        l1 = insert_waypoints(lastn, n)
+        l += l1[1:]
+        lastn = n
+
+    return l
 
 if __name__ == "__main__":
     eightinit()
