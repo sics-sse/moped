@@ -6,6 +6,7 @@ from nav_log import tolog, tolog0
 from nav_util import start_new_thread
 
 import nav_signal
+import nav2
 
 def connect_to_ground_control():
     while True:
@@ -123,7 +124,7 @@ def from_ground_control():
                 elif l[0] == "cargoto":
                     x = float(l[2])
                     y = float(l[3])
-                    goto(x, y, l[4])
+                    nav2.goto(x, y, l[4])
                 elif l[0] == "heartecho":
                     t1 = float(l[1])
                     t2 = float(l[2])
