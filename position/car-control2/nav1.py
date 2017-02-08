@@ -23,22 +23,6 @@ def cont():
     g.user_pause = False
 
 
-def goto(x, y, state):
-    start_new_thread(gotoaux, (x, y, state))
-
-def gotoaux(x, y, state):
-    print("gotoaux %f %f %s" % (x, y, state))
-    driving.drive(0)
-    if state == "accident":
-        g.signalling = True
-        start_new_thread(signal, ())
-
-    time.sleep(4)
-    driving.drive(30)
-    nav2.goto_1(x, y)
-    g.signalling = False
-    driving.drive(0)
-
 def whole4():
     start_new_thread(whole4aux, ())
 
@@ -129,11 +113,13 @@ def whole4aux():
             nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
             #nextpiece = eight.piece3b
         elif (i10, i2) == (23, 16):
-            nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
+            #nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
             #nextpiece = rev(eight.piece2a)
+            # temporarily avoid going 16-23-27
+            nextpiece = eight.piece3b
         elif (i10, i2) == (4, 12):
-            #nextpiece = randsel(eight.piece6 + eight.piece1, eight.piece3a + [23])
-            nextpiece = eight.piece3a + [23]
+            nextpiece = randsel(eight.piece6 + eight.piece1, eight.piece3a + [23])
+            #nextpiece = eight.piece3a + [23]
         elif (i10, i2) == (7, 11):
             nextpiece = randsel(rev(eight.piece6) + rev(eight.piece4),
                                 rev(eight.piece2b) + [23])
