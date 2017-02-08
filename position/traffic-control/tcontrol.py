@@ -40,14 +40,16 @@ global currentpath
 
 obstacles = dict()
 
-sys.path.append("car-control")
-from eight import *
+sys.path.append("car-control2")
+import eight
+
+eight.eightinit()
 
 def draw_way(offset, w, **kargs):
-    path = [(i, nodes[i]) for i in ways[w]]
-    p = makepath(offset, path)
+    path = [(i, eight.nodes[i]) for i in eight.ways[w]]
+    p = eight.makepath(offset, path)
     if offset != 0:
-        for (_, _, i, x, y) in p:
+        for (i, x, y) in p:
             print "%f %d %f %f" % (offset, i, x, y)
     draw_path(p, **kargs)
 
@@ -57,22 +59,21 @@ def draw_path(p, **kargs):
     first = True
 
     for cmd in p:
-        if cmd[0] == 'go':
-            i = cmd[2]
-            x = cmd[3]
-            y = cmd[4]
+        i = cmd[0]
+        x = cmd[1]
+        y = cmd[2]
 
-            if not first:
-                l = addline(g.w, x1, y1, x, y, **kargs)
-                pathlist.append(l)
-            else:
-                (x0, y0) = (x, y)
-                first = False
-
-            l = addpoint(g.w, x, y, fill="#000000", width=1)
+        if not first:
+            l = addline(g.w, x1, y1, x, y, **kargs)
             pathlist.append(l)
+        else:
+            (x0, y0) = (x, y)
+            first = False
 
-            (x1, y1) = (x, y)
+        l = addpoint(g.w, x, y, fill="#000000", width=1)
+        pathlist.append(l)
+
+        (x1, y1) = (x, y)
 
 def list_obstacles():
     print obstacles.keys()
@@ -194,13 +195,13 @@ def draw_area(w):
         addcircle(w, 1.35, 16.1, 0.04)
         addcircle(w, 1.48, 15.1, 0.04)
 
-    for w in ways:
+    for w in eight.ways:
         draw_way(0, w, fill="#bbffbb", width=1)
         draw_way(-0.25, w, fill="#bbffbb", width=1)
         draw_way(0.25, w, fill="#bbffbb", width=1)
 
-    draw_path(makepath(0, thepath), fill="#bbbbff", width=2)
-    draw_path(makepath(0, thepath2), fill="#bbbbff", width=2)
+    draw_path(eight.makepath(0, thepath), fill="#bbbbff", width=2)
+    draw_path(eight.makepath(0, thepath2), fill="#bbbbff", width=2)
 
 def send_go(carno):
     c = cars[carno-1]
@@ -539,11 +540,11 @@ g.w.pack(expand=YES, fill=BOTH)
 
 currentpath = None
 
-eightpath(19.2,15.4,12.5)
+eight.eightpath(19.2,15.4,12.5)
 
-thepath = [(i, nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
+thepath = [(i, eight.nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
 
-thepath2 = [(i, nodes[i]) for i in [3, 4]]
+thepath2 = [(i, eight.nodes[i]) for i in [3, 4]]
 
 draw_area(g.w)
 
