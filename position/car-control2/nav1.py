@@ -4,7 +4,7 @@ import random
 import nav_log
 from nav_log import tolog, tolog0
 
-from nav_util import sign, dist, start_new_thread
+from nav_util import sign, dist, start_new_thread, rev
 
 import eight
 import driving
@@ -25,12 +25,6 @@ def cont():
 
 def whole4():
     start_new_thread(whole4aux, ())
-
-
-def rev(l0):
-    l = l0[:]
-    l.reverse()
-    return l
 
 
 def randsel(a, b):
@@ -192,9 +186,21 @@ def travel(n0, n1, n2 = None, nz=None):
         print("no route found")
         return False
 
+    routes_p = eight.paths_p(n0, n1, n2, nz)
+
+    #print(routes)
+    #print(routes_p)
+
     # Value judgment: pick the shortest
     routes.sort()
     (d, r) = routes[0]
+
+    routes_p.sort()
+    (d1, r1) = routes_p[0]
+    r2 = eight.insert_waypoints_l(r1)
+
+    print((d, r))
+    print((d1, r2))
 
     print("travel1")
     driving.drive(20)
