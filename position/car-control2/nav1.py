@@ -160,7 +160,7 @@ def gopath(path0):
     i1 = -1
 
     for j in range(0, len(path)):
-        (_, _, i, x, y) = path[j]
+        (i, x, y) = path[j]
         if g.remote_control:
             print("whole4 finished")
             return
@@ -169,14 +169,14 @@ def gopath(path0):
         if j == len(path)-1:
             i3 = -1
         else:
-            (_, _, i3, _, _) = path[j+1]
+            (i3, _, _) = path[j+1]
         nav_tc.send_to_ground_control("between %d %d %d" % (i2, i1, i3))
         lxprev = lx
         rxprev = rx
         lyprev = ly
         ryprev = ry
-        (_, _, _, lx, ly) = lpath[j]
-        (_, _, _, rx, ry) = rpath[j]
+        (_, lx, ly) = lpath[j]
+        (_, rx, ry) = rpath[j]
         if lxprev != None:
             if False:
                 print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
