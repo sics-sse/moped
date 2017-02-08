@@ -15,3 +15,8 @@ def sign(x):
 def start_new_thread(f, args):
     threading.Thread(target=f, args=args, daemon=True).start()
 
+def rev(l0):
+    l = l0[:]
+    l.reverse()
+    return l
+
