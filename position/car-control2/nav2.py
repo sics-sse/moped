@@ -46,10 +46,30 @@ def checkpos():
         return
     x = g.ppx
     y = g.ppy
+    # check if we are outside the lane we are supposed to be in
     checkbox1(x, y, g.currentbox[0], True)
     checkbox1(x, y, g.currentbox[1], False)
 
+    r = None
 
+    if g.ppx < 0.8:
+        r = 0.8-g.ppx
+        wallang = abs(-90-g.ang)
+    if g.ppx > 3.0-0.8:
+        r = 0.8-(3.0-g.ppx)
+        wallang = abs(90-g.ang)
+
+    if g.ppy > 19.7-0.8:
+        r2 = 0.8-(19.7-g.ppy)
+        wallang = abs(0-g.ang)
+        if r == None or r2 < r:
+            r = r2
+
+    if r != None:
+        theta = asin(r/0.8)*180/pi
+        theta = abs(theta)
+        if wallang < theta:
+            print("wall angle! %f %f" % (wallang, theta))
 
 def getdist(x2, y2):
     # NEW
@@ -161,7 +181,7 @@ def goto_1(x, y):
         asgn = sign(adiff)
         aval = abs(adiff)
 
-        p = 4.0
+        p = 3.5
 
         st = p*aval
         if st > 100:
@@ -196,7 +216,12 @@ def gotoaux(x, y, state):
 
     time.sleep(4)
     driving.drive(30)
-    nav2.goto_1(x, y)
+    success = nav2.goto_1(x, y)
+    if not success:
+        print("goto_1 returned false for (%f, %f); we are at (%f, %f)" % (
+                x, y, g.ppx, g.ppy))
+        return False
     g.signalling = False
     driving.drive(0)
+    return True
 
