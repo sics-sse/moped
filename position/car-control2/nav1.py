@@ -197,25 +197,16 @@ def gopath(path0):
     return True
 
 def travel(n0, n1, n2 = None, nz=None):
-    routes = eight.paths(n0, n1, n2, nz)
-    if routes == []:
+    routes_p = eight.paths_p(n0, n1, n2, nz)
+    if routes_p == []:
         print("no route found")
         return False
 
-    routes_p = eight.paths_p(n0, n1, n2, nz)
-
-    #print(routes)
-    #print(routes_p)
-
     # Value judgment: pick the shortest
-    routes.sort()
-    (d, r) = routes[0]
-
     routes_p.sort()
     (d1, r1) = routes_p[0]
     r2 = eight.insert_waypoints_l(r1)
 
-    print((d, r))
     print((d1, r2))
 
     print("travel1")
