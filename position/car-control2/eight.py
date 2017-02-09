@@ -1,6 +1,6 @@
 from math import cos, sin, pi, atan2, sqrt
 
-from nav_util import rev
+from nav_util import rev, dist
 
 def eightpoint(cy, ang):
     cx = 1.5
@@ -133,10 +133,6 @@ def piece2path(p, offset):
     path1 = [(i, nodes[i]) for i in p]
     path = makepath(offset, path1)
     return path
-
-# also in nav.py
-def dist(x1, y1, x2, y2):
-    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
 # A position of a car in the road network is indicated by what two nodes
 # A and B it is between, and how far as a fraction from A.
