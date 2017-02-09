@@ -181,9 +181,7 @@ def goto_1(x, y):
         asgn = sign(adiff)
         aval = abs(adiff)
 
-        p = 3.5
-
-        st = p*aval
+        st = g.anglefactor*aval
         if st > 100:
             st = 100
         st = asgn*g.speedsign*st
