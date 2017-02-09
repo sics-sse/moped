@@ -144,55 +144,6 @@ def dist(x1, y1, x2, y2):
 def plan(p0, p1):
     return False
 
-def paths(n0, n1, n2=None, nz=None):
-    return extendpath([n0], n1, 0.0, n2, nz, [])
-
-def extendpath(p, goaln, d0, n2, nz, acc):
-    nlast1 = p[-1]
-
-    if nlast1 == goaln:
-        if nz == None or p[-2] == nz:
-            #print("%f %s" % (d0, str(p)))
-            return acc + [(d0, p)]
-
-    for n in neighbours[nlast1]:
-        # Here, we should not look for only p, but for the sequence
-        # [p[-1], n]
-        if n in p:
-            continue
-
-        if len(p) == 1 and n2 != None and n != n2:
-            continue
-
-        newp = p + [n]
-        if len(newp) >= 3:
-            newp3 = newp[-3:]
-            if newp3 == [19, 23, 16]:
-                continue
-            if newp3 == [16, 23, 19]:
-                continue
-            if newp3 == [26, 23, 27]:
-                continue
-            if newp3 == [27, 23, 26]:
-                continue
-            if newp3 == [5, 6, 13]:
-                continue
-            if newp3 == [6, 5, 10]:
-                continue
-            if newp3 == [34, 35, 32]:
-                continue
-            if newp3 == [35, 34, 29]:
-                continue
-            if newp3 == [3, 4, 12]:
-                continue
-            if newp3 == [12, 4, 3]:
-                continue
-
-        acc = extendpath(p + [n], goaln, d0 + distances[(nlast1, n)],
-                         n2, nz, acc)
-
-    return acc
-
 def isdecisionpoint(n):
     for (a, b) in pieces:
         if a == n:
