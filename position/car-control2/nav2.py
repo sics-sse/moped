@@ -86,10 +86,6 @@ def goto_1(x, y):
     g.targetx = x
     g.targety = y
 
-    #TARGETDIST = 0.3
-    TARGETDIST = 0.15
-    TARGETDIST = 0.25
-
     missed = False
     inc = 0
     inc2 = 0
@@ -155,8 +151,8 @@ def goto_1(x, y):
 
         #print(adiff)
 
-#        if dist < TARGETDIST or dist < brake_s or missed:
-        if (not g.allangles and abs(adiff) > 90) or dist < 0.3:
+#        if dist < g.targetdist or dist < brake_s or missed:
+        if (not g.allangles and abs(adiff) > 90) or dist < g.targetdist:
             if False:
                 #stop("9")
     #            drive(-1)
@@ -167,8 +163,8 @@ def goto_1(x, y):
     #            time.sleep(0.2)
                 drive(0)
             #print("adiff %f dist %f" % (adiff, dist))
-            if dist < 0.3:
-                #print("dist < 0.3")
+            if dist < g.targetdist:
+                #print("dist < %f" % g.targetdist)
                 pass
             if abs(adiff) > 90:
                 print("adiff = %f; leaving (%f,%f) behind" % (adiff,x,y))
