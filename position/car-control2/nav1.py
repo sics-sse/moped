@@ -193,7 +193,7 @@ def gopath(path0):
         success = nav2.goto_1(x, y)
         if not success:
             print("goto_1 returned false for node %d; we are at (%f, %f)" % (
-                    i, g.x, g.y))
+                    i, g.ppx, g.ppy))
     return True
 
 def travel(n0, n1, n2 = None, nz=None):
