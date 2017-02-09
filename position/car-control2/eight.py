@@ -24,20 +24,20 @@ ways = dict()
 
 nodes = dict()
 
-def fillinlist(l):
+def fillinlist(l, add):
     n = 3
     for j in range(2*n, 0, -1):
-        l[j:j] = [100+l[j]]
+        l[j:j] = [add+l[j]]
     return l
 
 #interleave = 1
 interleave = 2
 
 if interleave == 2:
-    piece1 = fillinlist(piece1)
-    piece2 = fillinlist(piece2)
-    piece3 = fillinlist(piece3)
-    piece4 = fillinlist(piece4)
+    piece1 = fillinlist(piece1, 100)
+    piece2 = fillinlist(piece2, 200)
+    piece3 = fillinlist(piece3, 300)
+    piece4 = fillinlist(piece4, 400)
 
 piece2a = [35, 32, 27]
 piece2a = piece2[0:3*interleave]
@@ -72,6 +72,12 @@ def eightarc(nodenumbers, cy, angleoffset):
         nodenumbers = nodenumbers[1:]
         if nr not in nodes:
             nodes[nr] = (x, y)
+        else:
+            ox = nodes[nr][0]
+            oy = nodes[nr][1]
+            if abs(x-ox) > 0.01 or abs(y-oy) > 0.01:
+                print("node %d already exists: new (%f,%f) old (%f,%f)" % (
+                        nr, x, y, ox, oy))
     return nodenumbers
 
 def eightpath(y1, y2, y3):
