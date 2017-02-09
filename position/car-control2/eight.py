@@ -30,8 +30,8 @@ def fillinlist(l):
         l[j:j] = [100+l[j]]
     return l
 
-interleave = 1
-#interleave = 2
+#interleave = 1
+interleave = 2
 
 if interleave == 2:
     piece1 = fillinlist(piece1)
@@ -289,32 +289,18 @@ def extendpath_p(p, goaln, d0, n2, nz, acc):
         if len(p) == 1 and n2 != None and n != n2:
             continue
 
+        sharpturns = [[6, 23, 5],
+                      [34, 23, 35],
+                      [5, 6, 23],
+                      [34, 35, 23],
+                      [35, 34, 23],
+                      [6, 5, 23],
+                      [3, 4, 34]]
+
         newp = p + [n]
         if len(newp) >= 3:
             newp3 = newp[-3:]
-            if newp3 == [6, 23, 5]:
-                continue
-            if newp3 == [5, 23, 6]:
-                continue
-            if newp3 == [34, 23, 35]:
-                continue
-            if newp3 == [35, 23, 34]:
-                continue
-            if newp3 == [5, 6, 23]:
-                continue
-            if newp3 == [6, 5, 23]:
-                continue
-            if newp3 == [34, 35, 23]:
-                continue
-            if newp3 == [35, 34, 23]:
-                continue
-            if newp3 == [23, 35, 34]:
-                continue
-            if newp3 == [23, 34, 35]:
-                continue
-            if newp3 == [3, 4, 34]:
-                continue
-            if newp3 == [34, 4, 3]:
+            if newp3 in sharpturns or rev(newp3) in sharpturns:
                 continue
 
         acc = extendpath_p(p + [n], goaln, d0 + d,
@@ -386,15 +372,15 @@ def eightinit():
 
     neighbours = dict()
 
-    piecelist = [[6,7,11,17,24,28,30,36,35],
-                 [5,4,12,18,22,25,31,33,34],
-                 [35, 32, 27, 23],
-                 [23, 19, 13, 6],
-                 [5, 10, 16, 23],
-                 [23, 26, 29, 34],
-                 [35, 34],
-                 [5, 6],
-                 [3, 4]]
+    piecelist = [[6] + piece1 + [35],
+                 [5] + rev(piece4) + [34],
+                 piece2a + [23],
+                 [23] + piece2b,
+                 piece3a + [23],
+                 [23] + piece3b,
+                 [35, 34], # piece5
+                 [5, 6], # piece6
+                 [3, 4]] # piece7
 
     distances = dict()
     pieces = dict()
