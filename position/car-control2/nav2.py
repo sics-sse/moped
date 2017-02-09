@@ -79,7 +79,7 @@ def goto_1(x, y):
     while True:
         if g.remote_control:
             print("remote_control is true")
-            return
+            return False
 
         checkpos()
 
@@ -151,8 +151,10 @@ def goto_1(x, y):
                 #print("dist < 0.3")
                 pass
             if abs(adiff) > 90:
-                print("adiff = %f" % adiff)
-            return
+                print("adiff = %f; leaving (%f,%f) behind" % (adiff,x,y))
+                return False
+
+            return True
 
 
 
