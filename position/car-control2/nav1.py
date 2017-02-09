@@ -190,7 +190,10 @@ def gopath(path0):
                         rxprev, ryprev, rx, ry))
             g.currentbox = [(lxprev, lyprev, lx, ly),
                             (rxprev, ryprev, rx, ry)]
-        nav2.goto_1(x, y)
+        success = nav2.goto_1(x, y)
+        if not success:
+            print("goto_1 returned false for node %d; we are at (%f, %f)" % (
+                    i, g.x, g.y))
     return True
 
 def travel(n0, n1, n2 = None, nz=None):
