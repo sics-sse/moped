@@ -53,17 +53,18 @@ def checkpos():
     r = None
 
     # Not completely correct: we don't consider the car's corners.
-    rside = 0.8-0.15
+    carwidth = 0.30
+    rside = 0.8-carwidth/2
 
     if g.ppx < rside:
-        r = rside-g.ppx
+        r = rside-(g.ppx-carwidth/2)
         wallang = -90-g.ang
     if g.ppx > 3.0-rside:
-        r = rside-(3.0-g.ppx)
+        r = rside-(3.0-g.ppx-carwidth/2)
         wallang = 90-g.ang
 
     if g.ppy > 19.7-rside:
-        r2 = rside-(19.7-g.ppy)
+        r2 = rside-(19.7-g.ppy-carwidth/2)
         wallang = 0-g.ang
         if r == None or r2 < r:
             r = r2
@@ -76,16 +77,19 @@ def checkpos():
 
     if r != None:
         if r > rside or r < -rside:
-            print("r = %f" % r)
+            print("r = %f, %f %f" % (r, g.ppx, g.ppy))
         else:
             theta = asin(r/rside)*180/pi
             wallang = wallang%360
             if wallang > 180:
                 wallang -= 360
             if abs(wallang) < abs(theta):
-                print("wall angle! %f %f" % (wallang, theta))
-                return False
+                print("wall angle! %f %f (%f %f) %f" % (
+                        wallang, theta, g.ppx, g.ppy,
+                        g.can_ultra))
+                #return False
             else:
+                pass
                 #print("(wall angle %f %f)" % (wallang, theta))
 
     return True
