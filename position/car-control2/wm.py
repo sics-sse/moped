@@ -11,6 +11,28 @@ from nav_util import dist
 import nav_signal
 import driving
 
+mp = dict()
+
+mp[1] = (0.255, 0.376)
+mp[55] = (0.295, 2.241)
+mp[4] = (0.348, 4.745)
+mp[35] = (0.307, 6.566)
+mp[9] = (0.338, 8.958)
+mp[39] = (0.329, 11.150)
+mp[17] = (0.370, 13.155)
+mp[43] = (0.343, 15.386)
+mp[22] = (0.277, 17.566)
+mp[5] = (0.306, 19.376)
+mp[14] = (2.215, 1.043)
+mp[3] = (2.017, 3.375)
+mp[29] = (2.176, 5.400)
+mp[6] = (1.974, 7.721)
+mp[19] = (2.205, 9.766)
+mp[10] = (2.266, 12.063)
+mp[7] = (2.179, 14.351)
+mp[25] = (2.255, 16.770)
+mp[4] = (2.225, 18.725)
+
 def readmarker():
     while True:
         tolog("starting readmarker")
@@ -77,11 +99,11 @@ def readmarker0():
             else:
                 skipmarker = True
 
-            if ((g.markerno > -1 and quality > 0.35
+            if ((g.markerno > -1 and quality > g.minquality
                  and g.markerno not in g.badmarkers
                  and (g.goodmarkers == None or g.markerno in g.goodmarkers)
-                 and (x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
-                 or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5))
+                 and ((x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
+                      or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5)))
                 and not skipmarker):
                 close = True
                 if not g.angleknown:
@@ -90,6 +112,11 @@ def readmarker0():
                     g.ppy = y
                     g.oldpos = dict()
                 g.angleknown = True
+
+                if g.markerno in mp:
+                    mdist = dist(x, y, mp[g.markerno][0], mp[g.markerno][1])
+                    if mdist > 1.0:
+                        continue
 
                 it0 = float(m1[5])
                 it1 = float(m1[6])
@@ -244,6 +271,7 @@ def readspeed2():
                         time.time() - g.speedtime > 7.0):
                         nav_signal.speak("obstacle")
                         send_to_ground_control("obstacle")
+                        print("obstacle")
                         driving.drive(0)
 
                     g.odometer = int(m.group(2))
