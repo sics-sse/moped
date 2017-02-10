@@ -286,19 +286,22 @@ def readspeed2():
             # DistPub
             # note that non-ASCII will appear as text \x07 in 'parts'
             if data[8] == 16:
-                part2 = part2[19:]
-                part2s = str(part2)
+                if len(part2) > 18:
+                    part2x = part2[19:]
+                    part2s = part2x.decode('ascii')
+                    l = part2[18]
+                    part2s2 = part2s[0:l]
 
-                m = re.search("([0-9]+) ([0-9]+)", part2s)
-                if m:
-                    cnt = int(m.group(1))
-                    d = int(m.group(2))
+                    m = re.search("([0-9]+) ([0-9]+)", part2s2)
+                    if m:
+                        cnt = int(m.group(1))
+                        d = int(m.group(2))
 
-                    #print((cnt,d))
-                    g.can_ultra = d/100.0
-                    # not used:
-                    can_ultra_count = cnt
-                part2 = b""
+                        #print((cnt,d))
+                        g.can_ultra = d/100.0
+                        # not used:
+                        can_ultra_count = cnt
+                    part2 = b""
             part2 += data[9:]
 
         time.sleep(0.00001)            
