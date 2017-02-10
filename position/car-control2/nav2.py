@@ -43,7 +43,7 @@ def checkpos():
 
 
     if g.currentbox == None:
-        return
+        return True
     x = g.ppx
     y = g.ppy
     # check if we are outside the lane we are supposed to be in
@@ -52,24 +52,43 @@ def checkpos():
 
     r = None
 
-    if g.ppx < 0.8:
-        r = 0.8-g.ppx
-        wallang = abs(-90-g.ang)
-    if g.ppx > 3.0-0.8:
-        r = 0.8-(3.0-g.ppx)
-        wallang = abs(90-g.ang)
+    # Not completely correct: we don't consider the car's corners.
+    rside = 0.8-0.15
 
-    if g.ppy > 19.7-0.8:
-        r2 = 0.8-(19.7-g.ppy)
-        wallang = abs(0-g.ang)
+    if g.ppx < rside:
+        r = rside-g.ppx
+        wallang = -90-g.ang
+    if g.ppx > 3.0-rside:
+        r = rside-(3.0-g.ppx)
+        wallang = 90-g.ang
+
+    if g.ppy > 19.7-rside:
+        r2 = rside-(19.7-g.ppy)
+        wallang = 0-g.ang
         if r == None or r2 < r:
             r = r2
 
+    # if g.can_ultra is small and r is None, we don't really know
+    # what to do
+    if r != None and g.can_ultra < r:
+        r = g.can_ultra
+        # plus a little because we measure from the front
+
     if r != None:
-        theta = asin(r/0.8)*180/pi
-        theta = abs(theta)
-        if wallang < theta:
-            print("wall angle! %f %f" % (wallang, theta))
+        if r > rside or r < -rside:
+            print("r = %f" % r)
+        else:
+            theta = asin(r/rside)*180/pi
+            wallang = wallang%360
+            if wallang > 180:
+                wallang -= 360
+            if abs(wallang) < abs(theta):
+                print("wall angle! %f %f" % (wallang, theta))
+                return False
+            else:
+                #print("(wall angle %f %f)" % (wallang, theta))
+
+    return True
 
 def getdist(x2, y2):
     # NEW
@@ -95,9 +114,10 @@ def goto_1(x, y):
     while True:
         if g.remote_control:
             print("remote_control is true")
-            return False
+            return 2
 
-        checkpos()
+        if not checkpos():
+            return 2
 
         dist = getdist(x, y)
         if g.inspeed != 0:
@@ -155,22 +175,22 @@ def goto_1(x, y):
         if (not g.allangles and abs(adiff) > 90) or dist < g.targetdist:
             if False:
                 #stop("9")
-    #            drive(-1)
+    #            driving.drive(-1)
                 # continue a little so it can pass the target if it wasn't
                 # there yet
                 time.sleep(0.5)
-    #            drive(-1)
+    #            driving.drive(-1)
     #            time.sleep(0.2)
-                drive(0)
+                driving.drive(0)
             #print("adiff %f dist %f" % (adiff, dist))
             if dist < g.targetdist:
                 #print("dist < %f" % g.targetdist)
                 pass
             if abs(adiff) > 90:
                 print("adiff = %f; leaving (%f,%f) behind" % (adiff,x,y))
-                return False
+                return 1
 
-            return True
+            return 0
 
 
 
@@ -210,10 +230,10 @@ def gotoaux(x, y, state):
 
     time.sleep(4)
     driving.drive(30)
-    success = nav2.goto_1(x, y)
-    if not success:
-        print("goto_1 returned false for (%f, %f); we are at (%f, %f)" % (
-                x, y, g.ppx, g.ppy))
+    status = nav2.goto_1(x, y)
+    if status != 0:
+        print("goto_1 returned %d for (%f, %f); we are at (%f, %f)" % (
+                status, x, y, g.ppx, g.ppy))
         return False
     g.signalling = False
     driving.drive(0)
