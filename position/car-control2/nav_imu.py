@@ -219,6 +219,7 @@ def readgyro0():
 
                 acc = sqrt(x*x+y*y+z*z)
                 if acc > 9.0 and g.detectcrashes:
+                    nav_log.tolog0("crash")
                     g.crash = acc
 
                 x0 = -x
