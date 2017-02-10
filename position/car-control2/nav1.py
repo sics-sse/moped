@@ -83,41 +83,34 @@ def whole4aux(path0):
         if (i10, i2) == (23, 34):
             # not possible: 35
             nextpiece = randsel([23, 6], [23, 5])
-            #nextpiece = rev(eight.piece3a)
         elif (i10, i2) == (6, 23):
             # not possible: 5
             nextpiece = [6, 35]
         elif (i10, i2) == (35, 6):
             nextpiece = randsel([35, 23], [35, 34, 5])
-            #nextpiece = eight.piece5 + eight.piece4
+            #nextpiece = [35, 34, 5]
         elif (i10, i2) == (23, 35):
             # not possible: 34
             nextpiece = randsel([23, 5], [23, 6])
-            #nextpiece = eight.piece2b
         elif (i10, i2) == (5, 23):
             # not possible: 6
             nextpiece = [5, 34]
         elif (i10, i2) == (34, 5):
-            nextpiece = randsel([34, 23],
-                                [34, 35, 6])
-            #nextpiece = rev(eight.piece5) + rev(eight.piece1)
+            nextpiece = randsel([34, 23], [34, 35, 6])
+            #nextpiece = [34, 35, 6]
         elif (i10, i2) == (23, 6):
             # not possible: 5
             nextpiece = randsel([23, 35], [23, 34])
-            #nextpiece = eight.piece3b
         elif (i10, i2) == (23, 5):
             # not possible: 6
-            #nextpiece = randsel(rev(eight.piece2a), eight.piece3b)
-            #nextpiece = rev(eight.piece2a)
             # temporarily avoid going 16-23-27 (now named 5-23-35)
             nextpiece = [23, 34]
+            #nextpiece = randsel([23, 34], [23, 35])
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
-            #nextpiece = eight.piece3a + [23]
         elif (i10, i2) == (6, 35):
-            nextpiece = randsel([6, 5, 34],
-                                [6, 23])
-            #nextpiece = rev(eight.piece2b) + [23]
+            nextpiece = randsel([6, 5, 34], [6, 23])
+            #nextpiece = [6, 5, 34]
         elif (i10, i2) == (35, 23):
             # not possible: 34
             nextpiece = [35, 6]
@@ -190,13 +183,19 @@ def gopath(path0):
                         rxprev, ryprev, rx, ry))
             g.currentbox = [(lxprev, lyprev, lx, ly),
                             (rxprev, ryprev, rx, ry)]
-        success = nav2.goto_1(x, y)
-        if not success:
-            print("goto_1 returned false for node %d; we are at (%f, %f)" % (
-                    i, g.ppx, g.ppy))
+        status = nav2.goto_1(x, y)
+        if status != 0:
+            print("goto_1 returned %d for node %d; we are at (%f, %f)" % (
+                    status, i, g.ppx, g.ppy))
+        if status == 2:
+            #driving.drive(-20)
+            #time.sleep(2)
+            driving.drive(0)
+            return False
     return True
 
-def travel(n0, n1, n2 = None, nz=None):
+# Find the best route from n0 to n1 and go there (first straight to n0)
+def travel(n0, n1, n2 = None, nz = None):
     routes_p = eight.paths_p(n0, n1, n2, nz)
     if routes_p == []:
         print("no route found")
@@ -218,3 +217,8 @@ def travel(n0, n1, n2 = None, nz=None):
     print("travel4")
 
     return True
+
+# Find out where we are, and then go to n1
+def travelto(n1, n2 = None, nz = None):
+    where = findpos(g.ppx, g.ppy, g.ang)
+    print(where)
