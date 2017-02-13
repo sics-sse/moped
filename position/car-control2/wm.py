@@ -115,7 +115,7 @@ def readmarker0():
 
                 if g.markerno in mp:
                     mdist = dist(x, y, mp[g.markerno][0], mp[g.markerno][1])
-                    if mdist > 1.0:
+                    if mdist > g.maxmarkerdist:
                         continue
 
                 it0 = float(m1[5])
