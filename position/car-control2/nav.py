@@ -70,6 +70,7 @@ g.detectcrashes = True
 g.anglefactor = 2.0
 g.targetdist = 0.3
 g.minquality = 0.5
+g.maxmarkerdist = 1.0
 
 #g.oldpos = dict()
 g.oldpos = None
