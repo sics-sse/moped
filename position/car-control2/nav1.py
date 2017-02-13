@@ -1,5 +1,6 @@
 import time
 import random
+import queue
 
 import nav_log
 from nav_log import tolog, tolog0
@@ -48,8 +49,14 @@ def randsel(a, b):
 
 def whole4aux(path0):
 
-    speed0 = 20
+    # 10 is like infinity; we don't expect that many
+    qfromplanner = queue.Queue(10)
+    qtoplanner = queue.Queue(10)
 
+    start_new_thread(executor, (qfromplanner, qtoplanner))
+
+    # This is the wrong place, if we are the planner
+    speed0 = 20
     driving.drive(0)
     time.sleep(4)
     driving.drive(speed0)
@@ -70,13 +77,12 @@ def whole4aux(path0):
     i1 = -1
 
     nextpiece = path0
-    nextpiece_e = eight.insert_waypoints_l(nextpiece)
 
     while True:
         i10 = nextpiece[-1]
         i2 = nextpiece[-2]
 
-        thispiece = nextpiece_e
+        thispiece = nextpiece
 
         print("(%d, %d)" % (i10, i2))
 
@@ -123,23 +129,38 @@ def whole4aux(path0):
             driving.drive(0)
             return
 
-        nextpiece_e = eight.insert_waypoints_l(nextpiece)
         print("nextpiece %s" % str(nextpiece))
-        print("nextpiece_e %s" % str(nextpiece_e))
+        print("thispiece %s" % str(thispiece))
 
-        print("thispiece = %s" % str(thispiece))
-
-        # For the box computation, we should tell gopath what
-        # nextpiece[0] is, too
-        success = gopath(thispiece)
+        qfromplanner.put(thispiece)
+        
+def executor(qfromplanner, qtoplanner):
+    while True:
+        p = qfromplanner.get()
+        qfromplanner.task_done()
+        # Here, we should not wait for the final result, but get
+        # intermediate results, by yield
+        success = gopath0(p)
         if not success:
-            print("gopath failed, whole4aux exits")
+            print("gopath0 failed, nav1 exits")
             driving.drive(0)
             return
+        # when do we tell planner something? ever?
 
-        # idea: let the connecting node always be a part in both
-        # pieces; then we get a free check whether they actually go
-        # together
+def gopath0(path):
+    lastn = path[0]
+    for n in path[1:]:
+        path1 = [lastn, n]
+        path1_e = eight.insert_waypoints_l(path1)
+        print("small piece %s" % str(path1))
+        print("small piece_e %s" % str(path1_e))
+        success = gopath(path1_e)
+        if not success:
+            print("gopath failed; aborting")
+            return False
+        lastn = n
+    return True
+
 
 def gopath(path0):
     g.last_send = None
