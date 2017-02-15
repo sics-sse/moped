@@ -72,6 +72,9 @@ g.targetdist = 0.3
 g.minquality = 0.5
 g.maxmarkerdist = 1.0
 
+g.poserror = False
+g.maxadjdist = 0
+
 #g.oldpos = dict()
 g.oldpos = None
 g.adjust_t = None
