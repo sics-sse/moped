@@ -148,30 +148,45 @@ def executor(qfromplanner, qtoplanner):
                 print("gopath0 reports 1")
 
 
-# The eight.insert_waypoints_l(path1) should really be done by a planner
-
 def gopath0(path):
     lastn = path[0]
     for n in path[1:]:
         path1 = [lastn, n]
 
+        for status in gopath1(path1):
+            if status == 0:
+                print("gopath1 failed; aborting")
+                yield status
+        lastn = n
 
+    return
+
+def gopath1(path1):
+    qfromplanner = queue.Queue(2)
+    qtoplanner = queue.Queue(2)
+
+    start_new_thread(planner1, (qfromplanner, qtoplanner))
+
+    qtoplanner.put(path1)
+
+    p = qfromplanner.get()
+    qfromplanner.task_done()
+    for status in gopath(p):
+        if status == 0:
+            print("gopath failed; aborting")
+            yield status
+        elif status == 1:
+            print("gopath0 reports 1")
+            # here, planner1 should be told to make a new plan 
+
+def planner1(qfromplanner, qtoplanner):
+    while True:
+        path1 = qtoplanner.get()
+        qtoplanner.task_done()
         path1_e = eight.insert_waypoints_l(path1)
         print("small piece %s" % str(path1))
         print("small piece_e %s" % str(path1_e))
-
-
-# make a new level with threads for planner and executor out of this
-
-        for status in gopath(path1_e):
-            if status == 0:
-                print("gopath failed; aborting")
-                yield 0
-            elif status == 1:
-                print("gopath reports 1")
-        lastn = n
-        yield 1
-    return
+        qfromplanner.put(path1_e)
 
 
 def gopath(path0):
