@@ -2,6 +2,8 @@ import time
 import re
 import subprocess
 
+from math import sqrt
+
 from nav_tc import send_to_ground_control
 
 from nav_log import tolog, tolog0
@@ -204,6 +206,16 @@ def readmarker0():
                                         g.ppydiff = ppydiff1
                                     #print("3 ppydiff := %f" % g.ppydiff)
                                     g.angdiff = angdiff1
+
+                                    adjdist = sqrt(
+                                        ppxdiff1*ppxdiff1 +
+                                        ppydiff1*ppydiff1)
+                                    if g.maxadjdist < adjdist:
+                                        g.maxadjdist = adjdist
+                                        print("new maxadjdist %f"
+                                              % maxadjdist)
+                                    if adjdist > g.adjdistlimit:
+                                        g.poserror = True
                             else:
                                 g.ppx = x
                                 g.ppy = y
