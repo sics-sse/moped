@@ -53,9 +53,10 @@ def whole4aux(path0):
     qfromplanner = queue.Queue(2)
     qtoplanner = queue.Queue(2)
 
-    start_new_thread(executor, (qfromplanner, qtoplanner))
+    start_new_thread(planner0, (qfromplanner, qtoplanner))
 
-    # This is the wrong place, if we are the planner
+    qtoplanner.put(path0)
+
     speed0 = 20
     driving.drive(0)
     time.sleep(4)
@@ -66,6 +67,18 @@ def whole4aux(path0):
     print("speedsign = %d" % g.speedsign)
     g.speedsign = 1
 
+    while True:
+        p = qfromplanner.get()
+        qfromplanner.task_done()
+        for status in executor0(p):
+            if status == 0:
+                print("executor0 failed, whole4aux exits")
+                driving.drive(0)
+                return
+            else:
+                print("executor0 reports %d" % status)
+
+def planner0(qfromplanner, qtoplanner):
     # idea: from the current position, determine which piece we can
     # start with
 
@@ -75,6 +88,9 @@ def whole4aux(path0):
     ry = None
 
     i1 = -1
+
+    path0 = qtoplanner.get()
+    qtoplanner.task_done()
 
     nextpiece = path0
 
@@ -135,33 +151,22 @@ def whole4aux(path0):
 
         qfromplanner.put(thispiece)
         
-def executor(qfromplanner, qtoplanner):
-    while True:
-        p = qfromplanner.get()
-        qfromplanner.task_done()
-        for status in gopath0(p):
-            if status == 0:
-                print("gopath0 failed, nav1 exits")
-                driving.drive(0)
-                return
-            elif status == 1:
-                print("gopath0 reports 1")
-
-
-def gopath0(path):
+def executor0(path):
     lastn = path[0]
     for n in path[1:]:
         path1 = [lastn, n]
 
-        for status in gopath1(path1):
+        for status in executor1(path1):
             if status == 0:
-                print("gopath1 failed; aborting")
+                print("executor1 failed; aborting")
                 yield status
         lastn = n
-
+        yield 1
     return
 
-def gopath1(path1):
+#============================================================
+
+def executor1(path1):
     qfromplanner = queue.Queue(2)
     qtoplanner = queue.Queue(2)
 
@@ -176,7 +181,7 @@ def gopath1(path1):
             print("gopath failed; aborting")
             yield status
         elif status == 1:
-            print("gopath0 reports 1")
+            print("executor1 reports 1")
             # here, planner1 should be told to make a new plan 
 
 def planner1(qfromplanner, qtoplanner):
