@@ -285,7 +285,7 @@ def readgyro0():
 
             if True:
                 g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
-                        x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang,
+                        x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang%360,
                         angvel, g.can_steer, g.can_speed, g.inspeed, g.outspeed, g.odometer,
                         z0, r, rx, ry, acc, g.finspeed, g.fodometer, t2-g.t0, g.can_ultra))
 
