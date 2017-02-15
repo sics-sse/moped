@@ -74,6 +74,7 @@ g.maxmarkerdist = 1.0
 
 g.poserror = False
 g.maxadjdist = 0
+g.adjdistlimit = 0.4
 
 #g.oldpos = dict()
 g.oldpos = None
