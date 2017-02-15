@@ -213,7 +213,7 @@ def readmarker0():
                                     if g.maxadjdist < adjdist:
                                         g.maxadjdist = adjdist
                                         print("new maxadjdist %f"
-                                              % maxadjdist)
+                                              % g.maxadjdist)
                                     if adjdist > g.adjdistlimit:
                                         g.poserror = True
                             else:
