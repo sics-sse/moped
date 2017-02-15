@@ -50,8 +50,8 @@ def randsel(a, b):
 def whole4aux(path0):
 
     # 10 is like infinity; we don't expect that many
-    qfromplanner = queue.Queue(10)
-    qtoplanner = queue.Queue(10)
+    qfromplanner = queue.Queue(2)
+    qtoplanner = queue.Queue(2)
 
     start_new_thread(executor, (qfromplanner, qtoplanner))
 
@@ -98,6 +98,7 @@ def whole4aux(path0):
         elif (i10, i2) == (23, 35):
             # not possible: 34
             nextpiece = randsel([23, 5], [23, 6])
+            nextpiece = [23, 6]
         elif (i10, i2) == (5, 23):
             # not possible: 6
             nextpiece = [5, 34]
@@ -138,28 +139,39 @@ def executor(qfromplanner, qtoplanner):
     while True:
         p = qfromplanner.get()
         qfromplanner.task_done()
-        # Here, we should not wait for the final result, but get
-        # intermediate results, by yield
-        success = gopath0(p)
-        if not success:
-            print("gopath0 failed, nav1 exits")
-            driving.drive(0)
-            return
-        # when do we tell planner something? ever?
+        for status in gopath0(p):
+            if status == 0:
+                print("gopath0 failed, nav1 exits")
+                driving.drive(0)
+                return
+            elif status == 1:
+                print("gopath0 reports 1")
+
+
+# The eight.insert_waypoints_l(path1) should really be done by a planner
 
 def gopath0(path):
     lastn = path[0]
     for n in path[1:]:
         path1 = [lastn, n]
+
+
         path1_e = eight.insert_waypoints_l(path1)
         print("small piece %s" % str(path1))
         print("small piece_e %s" % str(path1_e))
-        success = gopath(path1_e)
-        if not success:
-            print("gopath failed; aborting")
-            return False
+
+
+# make a new level with threads for planner and executor out of this
+
+        for status in gopath(path1_e):
+            if status == 0:
+                print("gopath failed; aborting")
+                yield 0
+            elif status == 1:
+                print("gopath reports 1")
         lastn = n
-    return True
+        yield 1
+    return
 
 
 def gopath(path0):
@@ -183,7 +195,7 @@ def gopath(path0):
         (i, x, y) = path[j]
         if g.remote_control:
             print("remote control/crash")
-            return False
+            yield 0
         i2 = i1
         i1 = i
         if j == len(path)-1:
@@ -212,8 +224,10 @@ def gopath(path0):
             #driving.drive(-20)
             #time.sleep(2)
             driving.drive(0)
-            return False
-    return True
+            yield 0
+        yield 1
+
+    return
 
 # Find the best route from n0 to n1 and go there (first straight to n0)
 def travel(n0, n1, n2 = None, nz = None):
