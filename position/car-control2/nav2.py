@@ -121,6 +121,11 @@ def goto_1(x, y):
             return 2
 
         if not checkpos():
+            print("checkpos returned False")
+            return 2
+
+        if g.poserror and False:
+            print("positioning system error")
             return 2
 
         dist = getdist(x, y)
