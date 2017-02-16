@@ -87,7 +87,7 @@ def checkpos():
                 print("wall angle! %f %f (%f %f) %f" % (
                         wallang, theta, g.ppx, g.ppy,
                         g.can_ultra))
-                #return False
+                return False
             else:
                 pass
                 #print("(wall angle %f %f)" % (wallang, theta))
@@ -124,7 +124,7 @@ def goto_1(x, y):
             print("checkpos returned False")
             return 2
 
-        if g.poserror and False:
+        if g.poserror:
             print("positioning system error")
             return 2
 
@@ -225,7 +225,15 @@ def goto_1(x, y):
         nav_tc.send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
 
-        time.sleep(0.1)
+        d = eight.roaddist(g.ppx, g.ppy)
+
+        if d > g.slightlyoffroad:
+            print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
+            if d > g.maxoffroad:
+                return 2
+
+        # roaddist above takes more than 0.1 s
+        #time.sleep(0.1)
 
 def goto(x, y, state):
     start_new_thread(gotoaux, (x, y, state))
