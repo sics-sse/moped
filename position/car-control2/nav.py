@@ -69,11 +69,20 @@ g.detectcrashes = True
 
 g.anglefactor = 2.0
 g.targetdist = 0.3
+
 g.minquality = 0.5
-g.maxmarkerdist = 1.0
+#g.maxmarkerdist = 1.0
+
+#g.minquality = 0.35
+g.maxmarkerdist = 2.0
+
+g.maxoffroad = 0.1
+g.slightlyoffroad = 0.03
 
 g.poserror = False
 g.maxadjdist = 0
+
+# None to disable:
 g.adjdistlimit = 0.4
 
 #g.oldpos = dict()
