@@ -24,7 +24,7 @@ def cont():
     g.user_pause = False
 
 
-def whole4(p = [34, 35, 6]):
+def whole4(p = [35, 6]):
     start_new_thread(whole4aux, (p,))
 
 
@@ -127,8 +127,8 @@ def planner0(qfromplanner, qtoplanner):
         elif (i10, i2) == (23, 5):
             # not possible: 6
             # temporarily avoid going 16-23-27 (now named 5-23-35)
+            nextpiece = randsel([23, 34], [23, 35])
             nextpiece = [23, 34]
-            #nextpiece = randsel([23, 34], [23, 35])
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
         elif (i10, i2) == (6, 35):
@@ -176,12 +176,13 @@ def executor1(path1):
 
     p = qfromplanner.get()
     qfromplanner.task_done()
+    print("executor1: got plan %s" % (str(p)))
     for status in gopath(p):
         if status == 0:
             print("gopath failed; aborting")
             yield status
-        elif status == 1:
-            print("executor1 reports 1")
+        else:
+            print("gopath reports %d" % status)
             # here, planner1 should be told to make a new plan 
 
 def planner1(qfromplanner, qtoplanner):
@@ -189,8 +190,8 @@ def planner1(qfromplanner, qtoplanner):
         path1 = qtoplanner.get()
         qtoplanner.task_done()
         path1_e = eight.insert_waypoints_l(path1)
-        print("small piece %s" % str(path1))
-        print("small piece_e %s" % str(path1_e))
+        print("planner1: task %s" % str(path1))
+        print(" -> plan %s" % str(path1_e))
         qfromplanner.put(path1_e)
 
 
@@ -236,7 +237,9 @@ def gopath(path0):
                         rxprev, ryprev, rx, ry))
             g.currentbox = [(lxprev, lyprev, lx, ly),
                             (rxprev, ryprev, rx, ry)]
+
         status = nav2.goto_1(x, y)
+
         if status != 0:
             print("goto_1 returned %d for node %d; we are at (%f, %f)" % (
                     status, i, g.ppx, g.ppy))
@@ -266,6 +269,7 @@ def travel(n0, n1, n2 = None, nz = None):
     print("travel1")
     driving.drive(20)
     print("travel2")
+    # we should use gopath as a generator
     gopath(r)
     print("travel3")
     driving.drive(0)
