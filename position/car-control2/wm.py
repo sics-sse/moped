@@ -214,7 +214,7 @@ def readmarker0():
                                         g.maxadjdist = adjdist
                                         print("new maxadjdist %f"
                                               % g.maxadjdist)
-                                    if adjdist > g.adjdistlimit:
+                                    if g.adjdistlimit != None and adjdist > g.adjdistlimit:
                                         g.poserror = True
                             else:
                                 g.ppx = x
@@ -233,6 +233,10 @@ def readmarker0():
                     g.age = 0
                     #g.ang = ori
             else:
+                if g.adjust_t != None:
+                    markerage = time.time() - g.adjust_t
+                    if markerage > 1.0:
+                        print("marker age %f" % markerage)
                 g.age += 1
 
             if False:
