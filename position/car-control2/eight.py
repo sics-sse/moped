@@ -134,6 +134,65 @@ def piece2path(p, offset):
     path = makepath(offset, path1)
     return path
 
+
+
+roadpoints = dict()
+
+
+def makepathpoints(offset, path):
+    path1 = []
+    x1 = None
+    y1 = None
+    n = 0
+    i1 = None
+    gran = 10
+
+    # make sure our areas overlap
+    extra = 2
+
+    for (i, (x0, y0)) in path:
+        
+        if x1 == None:
+            pass
+        else:
+            dx = x0-x1
+            dy = y0-y1
+            angle = atan2(dx, -dy)
+
+            for k in range(-extra, gran+1+extra):
+                for j in range(-gran, gran+1):
+                    px = x1 + k*dx/gran + offset*cos(angle)*j/gran
+                    py = y1 + k*dy/gran + offset*sin(angle)*j/gran
+                    roadpoints[(px,py)] = True
+
+        i1 = i
+        x1 = x0
+        y1 = y0
+        n += 1
+
+    # use the same angle as for the previous point
+
+    dx = x0-x1
+    dy = y0-y1
+
+    for k in range(-extra, gran+1+extra):
+        for j in range(-gran, gran+1):
+            px = x1 + k*dx/gran + offset*cos(angle)*j/gran
+            py = y1 + k*dy/gran + offset*sin(angle)*j/gran
+            roadpoints[(px,py)] = True
+
+def piece2pathpoints(p, offset):
+    path1 = [(i, nodes[i]) for i in p]
+    makepathpoints(offset, path1)
+
+def roaddist(x0, y0):
+    dmin = None
+    for (x, y) in roadpoints:
+        d = dist(x, y, x0, y0)
+        if dmin == None or dmin > d:
+            dmin = d
+    return dmin
+
 # A position of a car in the road network is indicated by what two nodes
 # A and B it is between, and how far as a fraction from A.
 # From this it is easy to get coordinates, and which piece it is.
@@ -339,6 +398,8 @@ def eightinit():
     pieces = dict()
 
     for piece in piecelist:
+        piece2pathpoints(piece, 0.35)
+
         dtot = 0
         lastn = None
         for n in piece:
@@ -358,6 +419,9 @@ def eightinit():
 
         pieces[(piece[0],piece[-1])] = (piece[1:-1], dtot)
         pieces[(piece[-1],piece[0])] = (rev(piece[1:-1]), dtot)
+
+#    for (x, y) in roadpoints.keys():
+#        print("%f %f" % (x, y))
 
 # a and b are known to be in the same piece
 # Return a list l of waypoints where l[0] == a and l[-1] == b
