@@ -114,7 +114,6 @@ g.inspeed_avg = 0.0
 g.odometer = 0
 g.fodometer = 0
 g.lastodometer = None
-g.age = -1
 
 g.totals = 0
 
