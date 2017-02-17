@@ -349,3 +349,12 @@ def wminit():
     g.outspeedcm = None
     g.steering = 0
 
+    g.markerno = 0
+    g.markercnt = 0
+    g.angleknown = False
+    g.lastodometer = None
+
+    g.markermsg = None
+    g.lastmarker0 = None
+    g.lastpos = None
+    g.lastpost = None
