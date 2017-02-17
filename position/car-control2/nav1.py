@@ -152,38 +152,56 @@ def planner0(qfromplanner, qtoplanner):
         qfromplanner.put(thispiece)
         
 def executor0(path):
+    qfromlower = queue.Queue(2)
+    qtolower = queue.Queue(2)
+
+    start_new_thread(executor1, (qtolower, qfromlower))
+
     lastn = path[0]
     for n in path[1:]:
         path1 = [lastn, n]
 
-        for status in executor1(path1):
+        qtolower.put(path1)
+        while True:
+            status = qfromlower.get()
+            qfromlower.task_done()
             if status == 0:
                 print("executor1 failed; aborting")
                 yield status
+            elif status == 1:
+                print("executor1 reported %d" % status)
+                break
+
         lastn = n
         yield 1
     return
 
 #============================================================
 
-def executor1(path1):
+def executor1(qfromhigher, qtohigher):
     qfromplanner = queue.Queue(2)
     qtoplanner = queue.Queue(2)
 
     start_new_thread(planner1, (qfromplanner, qtoplanner))
 
-    qtoplanner.put(path1)
+    while True:
 
-    p = qfromplanner.get()
-    qfromplanner.task_done()
-    print("executor1: got plan %s" % (str(p)))
-    for status in gopath(p):
-        if status == 0:
-            print("gopath failed; aborting")
-            yield status
-        else:
-            print("gopath reports %d" % status)
-            # here, planner1 should be told to make a new plan 
+        path1 = qfromhigher.get()
+        qfromhigher.task_done()
+
+        qtoplanner.put(path1)
+        p = qfromplanner.get()
+        qfromplanner.task_done()
+        print("executor1: got plan %s" % (str(p)))
+        for status in gopath(p):
+            if status == 0:
+                print("gopath failed; aborting")
+                qtohigher.put(status)
+            else:
+                print("gopath reports %d" % status)
+                # here, planner1 should be told to make a new plan 
+
+        qtohigher.put(1)
 
 def planner1(qfromplanner, qtoplanner):
     while True:
