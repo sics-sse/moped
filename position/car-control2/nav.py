@@ -45,10 +45,6 @@ driving.g = g
 
 g.s = None
 
-# local to nav_imp.py
-g.bus = nav_imu.bus
-g.imuaddress = nav_imu.imuaddress
-
 g.VIN = None
 #g.VIN = sys.argv[1]
 
@@ -56,9 +52,6 @@ g.parameter = 164
 g.parameter = 100
 g.parameter = 152
 g.parameter = 120
-
-wm.wminit()
-nav1.nav1init()
 
 #--------------------
 # Configuration flags:
@@ -115,10 +108,6 @@ g.oldpos = None
 
 g.speedtime = None
 
-# local to wm
-g.markerno = 0
-g.markercnt = 0
-
 g.speedsign = 1
 g.braking = False
 
@@ -130,32 +119,27 @@ g.mymax = None
 
 g.currentbox = None
 
-g.angleknown = False
+# updated by wm (CAN)
 g.inspeed = 0.0
 g.finspeed = 0.0
 g.inspeed_avg = 0.0
 g.odometer = 0
 g.fodometer = 0
-g.lastodometer = None
-
-g.totals = 0
-
-g.limitspeed = None
-g.limitspeed0 = "notset"
-
 g.can_steer = 0
 g.can_speed = 0
+g.can_ultra = 0.0
+
+# set by wm (CAN) and not used now
+g.rc_button = False
+
+
+g.limitspeed = None
+
+# local to 'heartbeat' in nav.py
+g.limitspeed0 = "notset"
 
 g.last_send = None
 
-g.send_sp = None
-g.send_st = None
-
-g.dstatus = 0
-
-g.ground_control = None
-
-g.rc_button = False
 g.remote_control = False
 
 g.targetx = None
@@ -171,56 +155,45 @@ g.px = None
 g.py = None
 g.pz = None
 
-g.ppx = None
-g.ppy = None
+g.ppx = 0
+g.ppy = 0
 g.ppz = None
 
 g.vx = None
 g.vy = None
 g.vz = None
 
+g.ang = 0.0
+
+# set by nav_imu
 g.crash = False
+
+# local to nav.connect_to_ecm but interesting to look at
 g.crashacc = None
 
-g.ppx = 0
-g.ppy = 0
-
+# set by wm, used by nav_imu
 g.angdiff = 0.0
 g.ppxdiff = 0.0
 g.ppydiff = 0.0
-g.ang = 0.0
 
-g.rbias = 0
-g.rxbias = 0
-g.rybias = 0
-
-g.xbias = 0
-g.ybias = 0
-g.zbias = 0
-
+# set once by nav.py
 g.t0 = None
 
-
-g.markermsg = None
-
-g.lastmarker0 = None
-
-g.lastpos = None
-g.lastpost = None
-
+# set my nav_mqtt
 g.battery = 0.0
 g.ultra = 0.0
-g.can_ultra = 0.0
-
-g.mqttc = None
-
-# local to nav_signal.py:
-g.ledstate = 0
-g.speakcount = 1
 
 g.signalling = False
-g.warningblinking = None
+
 g.ledcmd = None
+
+wm.wminit()
+nav1.nav1init()
+nav_imu.imuinit()
+nav_mqtt.mqttinit()
+nav_tc.tcinit()
+driving.drivinginit()
+nav_signal.signalinit()
 
 def connect_to_ecm():
     stopped = False
