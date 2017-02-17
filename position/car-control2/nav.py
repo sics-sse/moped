@@ -45,6 +45,7 @@ driving.g = g
 
 g.s = None
 
+# local to nav_imp.py
 g.bus = nav_imu.bus
 g.imuaddress = nav_imu.imuaddress
 
@@ -56,16 +57,22 @@ g.parameter = 100
 g.parameter = 152
 g.parameter = 120
 
-g.allangles = False
-
 wm.wminit()
 nav1.nav1init()
+
+#--------------------
+# Configuration flags:
+
+g.allangles = False
 
 # setting this to True is the same as setting goodmarkers to []?
 g.ignoremarkers = False
 
-g.detectcrashes = False
+#g.detectcrashes = False
 g.detectcrashes = True
+
+#--------------------
+# Configuration parameters:
 
 g.anglefactor = 2.0
 g.targetdist = 0.3
@@ -80,26 +87,42 @@ g.maxmarkerdist = 2.0
 g.maxoffroad = 0.1
 g.slightlyoffroad = 0.03
 
-g.poserror = False
-g.maxadjdist = 0
-
 # None to disable:
 g.adjdistlimit = 0.4
 
-#g.oldpos = dict()
-g.oldpos = None
-g.adjust_t = None
+g.badmarkers = [0]
+#g.badmarkers = [5]
+
+g.goodmarkers = [25, 10, 43]
+g.goodmarkers = None
+
+#--------------------
+# Flags and variables for reporting by wm:
+
+g.poserror = False
+g.maxadjdist = 0
 
 g.paused = False
 
+#--------------------
+
+# can be local to wm.py
+g.adjust_t = None
+
+# nav_imu and wm
+#g.oldpos = dict()
+g.oldpos = None
+
 g.speedtime = None
 
+# local to wm
 g.markerno = 0
 g.markercnt = 0
 
 g.speedsign = 1
 g.braking = False
 
+# magnetics
 g.mxmin = None
 g.mxmax = None
 g.mymin = None
@@ -185,23 +208,19 @@ g.lastmarker0 = None
 g.lastpos = None
 g.lastpost = None
 
-g.badmarkers = [0]
-#g.badmarkers = [5]
-
-g.goodmarkers = [25, 10, 43]
-g.goodmarkers = None
-
 g.battery = 0.0
 g.ultra = 0.0
 g.can_ultra = 0.0
 
 g.mqttc = None
 
+# local to nav_signal.py:
 g.ledstate = 0
+g.speakcount = 1
+
 g.signalling = False
 g.warningblinking = None
 g.ledcmd = None
-g.speakcount = 1
 
 def connect_to_ecm():
     stopped = False
