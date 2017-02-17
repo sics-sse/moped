@@ -65,13 +65,12 @@ def readmarker0():
         if g.ignoremarkers:
             continue
 
-        tolog0("marker0 %s age %d" % (m, g.age))
         m1 = m.split(" ")
         if len(m1) != 7:
             print("bad marker line")
             continue
         if m1 == "":
-            g.age += 1
+            pass
         else:
             t = time.time()
 
@@ -164,11 +163,10 @@ def readmarker0():
                     if msg != g.markermsg:
                         tolog(msg)
                         g.markermsg = msg
-                    g.age += 1
                 else:
                     accepted = True
                     g.markercnt += 1
-                    tolog0("marker1 %s %d %f %f" % (m, g.age, g.ang, ori))
+                    tolog0("marker1 %s %f %f" % (m, g.ang, ori))
                     if doadjust:
                         doadjust_n = 1
                     else:
@@ -230,14 +228,12 @@ def readmarker0():
                     #g.vx = sin(g.ang*pi/180)*g.inspeed/100
                     #g.vy = cos(g.ang*pi/180)*g.inspeed/100
                     g.lastpost = it0
-                    g.age = 0
                     #g.ang = ori
             else:
                 if g.adjust_t != None:
                     markerage = time.time() - g.adjust_t
                     if markerage > 1.0:
                         print("marker age %f" % markerage)
-                g.age += 1
 
             if False:
                 print("marker good=%s %d = (%f,%f) (%f, %f) %f %f" % (
@@ -253,9 +249,7 @@ def readmarker0():
 
             if not accepted:
                 send_to_ground_control("badmarker %f %f" % (x,y))
-                tolog0("marker5 %s %d %f %f" % (m, g.age, g.ang, ori))
-#            tolog0("marker2 %d %f %f %d %f %d %f" % (-1, g.px, g.py, int(g.ang), 0.5, g.age, g.ang))
-#            tolog0("marker3 %d %f %f %d %f %d %f" % (-1, g.ppx, g.ppy, int(g.ang), 0.5, g.age, g.ang))
+                tolog0("marker5 %s %f %f" % (m, g.ang, ori))
         time.sleep(0.00001)
 
 
