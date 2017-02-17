@@ -157,9 +157,10 @@ def executor0(path):
 
     start_new_thread(executor1, (qtolower, qfromlower))
 
-    lastn = path[0]
-    for n in path[1:]:
-        path1 = [lastn, n]
+    for i in range(0, len(path)-1):
+        path1 = [path[i], path[i+1]]
+        if i < len(path)-2:
+            path1.append(path[i+2])
 
         qtolower.put(path1)
         while True:
@@ -172,7 +173,6 @@ def executor0(path):
                 print("executor1 reported %d" % status)
                 break
 
-        lastn = n
         yield 1
     return
 
@@ -188,6 +188,7 @@ def executor1(qfromhigher, qtohigher):
 
         path1 = qfromhigher.get()
         qfromhigher.task_done()
+        print("executor1: got task %s" % (str(path1)))
 
         qtoplanner.put(path1)
         p = qfromplanner.get()
@@ -205,10 +206,11 @@ def executor1(qfromhigher, qtohigher):
 
 def planner1(qfromplanner, qtoplanner):
     while True:
-        path1 = qtoplanner.get()
+        path1_0 = qtoplanner.get()
+        path1 = path1_0[0:2]
         qtoplanner.task_done()
         path1_e = eight.insert_waypoints_l(path1)
-        print("planner1: task %s" % str(path1))
+        print("planner1: task %s then %s" % (str(path1), str(path1_0[2:])))
         print(" -> plan %s" % str(path1_e))
         qfromplanner.put(path1_e)
 
