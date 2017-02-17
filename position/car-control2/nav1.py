@@ -49,7 +49,6 @@ def randsel(a, b):
 
 def whole4aux(path0):
 
-    # 10 is like infinity; we don't expect that many
     qfromplanner = queue.Queue(2)
     qtoplanner = queue.Queue(2)
 
@@ -119,7 +118,7 @@ def planner0(qfromplanner, qtoplanner):
         elif (i10, i2) == (23, 35):
             # not possible: 34
             nextpiece = randsel([23, 5], [23, 6])
-            nextpiece = [23, 6]
+            #nextpiece = [23, 6]
         elif (i10, i2) == (5, 23):
             # not possible: 6
             nextpiece = [5, 34]
@@ -133,7 +132,7 @@ def planner0(qfromplanner, qtoplanner):
             # not possible: 6
             # temporarily avoid going 16-23-27 (now named 5-23-35)
             nextpiece = randsel([23, 34], [23, 35])
-            nextpiece = [23, 34]
+            #nextpiece = [23, 34]
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
         elif (i10, i2) == (6, 35):
