@@ -49,3 +49,9 @@ def setleds(mask, code):
     else:
         g.ledcmd = (mask, code)
 
+
+def signalinit():
+    g.warningblinking = None
+    g.ledstate = 0
+    g.speakcount = 1
+
