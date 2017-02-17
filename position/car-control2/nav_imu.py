@@ -5,36 +5,7 @@ from math import sqrt, cos, sin, pi, atan2, acos, asin
 
 import nav_log
 
-bus = smbus.SMBus(1)
-
 imuaddress = 0x68
-
-def Write_Sensor(reg, val):
-    bus.write_byte_data(imuaddress, reg, val)
-
-def imuinit0():
-    smbusinit = False
-
-    for i in range(0, 3):
-        try:
-            bus.write_byte_data(imuaddress, 0x6b, 0)
-            smbusinit = True
-        except Exception as e:
-            print(e)
-
-    if not smbusinit:
-        print("couldn't init IMU")
-        exit(0)
-
-imuinit0()
-
-bus.read_byte_data(imuaddress, 0x75)
-
-#bus.write_byte_data(imuaddress, 0x1a, 5)
-#bus.write_byte_data(imuaddress, 0x1b, 0)
-
-bus.write_byte_data(imuaddress, 0x1a, 1)
-bus.write_byte_data(imuaddress, 0x1b, 16)
 
 MPU9150_SMPLRT_DIV = 0x19 # 25
 MPU9150_CONFIG = 0x1a # 26
@@ -53,35 +24,65 @@ MPU9150_I2C_MST_DELAY_CTRL = 0x67 # 103
 MPU9150_I2C_SLV4_CTRL = 0x34 # 52
 MPU9150_USER_CTRL = 0x6a #106
 
+def Write_Sensor(reg, val):
+    g.bus.write_byte_data(imuaddress, reg, val)
+
+def imuinit0():
+    g.bus = smbus.SMBus(1)
+
+    smbusinit = False
+
+    for i in range(0, 3):
+        try:
+            g.bus.write_byte_data(imuaddress, 0x6b, 0)
+            smbusinit = True
+        except Exception as e:
+            print(e)
+
+    if not smbusinit:
+        print("couldn't init IMU")
+        exit(0)
+
+    g.bus.read_byte_data(imuaddress, 0x75)
+
+    #bus.write_byte_data(imuaddress, 0x1a, 5)
+    #bus.write_byte_data(imuaddress, 0x1b, 0)
+
+    g.bus.write_byte_data(imuaddress, 0x1a, 1)
+    g.bus.write_byte_data(imuaddress, 0x1b, 16)
+
+
 def sleep(x):
     if True:
         time.sleep(x)
 
 def imuinit():
 
-    bus.write_byte_data(imuaddress, 0x6b, 0x80)
-    sleep(0.1)
-    bus.write_byte_data(imuaddress, 0x6b, 0)
+    imuinit0()
 
-    b = bus.read_byte_data(imuaddress, 0x49)
+    g.bus.write_byte_data(imuaddress, 0x6b, 0x80)
+    sleep(0.1)
+    g.bus.write_byte_data(imuaddress, 0x6b, 0)
+
+    b = g.bus.read_byte_data(imuaddress, 0x49)
     print("read byte %#x" % b)
 
     sleep(0.1)
     Write_Sensor(MPU9150_I2C_SLV0_ADDR, 0x8C);
-    b = bus.read_byte_data(imuaddress, 0x49)
+    b = g.bus.read_byte_data(imuaddress, 0x49)
     print("read byte %#x" % b)
 
     sleep(0.1)
     Write_Sensor(MPU9150_I2C_SLV0_CTRL, 0x88);
     sleep(0.1)
-    b = bus.read_byte_data(imuaddress, 0x49)
+    b = g.bus.read_byte_data(imuaddress, 0x49)
     print("read byte %#x" % b)
 
     Write_Sensor(MPU9150_USER_CTRL, 0x20);
     sleep(0.1)
 
     while True:
-        b = bus.read_byte_data(imuaddress, 0x49)
+        b = g.bus.read_byte_data(imuaddress, 0x49)
         print("read byte %#x" % b)
         if b == 0x48:
             break
@@ -116,13 +117,18 @@ def imuinit():
         Write_Sensor(MPU9150_I2C_SLV4_CTRL, 0x04);
         sleep(0.1)
 
+        g.bus.write_byte_data(imuaddress, MPU9150_CONFIG, 1)
+        g.bus.write_byte_data(imuaddress, MPU9150_GYRO_CONFIG, 16)
 
+        g.totals = 0
+        g.dstatus = 0
 
-imuinit()
-
-bus.write_byte_data(imuaddress, MPU9150_CONFIG, 1)
-bus.write_byte_data(imuaddress, MPU9150_GYRO_CONFIG, 16)
-
+        g.rbias = 0
+        g.rxbias = 0
+        g.rybias = 0
+        g.xbias = 0
+        g.ybias = 0
+        g.zbias = 0
 
 
 
@@ -161,7 +167,7 @@ def readgyro0():
         t1 = time.time()
 
         while True:
-            w = g.bus.read_i2c_block_data(g.imuaddress, 0x47, 2)
+            w = g.bus.read_i2c_block_data(imuaddress, 0x47, 2)
             high = w[0]
             low = w[1]
             r = make_word(high, low)
@@ -169,12 +175,12 @@ def readgyro0():
             r -= g.rbias
 
             if True:
-                high = g.bus.read_byte_data(g.imuaddress, 0x45)
-                low = g.bus.read_byte_data(g.imuaddress, 0x46)
+                high = g.bus.read_byte_data(imuaddress, 0x45)
+                low = g.bus.read_byte_data(imuaddress, 0x46)
                 ry = make_word(high, low)
                 ry -= g.rybias
 
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x43, 2)
+                w = g.bus.read_i2c_block_data(imuaddress, 0x43, 2)
                 high = w[0]
                 low = w[1]
                 rx = make_word(high, low)
@@ -205,7 +211,7 @@ def readgyro0():
             g.ang += g.dang
 
             if True:
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
+                w = g.bus.read_i2c_block_data(imuaddress, 0x3b, 6)
                 x = make_word(w[0], w[1])
                 x -= g.xbias
                 y = make_word(w[2], w[3])
@@ -261,7 +267,7 @@ def readgyro0():
             # don't put too many things in this thread
 
             if False:
-                w = g.bus.read_i2c_block_data(g.imuaddress, 0x4c, 6)
+                w = g.bus.read_i2c_block_data(imuaddress, 0x4c, 6)
                 mx0 = make_word(w[1], w[0])
                 my0 = make_word(w[3], w[2])
                 mz0 = make_word(w[5], w[4])
@@ -323,23 +329,23 @@ def calibrate_imu():
     # computing angbias would be better
     ncalibrate = 100
     for i in range(0, ncalibrate):
-        high = g.bus.read_byte_data(g.imuaddress, 0x47)
-        low = g.bus.read_byte_data(g.imuaddress, 0x48)
+        high = g.bus.read_byte_data(imuaddress, 0x47)
+        low = g.bus.read_byte_data(imuaddress, 0x48)
         r = make_word(high, low)
         g.rbias += r
 
         if False:
-            high = g.bus.read_byte_data(g.imuaddress, 0x43)
-            low = g.bus.read_byte_data(g.imuaddress, 0x44)
+            high = g.bus.read_byte_data(imuaddress, 0x43)
+            low = g.bus.read_byte_data(imuaddress, 0x44)
             r = make_word(high, low)
             g.rxbias += r
 
-            high = g.bus.read_byte_data(g.imuaddress, 0x45)
-            low = g.bus.read_byte_data(g.imuaddress, 0x46)
+            high = g.bus.read_byte_data(imuaddress, 0x45)
+            low = g.bus.read_byte_data(imuaddress, 0x46)
             r = make_word(high, low)
             g.rybias += r
 
-        w = g.bus.read_i2c_block_data(g.imuaddress, 0x3b, 6)
+        w = g.bus.read_i2c_block_data(imuaddress, 0x3b, 6)
         x = make_word(w[0], w[1])
         y = make_word(w[2], w[3])
         z = make_word(w[4], w[5])
