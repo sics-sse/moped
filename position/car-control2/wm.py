@@ -281,8 +281,7 @@ def readspeed2():
                         time.time() - g.speedtime > 7.0):
                         nav_signal.speak("obstacle")
                         send_to_ground_control("obstacle")
-                        print("obstacle")
-                        driving.drive(0)
+                        g.obstacle = True
 
                     g.odometer = int(m.group(2))
                     if g.odometer != g.lastodometer:
