@@ -67,10 +67,15 @@ def whole4aux(path0):
     print("speedsign = %d" % g.speedsign)
     g.speedsign = 1
 
+    qfromlower = queue.Queue(2)
+    qtolower = queue.Queue(2)
+
+    start_new_thread(executor1, (qtolower, qfromlower))
+
     while True:
         p = qfromplanner.get()
         qfromplanner.task_done()
-        for status in executor0(p):
+        for status in executor0(p, qtolower, qfromlower):
             if status == 0:
                 print("executor0 failed, whole4aux exits")
                 driving.drive(0)
@@ -151,11 +156,7 @@ def planner0(qfromplanner, qtoplanner):
 
         qfromplanner.put(thispiece)
         
-def executor0(path):
-    qfromlower = queue.Queue(2)
-    qtolower = queue.Queue(2)
-
-    start_new_thread(executor1, (qtolower, qfromlower))
+def executor0(path, qtolower, qfromlower):
 
     for i in range(0, len(path)-1):
         path1 = [path[i], path[i+1]]
