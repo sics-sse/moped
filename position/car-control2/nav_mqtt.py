@@ -78,3 +78,5 @@ def handle_mqtt():
         except Exception as e:
             time.sleep(5000)
 
+def mqttinit():
+    g.mqttc = None
