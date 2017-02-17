@@ -70,14 +70,14 @@ g.detectcrashes = True
 g.anglefactor = 2.0
 g.targetdist = 0.3
 
-g.minquality = 0.4
-
+#g.minquality = 0.5
 #g.maxmarkerdist = 1.0
+#g.maxoffroad = 10
 
-#g.minquality = 0.35
+g.minquality = 0.35
 g.maxmarkerdist = 2.0
-
 g.maxoffroad = 0.1
+
 g.slightlyoffroad = 0.03
 
 # None to disable:
@@ -467,3 +467,44 @@ def reset():
     g.crashacc = None
     # should we reset the connect_to_ecm thread somehow?
 
+
+
+
+
+global perc
+
+def gooval(perc0):
+    start_new_thread(goovalaux, (perc0,))
+
+def goovalaux(perc0):
+    global perc
+
+    perc = perc0
+
+    #g.goodmarkers = [25]
+
+    driving.drive(0)
+    time.sleep(4)
+    sp = 15
+    driving.drive(sp)
+
+    while True:
+        print("1")
+        driving.steer(0)
+        print("2")
+        nav2.goto_1(1.9, 17)
+        print("3")
+        print("marker %s" % (str(g.lastpos)))
+        driving.steer(-100)
+        print("4")
+        # 250 comes from pi*80 (cm)
+        # it's the outer radius, but so is the speed we get
+        print("finspeed1 %f dang1 %f ang1 %f" % (g.finspeed, g.dang, g.ang%360))
+        time.sleep(250.0/g.finspeed*perc)
+        print("finspeed2 %f dang2 %f ang2 %f" % (g.finspeed, g.dang, g.ang%360))
+        driving.steer(0)
+        print("5")
+        nav2.goto_1(0.5, 13)
+        print("6")
+        driving.steer(-100)
+        time.sleep(250.0/g.finspeed*perc)
