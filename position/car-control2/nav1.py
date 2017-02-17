@@ -118,7 +118,7 @@ def planner0(qfromplanner, qtoplanner):
         elif (i10, i2) == (23, 35):
             # not possible: 34
             nextpiece = randsel([23, 5], [23, 6])
-            #nextpiece = [23, 6]
+            nextpiece = [23, 6]
         elif (i10, i2) == (5, 23):
             # not possible: 6
             nextpiece = [5, 34]
@@ -132,7 +132,7 @@ def planner0(qfromplanner, qtoplanner):
             # not possible: 6
             # temporarily avoid going 16-23-27 (now named 5-23-35)
             nextpiece = randsel([23, 34], [23, 35])
-            #nextpiece = [23, 34]
+            nextpiece = [23, 34]
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
         elif (i10, i2) == (6, 35):
@@ -190,7 +190,7 @@ def executor1(qfromhigher, qtohigher):
         qfromhigher.task_done()
         print("executor1: got task %s" % (str(path1)))
 
-        qtoplanner.put(path1)
+        qtoplanner.put(('path', path1))
         p = qfromplanner.get()
         qfromplanner.task_done()
         print("executor1: got plan %s" % (str(p)))
@@ -201,17 +201,39 @@ def executor1(qfromhigher, qtohigher):
             else:
                 print("gopath reports %d" % status)
                 # here, planner1 should be told to make a new plan 
+                qtoplanner.put(('next',))
+                p = qfromplanner.get()
+                # ignore the new p for now
+                qfromplanner.task_done()
 
         qtohigher.put(1)
 
 def planner1(qfromplanner, qtoplanner):
     while True:
-        path1_0 = qtoplanner.get()
-        path1 = path1_0[0:2]
+        info = qtoplanner.get()
         qtoplanner.task_done()
-        path1_e = eight.insert_waypoints_l(path1)
-        print("planner1: task %s then %s" % (str(path1), str(path1_0[2:])))
-        print(" -> plan %s" % str(path1_e))
+        if info[0] == 'path':
+            path1_0 = info[1]
+            path1 = path1_0[0:2]
+            path1_e = eight.insert_waypoints_l(path1)
+            pathlen = len(path1_e)
+
+            path2_e = eight.insert_waypoints_l(path1_0)
+
+            print("%s -> %s" % (str(path1), str(path1_e)))
+            print("%s -> %s" % (str(path1_0), str(path2_e)))
+
+
+            print("planner1: task %s then %s" % (str(path1), str(path1_0[2:])))
+            print(" -> plan %s" % str(path1_e))
+        elif info[0] == 'next':
+            path2_e = path2_e[1:]
+            path2_ex = path2_e
+            if len(path2_ex) >= pathlen:
+                path2_ex = path2_e[0:pathlen]
+            print(" -> updated plan %s" % str(path2_ex))
+        else:
+            print("planner1 got unexpected command: %s" % (str(info)))
         qfromplanner.put(path1_e)
 
 
@@ -222,13 +244,14 @@ def gopath(path0):
     g.speedsign = 1
 
     path = eight.piece2path(path0, -0.25)
-    lpath = eight.piece2path(path0, -0.15)
-    rpath = eight.piece2path(path0, -0.35)
+    if False:
+        lpath = eight.piece2path(path0, -0.15)
+        rpath = eight.piece2path(path0, -0.35)
 
-    lx = None
-    ly = None
-    rx = None
-    ry = None
+        lx = None
+        ly = None
+        rx = None
+        ry = None
 
     i1 = -1
 
@@ -237,26 +260,30 @@ def gopath(path0):
         if g.remote_control:
             print("remote control/crash")
             yield 0
-        i2 = i1
-        i1 = i
-        if j == len(path)-1:
-            i3 = -1
-        else:
-            (i3, _, _) = path[j+1]
-        nav_tc.send_to_ground_control("between %d %d %d" % (i2, i1, i3))
-        lxprev = lx
-        rxprev = rx
-        lyprev = ly
-        ryprev = ry
-        (_, lx, ly) = lpath[j]
-        (_, rx, ry) = rpath[j]
-        if lxprev != None:
-            if False:
-                print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
-                        lxprev, lyprev, lx, ly,
-                        rxprev, ryprev, rx, ry))
-            g.currentbox = [(lxprev, lyprev, lx, ly),
-                            (rxprev, ryprev, rx, ry)]
+
+        if True:
+            i2 = i1
+            i1 = i
+            if j == len(path)-1:
+                i3 = -1
+            else:
+                (i3, _, _) = path[j+1]
+            nav_tc.send_to_ground_control("between %d %d %d" % (i2, i1, i3))
+
+        if False:
+            lxprev = lx
+            rxprev = rx
+            lyprev = ly
+            ryprev = ry
+            (_, lx, ly) = lpath[j]
+            (_, rx, ry) = rpath[j]
+            if lxprev != None:
+                if False:
+                    print("keep between (%f,%f) - (%f,%f) and (%f,%f) - (%f,%f)" % (
+                            lxprev, lyprev, lx, ly,
+                            rxprev, ryprev, rx, ry))
+                g.currentbox = [(lxprev, lyprev, lx, ly),
+                                (rxprev, ryprev, rx, ry)]
 
         status = nav2.goto_1(x, y)
 
