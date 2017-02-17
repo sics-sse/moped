@@ -178,3 +178,5 @@ def open_socket():
 
     return s
 
+def tcinit():
+    g.ground_control = None
