@@ -70,7 +70,8 @@ g.detectcrashes = True
 g.anglefactor = 2.0
 g.targetdist = 0.3
 
-g.minquality = 0.5
+g.minquality = 0.4
+
 #g.maxmarkerdist = 1.0
 
 #g.minquality = 0.35
