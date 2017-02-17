@@ -142,6 +142,8 @@ g.last_send = None
 
 g.remote_control = False
 
+g.obstacle = False
+
 g.targetx = None
 g.targety = None
 
