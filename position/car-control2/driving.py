@@ -14,6 +14,10 @@ def dodrive(sp, st):
 # error here: we normalize the argument, but not the other value
 
 def drive(sp):
+    if g.simulate:
+        g.finspeed = sp
+        return
+
     if True:
         if sp != 0 and not g.braking:
             g.speedsign = sign(sp)
@@ -47,6 +51,9 @@ def drive(sp):
 
 def steer(st):
     g.steering = st
+    if g.simulate:
+        return
+
     sp = g.outspeed
 #    if st < 0:
 #        st += 256

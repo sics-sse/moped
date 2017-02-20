@@ -39,7 +39,7 @@ def linesplit(socket):
                 buffer += more
     if buffer:
         yield buffer
-    return None
+    return
 
 def from_ground_control():
     lastreportclosest = False
@@ -151,7 +151,7 @@ def open_socket():
     HOST = 'localhost'    # The remote host
     HOST = '192.168.43.73'	# merkur on my hotspot
     HOST = '193.10.66.250'  # merkur on the SICS wifi net
-    PORT = 50008              # The same port as used by the server
+    PORT = 50009              # The same port as used by the server
 
     for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
         af, socktype, proto, canonname, sa = res

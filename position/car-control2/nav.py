@@ -7,14 +7,18 @@ import json
 
 import eight
 
-import nav_imu
+simulate = True
+
+if not simulate:
+    import nav_imu
 
 import nav_log
 from nav_log import tolog, tolog0
 
 from nav_util import sign, dist, start_new_thread
 
-import nav_mqtt
+if not simulate:
+    import nav_mqtt
 import nav_tc
 
 import nav_signal
@@ -32,9 +36,13 @@ class globals:
 
 g = globals()
 
-nav_imu.g = g
+g.simulate = simulate
+
+if not simulate:
+    nav_imu.g = g
 nav_log.g = g
-nav_mqtt.g = g
+if not simulate:
+    nav_mqtt.g = g
 nav_tc.g = g
 nav_signal.g = g
 nav_comm.g = g
@@ -191,8 +199,9 @@ g.ledcmd = None
 
 wm.wminit()
 nav1.nav1init()
-nav_imu.imuinit()
-nav_mqtt.mqttinit()
+if not simulate:
+    nav_imu.imuinit()
+    nav_mqtt.mqttinit()
 nav_tc.tcinit()
 driving.drivinginit()
 nav_signal.signalinit()
@@ -294,6 +303,9 @@ def initializeCAN(network):
     return s
 
 def readvin():
+    if simulate:
+        return "car0"
+
     f = open("/home/pi/can-utils/java/settings.properties")
     for line0 in f:
         line = line0[:-1]
@@ -327,7 +339,8 @@ def init():
 
     canNetwork = "can0"
     canFrameID = 1025
-    g.canSocket = initializeCAN(canNetwork)
+    if not simulate:
+        g.canSocket = initializeCAN(canNetwork)
 
     g.angleknown = False
 
@@ -348,16 +361,29 @@ def init():
 
     tolog("init")
 
-    nav_imu.calibrate_imu()
+    if not simulate:
+        nav_imu.calibrate_imu()
 
-    start_new_thread(wm.readmarker, ())
-    start_new_thread(nav_mqtt.handle_mqtt, ())
-    start_new_thread(wm.readspeed2, ())
-    start_new_thread(nav_imu.readgyro, ())
-    start_new_thread(driving.senddrive, ())
-    start_new_thread(keepspeed, ())
+    if not simulate:
+        start_new_thread(wm.readmarker, ())
+    if not simulate:
+        start_new_thread(nav_mqtt.handle_mqtt, ())
+    if not simulate:
+        start_new_thread(wm.readspeed2, ())
+    if not simulate:
+        start_new_thread(nav_imu.readgyro, ())
+    if not simulate:
+        start_new_thread(driving.senddrive, ())
+    if not simulate:
+        start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
-    start_new_thread(connect_to_ecm, ())
+    if not simulate:
+        start_new_thread(connect_to_ecm, ())
+
+    if simulate:
+        g.steering = 0
+        g.finspeed = 0
+        start_new_thread(wm.simulatecar, ())
 
 g.senddriveinhibited = False
 

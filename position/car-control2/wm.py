@@ -2,7 +2,7 @@ import time
 import re
 import subprocess
 
-from math import sqrt
+from math import sqrt, sin, cos, pi
 
 from nav_tc import send_to_ground_control
 
@@ -357,3 +357,20 @@ def wminit():
     g.lastmarker0 = None
     g.lastpos = None
     g.lastpost = None
+
+def putcar(x, y, ang):
+    g.angleknown = True
+    g.ppx = x
+    g.ppy = y
+    g.ang = ang
+
+def simulatecar():
+    dt = 0.1
+    while True:
+        g.dang = g.steering/100.0 * g.finspeed
+        g.ang += g.dang*dt
+        g.ppx += g.finspeed/100*dt*sin(g.ang*pi/180)
+        g.ppy += g.finspeed/100*dt*cos(g.ang*pi/180)
+        time.sleep(dt)
+        send_to_ground_control("dpos %f %f %f %f 0 %f" % (
+                g.ppx, g.ppy, g.ang, 0, g.finspeed))

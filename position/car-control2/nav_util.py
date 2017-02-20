@@ -13,7 +13,9 @@ def sign(x):
     return 0
 
 def start_new_thread(f, args):
-    threading.Thread(target=f, args=args, daemon=True).start()
+    # 3.2 and lower don't have 'daemon'
+    #threading.Thread(target=f, args=args, daemon=True).start()
+    threading.Thread(target=f, args=args).start()
 
 def rev(l0):
     l = l0[:]
