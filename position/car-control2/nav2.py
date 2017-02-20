@@ -128,6 +128,10 @@ def goto_1(x, y):
             print("positioning system error")
             return 2
 
+        if g.obstacle:
+            print("obstacle")
+            return 2
+
         dist = getdist(x, y)
         if g.inspeed != 0:
             # Assume we are going in the direction of the target.
@@ -228,7 +232,7 @@ def goto_1(x, y):
         d = eight.roaddist(g.ppx, g.ppy)
 
         if d > g.slightlyoffroad:
-            print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
+#            print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
             if d > g.maxoffroad:
                 return 2
 
