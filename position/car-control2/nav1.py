@@ -74,6 +74,10 @@ def whole4aux(path0):
     while True:
         p = qfromplanner.get()
         qfromplanner.task_done()
+        if p == 'stop':
+            print("executor0 got stop")
+            driving.drive(0)
+            return
         for status in executor0(p, qtolower, qfromlower):
             if status == 0:
                 print("executor0 failed, whole4aux exits")
@@ -83,6 +87,10 @@ def whole4aux(path0):
                 print("executor0 reports %d" % status)
 
 def planner0(qfromplanner, qtoplanner):
+    qfromplanner.put([34,23,5,34,23])
+    qfromplanner.put('stop')
+
+def planner0x(qfromplanner, qtoplanner):
     # idea: from the current position, determine which piece we can
     # start with
 
@@ -191,34 +199,45 @@ def executor1(qfromhigher, qtohigher):
         print("executor1: got task %s" % (str(path1)))
 
         qtoplanner.put(('path', path1))
-        p = qfromplanner.get()
+        (p, plen) = qfromplanner.get()
         qfromplanner.task_done()
         print("executor1: got plan %s" % (str(p)))
-        for status in gopath(p):
-            if status == 0:
-                print("gopath failed; aborting")
-                qtohigher.put(status)
-            else:
-                print("gopath reports %d" % status)
-                # here, planner1 should be told to make a new plan 
-                qtoplanner.put(('next',))
-                p = qfromplanner.get()
-                # ignore the new p for now
-                qfromplanner.task_done()
-
+        while True:
+            for status in gopath(p, plen):
+                if status == 0:
+                    print("gopath failed; aborting")
+                    qtohigher.put(status)
+                    # I think we should go the top of the outer loop,
+                    # but returning at least aborts for real
+                    return
+                else:
+                    # print("gopath reports %d" % status)
+                    qtoplanner.put(('next',))
+                    (p, plen) = qfromplanner.get()
+                    qfromplanner.task_done()
+                    print("executor1: suggested new plan %s len %d" % (
+                            str(p), plen))
+                    continue
+            break
         qtohigher.put(1)
 
 def planner1(qfromplanner, qtoplanner):
+    plann = 0
     while True:
         info = qtoplanner.get()
         qtoplanner.task_done()
         if info[0] == 'path':
+            plann += 1
             path1_0 = info[1]
             path1 = path1_0[0:2]
             path1_e = eight.insert_waypoints_l(path1)
+
             pathlen = len(path1_e)
 
             path2_e = eight.insert_waypoints_l(path1_0)
+
+            path2_e = [(i, plann) for i in path2_e]
+            path1_e = [(i, plann) for i in path1_e]
 
             print("%s -> %s" % (str(path1), str(path1_e)))
             print("%s -> %s" % (str(path1_0), str(path2_e)))
@@ -227,6 +246,9 @@ def planner1(qfromplanner, qtoplanner):
             print("planner1: task %s then %s" % (str(path1), str(path1_0[2:])))
             print(" -> plan %s" % str(path1_e))
         elif info[0] == 'next':
+            # now we only pick the next point in our original plan,
+            # but we should make a new plan each time.
+            plann += 1
             path2_e = path2_e[1:]
             path2_ex = path2_e
             if len(path2_ex) >= pathlen:
@@ -234,11 +256,18 @@ def planner1(qfromplanner, qtoplanner):
             print(" -> updated plan %s" % str(path2_ex))
         else:
             print("planner1 got unexpected command: %s" % (str(info)))
-        qfromplanner.put(path1_e)
+        # our caller doesn't know how long the part of the plan is which
+        # corresponds to the actual goal, so we tell it how long
+        # the that part was originally
+        qfromplanner.put((path2_e, len(path1_e)))
 
 
-def gopath(path0):
+def gopath(path00, plen):
     g.last_send = None
+
+    print("path00 = %s" % (str(path00)))
+
+    path0 = [i for (i, _) in path00]
 
     #print("speedsign = %d" % g.speedsign)
     g.speedsign = 1
@@ -255,7 +284,8 @@ def gopath(path0):
 
     i1 = -1
 
-    for j in range(0, len(path)):
+#    for j in range(0, len(path)):
+    for j in range(0, plen):
         (i, x, y) = path[j]
         if g.remote_control:
             print("remote control/crash")
@@ -285,7 +315,11 @@ def gopath(path0):
                 g.currentbox = [(lxprev, lyprev, lx, ly),
                                 (rxprev, ryprev, rx, ry)]
 
-        status = nav2.goto_1(x, y)
+        if True:
+            status = nav2.goto_1(x, y)
+        else:
+            time.sleep(1)
+            status = 0
 
         if status != 0:
             print("goto_1 returned %d for node %d; we are at (%f, %f)" % (
