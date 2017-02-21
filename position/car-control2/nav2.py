@@ -226,9 +226,11 @@ def goto_1(x, y):
 
         tolog("gotoa4 steer %f" % (st))
 
-        nav_tc.send_to_ground_control("dpos %f %f %f %f 0 %f" % (
-                g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
+        if not g.simulate:
+            nav_tc.send_to_ground_control("dpos %f %f %f %f 0 %f" % (
+                    g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
 
+        tt0 = time.time()
         d = eight.roaddist(g.ppx, g.ppy)
 
         if d > g.slightlyoffroad:
@@ -236,8 +238,11 @@ def goto_1(x, y):
             if d > g.maxoffroad:
                 return 2
 
-        # roaddist above takes more than 0.1 s
-        #time.sleep(0.1)
+        tt1 = time.time()
+        dtt = tt1-tt0
+        dtt1 = 0.1 - dtt
+        if dtt1 > 0:
+            time.sleep(0.1)
 
 def goto(x, y, state):
     start_new_thread(gotoaux, (x, y, state))
