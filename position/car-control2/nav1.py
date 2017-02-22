@@ -47,7 +47,10 @@ def randsel(a, b):
         g.randdict[bstr] = g.randdict[bstr] + 1
         return b
 
+thengoal0 = None
+
 def whole4aux(path0):
+    global thengoal0
 
     qfromplanner = queue.Queue(2)
     qtoplanner = queue.Queue(2)
@@ -71,9 +74,16 @@ def whole4aux(path0):
 
     start_new_thread(executor1, (qtolower, qfromlower))
 
+    nextplan = None
+    thengoal = None
+
     while True:
-        p = qfromplanner.get()
-        qfromplanner.task_done()
+        if nextplan == None:
+            nextplan = qfromplanner.get()
+            qfromplanner.task_done()
+        p = nextplan
+        nextplan = None
+        thengoal = None
         if p == 'stop':
             print("executor0 got stop")
             driving.drive(0)
@@ -84,13 +94,24 @@ def whole4aux(path0):
                 driving.drive(0)
                 return
             else:
-                print("executor0 reports %d" % status)
+                print("executor0 reports %d empty=%s" % (
+                        status, str(qfromplanner.empty())))
+                if not qfromplanner.empty():
+                    if nextplan == None:
+                        nextplan = qfromplanner.get()
+                        qfromplanner.task_done()
+                        print("next plan for executor0 is %s" % (str(nextplan)))
+                        thengoal = nextplan[1]
+                        # ugly hack, for testing
+                        thengoal0 = thengoal
+                    else:
+                        print("another new plan for executor0 exists, but we already have one: %s" % str(nextplan))
 
-def planner0(qfromplanner, qtoplanner):
+def planner0x(qfromplanner, qtoplanner):
     qfromplanner.put([34,23,5,34,23])
     qfromplanner.put('stop')
 
-def planner0x(qfromplanner, qtoplanner):
+def planner0(qfromplanner, qtoplanner):
     # idea: from the current position, determine which piece we can
     # start with
 
@@ -172,6 +193,7 @@ def executor0(path, qtolower, qfromlower):
 
         qtolower.put(path1)
         while True:
+            print("executor0's thengoal = %s" % str(thengoal0))
             status = qfromlower.get()
             qfromlower.task_done()
             if status == 0:
@@ -180,6 +202,9 @@ def executor0(path, qtolower, qfromlower):
             elif status == 1:
                 print("executor1 reported %d" % status)
                 break
+            else:
+                print("executor1 reported %d" % (status))
+                yield 2
 
         yield 1
     return
@@ -212,13 +237,17 @@ def executor1(qfromhigher, qtohigher):
                     return
                 else:
                     # print("gopath reports %d" % status)
+                    # we should let the planner create this plan in advance,
+                    # shouldn't we?
                     qtoplanner.put(('next',))
                     (p, plen) = qfromplanner.get()
                     qfromplanner.task_done()
                     print("executor1: suggested new plan %s len %d" % (
                             str(p), plen))
+                    qtohigher.put(2)
                     continue
             break
+        # we will just have put 2, too
         qtohigher.put(1)
 
 def planner1(qfromplanner, qtoplanner):
@@ -252,16 +281,25 @@ def planner1(qfromplanner, qtoplanner):
             # pretend we did:
             path2_e = [(i, plann) for (i, _) in path2_e]
 
-            path2_e = path2_e[1:]
-            path2_ex = path2_e
-            if len(path2_ex) >= pathlen:
-                path2_ex = path2_e[0:pathlen]
-            print(" -> updated plan %s" % str(path2_ex))
+            if len(path2_e) > 1:
+                npath = [path2_e[1][0], path1_e[-1][0]]
+                print("path3_e %s -> " % (npath))
+                path3 = eight.insert_waypoints_l(npath)
+                path3_e = [(i, plann) for i in path3]
+                print(" -> %s" % (path3_e))
+                path2_e = path3_e
+            else:
+                path2_e = path2_e[1:]
+                path2_ex = path2_e
+                if len(path2_ex) >= pathlen:
+                    path2_ex = path2_e[0:pathlen]
+                print(" -> updated plan %s" % str(path2_ex))
+                path2_e = path2_ex
         else:
             print("planner1 got unexpected command: %s" % (str(info)))
         # our caller doesn't know how long the part of the plan is which
         # corresponds to the actual goal, so we tell it how long
-        # the that part was originally
+        # that part was originally
         qfromplanner.put((path2_e, len(path1_e)))
 
 
