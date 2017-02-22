@@ -249,6 +249,9 @@ def planner1(qfromplanner, qtoplanner):
             # now we only pick the next point in our original plan,
             # but we should make a new plan each time.
             plann += 1
+            # pretend we did:
+            path2_e = [(i, plann) for (i, _) in path2_e]
+
             path2_e = path2_e[1:]
             path2_ex = path2_e
             if len(path2_ex) >= pathlen:
