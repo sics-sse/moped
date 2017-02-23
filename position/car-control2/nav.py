@@ -7,9 +7,31 @@ import json
 
 import eight
 
-simulate = True
+class globals:
+    pass
 
-if not simulate:
+g = globals()
+
+def readvin():
+    g.simulate = False
+
+    try:
+        f = open("/home/pi/can-utils/java/settings.properties")
+        for line0 in f:
+            line = line0[:-1]
+            m = re.match("VIN=(.*)", line)
+            if m:
+                return m.group(1)
+    except IOError:
+        g.simulate = True
+        return "car0"
+
+    return None
+
+g.VIN = readvin()
+print("VIN %s" % g.VIN)
+
+if not g.simulate:
     import nav_imu
 
 import nav_log
@@ -17,7 +39,7 @@ from nav_log import tolog, tolog0
 
 from nav_util import sign, dist, start_new_thread
 
-if not simulate:
+if not g.simulate:
     import nav_mqtt
 import nav_tc
 
@@ -31,17 +53,10 @@ import driving
 from math import pi, cos, sin, sqrt, atan2, acos, asin, log
 
 
-class globals:
-    pass
-
-g = globals()
-
-g.simulate = simulate
-
-if not simulate:
+if not g.simulate:
     nav_imu.g = g
 nav_log.g = g
-if not simulate:
+if not g.simulate:
     nav_mqtt.g = g
 nav_tc.g = g
 nav_signal.g = g
@@ -52,9 +67,6 @@ nav2.g = g
 driving.g = g
 
 g.s = None
-
-g.VIN = None
-#g.VIN = sys.argv[1]
 
 g.parameter = 164
 g.parameter = 100
@@ -199,7 +211,7 @@ g.ledcmd = None
 
 wm.wminit()
 nav1.nav1init()
-if not simulate:
+if not g.simulate:
     nav_imu.imuinit()
     nav_mqtt.mqttinit()
 nav_tc.tcinit()
@@ -302,21 +314,7 @@ def initializeCAN(network):
     s.bind((network,))
     return s
 
-def readvin():
-    if simulate:
-        return "car0"
-
-    f = open("/home/pi/can-utils/java/settings.properties")
-    for line0 in f:
-        line = line0[:-1]
-        m = re.match("VIN=(.*)", line)
-        if m:
-            return m.group(1)
-    return None
-
 def init():
-    g.VIN = readvin()
-    print("VIN %s" % g.VIN)
 
     if g.VIN == "car5":
         g.mxmin = -99
@@ -339,7 +337,7 @@ def init():
 
     canNetwork = "can0"
     canFrameID = 1025
-    if not simulate:
+    if not g.simulate:
         g.canSocket = initializeCAN(canNetwork)
 
     g.angleknown = False
@@ -361,26 +359,26 @@ def init():
 
     tolog("init")
 
-    if not simulate:
+    if not g.simulate:
         nav_imu.calibrate_imu()
 
-    if not simulate:
+    if not g.simulate:
         start_new_thread(wm.readmarker, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(nav_mqtt.handle_mqtt, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(wm.readspeed2, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(nav_imu.readgyro, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(driving.senddrive, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(keepspeed, ())
     start_new_thread(heartbeat, ())
-    if not simulate:
+    if not g.simulate:
         start_new_thread(connect_to_ecm, ())
 
-    if simulate:
+    if g.simulate:
         g.steering = 0
         g.finspeed = 0
         start_new_thread(wm.simulatecar, ())
