@@ -24,18 +24,20 @@ def checkbox1(x, y, tup, leftp):
     x1 = lxprev + dx*cos(a) - dy*sin(a)
     y1 = lyprev + dx*sin(a) + dy*cos(a)
 
-    if False:
-        if y1 >= lyprev and y1 <= ly1:
-            if leftp:
+    if y1 >= lyprev and y1 <= ly1:
+        if leftp:
+            if lxprev > x1:
                 print("%f %f [%f %f]" % (x, y, lxprev, x1))
-                if lxprev > x1:
-                    nav_signal.speak("ee")
-            else:
-                # when leftp==False, we have really rxprev etc.
+                nav_signal.speak("ee")
+                return False
+        else:
+            # when leftp==False, we have really rxprev etc.
+            if lxprev < x1:
                 print("%f %f         [%f %f]" % (x, y, x1, lxprev))
-                if lxprev < x1:
-                    nav_signal.speak("oo")
+                nav_signal.speak("oo")
+                return False
 
+    return True
 
 def checkpos():
     pos = eight.findpos(g.ppx,g.ppy,g.ang)
@@ -47,8 +49,12 @@ def checkpos():
     x = g.ppx
     y = g.ppy
     # check if we are outside the lane we are supposed to be in
-    checkbox1(x, y, g.currentbox[0], True)
-    checkbox1(x, y, g.currentbox[1], False)
+    stat = checkbox1(x, y, g.currentbox[0], True)
+    if not stat:
+        return False
+    stat = checkbox1(x, y, g.currentbox[1], False)
+    if not stat:
+        return False
 
     r = None
 
@@ -236,6 +242,7 @@ def goto_1(x, y):
         if d > g.slightlyoffroad:
 #            print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
             if d > g.maxoffroad:
+                print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
                 return 2
 
         tt1 = time.time()
