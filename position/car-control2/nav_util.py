@@ -1,3 +1,4 @@
+import sys
 import threading
 
 from math import sqrt
@@ -22,3 +23,8 @@ def rev(l0):
     l.reverse()
     return l
 
+def min(x, y):
+    if x < y:
+        return x
+    else:
+        return y
