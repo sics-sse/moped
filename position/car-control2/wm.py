@@ -1,6 +1,7 @@
 import time
 import re
 import subprocess
+import random
 
 from math import sqrt, sin, cos, pi
 
@@ -367,10 +368,15 @@ def putcar(x, y, ang):
 def simulatecar():
     dt = 0.1
     while True:
-        g.dang = g.steering/100.0 * g.finspeed
+        g.dang = g.steering/100.0 * 1.5 * g.finspeed
         g.ang += g.dang*dt
         g.ppx += g.finspeed/100*dt*sin(g.ang*pi/180)
         g.ppy += g.finspeed/100*dt*cos(g.ang*pi/180)
+
+        # make the steering a little flaky
+        f = random.random()
+        g.ang += (2*f-1) * 0
+
         time.sleep(dt)
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx, g.ppy, g.ang, 0, g.finspeed))
