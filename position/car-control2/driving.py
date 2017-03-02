@@ -14,10 +14,6 @@ def dodrive(sp, st):
 # error here: we normalize the argument, but not the other value
 
 def drive(sp):
-    if g.simulate:
-        g.finspeed = sp
-        return
-
     if True:
         if sp != 0 and not g.braking:
             g.speedsign = sign(sp)
