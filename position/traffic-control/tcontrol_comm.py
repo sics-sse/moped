@@ -3,13 +3,17 @@ import socket
 import time
 import math
 import json
+import sys
+
+sys.path.append("car-control2")
+import eight
 
 from tcontrol_car import Car, cars
 
 from tcontrol_globals import g
 
 HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 50008              # Arbitrary non-privileged port
+PORT = 50009              # Arbitrary non-privileged port
 
 g.d = dict()
 
@@ -119,99 +123,139 @@ def converging(c1, c2):
 global doprint
 doprint = None
 
+def following(tup, tup2, d):
+    (piece, odo) = tup
+    (piece2, odo2) = tup2
+
+    onlyif = 0
+
+    if piece == piece2 and odo < odo2:
+        #print("following %s %f %f" % (str(piece), odo, odo2))
+        return (True, odo2-odo, onlyif)
+
+    (a, b) = piece
+    (a2, b2) = piece2
+
+    onlyif = b2
+
+    if b == a2 and b2 != a:
+        (_, piecelen) = eight.pieces[piece]
+        if False:
+            print("following %s %s %f" % (
+                    str((piece, odo)),
+                    str((piece2, odo2+piecelen)),
+                    d))
+        return (True, odo2+piecelen - odo, onlyif)
+
+    return False
+
+def giveway(piece, piece2):
+    (a, b) = piece
+    (a2, b2) = piece2
+
+    if b != b2:
+        return False
+
+    onlyif = 0
+    st = False
+
+    pp = (a, a2, b)
+    if pp == (23, 34, 35):
+        st = True
+    elif pp == (5, 23, 6):
+        st = True
+    elif pp == (23, 6, 5):
+        st = True
+    elif pp == (35, 23, 34):
+        st = True
+
+    # sometimes, we don't need to give way if we know where we are going
+    elif pp == (6, 5, 23):
+        # here, we need to know where the other one is going, too
+        st = True
+    elif pp == (34, 35, 23):
+        # here, we need to know where the other one is going, too
+        st = True
+    elif pp == (5, 34, 23):
+        st = True
+    elif pp == (35, 6, 23):
+        onlyif = 6
+        st = True
+
+    if st:
+        #print("giveway %s %s" % ((str(piece), str(piece2))))
+        return (st, onlyif)
+    return False
+
 def check_other_cars(c):
+
     global doprint
     l = []
 
+    pos = eight.findpos(c.x, c.y, c.ang)
+    if pos == None:
+        #print("pos None %s" % (str((c.x, c.y, c.ang))))
+        return
+    #print("%s pos %s" % (c.info, str(pos)))
+    (ac, bc, tup) = pos
+    q = tup[6]
+
+    (piece, odo) = eight.findpiece(ac, bc, q)
+
     for ci in cars:
+
         c2 = cars[ci]
         if c2 == c:
             continue
 
-        if (c.lastnode == -1 or c2.lastnode == -1 or
-            c.nextnode == -1 or c2.nextnode == -1):
+        pos2 = eight.findpos(c2.x, c2.y, c2.ang)
+        if pos2 == None:
+            continue
+        #print("%s pos %s" % (c.info, str(pos)))
+        (ac2, bc2, tup2) = pos2
+        q2 = tup2[6]
+
+        (piece2, odo2) = eight.findpiece(ac2, bc2, q2)
+        #print((c.info, piece, odo, piece2, odo2))
+
+        d = dist(c.x, c.y, c2.x, c2.y)
+        if d < 0.35:
+            if c.info < c2.info:
+                print("car distance %f %s" % (d, str((c.info, piece, q, odo, c2.info, piece2, q2, odo2))))
+
+        if d > 2.0:
             continue
 
-        cpair = (c.lastnode, c.nextnode)
-        c2pair = (c2.lastnode, c2.nextnode)
+        onlyif = 0
 
-        if (c.nextnode == c2.lastnode and c.nextnode != -1 and
-            c2.nextnode != c.lastnode and c.nextnode2 == c2.nextnode) or (
-            ((cpair == (33, 34) and c.nextnode == 29) or
-             cpair == (34, 29)) and (c2pair == (36, 35) or
-                                     c2pair == (35, 32) or
-                                     c2pair == (35, 34) or
-                                     c2pair == (32, 27) or
-                                     c2pair == (27, 23))) or (
-            ((cpair == (7, 6) and c.nextnode == 13) or
-             cpair == (6, 13)) and (c2pair == (4, 5) or
-                                    c2pair == (5, 10) or
-                                    c2pair == (5, 6) or
-                                    c2pair == (10, 16) or
-                                    c2pair == (16, 23))) or (
-            # when we will turn right, this makes us unnecessarily stop:
-            # (and we should replace this with a distance comparison,
-            # and also not always brake when entering 36-35 when a car
-            # is in 35-34)
-            # (in our crossing, the one turning left doesn't need to
-            # give way to the one turning right, but in a real crossing,
-            # it does)
-            (cpair == (36, 35) or
-             cpair == (35, 32) or
-             cpair == (35, 34)) and (c2pair == (7, 6) or
-                                     c2pair == (6, 13) or
-                                     c2pair == (13, 19) or
-                                     c2pair == (19, 23) or
-                                     c2pair == (23, 27) or
-                                     c2pair == (23, 26))) or (
-            (cpair == (36, 35) and c.nextnode == 34 or
-             cpair == (35, 34)) and (c2pair == (4, 5) or
-                                     c2pair == (5, 10) or
-                                     c2pair == (10, 16) or
-                                     c2pair == (16, 23) or
-                                     c2pair == (23, 27) or
-                                     c2pair == (27, 32) or
-                                     c2pair == (23, 26) or
-                                     c2pair == (26, 29))) or (
-            (cpair == (4, 5) or
-             cpair == (5, 6) or
-             cpair == (5, 10)) and (c2pair == (33, 34) or
-                                    c2pair == (34, 29) or
-                                    c2pair == (29, 26) or
-                                    c2pair == (26, 23) or
-                                    c2pair == (23, 16) or
-                                    c2pair == (23, 19))) or (
-            (cpair == (4, 5) and c.nextnode == 6 or
-             cpair == (5, 6)) and (c2pair == (36, 35) or
-                                   c2pair == (35, 32) or
-                                   c2pair == (32, 27) or
-                                   c2pair == (27, 23) or
-                                   c2pair == (23, 16) or
-                                   c2pair == (16, 10) or
-                                   c2pair == (23, 19) or
-                                   c2pair == (19, 13))) or (
-            # left turn, crossing - this must get a better solution:
-            cpair == (19, 23) and c2pair == (34, 29) and c.info < c2.info) or (
-            cpair == (26, 23) and c2pair == (6, 13) and c.info < c2.info):
-            d = 0.2
+        foll = following((piece, odo), (piece2, odo2), d)
+        if foll:
+            (_, o, onlyif) = foll
+            if o > 2.0:
+                continue
+
+        give = giveway(piece, piece2)
+        if give:
+            (_, onlyif) = give
+
+        if foll or give:
+            #print((c.x, c.y, c2.x, c2.y, d))
             angdiff = 0
-            stri = "car in front of car %s: %s: %s" % (
-                c.info, c2.info,
-                str(((c.lastnode, c.nextnode),
-                     (c2.lastnode, c2.nextnode))))
+            stri = "car in front of car %s: %s: %f" % (
+                c.info, c2.info, d)
             if doprint != stri:
-                print(stri)
+                #print(stri)
                 doprint = stri
-            l = l + [(angdiff, d, c2.x, c2.y, c2.n)]
+            l = l + [(angdiff, d, c2.x, c2.y, c2.n, onlyif)]
 
     fronts = "carsinfront %d" % len(l)
     for tup in l:
-        fronts = fronts + " " + ("%f %f %f %f %d" % tup)
+        fronts = fronts + " " + ("%f %f %f %f %d %d" % tup)
     c.conn.send(fronts + "\n")
 
 def handlebatterytimeout(c):
     while True:
-        if time.time() > c.battery_seen + 20:
+        if time.time() > c.battery_seen + 120:
             c.v4.set("battery unknown")
         time.sleep(1)
 
@@ -376,6 +420,7 @@ def handlerun(conn, addr):
                     odo, "" if odo == 1 else "s",
                     float(odo)/5*math.pi*10.2/100))
         elif l[0] == "heart":
+            #print("heart %s" % c.info)
             c.heart_seen = time.time()
             c.heart_t = float(l[1])
             c.heart_n = int(l[2])
