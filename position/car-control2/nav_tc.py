@@ -13,7 +13,8 @@ def connect_to_ground_control():
         if not g.ground_control:
             g.s = open_socket()
             if not g.s:
-                print("no connection")
+                #print("no connection")
+                pass
             else:
                 print("connection opened")
                 g.ground_control = g.s
@@ -66,14 +67,19 @@ def from_ground_control():
                     n = int(l[1])
                     closest = None
                     for i in range(0, n):
-                        #dir = float(l[5*i+2])
-                        dist = float(l[5*i+3])
-                        #x = float(l[5*i+4])
-                        #y = float(l[5*i+5])
-                        othercar = float(l[5*i+6])
+                        dir = float(l[6*i+2])
+                        dist = float(l[6*i+3])
+                        #x = float(l[6*i+4])
+                        #y = float(l[6*i+5])
+                        othercar = float(l[6*i+6])
+                        onlyif = float(l[6*i+7])
                         if closest == None or closest > dist:
                             closest = dist
                     if closest:
+                        if (onlyif != 0
+                            and g.nextdecisionpoint != 0
+                            and onlyif != g.nextdecisionpoint):
+                            continue
                         #print("closest car in front1: dir %f dist %f" % (
                          #       dir, closest))
                         # a car length
@@ -97,8 +103,9 @@ def from_ground_control():
                             #print("reduced limitspeed")
                             pass
 
-                        #print("closest car in front2: dir %f dist %f limitspeed %f" % (
-                                #dir, closest, g.limitspeed))
+                        if g.finspeed != 0:
+                            print("closest car in front2: dir %f dist %f limitspeed %f" % (
+                                    dir, closest, g.limitspeed))
                         lastreportclosest = True
                     else:
                         g.limitspeed = None
@@ -173,7 +180,7 @@ def open_socket():
             continue
         break
     if s is None:
-        print('could not open socket')
+        #print('could not open socket')
         return False
 
     return s
