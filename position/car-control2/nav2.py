@@ -40,7 +40,7 @@ def checkbox1(x, y, tup, leftp):
     return True
 
 def checkpos():
-    pos = eight.findpos(g.ppx,g.ppy,g.ang)
+    #pos = eight.findpos(g.ppx,g.ppy,g.ang)
     #print((g.ppx,g.ppy,g.ang),pos)
 
 
@@ -131,8 +131,17 @@ def goto_1(x, y):
             return 2
 
         if g.poserror:
-            print("positioning system error")
-            return 2
+            if False:
+                print("positioning system error")
+                tolog("poserr 1")
+                g.limitspeed = 0
+                time.sleep(10)
+                tolog("poserr 2")
+                g.limitspeed = None
+                print("continuing")
+                g.poserror = False
+                tolog("poserr 3")
+                return 2
 
         if g.obstacle:
             print("obstacle")
