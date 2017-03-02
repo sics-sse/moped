@@ -346,7 +346,7 @@ def readspeed2():
 
 def wminit():
     g.outspeed = 0.0
-    g.outspeedcm = None
+    g.outspeedcm = 0.0
     g.steering = 0
 
     g.markerno = 0
@@ -368,7 +368,14 @@ def putcar(x, y, ang):
 def simulatecar():
     dt = 0.1
     while True:
-        g.dang = g.steering/100.0 * 1.5 * g.finspeed
+
+        desiredspeed = g.outspeedcm
+        if g.limitspeed != None and desiredspeed > g.limitspeed:
+            desiredspeed = g.limitspeed
+
+        g.finspeed = desiredspeed
+
+        g.dang = g.steering/100.0 * 1.5 * desiredspeed
         g.ang += g.dang*dt
         g.ppx += g.finspeed/100*dt*sin(g.ang*pi/180)
         g.ppy += g.finspeed/100*dt*cos(g.ang*pi/180)
