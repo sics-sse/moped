@@ -67,9 +67,9 @@ def whole4aux(path0):
     qtoplanner.put(path0)
 
     if g.simulate:
-        speed0 = 60
+        speed0 = 30
     else:
-        speed0 = 20
+        speed0 = 25
 
     driving.drive(0)
     if not g.simulate:
@@ -123,8 +123,13 @@ def sendplan(q, plan):
     out(1, "0 planner produces %s" % str(plan))
     q.put(plan)
 
-def planner0(qfromplanner, qtoplanner):
-    if True:
+def planner0x(qfromplanner, qtoplanner):
+    select = 1
+
+    if select == 1:
+        while True:
+            sendplan(qfromplanner, [34, 35, 6, 5, 34])
+    elif select == 2:
         sendplan(qfromplanner, [34, 35])
         sendplan(qfromplanner, [35, 6])
         sendplan(qfromplanner, [6, 23, 34])
@@ -137,7 +142,7 @@ def planner0(qfromplanner, qtoplanner):
 
     sendplan(qfromplanner, 'stop')
 
-def planner0x(qfromplanner, qtoplanner):
+def planner0(qfromplanner, qtoplanner):
     # idea: from the current position, determine which piece we can
     # start with
 
@@ -174,7 +179,7 @@ def planner0x(qfromplanner, qtoplanner):
         elif (i10, i2) == (23, 35):
             # not possible: 34
             nextpiece = randsel([23, 5], [23, 6])
-            #nextpiece = [23, 6]
+            nextpiece = [23, 6]
         elif (i10, i2) == (5, 23):
             # not possible: 6
             nextpiece = [5, 34]
@@ -188,7 +193,7 @@ def planner0x(qfromplanner, qtoplanner):
             # not possible: 6
             # temporarily avoid going 16-23-27 (now named 5-23-35)
             nextpiece = randsel([23, 34], [23, 35])
-            #nextpiece = [23, 34]
+            nextpiece = [23, 34]
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
         elif (i10, i2) == (6, 35):
@@ -216,9 +221,11 @@ def executor0(path, qtolower, qfromlower):
     out(1, "0 executor got plan %s" % str(path))
 
     for i in range(0, len(path)-1):
+        g.nextdecisionpoint = 0
         path1 = [path[i], path[i+1]]
         if i < len(path)-2:
             path1.append(path[i+2])
+            g.nextdecisionpoint = path[i+2]
 
         # path1 has either 2 or 3 elements
         qtolower.put(path1)
