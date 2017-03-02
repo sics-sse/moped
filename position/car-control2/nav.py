@@ -24,7 +24,10 @@ def readvin():
                 return m.group(1)
     except IOError:
         g.simulate = True
-        return "car0"
+        if len(sys.argv) > 1:
+            return sys.argv[1]
+        else:
+            return "car0"
 
     return None
 
@@ -87,7 +90,7 @@ g.detectcrashes = True
 #--------------------
 # Configuration parameters:
 
-g.anglefactor = 2.0
+g.anglefactor = 4.0
 g.targetdist = 0.3
 
 #g.minquality = 0.5
@@ -96,7 +99,7 @@ g.targetdist = 0.3
 
 g.minquality = 0.35
 g.maxmarkerdist = 2.0
-g.maxoffroad = 0.1
+g.maxoffroad = 0.15
 
 g.slightlyoffroad = 0.03
 
@@ -209,6 +212,12 @@ g.signalling = False
 
 g.ledcmd = None
 
+
+# between nav1 and nav_tc
+g.nextdecisionpoint = 0
+
+
+
 wm.wminit()
 nav1.nav1init()
 if not g.simulate:
@@ -287,7 +296,8 @@ def heartbeat():
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
         if g.heartn-g.heartn_r > 1:
-            print("waiting for heart echo %d %d" % (g.heartn, g.heartn_r))
+            pass
+            #print("waiting for heart echo %d %d" % (g.heartn, g.heartn_r))
 
         if g.heartn-g.heartn_r > 3:
             if g.limitspeed0 == "notset":
