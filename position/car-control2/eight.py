@@ -325,6 +325,9 @@ def findpos(x, y, ang):
     minq = 1000
     mindidjmax = 1000
     found = None
+    if x == None or y == None:
+        return None
+
     for (i, j) in distances:
         d = distances[(i, j)]
         (xi, yi) = nodes[i]
@@ -350,7 +353,10 @@ def findpos(x, y, ang):
 
         if ((found == None or minq > q) and
 #            di < 1.2*d and dj < 1.2*d and
-            dj*dj < di*di+d*d and di*di < dj*dj+d*d and
+            (
+                (dj*dj < di*di+d*d and di*di < dj*dj+d*d) or
+                (dj < 0.5 or di < 0.5)
+                ) and
             (abs(da) < 45 or abs(da) > 180-45)):
             minq = q
             found = (i, j, (i, j, di, dj, d, di+dj, di/(di+dj)))
@@ -457,6 +463,40 @@ def insert_waypoints_l(l0):
         lastn = n
 
     return l
+
+# We are between nodes a and b, coming from a, proportion q from a
+# Return the endpoints of the piece and at what proportion from the
+# starting point we are.
+def findpiece(a, b, q):
+    found = None
+    for (a1, b1) in pieces:
+        (l, _) = pieces[(a1, b1)]
+        l = [a1] + l + [b1]
+        if a in l and b in l:
+            ia = l.index(a)
+            ib = l.index(b)
+            d = 0
+            if ia < ib:
+                lastn = l[0]
+                for n in l[1:]:
+                    if lastn == a:
+                        d += q * distances[(lastn,n)]
+                        break
+                    d += distances[(lastn,n)]
+                    lastn = n
+                found = ((a1, b1), d)
+            else:
+                l = rev(l)
+                lastn = l[0]
+                for n in l[1:]:
+                    if lastn == a:
+                        d += q * distances[(lastn,n)]
+                        break
+                    d += distances[(lastn,n)]
+                    lastn = n
+                found = ((b1, a1), d)
+            break
+    return found
 
 if __name__ == "__main__":
     eightinit()
