@@ -97,9 +97,14 @@ g.targetdist = 0.3
 #g.maxmarkerdist = 1.0
 #g.maxoffroad = 10
 
-g.minquality = 0.35
+#g.minquality = 0.50
+g.minquality = 0.65
+#g.maxmarkerdist = 2.0
 g.maxmarkerdist = 2.0
-g.maxoffroad = 0.15
+#g.maxmarkerdist = 0.6
+#g.maxoffroad = 0.15
+# now lane is 1m:
+g.maxoffroad = 0.40
 
 g.slightlyoffroad = 0.03
 
@@ -107,10 +112,12 @@ g.slightlyoffroad = 0.03
 g.adjdistlimit = 0.4
 
 g.badmarkers = [0]
-#g.badmarkers = [5]
+# 45 means angle when to ignore = 45 +- 45
+#g.badmarkers = [(25, 35), (43, 'all')]
+g.badmarkers = [(47, 'all')]
 
-g.goodmarkers = [25, 10, 43]
 g.goodmarkers = None
+g.goodmarkers = [(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
 
 #--------------------
 # Flags and variables for reporting by wm:
@@ -125,14 +132,26 @@ g.paused = False
 # can be local to wm.py
 g.adjust_t = None
 
+g.shiftx = 0.0
+
+#g.markertimesep = 0
+g.markertimesep = 5
+g.markertimesep = 2
+
 # nav_imu and wm
 #g.oldpos = dict()
 g.oldpos = None
+
+# set to 9.0 for wall crashes
+g.crashlimit = 9.0
 
 g.speedtime = None
 
 g.speedsign = 1
 g.braking = False
+
+g.xydifffactor = 100
+g.angdifffactor = 1000
 
 # magnetics
 g.mxmin = None
@@ -145,6 +164,8 @@ g.currentbox = None
 # updated by wm (CAN)
 g.inspeed = 0.0
 g.finspeed = 0.0
+g.leftspeed = 0.0
+g.fleftspeed = 0.0
 g.inspeed_avg = 0.0
 g.odometer = 0
 g.fodometer = 0
@@ -216,7 +237,7 @@ g.ledcmd = None
 # between nav1 and nav_tc
 g.nextdecisionpoint = 0
 
-
+g.acc = 0
 
 wm.wminit()
 nav1.nav1init()
@@ -296,18 +317,17 @@ def heartbeat():
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
         if g.heartn-g.heartn_r > 1:
-            pass
-            #print("waiting for heart echo %d %d" % (g.heartn, g.heartn_r))
+            tolog("waiting for heart echo %d %d" % (g.heartn, g.heartn_r))
 
         if g.heartn-g.heartn_r > 3:
             if g.limitspeed0 == "notset":
-                print("setting speed to 0 during network pause")
+                tolog("setting speed to 0 during network pause")
                 g.limitspeed0 = g.limitspeed
                 g.limitspeed = 0.0
 
         if g.heartn-g.heartn_r < 2:
             if g.limitspeed0 != "notset":
-                print("restoring speed limit to %s after network pause" % (str(g.limitspeed0)))
+                tolog("restoring speed limit to %s after network pause" % (str(g.limitspeed0)))
                 g.limitspeed = g.limitspeed0
                 g.limitspeed0 = "notset"
 
@@ -360,9 +380,9 @@ def init():
 
     g.logf = open("navlog", "w")
     g.accf = open("acclog", "w")
-    #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
+    #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
-    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t can_ultra\n")
+    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra\n")
 
     g.t0 = time.time()
     print("t0 = %f" % g.t0)
@@ -448,6 +468,11 @@ def keepspeed():
 
         sp *= desiredspeed_sign
 
+        if abs(sp) >= 7:
+            g.speedtime = time.time()
+        else:
+            g.speedtime = None
+
         if False:
             print("outspeedcm %f finspeed %f outspeedi %d spi %d sp %f outspeed %f" % (
                     g.outspeedcm, g.finspeed, outspeedi, spi, sp, g.outspeed))
@@ -457,11 +482,6 @@ def keepspeed():
             continue
 
         g.outspeed = sp
-
-        if abs(sp) >= 7:
-            g.speedtime = time.time()
-        else:
-            g.speedtime = None
 
         if sp != 0 and not g.braking:
             g.speedsign = sign(sp)
@@ -542,3 +562,22 @@ def goovalaux(perc0):
         print("6")
         driving.steer(-100)
         time.sleep(250.0/g.finspeed*perc)
+
+
+
+def go1():
+    g.lev=0
+    print((g.ppx, g.ppy, g.ang%360))
+    g.goodmarkers=[(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
+    g.goodmarkers=[]
+    nav1.whole4()
+
+def stop1():
+    driving.drive(0)
+    time.sleep(3)
+    print((g.ppx, g.ppy, g.ang%360))
+    g.goodmarkers=[(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
+    time.sleep(3)
+    print((g.ppx, g.ppy, g.ang%360))
+    g.goodmarkers=[]
+    driving.drive(20)
