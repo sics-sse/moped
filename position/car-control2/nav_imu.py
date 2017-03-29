@@ -255,7 +255,7 @@ def readgyro0():
                 g.py += g.vy*dt
                 g.pz += g.vz*dt
 
-            g.realspeed = corrfactor*(g.finspeed + g.fleftspeed)/2
+            g.realspeed = (g.finspeed + g.fleftspeed)/2
 
             # ad hoc constant, which made pleftspeed close to fleftspeed
             corrleft = 1+angvel/320.0
