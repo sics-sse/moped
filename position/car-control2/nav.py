@@ -385,7 +385,7 @@ def init():
     g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra\n")
 
     g.t0 = time.time()
-    print("t0 = %f" % g.t0)
+    tolog("t0 = %f" % g.t0)
 
     tolog("init")
 
