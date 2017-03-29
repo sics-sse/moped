@@ -255,10 +255,20 @@ def readgyro0():
                 g.py += g.vy*dt
                 g.pz += g.vz*dt
 
-            corr = 1.0
+            g.realspeed = corrfactor*(g.finspeed + g.fleftspeed)/2
 
-            vvx = g.inspeed*corr/100.0*sin(pi/180*g.ang)
-            vvy = g.inspeed*corr/100.0*cos(pi/180*g.ang)
+            # ad hoc constant, which made pleftspeed close to fleftspeed
+            corrleft = 1+angvel/320.0
+            # p for pretend
+            pleftspeed = g.finspeed*corrleft
+
+            if True:
+                usedspeed = pleftspeed
+            else:
+                usedspeed = g.realspeed
+
+            vvx = usedspeed/100.0*sin(pi/180*g.ang)
+            vvy = usedspeed/100.0*cos(pi/180*g.ang)
 
             ppxi = vvx*dt
             ppyi = vvy*dt
@@ -300,10 +310,15 @@ def readgyro0():
                 mang = mang%360
 
             if True:
-                g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n" % (
-                        x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang%360,
-                        angvel, g.can_steer, g.can_speed, g.inspeed, g.outspeed, g.odometer,
-                        z0, r, rx, ry, acc, g.finspeed, g.fodometer, t2-g.t0, g.can_ultra))
+                fstr = "%f" + " %f"*31 + "\n"
+                dtup = (x, y, g.vx, g.vy, g.px,
+                        g.py, x0, y0, vvx, vvy,
+                        g.ppx, g.ppy, g.ang%360, angvel, g.can_steer,
+                        g.can_speed, g.inspeed, g.outspeed, g.odometer, z0,
+                        r, rx, ry, g.acc, g.finspeed,
+                        g.fodometer, t2-g.t0, pleftspeed, g.leftspeed, g.fleftspeed,
+                        g.realspeed, g.can_ultra)
+                g.accf.write(fstr % dtup)
 
             if (t2-tlast > 0.1):
                 nav_log.tolog0("")
@@ -316,12 +331,23 @@ def readgyro0():
             #print("pp diff %f %f" % (g.ppxdiff, g.ppydiff))
 
             j = g.ppxdiff/g.xydifffactor
+            if abs(j) > 0.01:
+                pass
+                #print("ppx %f->%f j %f xdiff %f" % (g.ppx, g.ppx+g.ppxdiff,
             g.ppx += j
             g.ppxdiff -= j
 
             j = g.ppydiff/g.xydifffactor
             g.ppy += j
             g.ppydiff -= j
+
+            if False:
+                if ((abs(g.ang%360 - 270) < 1.0 and
+                    g.ppy > 18.0) or
+                    (abs(g.ang%360 - 90) < 1.0 and
+                    g.ppy < 14.0)):
+                    nav_log.tolog("ang %f ppx %f ultra %f" % (
+                            g.ang%360, g.ppx, g.can_ultra))
 
             time.sleep(0.00001)
 
