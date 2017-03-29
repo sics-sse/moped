@@ -324,6 +324,7 @@ def readspeed2():
             # length of packet is 2
             print((data[8], data[9]))
             g.rc_button = True
+            time.sleep(0.00001)
         elif (data[0], data[1]) == (100,4):
             if data[8] == 16:
                 parts = str(part)
@@ -356,6 +357,7 @@ def readspeed2():
                     #print("fsp-odo %d %d" % (g.finspeed, g.fodometer))
 
                 part = b""
+                time.sleep(0.00001)
             part += data[9:]
         elif (data[0], data[1]) == (1,1):
             sp = data[8]
@@ -376,6 +378,7 @@ def readspeed2():
                 st -= 256
             tolog("CAN %d %d" % (sp, st))
             g.can_steer = st
+            time.sleep(0.00001)            
         elif (data[0], data[1]) == (108,4):
             # Reading DistPub this way is not a good idea, since those
             # messages come often and slow down the other threads (or the
@@ -399,9 +402,8 @@ def readspeed2():
                         # not used:
                         can_ultra_count = cnt
                     part2 = b""
+                    time.sleep(0.00001)            
             part2 += data[9:]
-
-        time.sleep(0.00001)            
 
 def wminit():
     g.outspeed = 0.0
