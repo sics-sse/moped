@@ -331,9 +331,9 @@ def readspeed2():
                 if data[8] == 16:
                     parts = str(part)
 
-                    m = re.search("speed x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)", parts)
+                    m = re.search("speed x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)", parts)
                     if m:
-                        #print(parts)
+                        #print((time.time(),parts))
                         oinspeed = g.inspeed
                         g.inspeed = g.speedsign * int(m.group(1))
 
@@ -357,6 +357,8 @@ def readspeed2():
 
                         g.fodometer = int(m.group(4))
                         #print("fsp-odo %d %d" % (g.finspeed, g.fodometer))
+                        g.leftspeed = int(m.group(5))
+                        g.fleftspeed = int(m.group(6))
 
                     part = b""
                     time.sleep(0.00001)
