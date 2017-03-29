@@ -146,6 +146,7 @@ def readgyro():
     while True:
         nav_log.tolog("starting readgyro")
         readgyro0()
+        imuinit()
 
 def readgyro0():
     #gscale = 32768.0/250
