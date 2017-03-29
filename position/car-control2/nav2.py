@@ -121,6 +121,8 @@ def goto_1(x, y):
     lastdist = None
     brake_s = 0.0
 
+    tolog("goto_1 %f %f" % (x, y))
+
     while True:
         if g.remote_control:
             print("remote_control is true")
