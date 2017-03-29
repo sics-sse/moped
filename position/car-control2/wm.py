@@ -194,7 +194,8 @@ def readmarker0():
                 elif g.oldpos != None and it0_10 in g.oldpos:
                     (thenx, theny, thenang) = g.oldpos[it0_10]
                     doadjust = True
-                    tolog0("POS: position then: %f %f" % (thenx, theny))
+                    tolog0("POS: position then: %f %f %f" % (thenx, theny,
+                                                             thenang))
                 elif g.oldpos != None:
                     tolog0("POS: can't use oldpos")                    
                     continue
