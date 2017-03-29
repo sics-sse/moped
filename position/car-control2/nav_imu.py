@@ -218,6 +218,7 @@ def readgyro0():
 
             angvel = r/gscale
             g.dang = angvel*dt
+            anghalf = g.ang + g.dang/2
             g.ang += g.dang
 
             if True:
@@ -244,8 +245,8 @@ def readgyro0():
 
                 # the signs here assume that x goes to the right and y forward
 
-                x = x0*cos(pi/180*g.ang) - y0*sin(pi/180*g.ang)
-                y = x0*sin(pi/180*g.ang) + y0*cos(pi/180*g.ang)
+                x = x0*cos(pi/180*anghalf) - y0*sin(pi/180*anghalf)
+                y = x0*sin(pi/180*anghalf) + y0*cos(pi/180*anghalf)
 
                 g.vx += x*dt
                 g.vy += y*dt
