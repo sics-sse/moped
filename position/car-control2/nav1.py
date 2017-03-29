@@ -69,7 +69,7 @@ def whole4aux(path0):
     if g.simulate:
         speed0 = 30
     else:
-        speed0 = 25
+        speed0 = 20
 
     driving.drive(0)
     if not g.simulate:
@@ -128,17 +128,30 @@ def planner0x(qfromplanner, qtoplanner):
 
     if select == 1:
         while True:
-            sendplan(qfromplanner, [34, 35, 6, 5, 34])
+            sendplan(qfromplanner, [35, 6])
+            sendplan(qfromplanner, [6, 23, 34])
+            sendplan(qfromplanner, [34, 5])
+            sendplan(qfromplanner, [5, 23, 35])
+            sendplan(qfromplanner, [35, 6, 5])
+            sendplan(qfromplanner, [5, 34, 23])
+            sendplan(qfromplanner, [23, 6, 35])
+            sendplan(qfromplanner, [35, 23, 5])
+            sendplan(qfromplanner, [5, 34, 35])
     elif select == 2:
         sendplan(qfromplanner, [34, 35])
         sendplan(qfromplanner, [35, 6])
-        sendplan(qfromplanner, [6, 23, 34])
-        sendplan(qfromplanner, [34, 5, 6])
-    else:
+    elif select == 3:
         sendplan(qfromplanner, [34, 35])
         sendplan(qfromplanner, [35, 6])
         sendplan(qfromplanner, [6, 5, 34])
         sendplan(qfromplanner, [34, 23, 6])
+    elif select == 4:
+        while True:
+            sendplan(qfromplanner, [35, 6])
+            sendplan(qfromplanner, [6, 23, 35])
+    else:
+        print("unsupported select value %d" % select)
+        return
 
     sendplan(qfromplanner, 'stop')
 
@@ -169,7 +182,8 @@ def planner0(qfromplanner, qtoplanner):
 
         if (i10, i2) == (23, 34):
             # not possible: 35
-            nextpiece = randsel([23, 6], [23, 5])
+            #nextpiece = randsel([23, 6], [23, 5])
+            nextpiece = [23, 5]
         elif (i10, i2) == (6, 23):
             # not possible: 5
             nextpiece = [6, 35]
@@ -178,7 +192,7 @@ def planner0(qfromplanner, qtoplanner):
             #nextpiece = [35, 34, 5]
         elif (i10, i2) == (23, 35):
             # not possible: 34
-            nextpiece = randsel([23, 5], [23, 6])
+            #nextpiece = randsel([23, 5], [23, 6])
             nextpiece = [23, 6]
         elif (i10, i2) == (5, 23):
             # not possible: 6
@@ -188,11 +202,12 @@ def planner0(qfromplanner, qtoplanner):
             #nextpiece = [34, 35, 6]
         elif (i10, i2) == (23, 6):
             # not possible: 5
-            nextpiece = randsel([23, 35], [23, 34])
+            #nextpiece = randsel([23, 35], [23, 34])
+            nextpiece = [23, 35]
         elif (i10, i2) == (23, 5):
             # not possible: 6
             # temporarily avoid going 16-23-27 (now named 5-23-35)
-            nextpiece = randsel([23, 34], [23, 35])
+            #nextpiece = randsel([23, 34], [23, 35])
             nextpiece = [23, 34]
         elif (i10, i2) == (5, 34):
             nextpiece = randsel([5, 6, 35], [5, 23])
@@ -303,7 +318,7 @@ def executor1(qfromhigher, qtohigher):
 
                     if len(p) < 2:
                         # it seems len(p) is always 0 here
-                        out(1, "len(p) < 2: %s" % (str(p)))
+                        #out(1, "len(p) < 2: %s" % (str(p)))
                         continue
                     else:
                         contflag = True
@@ -394,8 +409,11 @@ def planner1(qfromplanner, qtoplanner):
 
         qfromplanner.put((path2_e, curpathlen))
 
+lastwaypoint = None
 
 def gopath(path00, plen):
+    global lastwaypoint
+
     g.last_send = None
 
     path0 = [i for (i, _) in path00]
@@ -409,7 +427,12 @@ def gopath(path00, plen):
     #out(2, "1 speedsign = %d" % g.speedsign)
     g.speedsign = 1
 
-    path = eight.piece2path(path0, -0.25)
+    # two lanes:
+    #path = eight.piece2path(path0, -0.25)
+    # experimental, to make it crash more seldom:
+    #path = eight.piece2path(path0, -0.1)
+    # single lane:
+    path = eight.piece2path(path0, 0)
 
     boxp = False
     if boxp:
@@ -429,6 +452,11 @@ def gopath(path00, plen):
         (i, x, y) = path[j]
         # pretend this is level 2:
         out(1, "2 goto %s = %s" % (str(i), str(path00[j])))
+        tolog("nav1 goto_1 %d %f %f" % (i, x, y))
+        if i == lastwaypoint:
+            continue
+            #pass
+        lastwaypoint = i
 
         if g.remote_control:
             print("1 remote control/crash")
