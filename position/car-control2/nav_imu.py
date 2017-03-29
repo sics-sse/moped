@@ -309,17 +309,17 @@ def readgyro0():
                 nav_log.tolog0("")
                 tlast = t2
 
-            j = g.angdiff/1000
+            j = g.angdiff/g.angdifffactor
             g.ang += j
             g.angdiff -= j
 
             #print("pp diff %f %f" % (g.ppxdiff, g.ppydiff))
 
-            j = g.ppxdiff/100
+            j = g.ppxdiff/g.xydifffactor
             g.ppx += j
             g.ppxdiff -= j
 
-            j = g.ppydiff/100
+            j = g.ppydiff/g.xydifffactor
             g.ppy += j
             g.ppydiff -= j
 
