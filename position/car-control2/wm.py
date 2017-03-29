@@ -226,7 +226,7 @@ def readmarker0():
                     goodmarkertime = t
 
                     g.markercnt += 1
-                    tolog0("marker1 %s %f %f" % (m, g.ang, ori))
+                    tolog0("marker1 %s %f %f %f %f %f %f" % (m, g.ang, ori, thenx, theny, quality, mdist))
                     if doadjust:
                         doadjust_n = 1
                     else:
@@ -256,8 +256,12 @@ def readmarker0():
                                     ppydiff1 = y-theny
                                     angdiff1 = (ori-thenang)%360
 
-                                    ppxdiff1 /= 2
-                                    ppydiff1 /= 2
+# Unclear to me whether we should halve or not: after a long time, we should
+# treat the marker as the truth, but when markers come soon after one
+# another, one is not more likely than the other to be right, so we go to the
+# middle point.
+                                    #ppxdiff1 /= 2
+                                    #ppydiff1 /= 2
                                     #angdiff1 /= 2
                                     if True:
                                         g.ppxdiff = ppxdiff1
