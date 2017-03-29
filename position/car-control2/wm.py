@@ -319,91 +319,95 @@ def readspeed2():
     part = b""
     part2 = b""
     while True:
-        data = g.canSocket.recv(64)
-        if (data[0], data[1]) == (100,4) and data[4] == 2:
-            # length of packet is 2
-            print((data[8], data[9]))
-            g.rc_button = True
-            time.sleep(0.00001)
-        elif (data[0], data[1]) == (100,4):
-            if data[8] == 16:
-                parts = str(part)
-
-                m = re.search("speed x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)", parts)
-                if m:
-                    #print(parts)
-                    oinspeed = g.inspeed
-                    g.inspeed = g.speedsign * int(m.group(1))
-
-                    alpha = 0.8
-                    g.inspeed_avg = (1-alpha)*g.inspeed + alpha*oinspeed
-
-                    if (g.inspeed == 0 and g.speedtime != None and
-                        time.time() - g.speedtime > 7.0):
-                        nav_signal.speak("obstacle")
-                        send_to_ground_control("obstacle")
-                        g.obstacle = True
-
-                    g.odometer = int(m.group(2))
-                    if g.odometer != g.lastodometer:
-                        send_to_ground_control("odometer %d" % (g.odometer))
-                        g.lastodometer = g.odometer
-                    #print("rsp-odo %d %d" % (g.inspeed, g.odometer))
-
-                    g.finspeed = int(m.group(3))
-                    g.finspeed *= g.speedsign
-
-                    g.fodometer = int(m.group(4))
-                    #print("fsp-odo %d %d" % (g.finspeed, g.fodometer))
-
-                part = b""
+        try:
+            # 64 was 1024
+            data = g.canSocket.recv(64)
+            if (data[0], data[1]) == (100,4) and data[4] == 2:
+                # length of packet is 2
+                print((data[8], data[9]))
+                g.rc_button = True
                 time.sleep(0.00001)
-            part += data[9:]
-        elif (data[0], data[1]) == (1,1):
-            sp = data[8]
-            st = data[9]
-            if False:
-                if g.last_send != None and (sp, st) != g.last_send:
-                    tolog("remote control")
-                    g.remote_control = True
-            if sp > 128:
-                sp -= 256
-            g.can_speed = sp
-            if not g.braking:
-                if sp < 0:
-                    g.speedsign = -1
-                elif sp > 0:
-                    g.speedsign = 1
-            if st > 128:
-                st -= 256
-            tolog("CAN %d %d" % (sp, st))
-            g.can_steer = st
-            time.sleep(0.00001)            
-        elif (data[0], data[1]) == (108,4):
-            # Reading DistPub this way is not a good idea, since those
-            # messages come often and slow down the other threads (or the
-            # whole process?).
-            # DistPub
-            # note that non-ASCII will appear as text \x07 in 'parts'
-            if data[8] == 16:
-                if len(part2) > 18:
-                    part2x = part2[19:]
-                    part2s = part2x.decode('ascii')
-                    l = part2[18]
-                    part2s2 = part2s[0:l]
+            elif (data[0], data[1]) == (100,4):
+                if data[8] == 16:
+                    parts = str(part)
 
-                    m = re.search("([0-9]+) ([0-9]+)", part2s2)
+                    m = re.search("speed x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)x([0-9 ]+)", parts)
                     if m:
-                        cnt = int(m.group(1))
-                        d = int(m.group(2))
+                        #print(parts)
+                        oinspeed = g.inspeed
+                        g.inspeed = g.speedsign * int(m.group(1))
 
-                        #print((cnt,d))
-                        g.can_ultra = d/100.0
-                        # not used:
-                        can_ultra_count = cnt
-                    part2 = b""
-                    time.sleep(0.00001)            
-            part2 += data[9:]
+                        alpha = 0.8
+                        g.inspeed_avg = (1-alpha)*g.inspeed + alpha*oinspeed
+
+                        if (g.inspeed == 0 and g.speedtime != None and
+                            time.time() - g.speedtime > 7.0):
+                            nav_signal.speak("obstacle")
+                            send_to_ground_control("obstacle")
+                            g.obstacle = True
+
+                        g.odometer = int(m.group(2))
+                        if g.odometer != g.lastodometer:
+                            send_to_ground_control("odometer %d" % (g.odometer))
+                            g.lastodometer = g.odometer
+                        #print("rsp-odo %d %d" % (g.inspeed, g.odometer))
+
+                        g.finspeed = int(m.group(3))
+                        g.finspeed *= g.speedsign
+
+                        g.fodometer = int(m.group(4))
+                        #print("fsp-odo %d %d" % (g.finspeed, g.fodometer))
+
+                    part = b""
+                    time.sleep(0.00001)
+                part += data[9:]
+            elif (data[0], data[1]) == (1,1):
+                sp = data[8]
+                st = data[9]
+                if False:
+                    if g.last_send != None and (sp, st) != g.last_send:
+                        tolog("remote control")
+                        g.remote_control = True
+                if sp > 128:
+                    sp -= 256
+                g.can_speed = sp
+                if not g.braking:
+                    if sp < 0:
+                        g.speedsign = -1
+                    elif sp > 0:
+                        g.speedsign = 1
+                if st > 128:
+                    st -= 256
+                tolog("CAN %d %d" % (sp, st))
+                g.can_steer = st
+                time.sleep(0.00001)            
+            elif (data[0], data[1]) == (108,4):
+                # Reading DistPub this way is not a good idea, since those
+                # messages come often and slow down the other threads (or the
+                # whole process?).
+                # DistPub
+                # note that non-ASCII will appear as text \x07 in 'parts'
+                if data[8] == 16:
+                    if len(part2) > 18:
+                        part2x = part2[19:]
+                        part2s = part2x.decode('ascii')
+                        l = part2[18]
+                        part2s2 = part2s[0:l]
+
+                        m = re.search("([0-9]+) ([0-9]+)", part2s2)
+                        if m:
+                            cnt = int(m.group(1))
+                            d = int(m.group(2))
+
+                            #print((cnt,d))
+                            g.can_ultra = d/100.0
+                            # not used:
+                            can_ultra_count = cnt
+                        part2 = b""
+                        time.sleep(0.00001)            
+                part2 += data[9:]
+        except Exception as a:
+            print(a)
 
 def wminit():
     g.outspeed = 0.0
