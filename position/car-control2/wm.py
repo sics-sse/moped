@@ -319,7 +319,7 @@ def readspeed2():
     part = b""
     part2 = b""
     while True:
-        data = g.canSocket.recv(1024)
+        data = g.canSocket.recv(64)
         if (data[0], data[1]) == (100,4) and data[4] == 2:
             # length of packet is 2
             print((data[8], data[9]))
