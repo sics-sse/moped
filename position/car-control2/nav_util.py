@@ -14,9 +14,12 @@ def sign(x):
     return 0
 
 def start_new_thread(f, args):
-    # 3.2 and lower don't have 'daemon'
-    #threading.Thread(target=f, args=args, daemon=True).start()
-    threading.Thread(target=f, args=args).start()
+    # can be done much better with packaging.Version or something
+    version = sys.version.split(" ")[0].split(".")
+    if int(version[1]) < 3:
+        threading.Thread(target=f, args=args).start()
+    else:
+        threading.Thread(target=f, args=args, daemon=True).start()
 
 def rev(l0):
     l = l0[:]
