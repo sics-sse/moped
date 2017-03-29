@@ -222,6 +222,9 @@ def readmarker0():
                         g.markermsg = msg
                 else:
                     accepted = True
+
+                    goodmarkertime = t
+
                     g.markercnt += 1
                     tolog0("marker1 %s %f %f" % (m, g.ang, ori))
                     if doadjust:
