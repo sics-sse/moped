@@ -160,7 +160,6 @@ def readgyro0():
     z0 = 0.0
     rx = 0.0
     ry = 0.0
-    acc = 0.0
 
     count = 0
     countt = time.time()
@@ -234,10 +233,10 @@ def readgyro0():
                 y /= ascale
                 z /= ascale
 
-                acc = sqrt(x*x+y*y+z*z)
-                if acc > 9.0 and g.detectcrashes:
+                g.acc = sqrt(x*x+y*y+z*z)
+                if g.acc > g.crashlimit and g.detectcrashes:
                     nav_log.tolog0("crash")
-                    g.crash = acc
+                    g.crash = g.acc
 
                 x0 = -x
                 y0 = -y
