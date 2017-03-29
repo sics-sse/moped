@@ -296,8 +296,8 @@ def readmarker0():
             else:
                 if g.adjust_t != None:
                     markerage = time.time() - g.adjust_t
-#                    if markerage > 1.0:
-#                        print("marker age %f" % markerage)
+                    if markerage > 10:
+                        tolog("marker age %f" % markerage)
 
             if False:
                 print("marker good=%s %d = (%f,%f) (%f, %f) %f %f" % (
