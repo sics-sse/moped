@@ -37,6 +37,10 @@ mp[7] = (2.179, 14.351)
 mp[25] = (2.255, 16.770)
 mp[4] = (2.225, 18.725)
 
+def pbool(p):
+#    print("1")
+    return p
+
 def readmarker():
     while True:
         tolog("starting readmarker")
@@ -52,6 +56,8 @@ def readmarker0():
     recentmarkers = []
 
     markertime = None
+    goodmarkertime = None
+    markerage = None
 
     while True:
         p = subprocess.Popen("tail -1 /tmp/marker0", stdout=subprocess.PIPE, shell=True);
@@ -102,12 +108,58 @@ def readmarker0():
             else:
                 skipmarker = True
 
-            if ((g.markerno > -1 and quality > g.minquality
-                 and g.markerno not in g.badmarkers
-                 and (g.goodmarkers == None or g.markerno in g.goodmarkers)
+            x += g.shiftx
+
+            minq = g.minquality
+
+            # g.ang here below should be thenang, I think
+            badmarker = False
+            for (badm, bada) in g.badmarkers:
+                if g.markerno == badm:
+                    if bada == 'all':
+                        bada = g.ang
+                    angm = (g.ang - bada)%360
+                    if angm > 180:
+                        angm -= 360
+                    if abs(angm) < 25:
+                        badmarker = True
+                        break
+
+            if g.goodmarkers != None:
+                goodmarker = False
+                for (goodm, gooda, goodq) in g.goodmarkers:
+                    if g.markerno == goodm:
+                        if gooda == 'all':
+                            gooda = g.ang
+                        angm = (g.ang - gooda)%360
+                        minq = goodq
+                        if angm > 180:
+                            angm -= 360
+                        if abs(angm) < 25:
+                            goodmarker = True
+                            break
+            else:
+                goodmarker = True
+
+            if (g.markerno > -1
+                and goodmarker
+                and ((x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
+                     or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5))):
+                    tolog0("marker0 %s %f" % (m, quality))
+
+            # complain somewhere if good and bad overlap
+
+            if ((pbool(g.markerno > -1) and pbool(quality > minq)
+                 #and abs(g.steering) < 30
+                 #and (x < 1.0 or x > 2.0)
+                 and pbool(goodmarkertime == None or
+                      t-goodmarkertime > g.markertimesep)
+                 and pbool(not badmarker)
+                 and pbool(goodmarker)
                  and ((x > -0.3 and x < 3.3 and y > 0 and y < 19.7)
                       or (x > 3.0 and x < 30 and y > 2.3 and y < 5.5)))
                 and not skipmarker):
+
                 close = True
                 if not g.angleknown:
                     g.ang = ori
@@ -116,9 +168,11 @@ def readmarker0():
                     g.oldpos = dict()
                 g.angleknown = True
 
+                mdist = -1
                 if g.markerno in mp:
                     mdist = dist(x, y, mp[g.markerno][0], mp[g.markerno][1])
                     if mdist > g.maxmarkerdist:
+                        #print("dist = %f" % mdist)
                         continue
 
                 it0 = float(m1[5])
