@@ -162,12 +162,21 @@ def readgyro0():
     ry = 0.0
     acc = 0.0
 
+    count = 0
+    countt = time.time()
+
     try:
 
         tlast = time.time()
         t1 = time.time()
 
         while True:
+            count += 1
+            if count%1000 == 0:
+                newt = time.time()
+                #print("readgyro0 1000 times = %f s" % (newt-countt))
+                countt = newt
+
             w = g.bus.read_i2c_block_data(imuaddress, 0x47, 2)
             high = w[0]
             low = w[1]
