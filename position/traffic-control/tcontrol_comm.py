@@ -181,6 +181,9 @@ def giveway(piece, piece2):
     elif pp == (35, 6, 23):
         onlyif = 6
         st = True
+    # don't meet in the central portion when there is only one lane:
+    elif pp == (34, 6, 23):
+        st = True
 
     if st:
         #print("giveway %s %s" % ((str(piece), str(piece2))))
