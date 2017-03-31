@@ -2,9 +2,7 @@ import time
 
 from nav_util import dist
 
-def tolog2(str0, stdout):
-
-    stdout = False
+def tologaux(str0, level):
 
     if g.targetx and g.targety:
         d = dist(g.ppx, g.ppy, g.targetx, g.targety)
@@ -22,12 +20,30 @@ def tolog2(str0, stdout):
         g.can_ultra,
         str0)
     g.logf.write(str + "\n")
-    if stdout:
+    if level >= 2:
         print(str)
 
 def tolog0(str):
-    tolog2(str, False)
+    tologaux(str, 0)
 
 def tolog(str):
-    tolog2(str, True)
+    tologaux(str, 1)
 
+def tolog2(str):
+    tologaux(str, 2)
+
+def logthread(q):
+    n = 0
+    lenmax = -1
+    while True:
+        n += 1
+        s = q.get()
+        q.task_done()
+        g.qlen -= 1
+        if lenmax < g.qlen:
+            lenmax = g.qlen
+        if n%1000 == 0:
+            pass
+            #print("queue %d %d" % (g.qlen, lenmax))
+        g.accf.write(s)
+        time.sleep(0.000001)
