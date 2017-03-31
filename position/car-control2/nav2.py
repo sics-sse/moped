@@ -5,7 +5,7 @@ import eight
 import driving
 import nav_tc
 
-from nav_log import tolog, tolog0
+from nav_log import tolog, tolog0, tolog2
 from nav_util import sign, dist, start_new_thread
 
 from math import pi, cos, sin, sqrt, atan2, acos, asin, log
@@ -44,59 +44,37 @@ def checkpos():
     #print((g.ppx,g.ppy,g.ang),pos)
 
 
-    if g.currentbox == None:
-        return True
-    x = g.ppx
-    y = g.ppy
-    # check if we are outside the lane we are supposed to be in
-    stat = checkbox1(x, y, g.currentbox[0], True)
-    if not stat:
-        return False
-    stat = checkbox1(x, y, g.currentbox[1], False)
-    if not stat:
-        return False
+    if g.currentbox != None:
+        x = g.ppx
+        y = g.ppy
+        # check if we are outside the lane we are supposed to be in
+        stat = checkbox1(x, y, g.currentbox[0], True)
+        if not stat:
+            return False
+        stat = checkbox1(x, y, g.currentbox[1], False)
+        if not stat:
+            return False
 
-    r = None
+    mang = g.ang%360
 
-    # Not completely correct: we don't consider the car's corners.
-    carwidth = 0.30
-    rside = 0.8-carwidth/2
+    # Use can_ultra, not ppx/ppy
+    wallang = None
 
-    if g.ppx < rside:
-        r = rside-(g.ppx-carwidth/2)
+    if mang > 270-45 and mang < 270+45:
         wallang = -90-g.ang
-    if g.ppx > 3.0-rside:
-        r = rside-(3.0-g.ppx-carwidth/2)
+    if mang > 90-45 and mang < 90+45:
         wallang = 90-g.ang
 
-    if g.ppy > 19.7-rside:
-        r2 = rside-(19.7-g.ppy-carwidth/2)
+    if mang < 45 or mang > 315:
         wallang = 0-g.ang
-        if r == None or r2 < r:
-            r = r2
 
-    # if g.can_ultra is small and r is None, we don't really know
-    # what to do
-    if r != None and g.can_ultra < r:
-        r = g.can_ultra
-        # plus a little because we measure from the front
-
-    if r != None:
-        if r > rside or r < -rside:
-            print("r = %f, %f %f" % (r, g.ppx, g.ppy))
-        else:
-            theta = asin(r/rside)*180/pi
-            wallang = wallang%360
-            if wallang > 180:
-                wallang -= 360
-            if abs(wallang) < abs(theta):
-                print("wall angle! %f %f (%f %f) %f" % (
-                        wallang, theta, g.ppx, g.ppy,
-                        g.can_ultra))
+    if wallang != None:
+        safedst = 0.8*(1-abs(sin(pi/180*wallang)))
+        if g.can_ultra < safedst and g.can_ultra > 0.30:
+            tolog2("ultra %f wallang %f safedist %f" % (
+                    g.can_ultra, wallang%360, safedst))
+            if g.can_ultra < safedst - 0.30:
                 return False
-            else:
-                pass
-                #print("(wall angle %f %f)" % (wallang, theta))
 
     return True
 
