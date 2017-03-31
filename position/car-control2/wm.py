@@ -400,8 +400,10 @@ def readspeed2():
                         l = part2[18]
                         part2s2 = part2s[0:l]
 
-                        m = re.search("([0-9]+) ([0-9]+)", part2s2)
+                        m = re.search("^([0-9]+) ([0-9]+) $", part2s2)
                         if m:
+                            #print((part2s2, len(part2), part2))
+                            #print(part2s2)
                             cnt = int(m.group(1))
                             d = int(m.group(2))
 
