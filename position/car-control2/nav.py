@@ -4,6 +4,7 @@ import os
 import socket
 import sys
 import json
+import queue
 
 import eight
 
@@ -118,6 +119,7 @@ g.badmarkers = [(47, 'all')]
 
 g.goodmarkers = None
 g.goodmarkers = [(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
+#g.goodmarkers = [(7, 'all', 0.6), (25, 'all', 0.55), (22, 'all', 0.55), (2, 'all', 0.45)]
 
 #--------------------
 # Flags and variables for reporting by wm:
@@ -158,6 +160,8 @@ g.mxmin = None
 g.mxmax = None
 g.mymin = None
 g.mymax = None
+
+g.droppedlog = 0
 
 g.currentbox = None
 
@@ -379,10 +383,17 @@ def init():
     start_new_thread(nav_tc.connect_to_ground_control, ())
 
     g.logf = open("navlog", "w")
-    g.accf = open("acclog", "w")
+    g.accf = open("acclog", "w", 1024)
+
     #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
-    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra\n")
+    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra droppedlog\n")
+
+    g.accfqsize = 1000
+    g.accfq = queue.Queue(g.accfqsize)
+    start_new_thread(nav_log.logthread, (g.accfq,))
+
+    g.qlen = 0
 
     g.t0 = time.time()
     tolog("t0 = %f" % g.t0)
@@ -581,3 +592,9 @@ def stop1():
     print((g.ppx, g.ppy, g.ang%360))
     g.goodmarkers=[]
     driving.drive(20)
+
+def m1():
+    g.goodmarkers = [(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
+
+def m2():
+    g.goodmarkers = [(7, 'all', 0.45), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
