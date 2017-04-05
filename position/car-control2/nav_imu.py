@@ -213,6 +213,11 @@ def readgyro0():
 
             t2 = time.time()
             dt = t2-t1
+            if dt > 0.5:
+                # pretend we crashed
+                g.crash = 10.0
+                nav_log.tolog("readgyro0 paused for %f s" % dt)
+
             t1 = t2
 
             angvel = r/gscale
@@ -310,15 +315,31 @@ def readgyro0():
                 mang = mang%360
 
             if True:
-                fstr = "%f" + " %f"*31 + "\n"
                 dtup = (x, y, g.vx, g.vy, g.px,
                         g.py, x0, y0, vvx, vvy,
                         g.ppx, g.ppy, g.ang%360, angvel, g.can_steer,
                         g.can_speed, g.inspeed, g.outspeed, g.odometer, z0,
                         r, rx, ry, g.acc, g.finspeed,
                         g.fodometer, t2-g.t0, pleftspeed, g.leftspeed, g.fleftspeed,
-                        g.realspeed, g.can_ultra)
-                g.accf.write(fstr % dtup)
+                        g.realspeed, g.can_ultra, g.droppedlog)
+                fstr = "%f" + " %f"*(len(dtup)-1) + "\n"
+                if False:
+                    g.accf.write(fstr % dtup)
+                else:
+                    if g.qlen> 0.9*g.accfqsize:
+                        g.droppedlog += 1
+                    else:
+                        if True:
+                            g.accfq.put(fstr % dtup, False)
+                            g.droppedlog = 0
+                            g.qlen += 1
+                        else:
+                            try:
+                                g.accfq.put(fstr % dtup, False)
+                                g.droppedlog = 0
+                                g.qlen += 1
+                            except Exception as a:
+                                print("queue exception")
 
             if (t2-tlast > 0.1):
                 nav_log.tolog0("")
