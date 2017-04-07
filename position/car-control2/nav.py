@@ -378,12 +378,17 @@ def init():
 
     eight.eightinit()
 
+    g.t0 = time.time()
+
     nav_signal.setleds(0, 7)
 
     start_new_thread(nav_tc.connect_to_ground_control, ())
 
-    g.logf = open("navlog", "w")
-    g.accf = open("acclog", "w", 1024)
+    suffix = ""
+    if g.simulate:
+        suffix = "-" + g.VIN
+    g.logf = open("navlog" + suffix, "w")
+    g.accf = open("acclog" + suffix, "w", 1024)
 
     #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
@@ -395,7 +400,6 @@ def init():
 
     g.qlen = 0
 
-    g.t0 = time.time()
     tolog("t0 = %f" % g.t0)
 
     tolog("init")
