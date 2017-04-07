@@ -2,7 +2,7 @@ import socket
 import time
 import ast
 
-from nav_log import tolog, tolog0
+from nav_log import tolog, tolog0, tolog2
 from nav_util import start_new_thread
 
 import nav_signal
@@ -19,7 +19,8 @@ def connect_to_ground_control():
                 print("connection opened")
                 g.ground_control = g.s
                 start_new_thread(from_ground_control, ())
-                send_to_ground_control("info %s" % g.VIN)
+                now = time.time() - g.t0
+                send_to_ground_control("info %s %f" % (g.VIN, now))
         time.sleep(5)
 
 # almost the same as in tcontrol_comm.py
@@ -104,7 +105,7 @@ def from_ground_control():
                             pass
 
                         if g.finspeed != 0:
-                            print("closest car in front2: dir %f dist %f limitspeed %f" % (
+                            tolog2("closest car in front2: dir %f dist %f limitspeed %f" % (
                                     dir, closest, g.limitspeed))
                         lastreportclosest = True
                     else:
@@ -132,6 +133,14 @@ def from_ground_control():
                     x = float(l[2])
                     y = float(l[3])
                     nav2.goto(x, y, l[4])
+                elif l[0] == "sync":
+                    flag = int(l[1])
+                    if flag == 1:
+                        tctime = float(l[2])
+                        print("syncing to %f" % (tctime))
+                        tolog("sync1")
+                        g.t0 = time.time() - tctime
+                        tolog("sync2")
                 elif l[0] == "heartecho":
                     t1 = float(l[1])
                     t2 = float(l[2])
@@ -158,6 +167,7 @@ def open_socket():
     HOST = 'localhost'    # The remote host
     HOST = '192.168.43.73'	# merkur on my hotspot
     HOST = '193.10.66.250'  # merkur on the SICS wifi net
+    HOST = '193.10.67.166'  # bubbla on the SICS wifi net
     PORT = 50009              # The same port as used by the server
 
     for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM):
