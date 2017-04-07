@@ -540,8 +540,6 @@ g.w.pack(expand=YES, fill=BOTH)
 
 currentpath = None
 
-eight.eightpath(19.2,15.4,12.5)
-
 thepath = [(i, eight.nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
 
 thepath2 = [(i, eight.nodes[i]) for i in [3, 4]]
@@ -588,6 +586,9 @@ v5 = StringVar()
 v5.set("")
 tx5 = Label(g.w, textvariable=v5, bg="white", fg="black")
 g.w.create_window(g.graphw+20, 300, window=tx5)
+
+g.t0 = time.time()
+g.timesynched = False
 
 g.logf = open("tc_log", "w")
 
