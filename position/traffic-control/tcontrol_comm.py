@@ -21,6 +21,15 @@ global event_nr
 
 event_nr = 0
 
+def tolog(s0):
+    s = "(%f) %s" % (time.time()-g.t0, s0)
+    print(s)
+    g.logf.write(s + "\n")
+
+def tolog0(s0):
+    s = "(%f) %s" % (time.time()-g.t0, s0)
+    g.logf.write(s + "\n")
+
 def update_carpos1(x, y, ang, c):
     global event_nr
     event_nr += 1
@@ -71,6 +80,8 @@ def linesplit(socket):
         yield buffer
 
 
+safedist = 2.5
+
 def check_other_cars1(c):
     l = []
     for ci in cars:
@@ -80,7 +91,7 @@ def check_other_cars1(c):
         if c2.x == None:
             continue
         d = dist(c.x, c.y, c2.x, c2.y)
-        if d > 2.0:
+        if d > safedist:
             continue
         other = 180/math.pi*math.atan2(c2.y-c.y, c2.x-c.x)
         other = 90-other
@@ -224,9 +235,11 @@ def check_other_cars(c):
         d = dist(c.x, c.y, c2.x, c2.y)
         if d < 0.35:
             if c.info < c2.info:
-                print("car distance %f %s" % (d, str((c.info, piece, q, odo, c2.info, piece2, q2, odo2))))
+                print("%d car distance %f %s" % (
+                        time.time(), d, str((c.info, piece, q, odo,
+                                             c2.info, piece2, q2, odo2))))
 
-        if d > 2.0:
+        if d > safedist:
             continue
 
         onlyif = 0
@@ -234,12 +247,19 @@ def check_other_cars(c):
         foll = following((piece, odo), (piece2, odo2), d)
         if foll:
             (_, o, onlyif) = foll
-            if o > 2.0:
+            if o > safedist:
                 continue
 
         give = giveway(piece, piece2)
+
         if give:
             (_, onlyif) = give
+
+        if give:
+            tolog("%d %s giveway %f %s %s" % (
+                    time.time(), c.info, d, str(piece2), str(pos)))
+            tolog("   %s %s %s" % (
+                    c2.info, str(piece2), str(pos2)))
 
         if foll or give:
             #print((c.x, c.y, c2.x, c2.y, d))
@@ -327,7 +347,16 @@ def handlerun(conn, addr):
         c.addr = addr
         print("car %s" % car)
         if len(l) > 2:
-            c.timeout = int(l[2])
+            cartime = float(l[2])
+            print("time for %s = %f" % (c.info, cartime))
+            if g.timesynched:
+                diff = time.time()-g.t0
+                c.conn.send("sync 1 %f\n" % diff)
+            else:
+                g.timesynched = True
+                g.t0 = time.time() - cartime
+                c.conn.send("sync 0\n")
+
     elif l[0] == "list":
         iplist = []
         for car in cars.values():
@@ -365,7 +394,7 @@ def handlerun(conn, addr):
     spavg = []
     spavgn = 50
 
-    t0 = time.time()
+    t1 = time.time()
 
     for data in dataf:
 
@@ -381,6 +410,7 @@ def handlerun(conn, addr):
         # mpos = from marker; d = from dead reckoning
         #print (c, l)
         if l[0] == "mpos" or l[0] == "dpos":
+            #print (time.time(), c, l)
             x = float(l[1])
             y = float(l[2])
             ang = float(l[3])
@@ -401,9 +431,9 @@ def handlerun(conn, addr):
             t = time.time()
 
             #c.v5.set("speed %d" % insp)
-            if t-t0 > 1.0:
+            if t-t1 > 1.0:
                 c.v5.set("speed %d" % round(spavg1))
-                t0 = t
+                t1 = t
 
             if l[0] == "dpos" or l[0] == "mpos" and g.show_markpos:
                 update_carpos1(x, y, ang, c)
@@ -411,7 +441,7 @@ def handlerun(conn, addr):
                 set_markerpos(x, y, c, adj)
             check_other_cars(c)
 
-            g.logf.write("%s %f %f %s\n" % (c.info, x, y, l[0]))
+            tolog0("%s %f %f %s" % (c.info, x, y, l[0]))
 
         elif l[0] == "badmarker":
             x = float(l[1])
