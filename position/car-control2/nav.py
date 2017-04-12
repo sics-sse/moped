@@ -317,6 +317,7 @@ g.heartn_r = -1
 def heartbeat():
     while True:
         g.heartn += 1
+        #print("sending heart")
         nav_tc.send_to_ground_control(
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
@@ -602,3 +603,8 @@ def m1():
 
 def m2():
     g.goodmarkers = [(7, 'all', 0.45), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
+
+def wait1():
+    nav_tc.send_to_ground_control("waitallcars\n")
+    x = g.queue.get()
+    g.queue.task_done()
