@@ -16,7 +16,7 @@ import nav_tc
 def nav1init():
     g.user_pause = False
     g.randdict = dict()
-    g.lev = 1
+    g.lev = 0
 
 
 def out(lev, s):
@@ -153,6 +153,14 @@ def planner0x(qfromplanner, qtoplanner):
         print("unsupported select value %d" % select)
         return
 
+    sendplan(qfromplanner, 'stop')
+
+def planner0z(qfromplanner, qtoplanner):
+    path0 = qtoplanner.get()
+    qtoplanner.task_done()
+    out(1, "0 planner got %s" % path0)
+
+    sendplan(qfromplanner, path0)
     sendplan(qfromplanner, 'stop')
 
 def planner0(qfromplanner, qtoplanner):
