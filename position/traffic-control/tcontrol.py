@@ -16,8 +16,6 @@ from tcontrol_colours import colours
 from tcontrol_globals import g
 #import tcontrol_globals
 
-totalcars = 0
-
 occupied = dict()
 waiting = dict()
 
@@ -429,16 +427,21 @@ def carpos_event(event):
     global currentmark, currentmarkpos
 
     i = event.x
+    if i not in g.d:
+        return
     ev = g.d[i]
     del g.d[i]
     
+    w2 = 0.15
+    l2 = 0.25
+
     if ev[0] == "pos":
         (type, x0, y0, ang, c) = ev
-        dx1 = 0.2*math.cos(math.pi/180*ang) + 0.3*math.sin(math.pi/180*ang)
-        dy1 = -0.2*math.sin(math.pi/180*ang) + 0.3*math.cos(math.pi/180*ang)
+        dx1 = w2*math.cos(math.pi/180*ang) + l2*math.sin(math.pi/180*ang)
+        dy1 = -w2*math.sin(math.pi/180*ang) + l2*math.cos(math.pi/180*ang)
 
-        dx2 = -0.2*math.cos(math.pi/180*ang) + 0.3*math.sin(math.pi/180*ang)
-        dy2 = 0.2*math.sin(math.pi/180*ang) + 0.3*math.cos(math.pi/180*ang)
+        dx2 = -w2*math.cos(math.pi/180*ang) + l2*math.sin(math.pi/180*ang)
+        dy2 = w2*math.sin(math.pi/180*ang) + l2*math.cos(math.pi/180*ang)
 
         x01 = x0+dx1
         y01 = y0+dy1
