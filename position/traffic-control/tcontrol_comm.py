@@ -5,6 +5,8 @@ import math
 import json
 import sys
 
+from math import sin, cos, sqrt, pi, atan2
+
 sys.path.append("car-control2")
 import eight
 
@@ -58,7 +60,7 @@ def update_mark(x, y):
 
 # put in a tcontrol_util instead
 def dist(x1, y1, x2, y2):
-    return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
 
 
@@ -93,7 +95,7 @@ def check_other_cars1(c):
         d = dist(c.x, c.y, c2.x, c2.y)
         if d > safedist:
             continue
-        other = 180/math.pi*math.atan2(c2.y-c.y, c2.x-c.x)
+        other = 180/pi*atan2(c2.y-c.y, c2.x-c.x)
         other = 90-other
         angdiff = other - c.ang%360
         angdiff = angdiff%360
@@ -134,7 +136,7 @@ def converging(c1, c2):
 global doprint
 doprint = None
 
-def following(tup, tup2, d):
+def following(tup, tup2):
     (piece, odo) = tup
     (piece2, odo2) = tup2
 
@@ -151,11 +153,6 @@ def following(tup, tup2, d):
 
     if b == a2 and b2 != a:
         (_, piecelen) = eight.pieces[piece]
-        if False:
-            print("following %s %s %f" % (
-                    str((piece, odo)),
-                    str((piece2, odo2+piecelen)),
-                    d))
         return (True, odo2+piecelen - odo, onlyif)
 
     return False
@@ -201,6 +198,24 @@ def giveway(piece, piece2):
         return (st, onlyif)
     return False
 
+def sign(x):
+    if x < 0:
+        return -1
+    if x > 0:
+        return 1
+    return 0
+
+# Return the cross product of the vectors p1-p2 and p1-p3
+def cross(p1, p2, p3):
+    (x1, y1) = p1
+    (x2, y2) = p2
+    (x3, y3) = p3
+    dxa = x1-x2
+    dya = y1-y2
+    dxb = x1-x3
+    dyb = y1-y3
+    return dxa*dyb-dya*dxb
+
 def check_other_cars(c):
 
     global doprint
@@ -234,7 +249,7 @@ def check_other_cars(c):
 
         d = dist(c.x, c.y, c2.x, c2.y)
         if d < 0.35:
-            if c.info < c2.info:
+            if c.info < c2.info and False:
                 print("%d car distance %f %s" % (
                         time.time(), d, str((c.info, piece, q, odo,
                                              c2.info, piece2, q2, odo2))))
@@ -242,9 +257,62 @@ def check_other_cars(c):
         if d > safedist:
             continue
 
+        ok = True
+
+        if d < sqrt(0.5*0.5+0.3*0.3) and c.info < c2.info:
+            cornerlist = []
+            for caro in (c, c2):
+                cara = caro.ang
+                carx = caro.x
+                cary = caro.y
+                corners = []
+                for (orix, oriy) in [(-1,-1), (-1,1), (1,1), (1,-1)]:
+                    dx = orix*0.15
+                    dy = oriy*0.25
+                    corners.append((carx
+                                    +cos(cara*pi/180)*dx
+                                    +sin(cara*pi/180)*dy,
+                                    cary
+                                    -sin(cara*pi/180)*dx
+                                    +cos(cara*pi/180)*dy))
+                cornerlist.append(corners)
+
+            #print(cornerlist)
+
+            ok = False
+
+            for (i0, i1) in [(0,1), (1,0)]:
+                if ok:
+                    break
+
+                car1points = cornerlist[i0]
+                car2points = cornerlist[i1]
+
+                for i in range(0, 4):
+                    sides = []
+                    pi1 = i
+                    pi2 = (i+1)%4
+                    pi3 = (i+2)%4
+                    pi4 = (i+3)%4
+                    p1 = car1points[pi1]
+                    p2 = car1points[pi2]
+                    for car2p in car2points:
+                        side = cross(car2p, p1, p2)
+                        sides.append(side)
+                    for car2p in [car1points[pi3], car1points[pi4]]:
+                        side = cross(car2p, p1, p2)
+                        sides.append(side)
+                    #print("sides %d %d %s" % (i0, i, str(sides)))
+                    signs = [sign(nu) for nu in sides]
+                    if (signs == [1,1,1,1,-1,-1] or 
+                        signs == [-1,-1,-1,-1,1,1]):
+                        ok = True
+                        break
+            tolog("overlap %s" % (str(not ok)))
+
         onlyif = 0
 
-        foll = following((piece, odo), (piece2, odo2), d)
+        foll = following((piece, odo), (piece2, odo2))
         if foll:
             (_, o, onlyif) = foll
             if o > safedist:
@@ -255,15 +323,31 @@ def check_other_cars(c):
         if give:
             (_, onlyif) = give
 
-        if give:
-            tolog("%d %s giveway %f %s %s" % (
-                    time.time(), c.info, d, str(piece2), str(pos)))
-            tolog("   %s %s %s" % (
-                    c2.info, str(piece2), str(pos2)))
+        if foll or give or not ok:
 
-        if foll or give:
-            #print((c.x, c.y, c2.x, c2.y, d))
+            relation = ""
+            if not ok:
+                relation += " crash"
+                d = 0.0
+            if foll:
+                relation += " following"
+            if give:
+                relation += " givewayto"
+
+            tolog0("%d %s%s %f %s %s %f" % (
+                    time.time(), c.info, relation,
+                    d, str(piece), str(pos), odo))
+            tolog0("   %s %s %s %f" % (
+                    c2.info, str(piece2), str(pos2), odo2))
+
             angdiff = 0
+
+            if not ok:
+                c2.conn.send("carsinfront 1 " +
+                             "%f %f %f %f %d %d\n" %
+                             (angdiff, d, c.x, c.y, c.n, onlyif))
+
+            #print((c.x, c.y, c2.x, c2.y, d))
             stri = "car in front of car %s: %s: %f" % (
                 c.info, c2.info, d)
             if doprint != stri:
@@ -315,7 +399,11 @@ def arravg(l):
         sum += v
     return sum/n
 
+waitingcars = []
+
 def handlerun(conn, addr):
+    global waitingcars
+
     dataf = linesplit(conn)
     print 'Connected %s (at %f)' % (addr, time.time())
 
@@ -447,11 +535,18 @@ def handlerun(conn, addr):
             x = float(l[1])
             y = float(l[2])
             set_badmarkerpos(x, y, c)
+        elif l[0] == "waitallcars":
+            waitingcars.append(c.n)
+            if len(waitingcars) == len(cars):
+                for n in waitingcars:
+                    cx = cars[n]
+                    cx.conn.send("waitallcarsdone\n")
+                waitingcars = []
         elif l[0] == "odometer":
             odo = int(l[1])
             c.v.set("%d pulse%s = %.2f m" % (
                     odo, "" if odo == 1 else "s",
-                    float(odo)/5*math.pi*10.2/100))
+                    float(odo)/5*pi*10.2/100))
         elif l[0] == "heart":
             #print("heart %s" % c.info)
             c.heart_seen = time.time()
