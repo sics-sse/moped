@@ -440,13 +440,29 @@ def putcar(x, y, ang):
 
 def simulatecar():
     dt = 0.1
+
+    # acc 0.0 in fact represents infinity
+    acc = 0.0
+
     while True:
 
         desiredspeed = g.outspeedcm
         if g.limitspeed != None and desiredspeed > g.limitspeed:
             desiredspeed = g.limitspeed
 
-        g.finspeed = desiredspeed
+        if g.finspeed > desiredspeed:
+            acc = -0.6
+        else:
+            acc = 0.0
+            g.finspeed = desiredspeed
+
+        if acc != 0.0:
+            ospeed = g.finspeed
+            g.finspeed += 100*acc*dt
+            if ospeed > 0 and g.finspeed < 0:
+                g.finspeed = 0
+
+        g.inspeed = g.finspeed
 
         g.dang = g.steering/100.0 * 1.5 * desiredspeed
         g.ang += g.dang*dt
