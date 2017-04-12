@@ -1,6 +1,7 @@
 import socket
 import time
 import ast
+import queue
 
 from nav_log import tolog, tolog0, tolog2
 from nav_util import start_new_thread
@@ -105,7 +106,7 @@ def from_ground_control():
                             pass
 
                         if g.finspeed != 0:
-                            tolog2("closest car in front2: dir %f dist %f limitspeed %f" % (
+                            tolog("closest car in front2: dir %f dist %f limitspeed %f" % (
                                     dir, closest, g.limitspeed))
                         lastreportclosest = True
                     else:
@@ -119,7 +120,7 @@ def from_ground_control():
                         if g.limitspeed == 0:
                             send_to_ground_control("message stopping for obstacle")
                         elif g.limitspeed != None and g.limitspeed < g.outspeedcm:
-                            send_to_ground_control("message slowing for obstacle %f" % g.limitspeed)
+                            send_to_ground_control("message slowing for obstacle %.1f" % g.limitspeed)
                         else:
                             send_to_ground_control("message ")
                     else:
@@ -129,6 +130,8 @@ def from_ground_control():
                     print("parameter %d" % g.parameter)
                 # can be used so we don't have to stop if the next
                 # section is free
+                elif l[0] == "waitallcarsdone":
+                    g.queue.put(1)
                 elif l[0] == "cargoto":
                     x = float(l[2])
                     y = float(l[3])
@@ -197,3 +200,4 @@ def open_socket():
 
 def tcinit():
     g.ground_control = None
+    g.queue = queue.Queue(5)
