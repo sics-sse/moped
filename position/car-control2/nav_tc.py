@@ -77,7 +77,7 @@ def from_ground_control():
                         onlyif = float(l[6*i+7])
                         if closest == None or closest > dist:
                             closest = dist
-                    if closest:
+                    if closest != None:
                         if (onlyif != 0
                             and g.nextdecisionpoint != 0
                             and onlyif != g.nextdecisionpoint):
