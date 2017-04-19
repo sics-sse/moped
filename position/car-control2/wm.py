@@ -442,6 +442,7 @@ def simulatecar():
     dt = 0.1
 
     # acc 0.0 in fact represents infinity
+    g.simulmaxacc = 0.6
     acc = 0.0
 
     while True:
@@ -450,11 +451,15 @@ def simulatecar():
         if g.limitspeed != None and desiredspeed > g.limitspeed:
             desiredspeed = g.limitspeed
 
-        if g.finspeed > desiredspeed:
-            acc = -0.6
-        else:
+        if abs(g.finspeed - desiredspeed) < 5 or g.simulmaxacc == 0.0:
             acc = 0.0
             g.finspeed = desiredspeed
+        elif g.finspeed > desiredspeed:
+            acc = -g.simulmaxacc
+        elif g.finspeed < desiredspeed:
+            acc = g.simulmaxacc
+        else:
+            acc = 0.0
 
         if acc != 0.0:
             ospeed = g.finspeed
@@ -473,6 +478,6 @@ def simulatecar():
         f = random.random()
         g.ang += (2*f-1) * 0
 
-        time.sleep(dt)
+        time.sleep(dt*g.speedfactor)
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx, g.ppy, g.ang, 0, g.finspeed))
