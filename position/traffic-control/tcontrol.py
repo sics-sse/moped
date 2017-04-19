@@ -465,12 +465,12 @@ def carpos_event(event):
         y3 = ycoord(y03)
         x4 = xcoord(x04)
         y4 = ycoord(y04)
-        r1 = g.w.create_line(x1, y1, x2, y2, fill=c.colour)
-        r2 = g.w.create_line(x2, y2, x3, y3, fill=c.colour)
-        r3 = g.w.create_line(x3, y3, x4, y4, fill=c.colour)
-        r4 = g.w.create_line(x4, y4, x1, y1, fill=c.colour)
-        r5 = g.w.create_line((x2+x3)/2,(y2+y3)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour)
-        r6 = g.w.create_line((x1+x4)/2,(y1+y4)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour)
+        r1 = g.w.create_line(x1, y1, x2, y2, fill=c.colour,width=4)
+        r2 = g.w.create_line(x2, y2, x3, y3, fill=c.colour,width=4)
+        r3 = g.w.create_line(x3, y3, x4, y4, fill=c.colour,width=4)
+        r4 = g.w.create_line(x4, y4, x1, y1, fill=c.colour,width=4)
+        r5 = g.w.create_line((x2+x3)/2,(y2+y3)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour,width=4)
+        r6 = g.w.create_line((x1+x4)/2,(y1+y4)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour,width=4)
         if c.currentpos != None:
             (or1, or2, or3, or4, or5, or6) = c.currentpos
             g.w.delete(or1)
@@ -594,5 +594,9 @@ g.t0 = time.time()
 g.timesynched = False
 
 g.logf = open("tc_log", "w")
+
+zoom(1)
+zoom(1)
+
 
 mainloop()
