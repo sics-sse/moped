@@ -34,6 +34,7 @@ def tolog0(s0):
 
 def update_carpos1(x, y, ang, c):
     global event_nr
+
     event_nr += 1
     g.d[event_nr] = ("pos", x, y, ang, c)
     g.w.event_generate("<<CarPos>>", when="tail", x=event_nr)
@@ -82,7 +83,7 @@ def linesplit(socket):
         yield buffer
 
 
-safedist = 2.5
+safedist = 3.5
 
 def check_other_cars1(c):
     l = []
@@ -143,6 +144,7 @@ def following(tup, tup2):
     onlyif = 0
 
     if piece == piece2 and odo < odo2:
+        tolog0("clause f1")
         #print("following %s %f %f" % (str(piece), odo, odo2))
         return (True, odo2-odo, onlyif)
 
@@ -153,13 +155,39 @@ def following(tup, tup2):
 
     if b == a2 and b2 != a:
         (_, piecelen) = eight.pieces[piece]
+        tolog0("clause f2")
         return (True, odo2+piecelen - odo, onlyif)
+
+    # subsumes the first clause above: even if we are going different
+    # ways from the same point, assume we can crash
+    # if odo2 is sufficiently large, that need not be the case
+    if a == a2 and odo < odo2:
+        tolog0("clause f3")
+        return (True, odo2-odo, 0)
+
+    if False:
+        # something is wrong here
+        (_, piecelen) = eight.pieces[piece]
+        (_, piecelen2) = eight.pieces[piece2]
+        if b == b2 and a != a2 and piecelen-odo < piecelen2-odo2:
+            return (True, (piecelen2-odo2)-(piecelen-odo), 0)
 
     return False
 
-def giveway(piece, piece2):
+def giveway(po, po2):
+    (piece, odo) = po
+    (piece2, odo2) = po2
     (a, b) = piece
     (a2, b2) = piece2
+
+    if piece == (6, 23) and piece2 == (34, 35):
+        tolog0("clause g1")
+        # only true if we know we are going to turn north
+        st = True
+    if piece == (34, 23) and piece2 == (6, 5):
+        tolog0("clause g2")
+        # only true if we know we are going to turn north
+        st = True
 
     if b != b2:
         return False
@@ -169,28 +197,43 @@ def giveway(piece, piece2):
 
     pp = (a, a2, b)
     if pp == (23, 34, 35):
+        tolog0("clause g3")
         st = True
     elif pp == (5, 23, 6):
+        tolog0("clause g4")
         st = True
     elif pp == (23, 6, 5):
+        tolog0("clause g4")
         st = True
     elif pp == (35, 23, 34):
+        tolog0("clause g5")
         st = True
 
     # sometimes, we don't need to give way if we know where we are going
     elif pp == (6, 5, 23):
+        tolog0("clause g6")
         # here, we need to know where the other one is going, too
         st = True
     elif pp == (34, 35, 23):
+        tolog0("clause g7")
         # here, we need to know where the other one is going, too
         st = True
     elif pp == (5, 34, 23):
+        tolog0("clause g8")
         st = True
     elif pp == (35, 6, 23):
+        tolog0("clause g9")
         onlyif = 6
         st = True
     # don't meet in the central portion when there is only one lane:
-    elif pp == (34, 6, 23):
+    elif pp == (34, 6, 23) and odo <= 0.5:
+        tolog0("clause g10")
+        st = True
+    elif pp == (6, 34, 23) and odo2 > 0.5:
+        tolog0("clause g11")
+        st = True
+    elif piece == (6, 23) and piece2 == (23, 5) and odo2 < 1.2:
+        tolog0("clause g12")
         st = True
 
     if st:
@@ -221,13 +264,20 @@ def check_other_cars(c):
     global doprint
     l = []
 
-    pos = eight.findpos(c.x, c.y, c.ang)
+    if c.lastnode != -1 and c.nextnode != -1:
+        knownnodes = (c.lastnode, c.nextnode)
+    else:
+        knownnodes = None
+    pos = eight.findpos(c.x, c.y, c.ang, knownnodes)
     if pos == None:
         #print("pos None %s" % (str((c.x, c.y, c.ang))))
         return
     #print("%s pos %s" % (c.info, str(pos)))
     (ac, bc, tup) = pos
     q = tup[6]
+    if (ac, bc) != (tup[0], tup[1]):
+        # we have reversed the direction
+        q = 1-q
 
     (piece, odo) = eight.findpiece(ac, bc, q)
 
@@ -237,7 +287,11 @@ def check_other_cars(c):
         if c2 == c:
             continue
 
-        pos2 = eight.findpos(c2.x, c2.y, c2.ang)
+        if c2.lastnode != -1 and c2.nextnode != -1:
+            knownnodes2 = (c2.lastnode, c2.nextnode)
+        else:
+            knownnodes2 = None
+        pos2 = eight.findpos(c2.x, c2.y, c2.ang, knownnodes2)
         if pos2 == None:
             continue
         #print("%s pos %s" % (c.info, str(pos)))
@@ -308,7 +362,7 @@ def check_other_cars(c):
                         signs == [-1,-1,-1,-1,1,1]):
                         ok = True
                         break
-            tolog("overlap %s" % (str(not ok)))
+            #tolog("overlap %s" % (str(not ok)))
 
         onlyif = 0
 
@@ -318,34 +372,72 @@ def check_other_cars(c):
             if o > safedist:
                 continue
 
-        give = giveway(piece, piece2)
+        give = giveway((piece, odo), (piece2, odo2))
 
         if give:
             (_, onlyif) = give
+            if piece[0] == 34 and piece2[0] == 6 and False:
+                # the distance to the line where we must stop, minus
+                # the distance between the front edge and the middle
+                d = dist(c.x, c.y, 2.06, 15.23) - 0.25
+                if d < 0.30:
+                    # we're too close to stop - continue and hope
+                    # that the other car stops for us
+                    give = False
+            if piece[0] == 6 and piece2[0] == 34 and False:
+                # the distance to the line where we must stop, minus
+                # the distance between the front edge and the middle
+                d = dist(c.x, c.y, 1.02, 15.5) - 0.25
+                if d < 0.30:
+                    # we're too close to stop - continue and hope
+                    # that the other car stops for us
+                    give = False
+            if (piece == (6, 23) and piece2 == (34, 35)
+                or piece == (34, 23) and piece2 == (6, 5)):
+                tolog0("clause1")
+                (_, piecelen) = eight.pieces[piece]
+                d = piecelen - odo + 0.45
+            if (piece[1] == 35 and piece2[1] == 35
+                or piece[1] == 5 and piece2[1] == 5):
+                tolog0("clause2")
+                # the distance to the line where we must stop, minus
+                # the distance between the front edge and the middle
+                stopd = 0.3*c.finspeed/60
+                odox = 0.45 - stopd
+                tolog0("%s %s speed %f stopd %f odox %f odo %f" % (
+                        c.info, c2.info, c.finspeed, stopd, odox, odo))
+                if odo > odox:
+                    give = False
+                    tolog0("clause1.1")
+                else:
+                    tolog0("clause1.2")
+                    # 0.20 + half carlength = 0.45
+                    d = 0.20-odo+stopd
 
         if foll or give or not ok:
 
             relation = ""
             if not ok:
-                relation += " crash"
+                relation += "/crash"
                 d = 0.0
             if foll:
-                relation += " following"
+                relation += "/following"
             if give:
-                relation += " givewayto"
+                relation += "/givewayto"
 
-            tolog0("%d %s%s %f %s %s %f" % (
+            if relation[0] == "/":
+                relation = relation[1:]
+
+            tolog0("%d %s %s %f %s %s %f" % (
                     time.time(), c.info, relation,
                     d, str(piece), str(pos), odo))
             tolog0("   %s %s %s %f" % (
                     c2.info, str(piece2), str(pos2), odo2))
 
-            angdiff = 0
-
             if not ok:
                 c2.conn.send("carsinfront 1 " +
-                             "%f %f %f %f %d %d\n" %
-                             (angdiff, d, c.x, c.y, c.n, onlyif))
+                             "crash %f %f %f %d %d\n" %
+                             (d, c.x, c.y, c.n, onlyif))
 
             #print((c.x, c.y, c2.x, c2.y, d))
             stri = "car in front of car %s: %s: %f" % (
@@ -353,12 +445,13 @@ def check_other_cars(c):
             if doprint != stri:
                 #print(stri)
                 doprint = stri
-            l = l + [(angdiff, d, c2.x, c2.y, c2.n, onlyif)]
+            l = l + [(relation, d, c2.x, c2.y, c2.n, onlyif)]
 
     fronts = "carsinfront %d" % len(l)
     for tup in l:
-        fronts = fronts + " " + ("%f %f %f %f %d %d" % tup)
+        fronts = fronts + " " + ("%s %f %f %f %d %d" % tup)
     c.conn.send(fronts + "\n")
+    tolog0("sent to %s %s" % (c.info, fronts))
 
 def handlebatterytimeout(c):
     while True:
@@ -502,6 +595,15 @@ def handlerun(conn, addr):
             x = float(l[1])
             y = float(l[2])
             ang = float(l[3])
+            if (x, y, ang) == (c.x, c.y, c.ang):
+                samepos = True
+            else:
+                samepos = False
+
+            # if samepos is set to True, disconnecting cars doesn't
+            # erase them for some reason
+            samepos = False
+
             c.x = x
             c.y = y
             c.ang = ang
@@ -509,6 +611,7 @@ def handlerun(conn, addr):
             adj = int(l[5])
             # comes in as a float, but has only integer accuracy
             insp = float(l[6])
+            c.finspeed = insp
             spavg = [insp] + spavg
             if len(spavg) > spavgn:
                 spavg = spavg[0:spavgn]
@@ -523,7 +626,8 @@ def handlerun(conn, addr):
                 c.v5.set("speed %d" % round(spavg1))
                 t1 = t
 
-            if l[0] == "dpos" or l[0] == "mpos" and g.show_markpos:
+            if (l[0] == "dpos" or l[0] == "mpos" and g.show_markpos
+                and not samepos):
                 update_carpos1(x, y, ang, c)
             if l[0] == "mpos" and g.show_markpos1:
                 set_markerpos(x, y, c, adj)
