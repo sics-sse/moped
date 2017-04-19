@@ -464,6 +464,9 @@ def gopath(path00, plen):
         if i == lastwaypoint:
             continue
             #pass
+        if lastwaypoint != None:
+            nav_tc.send_to_ground_control("between %d %d" % (
+                    lastwaypoint, i))
         lastwaypoint = i
 
         if g.remote_control:
