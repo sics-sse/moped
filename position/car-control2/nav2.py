@@ -234,11 +234,12 @@ def goto_1(x, y):
                 print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
                 return 2
 
+        period = 0.1*g.speedfactor
         tt1 = time.time()
         dtt = tt1-tt0
-        dtt1 = 0.1 - dtt
+        dtt1 = period - dtt
         if dtt1 > 0:
-            time.sleep(0.1)
+            time.sleep(period)
 
 def goto(x, y, state):
     start_new_thread(gotoaux, (x, y, state))
