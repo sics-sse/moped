@@ -69,7 +69,7 @@ def from_ground_control():
                     n = int(l[1])
                     closest = None
                     for i in range(0, n):
-                        dir = float(l[6*i+2])
+                        relation = l[6*i+2]
                         dist = float(l[6*i+3])
                         #x = float(l[6*i+4])
                         #y = float(l[6*i+5])
@@ -81,9 +81,9 @@ def from_ground_control():
                         if (onlyif != 0
                             and g.nextdecisionpoint != 0
                             and onlyif != g.nextdecisionpoint):
+                            tolog("onlyif %d %d" % (
+                                    onlyif, g.nextdecisionpoint))
                             continue
-                        #print("closest car in front1: dir %f dist %f" % (
-                         #       dir, closest))
                         # a car length
                         closest = closest - 0.5
                         # some more safety:
@@ -93,9 +93,11 @@ def from_ground_control():
                         # 4 is our safety margin and should make for
                         # a smoother ride
                         if g.limitspeed == None:
-                            print("car in front")
+                            pass
+                            #print("car in front")
                         tolog("car in front")
-                        g.limitspeed = 100*closest/0.85/4
+                        #g.limitspeed = 100*closest/0.85/4
+                        g.limitspeed = 100*closest/0.85
                         if g.limitspeed < 11:
                             #print("setting limitspeed to 0")
                             g.limitspeed = 0
@@ -105,16 +107,24 @@ def from_ground_control():
                             #print("reduced limitspeed")
                             pass
 
-                        if g.finspeed != 0:
-                            tolog("closest car in front2: dir %f dist %f limitspeed %f" % (
-                                    dir, closest, g.limitspeed))
+                        if "crash" in relation:
+                            g.crash = True
+                            g.simulmaxacc = 0.0
+
+                        ff = tolog
+                        if g.finspeed != 0 and g.finspeed >= g.limitspeed:
+                            if relation == "givewayto":
+                                ff = tolog2
+                        ff("closest car in front2: %s dist %f limitspeed %f" % (
+                                relation, closest, g.limitspeed))
                         lastreportclosest = True
                     else:
-                        g.limitspeed = None
-                        if lastreportclosest:
-                            #print("no close cars")
-                            pass
-                        lastreportclosest = False
+                        if not g.crash:
+                            g.limitspeed = None
+                            if lastreportclosest:
+                                tolog0("no close cars")
+                                pass
+                            lastreportclosest = False
                     if g.outspeedcm:
                         # neither 0 nor None
                         if g.limitspeed == 0:
