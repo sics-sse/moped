@@ -321,14 +321,19 @@ def extendpath_p(p, goaln, d0, n2, nz, acc):
     return acc
 
 # for the selected segment, the biggest of di and dj must be minimal
-def findpos(x, y, ang):
+def findpos(x, y, ang, knownnodes = None):
     minq = 1000
     mindidjmax = 1000
     found = None
     if x == None or y == None:
         return None
 
-    for (i, j) in distances:
+    if knownnodes != None:
+        distances1 = [knownnodes]
+    else:
+        distances1 = distances
+
+    for (i, j) in distances1:
         d = distances[(i, j)]
         (xi, yi) = nodes[i]
         (xj, yj) = nodes[j]
