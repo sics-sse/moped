@@ -1,1 +1,1 @@
-colours = ["blue", "red", "green", "yellow"]
+colours = ["blue", "red", "green", "#cccc00"]
