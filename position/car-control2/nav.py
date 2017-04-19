@@ -5,6 +5,7 @@ import socket
 import sys
 import json
 import queue
+import random
 
 import eight
 
@@ -229,6 +230,13 @@ g.ppydiff = 0.0
 # set once by nav.py
 g.t0 = None
 
+# nav.py and nav2.py
+# used only when simulating
+g.speedfactor = 1.0
+if g.simulate:
+    g.speedfactor = 1.0
+    g.speedfactor = 0.1
+
 # set my nav_mqtt
 g.battery = 0.0
 g.ultra = 0.0
@@ -350,6 +358,8 @@ def initializeCAN(network):
     return s
 
 def init():
+
+    random.seed(g.VIN)
 
     if g.VIN == "car5":
         g.mxmin = -99
