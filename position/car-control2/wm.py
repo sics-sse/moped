@@ -13,6 +13,7 @@ from nav_util import dist
 
 import nav_signal
 import driving
+import nav_mqtt
 
 mp = dict()
 
@@ -232,7 +233,7 @@ def readmarker0():
                     else:
                         doadjust_n = 0
                     send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,g.ang,time.time()-g.t0, doadjust_n, g.inspeed))
-                    #nav_mqtt.send_to_mqtt(x, y)
+                    nav_mqtt.send_to_mqtt(x, y, ori)
                     g.lastpos = (thenx,theny)
                     g.px = x
                     g.py = y
@@ -481,3 +482,4 @@ def simulatecar():
         time.sleep(dt*g.speedfactor)
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx, g.ppy, g.ang, 0, g.finspeed))
+        #nav_mqtt.send_to_mqtt(g.ppx, g.ppy, g.ang)
