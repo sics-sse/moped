@@ -482,8 +482,10 @@ def carpos_event(event):
         c.currentpos = (r1, r2, r3, r4, r5, r6)
 #        r1 = g.w.create_line(x-2, y-2, x+2, y+2)
 #        r2 = g.w.create_line(x-2, y+2, x+2, y-2)
-        win = g.w.create_line(x, y, x+1, y, fill=c.colour)
-        c.objs.append(win)
+        if False:
+            # temporarily, don't draw trails
+            win = g.w.create_line(x, y, x+1, y, fill=c.colour)
+            c.objs.append(win)
 
     elif ev[0] == "mpos":
         (type, x, y, c, adj) = ev
