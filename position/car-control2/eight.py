@@ -328,8 +328,9 @@ def findpos(x, y, ang, knownnodes = None):
     if x == None or y == None:
         return None
 
-    if knownnodes != None:
-        distances1 = [knownnodes]
+    if knownnodes != None and knownnodes != []:
+        distances1 = knownnodes
+        #print("knownnodes = %s" % str(knownnodes))
     else:
         distances1 = distances
 
