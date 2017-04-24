@@ -83,7 +83,7 @@ def linesplit(socket):
         yield buffer
 
 
-safedist = 3.5
+safedist = 15.5
 
 def check_other_cars1(c):
     l = []
@@ -154,6 +154,8 @@ def following(tup, tup2):
     onlyif = b2
 
     if b == a2 and b2 != a:
+        # (34, 23) pretends to follow (23, 35) here; that's wrong but maybe
+        # harmless
         (_, piecelen) = eight.pieces[piece]
         tolog0("clause f2")
         return (True, odo2+piecelen - odo, onlyif)
@@ -180,61 +182,82 @@ def giveway(po, po2):
     (a, b) = piece
     (a2, b2) = piece2
 
+    st = False
+    onlyif = 0
+
     if piece == (6, 23) and piece2 == (34, 35):
         tolog0("clause g1")
-        # only true if we know we are going to turn north
+        # not always true
         st = True
     if piece == (34, 23) and piece2 == (6, 5):
         tolog0("clause g2")
-        # only true if we know we are going to turn north
+        # not always true
         st = True
 
-    if b != b2:
-        return False
-
-    onlyif = 0
-    st = False
-
-    pp = (a, a2, b)
-    if pp == (23, 34, 35):
-        tolog0("clause g3")
+    if piece == (34, 23) and piece2 == (35, 6):
+        tolog0("clause g2a")
+        # not always true
         st = True
-    elif pp == (5, 23, 6):
-        tolog0("clause g4")
-        st = True
-    elif pp == (23, 6, 5):
-        tolog0("clause g4")
-        st = True
-    elif pp == (35, 23, 34):
-        tolog0("clause g5")
+    if piece == (6, 23) and piece2 == (5, 34):
+        tolog0("clause g2b")
+        # not always true
         st = True
 
-    # sometimes, we don't need to give way if we know where we are going
-    elif pp == (6, 5, 23):
-        tolog0("clause g6")
-        # here, we need to know where the other one is going, too
+    if piece == (23, 35) and piece2 == (5, 34):
+        tolog0("clause g2.1a")
+        # not always true
         st = True
-    elif pp == (34, 35, 23):
-        tolog0("clause g7")
-        # here, we need to know where the other one is going, too
+    if piece == (23, 5) and piece2 == (35, 6):
+        tolog0("clause g2.1b")
+        # not always true
         st = True
-    elif pp == (5, 34, 23):
-        tolog0("clause g8")
-        st = True
-    elif pp == (35, 6, 23):
-        tolog0("clause g9")
-        onlyif = 6
-        st = True
-    # don't meet in the central portion when there is only one lane:
-    elif pp == (34, 6, 23) and odo <= 0.5:
-        tolog0("clause g10")
-        st = True
-    elif pp == (6, 34, 23) and odo2 > 0.5:
-        tolog0("clause g11")
-        st = True
-    elif piece == (6, 23) and piece2 == (23, 5) and odo2 < 1.2:
+
+    if piece == (6, 23) and piece2 == (23, 5) and odo2 < 1.2:
         tolog0("clause g12")
         st = True
+
+    if not st:
+
+        if b != b2:
+            return False
+
+        pp = (a, a2, b)
+        if pp == (23, 34, 35):
+            tolog0("clause g3")
+            st = True
+        elif pp == (5, 23, 6):
+            tolog0("clause g4")
+            st = True
+        elif pp == (23, 6, 5):
+            tolog0("clause g4bis")
+            st = True
+        elif pp == (35, 23, 34):
+            tolog0("clause g5")
+            st = True
+
+        # sometimes, we don't need to give way if we know where we are going
+        elif pp == (6, 5, 23):
+            tolog0("clause g6")
+            # here, we need to know where the other one is going, too
+            st = True
+        elif pp == (34, 35, 23):
+            tolog0("clause g7")
+            # here, we need to know where the other one is going, too
+            st = True
+        elif pp == (5, 34, 23):
+            tolog0("clause g8")
+            st = True
+        elif pp == (35, 6, 23):
+            tolog0("clause g9")
+            onlyif = 6
+            st = True
+        # don't meet in the central portion when there is only one lane:
+        elif pp == (34, 6, 23) and odo <= 0.5:
+            tolog0("clause g10")
+            st = True
+        elif pp == (6, 34, 23) and odo2 > 0.5:
+            tolog0("clause g11")
+            st = True
 
     if st:
         #print("giveway %s %s" % ((str(piece), str(piece2))))
@@ -265,14 +288,20 @@ def check_other_cars(c):
     l = []
 
     if c.lastnode != -1 and c.nextnode != -1:
-        knownnodes = (c.lastnode, c.nextnode)
+        knownnodes = [(c.lastnode, c.nextnode)]
+        knownnodesalt = c.betweenlist
     else:
         knownnodes = None
+        knownnodesalt = None
+    tolog0("%s x y ang %f %f %f known %s" % (c.info, c.x, c.y, c.ang%360, str(knownnodes)))
     pos = eight.findpos(c.x, c.y, c.ang, knownnodes)
+    posalt = eight.findpos(c.x, c.y, c.ang, knownnodesalt)
     if pos == None:
         #print("pos None %s" % (str((c.x, c.y, c.ang))))
         return
-    #print("%s pos %s" % (c.info, str(pos)))
+    #tolog0("%s pos %s %s" % (c.info, str(pos), str(knownnodes)))
+    tolog0("%s posalt %s %s" % (c.info, str(posalt), str(knownnodesalt)))
+    pos = posalt
     (ac, bc, tup) = pos
     q = tup[6]
     if (ac, bc) != (tup[0], tup[1]):
@@ -288,10 +317,14 @@ def check_other_cars(c):
             continue
 
         if c2.lastnode != -1 and c2.nextnode != -1:
-            knownnodes2 = (c2.lastnode, c2.nextnode)
+            knownnodes2 = [(c2.lastnode, c2.nextnode)]
+            knownnodes2alt = c2.betweenlist
         else:
             knownnodes2 = None
+            knownnodes2alt = None
         pos2 = eight.findpos(c2.x, c2.y, c2.ang, knownnodes2)
+        pos2alt = eight.findpos(c2.x, c2.y, c2.ang, knownnodes2alt)
+        pos2 = pos2alt
         if pos2 == None:
             continue
         #print("%s pos %s" % (c.info, str(pos)))
@@ -299,7 +332,7 @@ def check_other_cars(c):
         q2 = tup2[6]
 
         (piece2, odo2) = eight.findpiece(ac2, bc2, q2)
-        #print((c.info, piece, odo, piece2, odo2))
+        tolog0(str((c.info, piece, odo, piece2, odo2)))
 
         d = dist(c.x, c.y, c2.x, c2.y)
         if d < 0.35:
@@ -374,45 +407,123 @@ def check_other_cars(c):
 
         give = giveway((piece, odo), (piece2, odo2))
 
+        (_, piecelen) = eight.pieces[piece]
+        (_, piecelen2) = eight.pieces[piece2]
+        stopd = 0.3*c.finspeed/60
+
+        if c2.finspeed == 0.0:
+            tolog0("c2 = %s speed 0 following = %s" % (
+                    c2.info, str(c2.following)))
+            if c2.following:
+                # simple fix for some deadlocks, namely that c2 is behind
+                # another car which in turn waits for us
+                # try to restrict this to cases where c2 waits behind
+                # another car
+                give = False
+
         if give:
             (_, onlyif) = give
-            if piece[0] == 34 and piece2[0] == 6 and False:
+
+            dpieces = []
+            dpieces2 = []
+            if (piece == (6, 23) or
+                piece == (35, 6) and piecelen-odo < 0.6 or
+                piece == (23, 35) and odo < 0.4-stopd):
+                if piece == (6, 23):
+                    odoleft = piecelen - odo + 0.4-stopd
+                elif piece == (35, 6):
+                    odoleft = 0
+                dpieces.append(1)
+            if (piece == (34, 23) or
+                piece == (5, 34) and piecelen-odo < 0.6 or
+                piece == (23, 6) and odo < 0.4-stopd):
+                dpieces.append(2)
+
+
+            if piece == (34, 23) and piece2 == (6, 23):
                 # the distance to the line where we must stop, minus
                 # the distance between the front edge and the middle
-                d = dist(c.x, c.y, 2.06, 15.23) - 0.25
-                if d < 0.30:
+
+                # this should be done using odo
+                d = 0.5 - odo - stopd
+                tolog0("clause0a d %f stopd %f" % (d, stopd))
+                if d < stopd and False:
                     # we're too close to stop - continue and hope
                     # that the other car stops for us
                     give = False
-            if piece[0] == 6 and piece2[0] == 34 and False:
+            if piece == (6, 23) and piece2 == (34, 23):
                 # the distance to the line where we must stop, minus
                 # the distance between the front edge and the middle
-                d = dist(c.x, c.y, 1.02, 15.5) - 0.25
-                if d < 0.30:
+                d = 0.5 - odo - stopd
+                tolog0("clause0b d %f stopd %f" % (d, stopd))
+                if d < stopd and False:
                     # we're too close to stop - continue and hope
                     # that the other car stops for us
+                    give = False
+
+            if (piece == (6, 23) and piece2 == (5, 34)
+                or piece == (34, 23) and piece2 == (35, 6)):
+                tolog0("clause1bis piecelen2 %f odo2 %f" % (piecelen2, odo2))
+                # we should test: if the other car wants to turn 34-23, we
+                # should not give way to it
+                if piecelen2 - odo2 < 1.0:
+                    d = piecelen - odo + 0.4 - 0.25 - stopd
+                    if d < 0:
+                        tolog0("clause 1.1.1.1")
+                        give = False
+                    else:
+                        tolog0("clause 1.1.1.2")
+                else:
+                    tolog0("clause 1.1.2")
+                    give = False
+            if (piece == (23, 35) and piece2 == (5, 34)
+                or piece == (23, 5) and piece2 == (35, 6)):
+                tolog0("clause1bis2 piecelen2 %f odo2 %f" % (piecelen2, odo2))
+                # we should test: if the other car wants to turn 34-23, we
+                # should not give way to it
+                if piecelen2 - odo2 < 1.0:
+                    d = 0.4 - 0.25 - odo - stopd
+                    if d < 0:
+                        tolog0("clause 1.2.2.1")
+                        give = False
+                    else:
+                        tolog0("clause 1.2.2.2")
+                else:
+                    tolog0("clause 1.2.1")
                     give = False
             if (piece == (6, 23) and piece2 == (34, 35)
                 or piece == (34, 23) and piece2 == (6, 5)):
-                tolog0("clause1")
-                (_, piecelen) = eight.pieces[piece]
-                d = piecelen - odo + 0.45
+                tolog0("clause 1.3")
+                d = piecelen - odo + 0.4 - 0.25 - stopd
             if (piece[1] == 35 and piece2[1] == 35
                 or piece[1] == 5 and piece2[1] == 5):
-                tolog0("clause2")
-                # the distance to the line where we must stop, minus
-                # the distance between the front edge and the middle
-                stopd = 0.3*c.finspeed/60
-                odox = 0.45 - stopd
-                tolog0("%s %s speed %f stopd %f odox %f odo %f" % (
-                        c.info, c2.info, c.finspeed, stopd, odox, odo))
-                if odo > odox:
+                d = 0.4 - 0.25 - odo - stopd
+                if d < 0:
+                    tolog0("clause 1.4.1")
                     give = False
-                    tolog0("clause1.1")
                 else:
-                    tolog0("clause1.2")
-                    # 0.20 + half carlength = 0.45
-                    d = 0.20-odo+stopd
+                    tolog0("clause 1.4.2")
+                if False:
+                    # the distance to the line where we must stop, minus
+                    # the distance between the front edge and the middle
+                    #odox = 0.45 - stopd
+                    odox = 0.55 - stopd
+                    tolog0("%s %s speed %f stopd %f odox %f odo %f" % (
+                            c.info, c2.info, c.finspeed, stopd, odox, odo))
+                    if odo > odox:
+                        # short-circuit this, assuming that if we got here,
+                        # we have already done the right thing before, and
+                        # should keep doing that
+                        # no, that's only true if we should give way, but
+                        # wrong if the other car is too far away to be
+                        # disturbed by us
+                        # and if the other car is close enough, we crash...
+                        give = False
+                        tolog0("clause1.1")
+                    else:
+                        tolog0("clause1.2")
+                        # 0.20 + half carlength = 0.45
+                        d = 0.20-odo+stopd
 
         if foll or give or not ok:
 
@@ -451,6 +562,10 @@ def check_other_cars(c):
     for tup in l:
         fronts = fronts + " " + ("%s %f %f %f %d %d" % tup)
     c.conn.send(fronts + "\n")
+
+    c.following = ("following" in fronts)
+    tolog0("%s setting following to %s" % (c.info, str(c.following)))
+
     tolog0("sent to %s %s" % (c.info, fronts))
 
 def handlebatterytimeout(c):
@@ -762,6 +877,9 @@ def handlerun(conn, addr):
             i2 = int(l[2])
             c.lastnode = i1
             c.nextnode = i2
+            c.betweenlist.append((i1, i2))
+            if len(c.betweenlist) > 2:
+                c.betweenlist = c.betweenlist[-3:]
             if len(l) > 3:
                 c.nextnode2 = int(l[3])
             else:
