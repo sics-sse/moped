@@ -59,6 +59,10 @@ class Car:
 
         self.timeout = 60
 
+        self.betweenlist = []
+
+        self.following = False
+
         carinfo_h = 140
 
         v = StringVar()
