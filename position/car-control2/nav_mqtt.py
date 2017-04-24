@@ -47,7 +47,7 @@ def on_message(mosq, obj, msg):
 
 def mqtt_init():
     url_str = "mqtt://test.mosquitto.org:1883"
-    #url_str = "mqtt://iot.eclipse.org:1883"
+    url_str = "mqtt://iot.eclipse.org:1883"
     url = urllib.parse.urlparse(url_str)
     g.mqttc = mosquitto.Mosquitto()
     g.mqttc.on_message = on_message
@@ -56,8 +56,9 @@ def mqtt_init():
     g.mqttc.subscribe("/sics/moped/+/+", 0)
     g.mqttc.subscribe("/sics/moped/value", 0)
 
-def send_to_mqtt(x, y):
-    g.mqttc.publish("/sics/moped/position/%s" % g.VIN, "%f %f" % (x, y))
+def send_to_mqtt(x, y, ori):
+    g.mqttc.publish("/sics/moped/position/%s" % g.VIN,
+                    "%f %f %f %f" % (x, y, ori, time.time()))
     pass
 
 def handle_mqtt():
