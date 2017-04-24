@@ -9,6 +9,8 @@ import random
 
 import eight
 
+import nav_mqtt
+
 class globals:
     pass
 
@@ -61,8 +63,7 @@ from math import pi, cos, sin, sqrt, atan2, acos, asin, log
 if not g.simulate:
     nav_imu.g = g
 nav_log.g = g
-if not g.simulate:
-    nav_mqtt.g = g
+nav_mqtt.g = g
 nav_tc.g = g
 nav_signal.g = g
 nav_comm.g = g
@@ -234,8 +235,8 @@ g.t0 = None
 # used only when simulating
 g.speedfactor = 1.0
 if g.simulate:
-    g.speedfactor = 1.0
     g.speedfactor = 0.1
+    g.speedfactor = 1.0
 
 # set my nav_mqtt
 g.battery = 0.0
@@ -255,7 +256,11 @@ wm.wminit()
 nav1.nav1init()
 if not g.simulate:
     nav_imu.imuinit()
+if not g.simulate:
     nav_mqtt.mqttinit()
+else:
+    nav_mqtt.mqttinit()
+
 nav_tc.tcinit()
 driving.drivinginit()
 nav_signal.signalinit()
@@ -420,8 +425,8 @@ def init():
 
     if not g.simulate:
         start_new_thread(wm.readmarker, ())
-    if not g.simulate:
-        start_new_thread(nav_mqtt.handle_mqtt, ())
+#    if not g.simulate:
+    start_new_thread(nav_mqtt.handle_mqtt, ())
     if not g.simulate:
         start_new_thread(wm.readspeed2, ())
     if not g.simulate:
