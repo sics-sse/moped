@@ -41,6 +41,8 @@ print("VIN %s" % g.VIN)
 if not g.simulate:
     import nav_imu
 
+g.standalone = True
+
 import nav_log
 from nav_log import tolog, tolog0
 
@@ -238,7 +240,7 @@ if g.simulate:
     g.speedfactor = 0.1
     g.speedfactor = 1.0
 
-# set my nav_mqtt
+# set by nav_mqtt
 g.battery = 0.0
 g.ultra = 0.0
 
@@ -246,11 +248,13 @@ g.signalling = False
 
 g.ledcmd = None
 
-
 # between nav1 and nav_tc
 g.nextdecisionpoint = 0
 
 g.acc = 0
+
+# nav_tc
+g.tctime = None
 
 wm.wminit()
 nav1.nav1init()
@@ -330,7 +334,8 @@ g.heartn_r = -1
 def heartbeat():
     while True:
         g.heartn += 1
-        #print("sending heart")
+        if g.heartn - g.heartn_r > 1:
+            print("heart %d %d: %d" % (g.heartn, g.heartn_r, g.heartn - g.heartn_r))
         nav_tc.send_to_ground_control(
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
@@ -349,7 +354,27 @@ def heartbeat():
                 g.limitspeed = g.limitspeed0
                 g.limitspeed0 = "notset"
 
-        time.sleep(5)
+        time.sleep(0.1)
+
+def heartbeat2():
+    while True:
+
+        if g.tctime != None:
+            tdiff = time.time() - g.tctime
+            print(tdiff)
+            if tdiff > 0.2:
+                if g.limitspeed0 == "notset":
+                    tolog("setting speed to 0 during network pause")
+                    g.limitspeed0 = g.limitspeed
+                    g.limitspeed = 0.0
+
+            else:
+                if g.limitspeed0 != "notset":
+                    tolog("restoring speed limit to %s after network pause" % (str(g.limitspeed0)))
+                    g.limitspeed = g.limitspeed0
+                    g.limitspeed0 = "notset"
+
+        time.sleep(0.05)
 
 g.canSocket = None
 
@@ -398,7 +423,8 @@ def init():
 
     nav_signal.setleds(0, 7)
 
-    start_new_thread(nav_tc.connect_to_ground_control, ())
+    if not g.standalone:
+        start_new_thread(nav_tc.connect_to_ground_control, ())
 
     suffix = ""
     if g.simulate:
@@ -435,7 +461,8 @@ def init():
         start_new_thread(driving.senddrive, ())
     if not g.simulate:
         start_new_thread(keepspeed, ())
-    start_new_thread(heartbeat, ())
+    if not g.standalone:
+        start_new_thread(heartbeat, ())
     if not g.simulate:
         start_new_thread(connect_to_ecm, ())
 
