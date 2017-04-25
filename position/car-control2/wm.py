@@ -482,4 +482,4 @@ def simulatecar():
         time.sleep(dt*g.speedfactor)
         send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx, g.ppy, g.ang, 0, g.finspeed))
-        #nav_mqtt.send_to_mqtt(g.ppx, g.ppy, g.ang)
+        nav_mqtt.send_to_mqtt(g.ppx, g.ppy, g.ang)
