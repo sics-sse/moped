@@ -71,8 +71,8 @@ def checkpos():
     if wallang != None:
         safedst = 0.8*(1-abs(sin(pi/180*wallang)))
         if g.can_ultra < safedst and g.can_ultra > 0.30:
-            tolog2("ultra %f wallang %f safedist %f" % (
-                    g.can_ultra, wallang%360, safedst))
+            tolog2("ultra %f wallang %f safedist %f ang %f x %f y %f" % (
+                    g.can_ultra, wallang%360, safedst, g.ang, g.ppx, g.ppy))
             if g.can_ultra < safedst - 0.30:
                 return False
 
@@ -107,8 +107,9 @@ def goto_1(x, y):
             return 2
 
         if not checkpos():
-            print("checkpos returned False")
-            return 2
+            if False:
+                print("checkpos returned False")
+                return 2
 
         if g.poserror:
             if False:
