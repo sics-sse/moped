@@ -54,6 +54,9 @@ def from_ground_control():
                 l = data.split(" ")
                 #print(l)
                 #print(data)
+
+                g.tctime = time.time()
+
                 if l[0] == "go":
                     x = float(l[1])
                     y = float(l[2])
@@ -107,7 +110,7 @@ def from_ground_control():
                             #print("reduced limitspeed")
                             pass
 
-                        if "crash" in relation:
+                        if "crash" in relation and g.simulate:
                             g.crash = True
                             g.simulmaxacc = 0.0
 
