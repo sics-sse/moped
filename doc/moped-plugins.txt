@@ -1,5 +1,4 @@
 Additions:
-What about plugin in Eclipse? It is mentioned in the "Plugin Manual"
 before building a plugin, you need to build api.
 build with Maven (mvn clean install)
 
