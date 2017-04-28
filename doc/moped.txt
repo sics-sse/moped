@@ -81,7 +81,6 @@ for example explaining the architecture.
 This should happen soon:
 "FRESTA" replaced with "MOPED"
 "new-server" moved to "server"
-hard-coded paths and ports made changeable through a configuration file.
 
 new-server/src/main/java/service/PluginWebServicesImpl.java
     private SuiteGen suiteGen = new SuiteGen("/home/arndt/moped/moped/squawk");
