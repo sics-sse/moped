@@ -41,7 +41,7 @@ It seems that it only detects the echo if its angle to the reflecting surface is
 
 * battery (VCU, port 7)
 
-Copy from LOG-sensor-battery.
+Copy from LOG-sensor-battery, moped-battery.txt
 
 * position (VCU, port 8)
 
