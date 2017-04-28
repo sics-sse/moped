@@ -61,7 +61,7 @@ The numbers actually are drawn on the CAN bus boards, so if those are
 replaced, the numbers change.
 
 
-On one of the cars (car1), there is a camera, pointing upwards, sitting in
+On each of the cars, there is a camera, pointing upwards, sitting in
 front of the TCU.
 
 Output (written by VM.println or printf) from SCU and VCU can be seen
