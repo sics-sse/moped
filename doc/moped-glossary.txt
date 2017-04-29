@@ -1,0 +1,105 @@
+ACT LED
+One of the LEDs on the Raspberry Pi board. It can be controlled
+programmatically and is used for signalling status when no other
+communication channel is available.
+
+actuator
+A device which affects the environment, controlled by a computer. It may
+move, light, sound etc.
+
+ADC
+Analog to Digital converter. There is one on the car, reading the voltage
+of the battery.
+
+autosar
+An operating system commonly used in vehicles. The two nodes SCU and VCU
+run autosar on the car.
+
+BEC
+
+CAN
+A hardware bus (with accompanying software protocol) commonly used in
+vehicles. It connects the three nodes on a car. Physically it consists
+of two cables, one special board on each car sitting on the Raspberry
+Pi and a terminating resistor on one of the boards.
+
+ECM
+
+ECU
+
+electric brake
+When changing the input signal to the motor, 0 means that the car will
+roll and friction will eventually stop it. Using a value with the opposite
+sign of the direction it is moving will however make the motor brake
+actively.
+
+ESC
+Electronic Speed Controller. Converts binary values from -100 to 100
+to the electrical high-current impulses that the motor needs. Can be
+configured for various speeds.
+
+fresta
+An older name for the MOPED project, which is still visible in some places.
+
+GPIO
+General Purpose I/O. Some of the pins on a Raspberry Pi can be read or
+written freely by software, either polling or interrupt-driven,
+conveying one bit of information.
+
+gyro
+A subfunction of the IMU, which presents the angular speed around the three
+axes.
+
+I2C
+
+IMU
+Inertial Motion Unit. A device which measurs motion, for example acceleration
+and gyro (see gyro).
+
+LED
+Light Emitting Diode. On the front of the car are two yellow and one red
+LED, which can be controlled by writing to the appropriate autosar port.
+See also ACT LED.
+
+MQTT
+
+PIRTE
+
+plugin
+A Java program intended to be run on the SCU or VCU as an autosar task.
+
+port
+A communication abstraction on autosar: communication between autosar
+tasks (on the same or different nodes), as well as reading from sensors and
+writing to actuators, is done by reading/writing to ports.
+
+SCU
+Sensor Control Unit.  One of the three Raspberry Pi's on the car. It
+runs autosar and is named for its handling of sensors.
+
+sensor
+A device which conveys information about the environment to a computer,
+for example temperature, speed, distance, etc.
+
+SPI
+
+squawk
+An implementation of a Java virtual machine, for use on autosar.
+
+TCU
+Telematic control unit. One of the three Raspberry Pi's on the car. It 
+runs Linux and handles the communication with the external world.
+
+trusted server
+The trusted server manages the plugins which are available for use. It
+is trusted in the sense that the cars only accept plugins from this server.
+
+UART
+
+VCU
+Vehicle control unit. One of the three Raspberry Pi's on the car. It
+runs autosar and is named for its handling of the motor and steering.
+
+VIN
+Vehicle Identity Number (but it may be any name). A short readable name
+which identifies a car.
