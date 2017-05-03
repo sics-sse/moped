@@ -15,6 +15,9 @@ on the card gets half moved to the read-only position when the card is
 inserted, and that is enough. Slide it back and take care to not let that
 edge of the card rub on the socket when inserting it.
 
+XXX: this is probably not relevant for the new micro-SD cards
+
+
 The car starts and the TCU contacts the server, but the VCU (or SCU) doesn't
 do anything.
 It happens (one time in 20?) that the VCU/SCU doesn't boot properly when
@@ -42,12 +45,7 @@ on a smartphone not started.
 
 After doing some action on the TCU and restarting, it seems nothing changed.
 If you restart directly after changing files, the changes may not have been
-written to the card. Always do 'sync' before restarting after changing files.
-
-The server claims to have no contact with the car, although both are running.
-If the server is started after the car has failed to reach it, or an old instance
-of the server was stopped, no new connection is established. Restart the car.
-(This has been changed now.)
+written to the card. Always do 'sync' before restarting after altering files.
 
 A plugin can be installed and run on the actual car but not on the
 simulator, or the other way around, although it only uses ports supported

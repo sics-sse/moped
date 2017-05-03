@@ -37,11 +37,7 @@ output, it means that the Can reception works, but PIRTE is not
 running.
 
 ACT LED blinking (the first LED on the Raspberry Pi board)
- The LED blinks in a pattern that is described by a sequence of
- hexadecimal digits, 1-f, representing the time the LED is on or off,
- where f is about one second. The first nonzero digit represents the
- LED being on.
-
+ (for defining the blinking pattern, see moped-actuators.txt)
  The normal state is 121f; that is, a rapid on-off-on followed by off for
  one second.
 
@@ -158,23 +154,23 @@ and the commands p, a and w
 
 When writing a plugin, don't forget super(args) in the constructor.
 
+----------------------------------------
 New debugging idea: connect the serial output from the SCU to the UART of
 the TCU, and read from its /dev/ttyAMA0.
-x
+
 Connect UART pins on SCU to those on TCU (RX to TX, etc.)
-x
+
 Stopping /etc/agetty on TCU:
 sudo systemctl stop serial-getty@ttyAMA0.service
 sudo bash
 root@raspberrypi:/home/pi# cat < /dev/ttyAMA0
-x
+
 sudo bash
 systemctl stop serial-getty@ttyAMA0.service
 cat < /dev/ttyAMA0
-x
-/dev/ttyAMA0 is already at the right speed etc.
-x
-It works fine.
-x
-But it seems to take a bit of cpu from the other things running.
 
+/dev/ttyAMA0 is already at the right speed etc.
+
+It works fine.
+
+But it seems to take a bit of cpu from the other things running.

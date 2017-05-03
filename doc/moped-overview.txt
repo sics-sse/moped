@@ -84,12 +84,6 @@ The VCU and SCU can communicate with each other (for example one
 plugin on VCU using the distance read on SCU to affect the driving),
 and also send data to the TCU for publication using MQTT.
 
-The flow of information between TCU and server is currently in a state
-of flux, so is not described in detail here. The intent is that when a
-car is restarted, it should ask the server for new things to be
-installed.
-
-
 --------------------------------------------------
 Additional documentation apart from these files:
 

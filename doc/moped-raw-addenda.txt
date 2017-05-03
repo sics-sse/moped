@@ -110,7 +110,14 @@ adjust cogwheels
 
 colliding with a water-filled watering can: 9-12 m/s^2.
 
+important files in autosar
+
+things done for NGEA cases: 112 server, passenger app etc.
+
+diagrams
+
 ============================================================
+LOG: look before line 10000
+
 look at my paper notes
-look at git log
 

@@ -11,7 +11,8 @@ lit, the battery will soon run out (then all lights will flicker).
 Only two red lights are lit in the interval 6.6-7.2V. One will flicker for
 a short while and then go out. Then it's time to turn off.
 
-See moped-sensors.txt
+XXX: Copy from LOG-sensor-battery
+
 
 * Charging the battery
 

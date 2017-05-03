@@ -22,7 +22,7 @@ with the camera and opencv
 
 on TCU
 
-TODO: copy text from LOG-camera
+XXX: Optipos, server, maps, settings, error range, etc.
 
 ============================================================
 
@@ -38,6 +38,8 @@ A template is also defined there, which consists of a JSON structure. It
 is filled in with the key and value of what is written to the part in
 the form "key|value".
 
+XXX: the two servers often used
+
 ============================================================
 
 VCU and SCU have numbers: 2 = VCU and 3 = SCU. When relevant, 1 = TCU.
@@ -49,10 +51,6 @@ Tips and tricks
 If only the SCU (or VCU) needs to be restarted (because it got stuck,
 or because its SD card needs to be updated), pull its power cable and
 put it in again.
-
-When doing file operations on the TCU and then restarting the car, the
-operations sometimes turn out to be undone. I think it's important
-to do "sync" before restarting.
 
 The dependencies within the modules are far from understood, so it's
 best to always (yes, always) do a 'clean' operation before rebuilding.
@@ -80,6 +78,8 @@ is ignored on autosar. The VM functions work on hosted platforms too,
 though. So always use the VM functions in plugins.
 
 ============================================================
+
+XXX: this is for 1st generation
 
 Time taken to get the car started:
 

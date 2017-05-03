@@ -3,6 +3,9 @@
 The car has three Raspberry Pi 1 (called rpi below) boards, model B revision 2,
 called TCU, SCU and VCU.
 
+XXX: that was 1st generation; now we have 1B+ and 3
+
+
 TCU = telemetric control unit
 SCU = sensor
 VCU = vehicle
@@ -16,15 +19,15 @@ right wheels.
 
 SCU has some other sensors.
 
-When looking down at the car in its forward direction, the SCU is at
-the front, the TCU at the left and the VCU at the right.
-
 
 TCU runs Linux and handles all communication with the outside world.
 It has an ethernet socket and two USB sockets, of which one should have
 a wifi dongle (and the other may be connected to a keyboard). It has
 a video socket, for connecting a screen. (So do the others, but there
 these sockets are not used.)
+
+XXX: RPi 3 needs no dongle
+
 
 SCU and VCU are very similar. They run autosar, but are not meant to run
 exactly the same MOPED RTS code - the last building step is different.
@@ -42,27 +45,10 @@ Under the TCU, next to the battery, sits an ADC (analog to digital)
 converter. In the current configuration, it is taking input from the
 power supply, for measuring the voltage level.
 
-In front of the ADC, there is an accelerator/gyro measuring unit.
-
-The two cars we have here, I call simply car1 and car2. They have these
-numbers on their rpi's:
-
-car1:
-TCU	12
-VCU	 2
-SCU	11
-
-car2:
-TCU	 8
-VCU	 5
-SCU	10
-
-The numbers actually are drawn on the CAN bus boards, so if those are
-replaced, the numbers change.
+XXX: write about what identifies a car
 
 
-On each of the cars, there is a camera, pointing upwards, sitting in
-front of the TCU.
+On each of the cars, there is a camera, pointing upwards
 
 Output (written by VM.println or printf) from SCU and VCU can be seen
 by connecting a serial cable to the UART pins. I used one with USB and
@@ -86,25 +72,9 @@ no corresponding heartbeat function.
 
 There are lights for indicating the power level, see moped-battery.txt.
 
-The cars behave slightly differently at low motor speed: one of them
-either runs smoothly or not at all at the lowest speed, and the other
-jerks a little.
-
-
-The colours below may be conventional or not; they are the colours used
-in the current wiring on these cars.
-
-
-* Serial data
-rpi pin 6 is connected to black on an USB cable
-8 to yellow
-10 to one more (orange, it seems)
 
 http://www.ftdichip.com/Support/Documents/DataSheets/Cables/DS_TTL-232R_RPi.pdf
 
-It seems it still works if the connections to rpi pins 6 and 10 change
-places, because I did that accidentally, but what this means
-electrically, I don't know.
 
 There are serial-USB cables which have four pins out. The colours seem
 to be black, red, white, and one more. Don't use the red one. The
@@ -121,13 +91,6 @@ A resistor is added in series to Echo, to reduce the voltage from it
 from 5V to 3.3V.
 
 Google "hc sr04 raspberry pi" - there seem to be several solutions.
-
-rpi pin 17 (5V) is connected (blue) to Vcc
-15 (GPIO22) to Trig (green)
-13 (GPIO27) to Echo (white)
-25 (ground) to Gnd (black)
-
-There are several 5V and ground pins that can be used.
 
 * I2C
 MPU9150

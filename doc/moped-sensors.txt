@@ -21,7 +21,7 @@ If the speed sensor unit is fastened with a wire, it may happen that
 the wire gets in the way of the path of the light, causing some or all of
 the reflectors to be ignored.
 
-TODO: copy text from LOG-sensor-speed
+XXX: front, rear, left, right, averaging
 
 * distance (SCU, port 13)
 
@@ -29,7 +29,7 @@ Minimum distance is 3 cm. 37xx is maximum, but it seems to mean that it
 doesn't detect the echo. 637 is the highest value I have received which
 represents a real distance.
 
-The area reached by the sensor has an angle of about 15 degrees in
+The area reached by the sensor has an angle of about 30 degrees in
 both directions from the forward direction. I don't know if the shape
 is conical, or if it is wider in the left-right direction that up-down.
 It points slightly upwards so it will miss the floor, or if it hits
@@ -41,7 +41,7 @@ It seems that it only detects the echo if its angle to the reflecting surface is
 
 * battery (VCU, port 7)
 
-Copy from LOG-sensor-battery, moped-battery.txt
+See moped-battery.txt
 
 * position (VCU, port 8)
 

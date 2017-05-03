@@ -10,6 +10,9 @@
 
 Minimum turning diameter: 166 cm
 
+XXX: configuring the servo in main.c, toe-in, hysteresis
+XXX: measuring steering: use ang speed
+
 
 * speed (VCU, port 3)
 
@@ -34,6 +37,8 @@ The minimum value for which the car moves is 7.
 
 Braking distance for speed yyy: xxx
 
+XXX: function of battery level, discreteness
+XXX: measuring speed: see speed sensor
 
 * LED (VCU)
 
@@ -47,10 +52,17 @@ LED 3 = left yellow
 
 Send a string like this to the port: "3|1".
 
+XXX: which port?
+XXX: the Led plugin
+
 The ACT LED on the Raspberry Pi card can also be controlled this way,
 by using the LED number -1. The value is then not 0 or 1, but a blinking
 pattern. This can be used on the SCU as well.
 
+The LED blinks in a pattern that is described by a sequence of
+hexadecimal digits, 1-f, representing the time the LED is on or off,
+where f is about one second. The first nonzero digit represents the
+LED being on.
 
 
 TODO: put all information in the table in Plugin Manual here.

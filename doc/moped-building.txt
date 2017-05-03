@@ -250,6 +250,8 @@ To VCU and SCU, copy autosar/boot/bootcode.bin and start.elf.
 Copy autosar/SCU/SCU-kernel.img to kernel.img on the SCU card.
 Copy autosar/VCU/VCU-kernel.img to kernel.img on the VCU card.
 
+XXX: now there are files for two different CAN frequencies, and we can put all files on each card, and only change config.txt to point to the correct one.
+
 See also moped/autosar/readme.txt
 
 Insert the cards in the respective slots on the car.
