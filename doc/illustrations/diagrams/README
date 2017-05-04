@@ -1,0 +1,12 @@
+Commands for showing the data:
+
+
+tdvis 'o drive-speed.dat' 'p pa 1 3' 'p pa 1 2' 'hide cov' 'hide pairlines' 'plotlinewidth 4'
+
+tdvis 'o battery.dat' 'p s 1'
+
+tdvis 'o brakingdist.dat' 'p pa 1 2' 'hide cov' 'hide pairlines' 'plotlinewidth 4'
+
+tdvis 'o steeringhysteresis.dat' 'p pa 1 2' 'hide cov' 'hide pairlines' 'plotlinewidth 4'
+"angle" is not an angle, but a length measurement as the angle is
+projected on a surface
