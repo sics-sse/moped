@@ -98,7 +98,7 @@ static void copyPcbParts( OsTaskVarType *pcb, const OsTaskConstType *r_pcb ) {
  * task.
  */
 
-extern int saved_r2;
+//extern int saved_r2;
 
 char mem1000[16*64];
 
@@ -107,6 +107,7 @@ void InitOS( void ) {
 	OsTaskVarType *tmpPcbPtr;
 	OsIsrStackType intStack;
 
+#if 0
 	int b = 0x1000;
 	b = 0;
 	b = 0x7fecc00;
@@ -116,6 +117,7 @@ void InitOS( void ) {
 	for (i = 0; i < 16*64; i++) {
 	  mem1000[i] = p[i];
 	}
+#endif
 
 	Os_CfgValidate();
 
