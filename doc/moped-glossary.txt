@@ -16,6 +16,7 @@ An operating system commonly used in vehicles. The two nodes SCU and VCU
 run autosar on the car.
 
 BEC
+See UBEC.
 
 CAN
 A hardware bus (with accompanying software protocol) commonly used in
@@ -24,8 +25,13 @@ of two cables, one special board on each car sitting on the Raspberry
 Pi and a terminating resistor on one of the boards.
 
 ECM
+External Communication Manager. The Java program running on the TCU
+mediating between the trusted server and the autosar nodes VCU and
+SCU. Also propagating MQTT messages out.
 
 ECU
+Electronic Control Unit, a small computer with a limited number of tasks,
+used in a modern vehicle.
 
 electric brake
 When changing the input signal to the motor, 0 means that the car will
@@ -51,6 +57,8 @@ A subfunction of the IMU, which presents the angular speed around the three
 axes.
 
 I2C
+Inter-Integrated Circuit. A protocol for connecting peripheral
+devices to a Raspberry Pi. See also SPI.
 
 IMU
 Inertial Motion Unit. A device which measurs motion, for example acceleration
@@ -62,8 +70,13 @@ LED, which can be controlled by writing to the appropriate autosar port.
 See also ACT LED.
 
 MQTT
+MQ Telemetry Transport or Message Queue Telemetry Transport. An internet
+protocol for communicating by storing messages on a server in the form of
+values associated with hierarchical keys.
 
 PIRTE
+Plugin Runtime Environment. The addition to autosar that enables the
+running of Java plugins.
 
 plugin
 A Java program intended to be run on the SCU or VCU as an autosar task.
@@ -82,6 +95,8 @@ A device which conveys information about the environment to a computer,
 for example temperature, speed, distance, etc.
 
 SPI
+Serial Peripheral Interface [bus]. A protocol for connecting peripheral
+devices to a Raspberry Pi. See also I2C.
 
 squawk
 An implementation of a Java virtual machine, for use on autosar.
@@ -95,6 +110,13 @@ The trusted server manages the plugins which are available for use. It
 is trusted in the sense that the cars only accept plugins from this server.
 
 UART
+Universal Asynchronous Receiver/Transmitter, used for serial communication.
+Here, mostly for debugging, by connecting a terminal emulator to the
+SCU or VCU.
+
+UBEC
+Universal Battery Elimination Circuit. Connected to the battery and provides
+a constant voltage to the Raspberry Pi's and the servo.
 
 VCU
 Vehicle control unit. One of the three Raspberry Pi's on the car. It
