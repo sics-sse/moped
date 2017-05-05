@@ -164,7 +164,7 @@ struct ecu_config configs[] = {
   // VCU car 4
   {"b827ebcbdd68", "servo 1", NULL, -120, 120, 0},
   // VCU car 5
-  {"b827eb1f2271", "servo 1", NULL, -125, 125, -21},
+  {"b827eb1f2271", "servo 1", NULL, -109, 70, -16},
 };
 
 #define DEFAULT_SERVO_DIRECTION (1)
@@ -209,7 +209,7 @@ static void parse_config(void) {
 
 extern uint32 act_led_gpio;
 
-extern int saved_r2;
+//extern int saved_r2;
 
 extern char mem1000[];
 
@@ -219,6 +219,7 @@ static void show_memory(void) {
   char *p = (char *) mem1000;
   int i, k;
 
+#if 0
   printf("saved_r2 = %d\r\n", saved_r2);
 
   for (k = 0; k < 64; k++) {
@@ -230,6 +231,7 @@ static void show_memory(void) {
     }
     printf("\r\n");
   }
+#endif
 }
 
 void StartupTask( void ) {
