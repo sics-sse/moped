@@ -14,6 +14,9 @@ def sign(x):
     return 0
 
 def start_new_thread(f, args):
+    return start_new_thread_really(f, args)
+
+def start_new_thread_really(f, args):
     # can be done much better with packaging.Version or something
     version = sys.version.split(" ")[0].split(".")
     if int(version[1]) < 3:
