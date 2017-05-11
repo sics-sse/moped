@@ -10,7 +10,7 @@ def tologaux(str0, level):
         d = -1
 
     str = "(speed %d time %.3f %f %f %f %f %f %3f) %s" % (
-        g.inspeed,
+        g.finspeed,
         time.time() - g.t0,
         g.ppx,
         g.ppy,
