@@ -1,6 +1,8 @@
 import smbus
 import time
 
+import faulthandler
+
 from math import sqrt, cos, sin, pi, atan2, acos, asin
 
 import nav_log
@@ -164,6 +166,8 @@ def readgyro0():
     count = 0
     countt = time.time()
 
+    g.pauseimu = 0.0
+
     try:
 
         tlast = time.time()
@@ -175,6 +179,12 @@ def readgyro0():
                 newt = time.time()
                 #print("readgyro0 1000 times = %f s" % (newt-countt))
                 countt = newt
+#                if g.pauseimu == 0.0:
+#                    g.pauseimu = 1.5
+
+            if g.pauseimu > 0.0:
+                time.sleep(g.pauseimu)
+                g.pauseimu = 0.0
 
             w = g.bus.read_i2c_block_data(imuaddress, 0x47, 2)
             high = w[0]
@@ -213,10 +223,14 @@ def readgyro0():
 
             t2 = time.time()
             dt = t2-t1
+            if dt > g.dtlimit:
+                print("%f dt %f" % (t2-g.t0, dt))
             if dt > 0.5:
-                # pretend we crashed
-                g.crash = 10.0
+                #faulthandler.dump_traceback()
                 nav_log.tolog("readgyro0 paused for %f s" % dt)
+                if dt > 1.5:
+                    # we ought to stop and wait
+                    pass
 
             t1 = t2
 
