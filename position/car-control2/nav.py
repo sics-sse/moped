@@ -42,11 +42,12 @@ if not g.simulate:
     import nav_imu
 
 g.standalone = True
+g.standalone = False
 
 import nav_log
 from nav_log import tolog, tolog0
 
-from nav_util import sign, dist, start_new_thread
+from nav_util import sign, dist, start_new_thread, start_new_thread_really
 
 if not g.simulate:
     import nav_mqtt
@@ -230,6 +231,8 @@ g.angdiff = 0.0
 g.ppxdiff = 0.0
 g.ppydiff = 0.0
 
+g.dtlimit = 0.2
+
 # set once by nav.py
 g.t0 = None
 
@@ -238,7 +241,7 @@ g.t0 = None
 g.speedfactor = 1.0
 if g.simulate:
     g.speedfactor = 0.1
-    g.speedfactor = 1.0
+    #g.speedfactor = 1.0
 
 # set by nav_mqtt
 g.battery = 0.0
@@ -335,7 +338,8 @@ def heartbeat():
     while True:
         g.heartn += 1
         if g.heartn - g.heartn_r > 1:
-            print("heart %d %d: %d" % (g.heartn, g.heartn_r, g.heartn - g.heartn_r))
+            pass
+            #print("heart %d %d: %d" % (g.heartn, g.heartn_r, g.heartn - g.heartn_r))
         nav_tc.send_to_ground_control(
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
@@ -423,14 +427,14 @@ def init():
 
     nav_signal.setleds(0, 7)
 
-    if not g.standalone:
-        start_new_thread(nav_tc.connect_to_ground_control, ())
-
     suffix = ""
     if g.simulate:
         suffix = "-" + g.VIN
     g.logf = open("navlog" + suffix, "w")
     g.accf = open("acclog" + suffix, "w", 1024)
+
+    if not g.standalone:
+        start_new_thread(nav_tc.connect_to_ground_control, ())
 
     #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
@@ -456,7 +460,7 @@ def init():
     if not g.simulate:
         start_new_thread(wm.readspeed2, ())
     if not g.simulate:
-        start_new_thread(nav_imu.readgyro, ())
+        start_new_thread_really(nav_imu.readgyro, ())
     if not g.simulate:
         start_new_thread(driving.senddrive, ())
     if not g.simulate:
@@ -531,13 +535,13 @@ def keepspeed():
         else:
             g.speedtime = None
 
-        if False:
-            print("outspeedcm %f finspeed %f outspeedi %d spi %d sp %f outspeed %f" % (
-                    g.outspeedcm, g.finspeed, outspeedi, spi, sp, g.outspeed))
-
         if g.outspeed == sp and sp != 0:
 #            pass
             continue
+
+        if False:
+            print("outspeedcm %f finspeed %f outspeedi %d spi %d sp %f outspeed %f" % (
+                    g.outspeedcm, g.finspeed, outspeedi, spi, sp, g.outspeed))
 
         g.outspeed = sp
 
@@ -646,7 +650,30 @@ def m1():
 def m2():
     g.goodmarkers = [(7, 'all', 0.45), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all', 0.45)]
 
+def m3(q = 0.5):
+    g.goodmarkers = None
+    g.minquality = q
+
 def wait1():
     nav_tc.send_to_ground_control("waitallcars\n")
     x = g.queue.get()
     g.queue.task_done()
+
+def follow():
+    speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49,
+              # 93 to 100 haven't been run yet
+              53, 57, 73, 77, 81, 85, 89, 93, 97, 100]
+
+    sp = None
+    while True:
+        oldsp = sp
+        x = (g.finspeed-10)/2
+        sp = x-10
+        if sp < 0:
+            sp = 0
+        print("%f %f" % (g.finspeed, sp))
+        if sp > 25:
+            sp = 0
+        if sp != oldsp:
+            driving.drive(sp)
+        time.sleep(0.5)
