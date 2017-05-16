@@ -10,7 +10,7 @@
  */
 
 #include "Dma.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 /**
  * DMA initialization. Basically each defined DMA channel is enabled.

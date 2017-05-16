@@ -9,7 +9,7 @@
 #include "Os.h"
 #include "usb_semaphore.h"
 #include "usb_util.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Std_Types.h"
 #include "Uart.h"
 #include "internal.h"

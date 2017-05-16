@@ -6,7 +6,7 @@
  */
 
 #include <Dma.h>
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 const Dma_ChannelConfigType DmaChannelConfig [DMA_NUMBER_OF_CHANNELS] =
 {

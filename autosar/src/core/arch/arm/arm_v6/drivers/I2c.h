@@ -8,7 +8,7 @@
 #ifndef MPU_9150_H_
 #define MPU_9150_H_
 #include "Std_Types.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "irq_types.h"
 
 /**

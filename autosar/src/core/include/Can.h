@@ -167,7 +167,7 @@ typedef union {
  /* @req CAN429 */
 typedef uint8 Can_HwHandleType;
 
-#if defined(CFG_ARM_V6)
+#if defined(CFG_ARM)
 #include "Os.h"
 
 typedef struct {

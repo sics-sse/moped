@@ -8,7 +8,7 @@
 #include "Rte_LedSWC.h"
 #include "Rte_Internal.h"
 #include "MOPED_DEBUG.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 boolean led_init = false;
 static void Led_Init(void){

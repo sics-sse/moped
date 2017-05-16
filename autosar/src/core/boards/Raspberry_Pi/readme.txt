@@ -3,17 +3,17 @@ This file specifies several changes for merging Raspberry Pi code to AUTOSAR4.0 
 
 1. boards/board_common.mk
    
-   #Raspberry Pi, ARM processor, V6 architecture, 
-   obj-$(CFG_ARM_V6) += crt0.o
-   obj-$(CFG_ARM_V6) += led.o
-   obj-$(CFG_ARM_V6) += bcm2835.o
-   obj-$(CFG_ARM_V6) += Uart.o
+   #Raspberry Pi, ARM processor, V6/V7/V8 architecture, 
+   obj-$(CFG_ARM_RPI) += crt0.o
+   obj-$(CFG_ARM_RPI) += led.o
+   obj-$(CFG_ARM_RPI) += bcm283x.o
+   obj-$(CFG_ARM_RPI) += Uart.o
    
    #for Pi_PWM
-   obj-$(USE_PWM)-$(CFG_ARM_V6) += Pwm.o
+   obj-$(USE_PWM)-$(CFG_ARM_RPI) += Pwm.o
 
    #for Pi_CAN
-   obj-$(USE_SPI)-$(CFG_ARM_V6) += mcp2515.o 
+   obj-$(USE_SPI)-$(CFG_ARM_RPI) += mcp2515.o 
 
 2. scripts/rules.mk
    for output the .bin file. 
@@ -33,7 +33,7 @@ This file specifies several changes for merging Raspberry Pi code to AUTOSAR4.0 
 4. system/kernel/isr.c
    in function void *Os_Isr( void *stack, int16_t vector )
    
-   #if defined(CFG_HCS12D) || defined(CFG_ARM_V6)   // you will find it!
+   #if defined(CFG_HCS12D) || defined(CFG_ARM_RPI)   // you will find it!
    	 isrPtr->constPtr->entry();
    #else
 	 Irq_Enable();
@@ -43,8 +43,8 @@ This file specifies several changes for merging Raspberry Pi code to AUTOSAR4.0 
    
 5: include/arm/Cpu.h
 
-   #elif defined(CFG_ARM_V6)
-   #include "bcm2835.h"
+   #elif defined(CFG_ARM_RPI)
+   #include "bcm283x.h"
    
   
 6. if you find there are hundreds unsolved MACROs, do not worry. There is a possible solution that is 

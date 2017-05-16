@@ -16,7 +16,7 @@
 #include "usb_hub_defs.h"
 #include "usb_std_defs.h"
 #include "usb_subsystem.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "isr.h"
 #include "irq_types.h"
 #include "Os.h"

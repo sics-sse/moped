@@ -17,8 +17,8 @@
 
 #include <stdint.h>
 
-#if defined(CFG_ARM_V6)
-#include "bcm2835.h"
+#if defined(CFG_ARM_RPI)
+#include "bcm283x.h"
 #endif
 
 #include "Std_Types.h"

@@ -10,7 +10,7 @@
 
 #include "Platform_Types.h"
 #include "usb_stddef.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "semaphore.h"
 
 

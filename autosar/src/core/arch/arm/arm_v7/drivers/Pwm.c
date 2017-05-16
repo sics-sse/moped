@@ -30,7 +30,7 @@
 
 #include "Pwm.h"
 #include "Dma.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 /************************************************************************************/
 /*									Definitions 	 		 						*/

@@ -17,7 +17,7 @@
 #include "Dio.h"
 #include "Det.h"
 #include <string.h>
-#include "bcm2835_Types.h"
+#include "bcm283x_Types.h"
 #include "Uart.h"
 
 gpio_port_t IOPORT0;

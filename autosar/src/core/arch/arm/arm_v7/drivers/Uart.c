@@ -7,9 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "led.h"
-#include "bcm2835_Types.h"
 #include "Std_Types.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 #include "isr.h"
 #include "irq_types.h"

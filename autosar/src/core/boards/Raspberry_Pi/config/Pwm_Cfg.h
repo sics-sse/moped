@@ -8,7 +8,7 @@
 #ifndef PWM_CFG_H_
 #define PWM_CFG_H_
 
-//#include "bcm2835.h"
+//#include "bcm283x.h"
 //#include "Dma.h"
 
 #define PWM_DEV_ERROR_DETECT        STD_ON

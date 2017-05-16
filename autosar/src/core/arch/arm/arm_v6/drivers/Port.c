@@ -18,7 +18,7 @@
 #include "Det.h"
 #include "string.h"
 #include "Std_Types.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 gpio_port_t IOPORT0;
 gpio_port_t IOPORT1;

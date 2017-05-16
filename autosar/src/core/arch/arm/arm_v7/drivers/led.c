@@ -5,8 +5,7 @@
  *      Author: Zhang Shuzhou
  */
 #include "led.h"
-#include "bcm2835_Types.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Std_Types.h"
 
 void Task1_off(){

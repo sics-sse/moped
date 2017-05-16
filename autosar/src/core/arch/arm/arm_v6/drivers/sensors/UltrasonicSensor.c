@@ -15,7 +15,7 @@
  *
  */
 
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Sensors.h"
 
 /* Records whether this module has already been initialized */

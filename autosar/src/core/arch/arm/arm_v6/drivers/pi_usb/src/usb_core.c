@@ -17,7 +17,7 @@
 #include "usb_std_defs.h"
 #include "usb_subsystem.h"
 #include "Uart.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 boolean Message_Done = false;
 /** Maximum number of simultaneous USB devices supported.  */
 #define MAX_NUSBDEV 16

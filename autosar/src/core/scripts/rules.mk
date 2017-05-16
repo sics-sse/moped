@@ -52,7 +52,7 @@ def-$(USE_DEBUG_PRINTF) += USE_DEBUG_PRINTF
 
 not_avail = $(filter-out $(MOD_AVAIL),$(sort $(MOD_USE)))
 ifneq ($(not_avail),)
-$(error Trying to build a module that is not available: $(not_avail))
+	$(error Trying to build a module that is not available: $(not_avail))
 endif
 
 COMPILER?=gcc
@@ -78,28 +78,28 @@ endif
 # Check cross compiler setting against default from board config
 ifeq (${COMPILER},cw)
 ifneq (${CW_COMPILE},${DEFAULT_CW_COMPILE})
-${warning Not using default cross compiler for architecture.}
-${warning CW_COMPILE:            ${CW_COMPILE} [${origin CW_COMPILE}]}
-${warning DEFAULT_CW_COMPILE:    ${DEFAULT_CW_COMPILE} [${origin DEFAULT_CW_COMPILE}]}
+	${warning Not using default cross compiler for architecture.}
+	${warning CW_COMPILE:            ${CW_COMPILE} [${origin CW_COMPILE}]}
+	${warning DEFAULT_CW_COMPILE:    ${DEFAULT_CW_COMPILE} [${origin DEFAULT_CW_COMPILE}]}
 endif
 else ifeq (${COMPILER},iar)
 ifneq (${IAR_COMPILE},${DEFAULT_IAR_COMPILE})
-${warning Not using default cross compiler for architecture.}
-${warning IAR_COMPILE:            ${IAR_COMPILE} [${origin IAR_COMPILE}]}
-${warning DEFAULT_IAR_COMPILE:    ${DEFAULT_IAR_COMPILE} [${origin DEFAULT_IAR_COMPILE}]}
+	${warning Not using default cross compiler for architecture.}
+	${warning IAR_COMPILE:            ${IAR_COMPILE} [${origin IAR_COMPILE}]}
+	${warning DEFAULT_IAR_COMPILE:    ${DEFAULT_IAR_COMPILE} [${origin DEFAULT_IAR_COMPILE}]}
 endif
 else ifeq (${COMPILER},diab)
 ifneq (${DIAB_COMPILE},${DEFAULT_DIAB_COMPILE})
-${warning Not using default cross compiler for architecture.}
-${warning DIAB_COMPILE:            ${DIAB_COMPILE} [${origin DIAB_COMPILE}]}
-${warning DEFAULT_DIAB_COMPILE:    ${DEFAULT_DIAB_COMPILE} [${origin DEFAULT_DIAB_COMPILE}]}
+	${warning Not using default cross compiler for architecture.}
+	${warning DIAB_COMPILE:            ${DIAB_COMPILE} [${origin DIAB_COMPILE}]}
+	${warning DEFAULT_DIAB_COMPILE:    ${DEFAULT_DIAB_COMPILE} [${origin DEFAULT_DIAB_COMPILE}]}
 endif
 else
 ifneq (${DEFAULT_CROSS_COMPILE},)
 ifneq (${CROSS_COMPILE},${DEFAULT_CROSS_COMPILE})
-#${warning Not using default cross compiler for architecture.}
-#${warning CROSS_COMPILE:         ${CROSS_COMPILE} [${origin CROSS_COMPILE}]}
-#${warning DEFAULT_CROSS_COMPILE: ${DEFAULT_CROSS_COMPILE} [${origin DEFAULT_CROSS_COMPILE}]}
+	#${warning Not using default cross compiler for architecture.}
+	#${warning CROSS_COMPILE:         ${CROSS_COMPILE} [${origin CROSS_COMPILE}]}
+	#${warning DEFAULT_CROSS_COMPILE: ${DEFAULT_CROSS_COMPILE} [${origin DEFAULT_CROSS_COMPILE}]}
 endif
 endif
 endif
@@ -165,8 +165,8 @@ endif
 deprecated-libs += $(ROOTDIR)/libs/libkernel_$(ARCH_MCU).a
 deprecated-libs-included = $(filter $(deprecated-libs),$(libitem-y))
 ifneq ($(deprecated-libs-included),)
-$(info >>>> Ignoring deprecated lib dependencies: $(deprecated-libs-included)')
-libitem-y := $(filter-out $(deprecated-libs),$(libitem-y))
+	$(info >>>> Ignoring deprecated lib dependencies: $(deprecated-libs-included))
+	libitem-y := $(filter-out $(deprecated-libs),$(libitem-y))
 endif
 
 # Automatic preprocessing of std linkscripts
@@ -174,9 +174,9 @@ old-ldcmdfile = $(ROOTDIR)/$(ARCH_PATH-y)/scripts/linkscript_$(COMPILER).ldf
 new-ldcmdfile = linkscript_gcc.ldp
 old-ldcmdfile-used = $(filter $(old-ldcmdfile),$(ldcmdfile-y))
 ifneq ($(old-ldcmdfile-used),)
-$(info >>>> Changing linkscript to preprocessed version: $(old-ldcmdfile) -> $(new-ldcmdfile)')
-ldcmdfile-y := $(subst $(old-ldcmdfile),$(new-ldcmdfile),$(ldcmdfile-y))
-vpath %.ldf $(ROOTDIR)/$(ARCH_PATH-y)/scripts
+	$(info >>>> Changing linkscript to preprocessed version: $(old-ldcmdfile) -> $(new-ldcmdfile))
+	ldcmdfile-y := $(subst $(old-ldcmdfile),$(new-ldcmdfile),$(ldcmdfile-y))
+	vpath %.ldf $(ROOTDIR)/$(ARCH_PATH-y)/scripts
 endif
 
 #####
@@ -215,19 +215,19 @@ LINT_NICE_EXCLUDE_PATHS := $(foreach path,$(LINT_NICE_EXCLUDE_PATHS),$(path)/)
 
 ifneq ($(PCLINT),)
 define run_pclint
-$(if 
-$(filter $(dir $(abspath $<)),$(LINT_NICE_EXCLUDE_PATHS)),
-$(info $(abspath $<):0:0: Info: Not running lint check on $(abspath $<)),
-$(Q)$(PCLINT) $(lint_extra) $(addprefix $(lintinc_ext),$(inc-y)) $(addprefix $(lintdef_ext),$(def-y) $(DEF_$@)) $(abspath $<))
+	$(if 
+	$(filter $(dir $(abspath $<)),$(LINT_NICE_EXCLUDE_PATHS)),
+	$(info $(abspath $<):0:0: Info: Not running lint check on $(abspath $<)),
+	$(Q)$(PCLINT) $(lint_extra) $(addprefix $(lintinc_ext),$(inc-y)) $(addprefix $(lintdef_ext),$(def-y) $(DEF_$@)) $(abspath $<))
 endef
 endif
 
 ifneq ($(SPLINT),)
 define run_splint
-$(if 
-$(filter $(dir $(abspath $<)),$(LINT_NICE_EXCLUDE_PATHS)),
-$(info $(abspath $<):0:0: Info: Not running lint check on $(abspath $<)),
-$(Q)$(SPLINT) $(splint_extra) $(addprefix $(lintinc_ext),$(inc-y)) $(addprefix $(lintdef_ext),$(def-y) $(DEF_$@)) $(abspath $<))
+	$(if 
+	$(filter $(dir $(abspath $<)),$(LINT_NICE_EXCLUDE_PATHS)),
+	$(info $(abspath $<):0:0: Info: Not running lint check on $(abspath $<)),
+	$(Q)$(SPLINT) $(splint_extra) $(addprefix $(lintinc_ext),$(inc-y)) $(addprefix $(lintdef_ext),$(def-y) $(DEF_$@)) $(abspath $<))
 endef
 endif
 
@@ -292,7 +292,7 @@ all: module_config $(all-mod) $(all-mod-post) $(ROOTDIR)/binaries/$(board_name)
 	$(run_splint)
 
 # Assembler
-%.o: %.s
+%.o: %.S
 	@echo
 	@echo "  >> AS $(notdir $<)"
 	$(Q)$(AS) $(ASFLAGS) -o $(goal) $<
@@ -301,7 +301,7 @@ all: module_config $(all-mod) $(all-mod-post) $(ROOTDIR)/binaries/$(board_name)
 
 .SECONDARY %.s: # Don't remove *.s files (needed for debugging)
 
-%.s: %.sx
+%.S: %.sx
 	@echo
 	@echo "  >> CPP $(notdir $<)"
 	$(Q)$(CPP) $(CPP_ASM_FLAGS) $(CPPOUT) $@ $(addprefix -I,$(inc-y)) $(addprefix -D,$(def-y)) $<
@@ -348,20 +348,21 @@ $(build-hex-y): $(build-exe-y)
 $(build-bin-y): $(build-exe-y)
 	@echo
 	@echo "  >> OBJCOPY $@"   
-	$(Q)$(CROSS_COMPILE)objcopy -O binary $< $@	
+	$(Q)$(CROSS_COMPILE)objcopy -O binary $< $@
 
 # Linker
 $(build-exe-y): $(dep-y) $(obj-y) $(os-orti-y) $(sim-y) $(libitem-y) $(ldcmdfile-y)
 	@echo
 	@echo "  >> LD $@"
 ifeq ($(COMPILER),iar)
-	$(Q)$(LD) $(obj-y) $(LDFLAGS) -o $@ -I$(libpath-y) $(lib-y) $(libitem-y)	
+	$(Q)$(LD) $(obj-y) $(LDFLAGS) -o $@ -I$(libpath-y) $(lib-y) $(libitem-y)
 else ifeq ($(CROSS_COMPILE)$(COMPILER),gcc)
-	$(Q)$(CC) $(LDFLAGS) -Xlinker -Map=$(basename $(@F)).map -o $@ $(libpath-y) $(obj-y) $(lib-y) $(libitem-y) 	
+	$(Q)$(CC) $(LDFLAGS) -Xlinker -Map=$(basename $(@F)).map -o $@ $(libpath-y) $(obj-y) $(lib-y) $(libitem-y)
 else
 	$(Q)$(LD) $(LDFLAGS) $(LD_FILE) $(LD_FILE2)$(ldcmdfile-y) -o $@ $(libpath-y) $(LD_START_GRP) $(obj-y) $(lib-y) $(libitem-y) $(LD_END_GRP) $(LDMAPFILE)
 	$(do-memory-footprint)
 	$(do-memory-footprint2-y)
+	$(Q)$(CROSS_COMPILE)objdump -S $@ > $(@:.elf=.asm)
 endif #($(CROSS_COMPILE),)
 	@echo
 	@echo "  >>>>>>>  DONE  <<<<<<<<<"

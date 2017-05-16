@@ -15,7 +15,7 @@
 #include "Platform_Types.h"
 #include "usb_std_defs.h"
 #include "Uart.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 //temporary define
 #define hs2net(x) (unsigned) ((((x)>>8) &0xff) | (((x) & 0xff)<<8))

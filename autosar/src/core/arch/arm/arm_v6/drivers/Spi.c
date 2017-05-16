@@ -9,7 +9,7 @@
 
 #include <assert.h>
 #include "Spi.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Det.h"
 
 //#include "isr.h"

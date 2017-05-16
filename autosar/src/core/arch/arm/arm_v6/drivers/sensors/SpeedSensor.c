@@ -13,7 +13,7 @@
  */
 #include <stdio.h>
 
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 #include "isr.h"
 #include "irq_types.h"

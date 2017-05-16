@@ -7,7 +7,7 @@
 
 #include "semaphore.h"
 #include "usb_stddef.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 #include "usb_hcdi.h"
 #include "usb_core_driver.h"

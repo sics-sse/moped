@@ -8,7 +8,7 @@
 #include "Cpu.h"
 #include "usb_stddef.h"
 #include "pi_mailbox.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "pi_memory.h"
 #include "Uart.h"
 #include "semaphore.h"

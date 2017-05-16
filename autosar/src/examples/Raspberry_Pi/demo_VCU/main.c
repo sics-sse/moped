@@ -13,7 +13,7 @@
 #include "arc.h"
 #include "EcuM.h"
 
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 #include "MOPED_DEBUG.h"
 

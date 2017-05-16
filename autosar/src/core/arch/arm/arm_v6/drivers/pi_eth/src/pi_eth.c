@@ -8,7 +8,7 @@
 #include "Os.h"
 #include "Cpu.h"
 #include "Std_Types.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "usb_semaphore.h"
 #include "usb_core_driver.h"
 #include "usb_memory.h"

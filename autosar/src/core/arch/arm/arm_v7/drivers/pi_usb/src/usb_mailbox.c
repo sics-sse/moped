@@ -6,7 +6,7 @@
  */
 
 #include "usb_mailbox.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 #include "usb_semaphore.h"
 #include "usb_memory.h"

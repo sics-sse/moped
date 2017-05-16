@@ -1,12 +1,12 @@
 /*
- * bcm2835_Types.h
+ * bcm283x_Types.h
  *
  *  Created on: Mar 31, 2013
  *      Author: Zhang Shuzhou
  */
 
-#ifndef BCM2835_TYPES_H_
-#define BCM2835_TYPES_H_
+#ifndef BCM283X_TYPES_H_
+#define BCM283X_TYPES_H_
 
 #include "Std_Types.h"
 
@@ -36,4 +36,4 @@ typedef gpio_port_t *ioportid_t;
 
 
 
-#endif /* BCM2835_TYPES_H_ */
+#endif /* BCM283X_TYPES_H_ */

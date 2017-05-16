@@ -2,7 +2,7 @@
 #define _BCM2835_H_
 
 #include "Std_Types.h"
-#include "bcm2835_Types.h"
+#include "bcm283x_Types.h"
 
 /***********************************************************
  *-----------------------shuzhou add-----------------------
@@ -58,38 +58,38 @@ typedef unsigned long irqmask;
 /********************************************************************************/
 /*   		GPIO Registers (pp. 89-108 in BCM2835-ARM-Peripherals.pdf)			*/
 /* ******************************************************************************/
-#define GPFSEL0 	REG(0x20200000)
-//#define GPFSEL1 	REG(0x20200004)
-//#define GPFSEL2 	REG(0x20200008)
-//#define GPFSEL3 	REG(0x2020000C)
-//#define GPFSEL4 	REG(0x20200010)
-//#define GPFSEL5 	REG(0x20200014)
+#define GPFSEL0 	REG(0x3F200000)
+//#define GPFSEL1 	REG(0x3F200004)
+//#define GPFSEL2 	REG(0x3F200008)
+//#define GPFSEL3 	REG(0x3F20000C)
+//#define GPFSEL4 	REG(0x3F200010)
+//#define GPFSEL5 	REG(0x3F200014)
 
-#define GPSET0  	REG(0x2020001C)
-//#define GPSET1  	REG(0x20200020)
-#define GPCLR0  	REG(0x20200028)
-//#define GPCLR1  	REG(0x2020002C)
-#define GPLEV0		REG(0x20200034)
-//#define GPLEV1		REG(0x20200038)
+#define GPSET0  	REG(0x3F20001C)
+//#define GPSET1  	REG(0x3F200020)
+#define GPCLR0  	REG(0x3F200028)
+//#define GPCLR1  	REG(0x3F20002C)
+#define GPLEV0		REG(0x3F200034)
+//#define GPLEV1		REG(0x3F200038)
 
-#define GPEDS0      REG(0x20200040) 		//GPIO Pin Event Detect Status 0
-//#define GPEDS1      REG(0x20200044) 		//GPIO Pin Event Detect Status 1
-#define GPREN0      REG(0x2020004c) 		//GPIO Pin Rising Edge Detect Enable 0
-//#define GPREN1      REG(0x20200050) 		//GPIO Pin Rising Edge Detect Enable 1
-#define GPFEN0      REG(0x20200058) 		//GPIO Pin Falling Edge Detect Enable 0
-//#define GPFEN1      REG(0x2020005c) 		//GPIO Pin Falling Edge Detect Enable 1
-#define GPHEN0      REG(0x20200064) 		//GPIO Pin High Detect Enable 0
-//#define GPHEN1      REG(0x20200068) 		//GPIO Pin High Detect Enable 1
-#define GPLEN0      REG(0x20200070) 		//GPIO Pin Low Detect Enable 0
-//#define GPLEN1      REG(0x20200074) 		//GPIO Pin Low Detect Enable 1
-#define GPAREN0     REG(0x2020007c) 		//GPIO Pin Async. Rising Edge Detect 0
-//#define GPAREN1     REG(0x20200080) 		//GPIO Pin Async. Rising Edge Detect 1
-#define GPAFEN0     REG(0x20200088) 		//GPIO Pin Async. Falling Edge Detect 0
-//#define GPAFEN1     REG(0x2020008c) 		//GPIO Pin Async. Falling Edge Detect 1
+#define GPEDS0      REG(0x3F200040) 		//GPIO Pin Event Detect Status 0
+//#define GPEDS1      REG(0x3F200044) 		//GPIO Pin Event Detect Status 1
+#define GPREN0      REG(0x3F20004c) 		//GPIO Pin Rising Edge Detect Enable 0
+//#define GPREN1      REG(0x3F200050) 		//GPIO Pin Rising Edge Detect Enable 1
+#define GPFEN0      REG(0x3F200058) 		//GPIO Pin Falling Edge Detect Enable 0
+//#define GPFEN1      REG(0x3F20005c) 		//GPIO Pin Falling Edge Detect Enable 1
+#define GPHEN0      REG(0x3F200064) 		//GPIO Pin High Detect Enable 0
+//#define GPHEN1      REG(0x3F200068) 		//GPIO Pin High Detect Enable 1
+#define GPLEN0      REG(0x3F200070) 		//GPIO Pin Low Detect Enable 0
+//#define GPLEN1      REG(0x3F200074) 		//GPIO Pin Low Detect Enable 1
+#define GPAREN0     REG(0x3F20007c) 		//GPIO Pin Async. Rising Edge Detect 0
+//#define GPAREN1     REG(0x3F200080) 		//GPIO Pin Async. Rising Edge Detect 1
+#define GPAFEN0     REG(0x3F200088) 		//GPIO Pin Async. Falling Edge Detect 0
+//#define GPAFEN1     REG(0x3F20008c) 		//GPIO Pin Async. Falling Edge Detect 1
 
-#define GPPUD           REG(0x20200094)
-#define GPPUDCLK0       REG(0x20200098)
-//#define GPPUDCLK1       REG(0x2020009C)
+#define GPPUD           REG(0x3F200094)
+#define GPPUDCLK0       REG(0x3F200098)
+//#define GPPUDCLK1       REG(0x3F20009C)
 
 #define GPIO_PUD_OFF      0x00
 #define GPIO_PUD_TRISTATE 0x00
@@ -255,15 +255,15 @@ typedef unsigned long irqmask;
 //                          Timer (ARM Side)
 // *****************************************************************************
 
-#define ARM_TIMER_LOD 			REG(0x2000B400)
-#define ARM_TIMER_VAL			REG(0x2000B404)
-#define ARM_TIMER_CTL 			REG(0x2000B408)
-#define ARM_TIMER_CLI 			REG(0x2000B40C)
-#define ARM_TIMER_RIS 			REG(0x2000B410)
-#define ARM_TIMER_MIS 			REG(0x2000B414)
-#define ARM_TIMER_RLD 			REG(0x2000B418)
-#define ARM_TIMER_DIV 			REG(0x2000B41C)
-#define ARM_TIMER_CNT 			REG(0x2000B420)
+#define ARM_TIMER_LOD 			REG(0x3F00B400)
+#define ARM_TIMER_VAL			REG(0x3F00B404)
+#define ARM_TIMER_CTL 			REG(0x3F00B408)
+#define ARM_TIMER_CLI 			REG(0x3F00B40C)
+#define ARM_TIMER_RIS 			REG(0x3F00B410)
+#define ARM_TIMER_MIS 			REG(0x3F00B414)
+#define ARM_TIMER_RLD 			REG(0x3F00B418)
+#define ARM_TIMER_DIV 			REG(0x3F00B41C)
+#define ARM_TIMER_CNT 			REG(0x3F00B420)
 #define ARM_TIMER_IRQ       	BIT(0)
 #define ARM_TIMER_DISABLE 		0x003E0000
 #define ARM_TIMER_ENABLE  		0x003E00A2
@@ -272,14 +272,14 @@ typedef unsigned long irqmask;
 //                        System Timer
 // *****************************************************************************
 
-#define SYSTIMER_CS         	REG(0x20003000)
-#define SYSTIMER_CLO        	REG(0x20003004)
-#define SYSTIMER_CHI        	REG(0x20003008)
+#define SYSTIMER_CS         	REG(0x3F003000)
+#define SYSTIMER_CLO        	REG(0x3F003004)
+#define SYSTIMER_CHI        	REG(0x3F003008)
 
-#define SYSTIMER_CMP0       	REG(0x2000300C)
-#define SYSTIMER_CMP1       	REG(0x20003010)
-#define SYSTIMER_CMP2       	REG(0x20003014)
-#define SYSTIMER_CMP3       	REG(0x20003018)
+#define SYSTIMER_CMP0       	REG(0x3F00300C)
+#define SYSTIMER_CMP1       	REG(0x3F003010)
+#define SYSTIMER_CMP2       	REG(0x3F003014)
+#define SYSTIMER_CMP3       	REG(0x3F003018)
 
 #define SYSTIMER_CS_MATCH0  	0x01
 #define SYSTIMER_CS_MATCH1  	0x02
@@ -301,20 +301,20 @@ typedef unsigned long irqmask;
 
 #define AUX_IRQ         		BIT(29)
 
-#define AUX_ENABLES     		REG(0x20215004)
+#define AUX_ENABLES     		REG(0x3F215004)
 
 // --- Mini UART Registers -----
-#define AUX_MU_IO_REG   		REG(0x20215040)
-#define AUX_MU_IIR_REG  		REG(0x20215044)
-#define AUX_MU_IER_REG  		REG(0x20215048)
-#define AUX_MU_LCR_REG  		REG(0x2021504C)
-#define AUX_MU_MCR_REG  		REG(0x20215050)
-#define AUX_MU_LSR_REG  		REG(0x20215054)
-#define AUX_MU_MSR_REG  		REG(0x20215058)
-#define AUX_MU_SCRATCH 			REG(0x2021505C)
-#define AUX_MU_CNTL_REG 		REG(0x20215060)
-#define AUX_MU_STAT_REG 		REG(0x20215064)
-#define AUX_MU_BAUD_REG 		REG(0x20215068)
+#define AUX_MU_IO_REG   		REG(0x3F215040)
+#define AUX_MU_IIR_REG  		REG(0x3F215044)
+#define AUX_MU_IER_REG  		REG(0x3F215048)
+#define AUX_MU_LCR_REG  		REG(0x3F21504C)
+#define AUX_MU_MCR_REG  		REG(0x3F215050)
+#define AUX_MU_LSR_REG  		REG(0x3F215054)
+#define AUX_MU_MSR_REG  		REG(0x3F215058)
+#define AUX_MU_SCRATCH 			REG(0x3F21505C)
+#define AUX_MU_CNTL_REG 		REG(0x3F215060)
+#define AUX_MU_STAT_REG 		REG(0x3F215064)
+#define AUX_MU_BAUD_REG 		REG(0x3F215068)
 
 #define AUX_MU_IER_TX_IRQEN  	BIT(1)
 
@@ -332,16 +332,16 @@ typedef unsigned long irqmask;
 //                        Interrupts
 // *****************************************************************************
 
-#define IRQ_BASIC         		REG(0x2000B200)
-#define IRQ_PEND1         		REG(0x2000B204)
-#define IRQ_PEND2         		REG(0x2000B208)
-#define IRQ_FIQ_CONTROL   		REG(0x2000B20C)
-#define IRQ_ENABLE1       		REG(0x2000B210)
-#define IRQ_ENABLE2       		REG(0x2000B214)
-#define IRQ_ENABLE_BASIC  		REG(0x2000B218)
-#define IRQ_DISABLE1      		REG(0x2000B21C)
-#define IRQ_DISABLE2      		REG(0x2000B220)
-#define IRQ_DISABLE_BASIC 		REG(0x2000B224)
+#define IRQ_BASIC         		REG(0x3F00B200)
+#define IRQ_PEND1         		REG(0x3F00B204)
+#define IRQ_PEND2         		REG(0x3F00B208)
+#define IRQ_FIQ_CONTROL   		REG(0x3F00B20C)
+#define IRQ_ENABLE1       		REG(0x3F00B210)
+#define IRQ_ENABLE2       		REG(0x3F00B214)
+#define IRQ_ENABLE_BASIC  		REG(0x3F00B218)
+#define IRQ_DISABLE1      		REG(0x3F00B21C)
+#define IRQ_DISABLE2      		REG(0x3F00B220)
+#define IRQ_DISABLE_BASIC 		REG(0x3F00B224)
 
 #define SPI_IRQ           		BIT(22)
 
@@ -353,12 +353,12 @@ typedef unsigned long irqmask;
 #define DMA_CHANNELS            (15)
 
 /* DMA memory addresses (pp.39-47 in BCM2835-ARM-Peripherals.pdf) */
-#define DMA_BASE        		(0x20007000)								// DMA channel base (channel 0 is located at this address)
+#define DMA_BASE        		(0x3F007000)								// DMA channel base (channel 0 is located at this address)
 #define DMA_CHANNEL_INC			(0x100)										// Offset to the next DMA channel
 #define DMA_CS(n)              	REG(DMA_BASE + DMA_CHANNEL_INC*(n))			// Control status (CS) address of the n-th DMA channel
 #define DMA_CONBLK_AD(n)        REG(DMA_BASE + DMA_CHANNEL_INC*(n) + 0x04)	// Control block (CB) address of the n-th DMA channel
 #define DMA_DEBUG(n)            REG(DMA_BASE + DMA_CHANNEL_INC*(n) + 0x20)	// Debug register of the n-th DMA channel
-#define DMA_GLOBAL_ENABLE       REG(0x20007FF0)								// Global enable bits for each DMA channel
+#define DMA_GLOBAL_ENABLE       REG(0x3F007FF0)								// Global enable bits for each DMA channel
 
 /* DMA control status register bits (pp.47-50 in BCM2835-ARM-Peripherals.pdf) */
 #define DMA_CS_ACTIVE			BIT(0)				// Activate the DMA
@@ -404,7 +404,7 @@ typedef unsigned long irqmask;
 
 /* PWM control and status registers, 32 bit each (pp.141-147 in BCM2835-ARM-Peripherals.pdf)
  * PWM base address was not in BCM2835-ARM-Peripherals.pdf, but found in several PWM-examples. */
-#define PWM_BASE       			(0x2020C000)			// PWM configuration base address
+#define PWM_BASE       			(0x3F20C000)			// PWM configuration base address
 #define PWM_BASE_PHYS 			(0x7E000000 | PWM_BASE)	// PWM configuration base address
 #define PWM_CTL        			REG(PWM_BASE)			// PWM control
 #define PWM_STATUS     			REG(PWM_BASE + 0x04)	// PWM status
@@ -436,7 +436,7 @@ typedef unsigned long irqmask;
 /* Clock Manager (CM) audio clocks
  * (follows the same logic as "Clock Manager General Purpose Clocks Control"
  * on pp. 107-108 in BCM2835-ARM-Peripherals.pdf) */
-#define CM_PWMBASE				(0x201010A0)			// CM audio clocks base address
+#define CM_PWMBASE				(0x3F1010A0)			// CM audio clocks base address
 #define CM_PWMCTL  				REG(CM_PWMBASE)			// Clock control
 #define CM_PWMDIV 				REG(CM_PWMBASE + 0x04)	// Clock divisor
 
@@ -464,9 +464,9 @@ struct bscdevice_t {
 
 typedef struct bscdevice_t bscdevice_t;
 
-#define BSC0_ADDR 				((bscdevice_t *)0x20205000)
-#define BSC1_ADDR 				((bscdevice_t *)0x20804000)
-#define BSC2_ADDR 				((bscdevice_t *)0x20805000)
+#define BSC0_ADDR 				((bscdevice_t *)0x3F205000)
+#define BSC1_ADDR 				((bscdevice_t *)0x3F804000)
+#define BSC2_ADDR 				((bscdevice_t *)0x3F805000)
 
 #define BSC_CLOCK_FREQ 			150000000
 
@@ -510,12 +510,12 @@ typedef struct bscdevice_t bscdevice_t;
 // *****************************************************************************
 
 /// See 10.5 SPI Register Map
-#define SPI0_CS        			REG(0x20204000) /* @brief SPI Master Control and Status.*/
-#define SPI0_FIFO      			REG(0x20204004) /* @brief SPI Master TX and RX FIFOs.*/
-#define SPI0_CLK       			REG(0x20204008) /* @brief SPI Master Clock Divider.*/
-#define SPI0_DLEN      			REG(0x2020400C) /* @brief SPI Master Data Length.*/
-#define SPI0_LTOH      			REG(0x20204010) /* @brief SPI LOSSI mode TOH.*/
-#define SPI0_DC        			REG(0x20204014) /* @brief SPI DMA DREQ Controls.*/
+#define SPI0_CS        			REG(0x3F204000) /* @brief SPI Master Control and Status.*/
+#define SPI0_FIFO      			REG(0x3F204004) /* @brief SPI Master TX and RX FIFOs.*/
+#define SPI0_CLK       			REG(0x3F204008) /* @brief SPI Master Clock Divider.*/
+#define SPI0_DLEN      			REG(0x3F20400C) /* @brief SPI Master Data Length.*/
+#define SPI0_LTOH      			REG(0x3F204010) /* @brief SPI LOSSI mode TOH.*/
+#define SPI0_DC        			REG(0x3F204014) /* @brief SPI DMA DREQ Controls.*/
 
 // Register masks for SPI0_CS
 #define SPI_CS_LEN_LONG         0x02000000 /* @brief Enable Long data word in Lossi mode if DMA_LEN is set.*/
@@ -604,7 +604,7 @@ typedef enum
 //       Power Management, Reset controller and Watchdog registers 
 // *****************************************************************************
 
-#define PM_BASE                  		(0x20100000)
+#define PM_BASE                  		(0x3F100000)
 #define PM_RSTC                  		REG(PM_BASE+0x1c)
 #define PM_WDOG                  		REG(PM_BASE+0x24)
 
@@ -633,15 +633,15 @@ enum board_power_feature {
 };
 
 /* Synopsys DesignWare Hi-Speed USB 2.0 On-The-Go Controller  */
-#define DWC_REGS_BASE         	(0x20980000)
+#define DWC_REGS_BASE         	(0x3F980000)
 
 
 // *****************************************************************************
 // 			BCM2835 mailbox registers (used here for the ethernet driver)
 // *****************************************************************************
-#define MAILBOX_READ            		REG(0x2000B880)
-#define MAILBOX_STATUS          		REG(0x2000B898)
-#define MAILBOX_WRITE           		REG(0x2000B8A0)
+#define MAILBOX_READ            		REG(0x3F00B880)
+#define MAILBOX_STATUS          		REG(0x3F00B898)
+#define MAILBOX_WRITE           		REG(0x3F00B8A0)
 
 /* BCM2835 mailbox status flags  */
 #define MAILBOX_FULL            		BIT(31)

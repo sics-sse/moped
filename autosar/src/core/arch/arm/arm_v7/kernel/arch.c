@@ -11,7 +11,7 @@
 #include "Cpu.h"
 #include "sys.h"
 #include "arch_stack.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "stdio.h"
 
 

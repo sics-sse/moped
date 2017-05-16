@@ -18,7 +18,7 @@
 #include "Pwm.h"
 #endif
 
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 #define PI 	   			3.14159265f
 

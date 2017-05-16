@@ -30,7 +30,7 @@
 #if defined(USE_UDPNM)
 #include "UdpNm.h"
 #endif
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 typedef enum {
   SOAD_UNINITIALIZED = 0,

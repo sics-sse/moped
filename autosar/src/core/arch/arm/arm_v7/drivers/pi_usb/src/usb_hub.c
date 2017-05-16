@@ -58,7 +58,7 @@
 #include "usb_hub_driver.h"
 #include "usb_std_defs.h"
 #include "usb_memory.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "Uart.h"
 boolean hub_onetime_init_flag = false;
 boolean HUB_TASK_FLAG = false;

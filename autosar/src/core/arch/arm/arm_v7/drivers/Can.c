@@ -18,7 +18,7 @@
 #include "irq.h"
 
 #include "mcp2515.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 #if defined(USE_DET)
 #include "Det.h"

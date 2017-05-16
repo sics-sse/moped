@@ -15,7 +15,7 @@ __stacks_total_size__	= __und_stack_size__ + __abt_stack_size__ + __fiq_stack_si
 
 MEMORY
 {
-    ram : org = 0x8000, len = 0x1F400000-0x20
+    ram : org = 0x00000000, len = 0x1F400000-0x20
 }
 
 __ram_start__		= ORIGIN(ram);
@@ -24,7 +24,7 @@ __ram_end__		= __ram_start__ + __ram_size__;
 
 SECTIONS
 {
-	. = 0x8000;
+	. = 0x0000000;
 
 	.text : ALIGN(16) SUBALIGN(16)
 	{

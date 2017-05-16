@@ -82,7 +82,7 @@
 #include <ctype.h>
 
 //TEMP
-#if defined(CFG_ARM_V6)
+#if defined(CFG_ARM_RPI)
 #include "Uart.h"
 #endif
 

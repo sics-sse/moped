@@ -9,7 +9,7 @@
 #include "Cpu.h"
 #include "pi_memory.h"
 #include "usb_stddef.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 #include "semaphore.h"
 #include "Uart.h"
 #include "Std_Types.h"

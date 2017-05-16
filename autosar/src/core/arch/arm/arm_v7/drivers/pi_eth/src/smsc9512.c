@@ -8,7 +8,7 @@
 #include "smsc9512.h"
 #include "usb_core_driver.h"
 #include "Uart.h"
-#include "bcm2835.h"
+#include "bcm283x.h"
 
 /**
  * @ingroup etherspecific

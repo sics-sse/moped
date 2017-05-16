@@ -9,44 +9,41 @@ ifneq ($(filter-out arm generic,$(ARCH_FAM)),)
 obj-y+=init.o
 endif
 
-#Raspberry Pi, ARM processor, V6 architecture, 
-obj-$(CFG_ARM_V6) += crt0.o
-obj-$(CFG_ARM_V6) += led.o
-obj-$(CFG_ARM_V6) += bcm2835.o
-obj-$(CFG_ARM_V6) += Uart.o
-obj-$(CFG_ARM_V6) += SpeedSensor.o
-obj-$(CFG_ARM_V6) += Mcp3008.o
-obj-$(CFG_ARM_V6) += UltrasonicSensor.o
+#Raspberry Pi, ARM processor, V6/V7/V8 architecture
+obj-$(CFG_ARM_RPI) += crt0.o
+obj-$(CFG_ARM_RPI) += led.o
+obj-$(CFG_ARM_RPI) += bcm283x.o
+obj-$(CFG_ARM_RPI) += Uart.o
+obj-$(CFG_ARM_RPI) += SpeedSensor.o
+obj-$(CFG_ARM_RPI) += Mcp3008.o
+obj-$(CFG_ARM_RPI) += UltrasonicSensor.o
 
-vpath-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_usb/src
-vpath-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_eth/src
-vpath-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/sensors
-inc-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_usb/inc
-inc-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_eth/inc
-inc-$(CFG_ARM_V6) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/sensors
+vpath-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_usb/src
+vpath-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_eth/src
+vpath-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/sensors
+inc-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_usb/inc
+inc-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/pi_eth/inc
+inc-$(CFG_ARM_RPI) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/sensors
 
 #for pi
 #eth
-obj-$(CFG_ARM_V6)-$(USE_ETH)  += pi_eth.o                    
-obj-$(CFG_ARM_V6)-$(USE_ETH) += smsc9512.o
-obj-$(CFG_ARM_V6)-$(USE_ETH) += Eth_test.o
+obj-$(CFG_ARM_RPI)-$(USE_ETH) += pi_eth.o
+obj-$(CFG_ARM_RPI)-$(USE_ETH) += smsc9512.o
+obj-$(CFG_ARM_RPI)-$(USE_ETH) += Eth_test.o
 #usb
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_core.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_hub.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_dwc_hcd.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_memory.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_semaphore.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_mailbox.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += usb_debug.o
-obj-$(CFG_ARM_V6)-$(USE_USB) += semaphore.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_core.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_hub.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_dwc_hcd.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_memory.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_semaphore.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_mailbox.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += usb_debug.o
+obj-$(CFG_ARM_RPI)-$(USE_USB) += semaphore.o
 #i2c
-obj-$(CFG_ARM_V6)-$(USE_I2C) += I2c.o
+obj-$(CFG_ARM_RPI)-$(USE_I2C) += I2c.o
 #opb715
-#obj-$(CFG_ARM_V6)-$(USE_OPB715) += Opb715.o
+#obj-$(CFG_ARM_RPI)-$(USE_OPB715) += Opb715.o
 #end pi
-
-
-
 
 vpath-$(CFG_ARM_CM3) += $(ROOTDIR)/$(ARCH_PATH-y)/kernel
 vpath-$(CFG_ARM_CM3) += $(ROOTDIR)/$(ARCH_PATH-y)/drivers/STM32F10x_StdPeriph_Driver/src
@@ -71,7 +68,7 @@ obj-$(USE_TTY_TMS570_KEIL) += emif.o
 # Cortex R4
 obj-$(CFG_ARM_CR4) += startup_cr4.o
 
-# OS object files. 
+# OS object files
 # (checking if already included for compatability)
 ifeq ($(filter Os_Cfg.o,$(obj-y)),)
 obj-$(USE_KERNEL) += Os_Cfg.o
@@ -186,19 +183,19 @@ obj-$(CFG_MPC55XX)-$(USE_FLS) += flash_h7f_c90.o
 obj-$(CFG_MPC55XX)-$(USE_FLS) += flash_ll_h7f_c90.o
 endif
 
-# Bring in the freescale driver source  
-inc-$(CFG_MPC55XX) +=  $(ROOTDIR)/$(ARCH_PATH-y)/delivery/mpc5500_h7f/include
+# Bring in the freescale driver source
+inc-$(CFG_MPC55XX) += $(ROOTDIR)/$(ARCH_PATH-y)/delivery/mpc5500_h7f/include
 
 # Can
 obj-$(USE_CAN) += Can.o
 obj-$(USE_CAN)-$(CFG_PPC) += Can_PBcfg.o
 obj-$(USE_CAN)-$(CFG_ARM_CM3) += Can_PBcfg.o
-obj-$(USE_CAN)-$(CFG_ARM_V6) += Can_PBcfg.o
+obj-$(USE_CAN)-$(CFG_ARM_RPI) += Can_PBcfg.o
 obj-$(USE_CAN)-$(CFG_ARM_CR4) += Can_Lcfg.o
 obj-$(USE_CAN)-$(CFG_HC1X) += Can_Lcfg.o
 
 #for Pi_CAN // temp
-#obj-$(USE_SPI)-$(CFG_ARM_V6) += mcp2515.o 
+#obj-$(USE_SPI)-$(CFG_ARM_RPI) += mcp2515.o
 
 
 # CanIf
@@ -310,7 +307,7 @@ obj-$(USE_PWM)-$(CFG_MPC5567) += Pwm.o
 obj-$(USE_PWM)-$(CFG_MPC563XM) += Pwm.o
 
 #for Pi_pwm
-obj-$(USE_PWM)-$(CFG_ARM_V6) += Pwm.o
+obj-$(USE_PWM)-$(CFG_ARM_RPI) += Pwm.o
 
 # Misc
 obj-$(USE_DET) += Det.o
@@ -464,9 +461,14 @@ inc-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/Ar
 vpath-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/ArcticCore/arm_cm3
 endif
 
-ifeq ($(CFG_ARM_V6),y)
+ifeq ($(CFG_ARM_RPI),y)
 inc-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/ArcticCore/arm_v6
 vpath-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/ArcticCore/arm_v6
+endif
+
+ifeq ($(CFG_ARM_V7),y)
+inc-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/ArcticCore/arm_v7
+vpath-$(USE_LWIP) += $(ROOTDIR)/communication/lwip-$(LWIP_VERSION)/contrib/port/ArcticCore/arm_v7
 endif
 
 ifeq ($(CFG_MPC5567),y)
