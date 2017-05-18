@@ -1,0 +1,67 @@
+
+The Optipos positioning system
+
+The purpose is to let each car know where it is within a designated area
+and in which direction it is facing. The precision is around 1-2dm.
+
+The positioning system consists of these parts:
+
+1) A number of different paper markers of size A4 taped to the
+ceiling, with two circles with three white or black sectors each.
+2) A map file which specifies the coordinates of each marker.
+3) a camera on each car, pointing upwards.
+4) an image analysis server (the Optipos server), running on a server host.
+5) a process on each TCU, taking a picture once or twice a second and
+sending it to the Optipos server.
+6) A file with configuration information for each car, namely the angle
+of the camera's field of view and the coordinates of the camera relative to the
+center of the car.
+
+On the car, the image taking process is started at boot time, by the
+boot script /etc/init.d/optipos
+
+
+
+In the repository, there are
+moped/position/OptiposRPiClient.py
+moped/position/Optipos/
+
+
+Setting up:
+* Print out the markers that you need.
+
+* Tape them to the ceiling, so that no point on the ceiling in the
+  interesting area is more than 2m from a marker.
+
+* On a suitable server host, copy the directory Optipos from the repository.
+* Measure where the markers are, enter the coordinates in a map file
+  and put it in Maps.
+* For each car, find the TCU's WLAN MAC address and write a config
+  file for the car, with the name being the MAC address and the suffix .json,
+  for example b827eb31395c.json. Put those files in Settings.
+* Start the server thus:
+ cd Optipos
+ python3 OptiposCloudServer.py
+* On each car, put the boot script optipos in /etc/init.d
+  Modify it to use the name of the map file you want (the file is not
+  present on the car, but on the server).
+* Copy OptiposRPiClient.py to a place where /etc/init.d/optipos will find it.
+  Modify the line that starts with "server =" so it uses the address of
+  your server.
+
+Originally, the client would write the coordinates to MQTT after receiving
+them from the server. Now it appends them to a file /tmp/marker0 instead,
+to reduce the delays.
+
+TODO:
+how to print a marker?
+how does the analysis work?
+quality etc, the format of /tmp/marker0
+
+
+
+Calibration of the camera:
+* Look at the images and turn the camera lens until the focus is good.
+* Put the car at a known place and see what coordinates you get. Modify
+the offsets in the config file for the car.
+
