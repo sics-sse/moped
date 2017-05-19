@@ -40,12 +40,13 @@ obstacles = dict()
 
 sys.path.append("car-control2")
 import eight
+import nav_map
 
 eight.eightinit()
 
 def draw_way(offset, w, **kargs):
     path = [(i, eight.nodes[i]) for i in eight.ways[w]]
-    p = eight.makepath(offset, path)
+    p = nav_map.makepath(offset, path)
     if offset != 0:
         for (i, x, y) in p:
             print "%f %d %f %f" % (offset, i, x, y)
@@ -198,8 +199,8 @@ def draw_area(w):
         draw_way(-0.25, w, fill="#bbffbb", width=1)
         draw_way(0.25, w, fill="#bbffbb", width=1)
 
-    draw_path(eight.makepath(0, thepath), fill="#bbbbff", width=2)
-    draw_path(eight.makepath(0, thepath2), fill="#bbbbff", width=2)
+    draw_path(nav_map.makepath(0, thepath), fill="#bbbbff", width=2)
+    draw_path(nav_map.makepath(0, thepath2), fill="#bbbbff", width=2)
 
 def send_go(carno):
     c = cars[carno-1]
