@@ -1,7 +1,7 @@
 import time
 
 import nav_signal
-import eight
+import nav_map
 import driving
 import nav_tc
 
@@ -40,7 +40,7 @@ def checkbox1(x, y, tup, leftp):
     return True
 
 def checkpos():
-    #pos = eight.findpos(g.ppx,g.ppy,g.ang)
+    #pos = nav_map.findpos(g.ppx,g.ppy,g.ang)
     #print((g.ppx,g.ppy,g.ang),pos)
 
 
@@ -227,7 +227,7 @@ def goto_1(x, y):
                     g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
 
         tt0 = time.time()
-        d = eight.roaddist(g.ppx, g.ppy)
+        d = nav_map.roaddist(g.ppx, g.ppy)
 
         if d > g.slightlyoffroad:
 #            print("roaddist %f at %f, %f" % (d, g.ppx, g.ppy))
