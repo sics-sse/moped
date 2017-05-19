@@ -417,7 +417,9 @@ def readspeed2():
                     g.inspeed_avg = (1-alpha)*g.inspeed + alpha*oinspeed
 
                     if (g.inspeed == 0 and g.speedtime != None and
-                        time.time() - g.speedtime > 7.0):
+                        time.time() - g.speedtime > 7.0 and
+                        False):
+                        print("obstacle")
                         speak("obstacle")
                         send_to_ground_control("obstacle")
                         drive(0)
@@ -1468,6 +1470,7 @@ def whole4aux(dir):
         elif (i10, i2) == (34, 29):
             nextpiece = piece4
         else:
+            print((i10,i2))
             drive(0)
             return
 

@@ -75,33 +75,34 @@ def godir(ppx, ppy, ang, x1, y1, ang1, w):
 
     ymid = (12.0+19.7)/2
     cx2 = x1-R
+
     if cy > ymid:
-        cy2 = (12.0+ymid)/2
+        cy2 = (2*12.0+ymid)/3
     else:
-        cy2 = (19.7+ymid)/2
-
-    if w:
-        # we should determine how far this line can go
-        w.addline(x1, y1, x1+20*sin(ang1*pi/180),y1+20*cos(ang1*pi/180),
-                  fill="green")
-
-        w.addcircle(cx2, cy2, R, "orange")
-
-        # TODO: we must also consider the twin circle to the right of the final
-        # line. use it if x2 > x1
-        w.addcircle(x1+R, cy2, R, "orange")
-
-    # forw2 is the final direction when arriving at (x1, y1)
-    if cy2 > y1:
-        forw2 = -1
-    else:
-        forw2 = 1
-
-    # Currently, we can always turn so that we are in the correct
-    # direction from the start.
-    forw1 = forw2
+        cy2 = (2*19.7+ymid)/3
 
     for (dir, cx, cy, minang, maxang) in turnings:
+
+        # We happen to pick the last values of cx,cy from above.
+        # If we do what we should do, pick the local cx,cy here, the
+        # paths may not be possible. The possible cy2 circles depend
+        # on dir. Therefore we set cy2_1 here and not cy2.
+        if cy > ymid:
+            cy2_1 = (2*12.0+ymid)/3
+        else:
+            cy2_1 = (2*19.7+ymid)/3
+
+        # forw2 is the final direction when arriving at (x1, y1)
+        if cy2 > y1:
+            forw2 = -1
+        else:
+            forw2 = 1
+
+        # Currently, we can always turn so that we are in the correct
+        # direction from the start.
+        forw1 = forw2
+
+        print("cx2,cy2 = %f %f" % (cx2, cy2))
 
         print("dir = %d forw2 = %d" % (dir, forw2))
         if forw2 == 1:
@@ -112,7 +113,6 @@ def godir(ppx, ppy, ang, x1, y1, ang1, w):
                 cxmid = (cx+cx2)/2
                 cymid = (cy+cy2)/2
                 cang2 = acos(R/dist(cxmid, cymid, cx2, cy2))
-                print("cx2,cy2 = %f %f" % (cx2, cy2))
                 print("cang cang2 %f %f" % (cang*180/pi, cang2*180/pi))
                 print((cang*180/pi, cang2*180/pi))
                 cang += cang2
@@ -133,13 +133,29 @@ def godir(ppx, ppy, ang, x1, y1, ang1, w):
                 x3 = cx2 - R*cos(cang)
                 y3 = cy2 + R*sin(cang)
 
+            # We should draw this only after we have decided that this
+            # is our path.
+            if w:
+                # we should determine how far this line can go
+                w.addline(x1, y1, x1+20*sin(ang1*pi/180),y1+20*cos(ang1*pi/180),
+                          fill="green")
+
+                w.addcircle(cx2, cy2, R, "orange")
+
+                # TODO: we must also consider the twin circle to the right of the final
+                # line. use it if x2 > x1
+                w.addcircle(x1+R, cy2, R, "orange")
+
             print("angles %f %f %f %f" % tuple(l))
             if minang != -180 or maxang != 180:
                 if not nbetween(l):
                     continue
 
             print(((x2, y2), (x3, y3)))
-            return [(ppx, ppy), (x2, y2), (x3, y3), (x1, y1)]
+            return [(ppx, ppy, -1),
+                    (x2, y2, -1),
+                    (x3, y3, -1),
+                    (x1, y1, -1)]
 
     return False
 
