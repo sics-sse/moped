@@ -9,6 +9,7 @@ from math import sin, cos, sqrt, pi, atan2
 
 sys.path.append("car-control2")
 import eight
+import nav_map
 
 from tcontrol_car import Car, cars
 
@@ -215,6 +216,9 @@ def giveway(po, po2):
     if piece == (6, 23) and piece2 == (23, 5) and odo2 < 1.2:
         tolog0("clause g12")
         st = True
+    if piece == (34, 23) and piece2 == (23, 35) and odo2 < 1.2:
+        tolog0("clause g12bis")
+        st = True
 
     if not st:
 
@@ -235,6 +239,9 @@ def giveway(po, po2):
             tolog0("clause g5")
             st = True
 
+        # the four next ones only occur when we go in both directions
+        # in our eight.
+
         # sometimes, we don't need to give way if we know where we are going
         elif pp == (6, 5, 23):
             tolog0("clause g6")
@@ -251,6 +258,7 @@ def giveway(po, po2):
             tolog0("clause g9")
             onlyif = 6
             st = True
+
         # don't meet in the central portion when there is only one lane:
         elif pp == (34, 6, 23) and odo <= 0.5:
             tolog0("clause g10")
@@ -294,10 +302,11 @@ def check_other_cars(c):
         knownnodes = None
         knownnodesalt = None
     tolog0("%s x y ang %f %f %f known %s" % (c.info, c.x, c.y, c.ang%360, str(knownnodes)))
-    pos = eight.findpos(c.x, c.y, c.ang, knownnodes)
-    posalt = eight.findpos(c.x, c.y, c.ang, knownnodesalt)
+    pos = nav_map.findpos(c.x, c.y, c.ang, knownnodes)
+    posalt = nav_map.findpos(c.x, c.y, c.ang, knownnodesalt)
     if pos == None:
-        #print("pos None %s" % (str((c.x, c.y, c.ang))))
+        fronts = "carsinfront 0"
+        c.conn.send(fronts + "\n")
         return
     #tolog0("%s pos %s %s" % (c.info, str(pos), str(knownnodes)))
     tolog0("%s posalt %s %s" % (c.info, str(posalt), str(knownnodesalt)))
@@ -308,7 +317,7 @@ def check_other_cars(c):
         # we have reversed the direction
         q = 1-q
 
-    (piece, odo) = eight.findpiece(ac, bc, q)
+    (piece, odo) = nav_map.findpiece(ac, bc, q)
 
     for ci in cars:
 
@@ -322,8 +331,8 @@ def check_other_cars(c):
         else:
             knownnodes2 = None
             knownnodes2alt = None
-        pos2 = eight.findpos(c2.x, c2.y, c2.ang, knownnodes2)
-        pos2alt = eight.findpos(c2.x, c2.y, c2.ang, knownnodes2alt)
+        pos2 = nav_map.findpos(c2.x, c2.y, c2.ang, knownnodes2)
+        pos2alt = nav_map.findpos(c2.x, c2.y, c2.ang, knownnodes2alt)
         pos2 = pos2alt
         if pos2 == None:
             continue
@@ -331,8 +340,11 @@ def check_other_cars(c):
         (ac2, bc2, tup2) = pos2
         q2 = tup2[6]
 
-        (piece2, odo2) = eight.findpiece(ac2, bc2, q2)
-        tolog0(str((c.info, piece, odo, piece2, odo2)))
+        (piece2, odo2) = nav_map.findpiece(ac2, bc2, q2)
+        (_, piecelen) = eight.pieces[piece]
+        (_, piecelen2) = eight.pieces[piece2]
+        tolog0(str((c.info, piecelen, piece, odo,
+                    c2.info, piecelen2, piece2, odo2)))
 
         d = dist(c.x, c.y, c2.x, c2.y)
         if d < 0.35:
@@ -397,6 +409,9 @@ def check_other_cars(c):
                         break
             #tolog("overlap %s" % (str(not ok)))
 
+        # for now: ignore the crash detection
+        ok = True
+
         onlyif = 0
 
         foll = following((piece, odo), (piece2, odo2))
@@ -407,9 +422,8 @@ def check_other_cars(c):
 
         give = giveway((piece, odo), (piece2, odo2))
 
-        (_, piecelen) = eight.pieces[piece]
-        (_, piecelen2) = eight.pieces[piece2]
         stopd = 0.3*c.finspeed/60
+        tolog0("%s stopd %f" % (c.info, stopd))
 
         if c2.finspeed == 0.0:
             tolog0("c2 = %s speed 0 following = %s" % (
@@ -444,7 +458,6 @@ def check_other_cars(c):
                 # the distance to the line where we must stop, minus
                 # the distance between the front edge and the middle
 
-                # this should be done using odo
                 d = 0.5 - odo - stopd
                 tolog0("clause0a d %f stopd %f" % (d, stopd))
                 if d < stopd and False:
@@ -556,11 +569,11 @@ def check_other_cars(c):
             if doprint != stri:
                 #print(stri)
                 doprint = stri
-            l = l + [(relation, d, c2.x, c2.y, c2.n, onlyif)]
+            l = l + [(relation, d, c2.x, c2.y, c2.info, onlyif)]
 
     fronts = "carsinfront %d" % len(l)
     for tup in l:
-        fronts = fronts + " " + ("%s %f %f %f %d %d" % tup)
+        fronts = fronts + " " + ("%s %f %f %f %s %d" % tup)
     c.conn.send(fronts + "\n")
 
     c.following = ("following" in fronts)
@@ -609,6 +622,13 @@ def arravg(l):
 
 waitingcars = []
 
+def connsend(c, data):
+    try:
+        c.conn.send(data)
+    except Exception as e:
+        print("exception %s" % str(e))
+        c.alive = False
+
 def handlerun(conn, addr):
     global waitingcars
 
@@ -647,11 +667,11 @@ def handlerun(conn, addr):
             print("time for %s = %f" % (c.info, cartime))
             if g.timesynched:
                 diff = time.time()-g.t0
-                c.conn.send("sync 1 %f\n" % diff)
+                connsend(c, "sync 1 %f\n" % diff)
             else:
                 g.timesynched = True
                 g.t0 = time.time() - cartime
-                c.conn.send("sync 0\n")
+                connsend(c, "sync 0\n")
 
     elif l[0] == "list":
         iplist = []
@@ -678,7 +698,7 @@ def handlerun(conn, addr):
             else:
                 x -= 0.6
             l[2] = str(x)
-            c.conn.send("%s\n" % " ".join(l))
+            conn.send(c, "%s\n" % " ".join(l))
 
         conn.close()
         return
@@ -759,7 +779,7 @@ def handlerun(conn, addr):
             if len(waitingcars) == len(cars):
                 for n in waitingcars:
                     cx = cars[n]
-                    cx.conn.send("waitallcarsdone\n")
+                    connsend(cx, "waitallcarsdone\n")
                 waitingcars = []
         elif l[0] == "odometer":
             odo = int(l[1])
@@ -771,7 +791,7 @@ def handlerun(conn, addr):
             c.heart_seen = time.time()
             c.heart_t = float(l[1])
             c.heart_n = int(l[2])
-            c.conn.send("heartecho %.3f %.3f %d\n" % (
+            connsend(c, "heartecho %.3f %.3f %d\n" % (
                     c.heart_seen - c.t0, c.heart_t, c.heart_n))
         elif l[0] == "message":
             s = " ".join(l[1:])
@@ -885,8 +905,8 @@ def handlerun(conn, addr):
             else:
                 c.nextnode2 = -1
             
-            print("%s between %d and %d (then %d)" % (
-                    c.info, i1, i2, c.nextnode2))
+            print("%f %s between %d and %d (then %d)" % (
+                    time.time()-g.t0, c.info, i1, i2, c.nextnode2))
         else:
             print "received (%s)" % data
 
