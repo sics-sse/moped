@@ -8,7 +8,7 @@ from nav_log import tolog, tolog0
 
 from nav_util import sign, dist, start_new_thread, rev, min
 
-import eight
+import nav_map
 import driving
 import nav2
 import nav_tc
@@ -73,7 +73,10 @@ def whole4aux(path0):
 
     driving.drive(0)
     if not g.simulate:
-        time.sleep(4)
+        # can be no sleep at all if we already did drive(0) earlier,
+        # but must maybe be 4 if we didn't.
+        pass
+        #time.sleep(4)
     driving.drive(speed0)
 
     g.last_send = None
@@ -207,6 +210,7 @@ def planner0(qfromplanner, qtoplanner):
             nextpiece = [5, 34]
         elif (i10, i2) == (34, 5):
             nextpiece = randsel([34, 23], [34, 35, 6])
+            # (don't turn: only allow for one kind of give-way situation)
             #nextpiece = [34, 35, 6]
         elif (i10, i2) == (23, 6):
             # not possible: 5
@@ -350,12 +354,12 @@ def planner1(qfromplanner, qtoplanner):
             path1 = path1_0[0:2]
             reachedmiddle = False
             thengoal = None
-            path1_e = eight.insert_waypoints_l(path1)
+            path1_e = nav_map.insert_waypoints_l(path1)
 
             pathlen = len(path1_e)
             curpathlen = pathlen
 
-            path2_e = eight.insert_waypoints_l(path1_0)
+            path2_e = nav_map.insert_waypoints_l(path1_0)
 
             path2_e = [(i, plann) for i in path2_e]
             path1_e = [(i, plann) for i in path1_e]
@@ -399,7 +403,7 @@ def planner1(qfromplanner, qtoplanner):
                 else:
                     npath = [path2_e[1][0], path1_e[-1][0], path2_e[-1][0]]
                     out(2, "1 path3_e %s -> " % (npath))
-                    path3 = eight.insert_waypoints_l(npath)
+                    path3 = nav_map.insert_waypoints_l(npath)
                     path3_e = [(i, plann) for i in path3]
                     out(2, "1 -> %s" % (path3_e))
                 path2_e = path3_e
@@ -436,17 +440,17 @@ def gopath(path00, plen):
     g.speedsign = 1
 
     # two lanes:
-    #path = eight.piece2path(path0, -0.25)
+    #path = nav_map.piece2path(path0, -0.25)
     # experimental, to make it crash more seldom:
-    #path = eight.piece2path(path0, -0.1)
+    #path = nav_map.piece2path(path0, -0.1)
     # single lane:
-    path = eight.piece2path(path0, 0)
+    path = nav_map.piece2path(path0, 0)
 
     boxp = False
     if boxp:
         # the simulation can't make it without bigger margins
-        lpath = eight.piece2path(path0, -0.15)
-        rpath = eight.piece2path(path0, -0.35)
+        lpath = nav_map.piece2path(path0, -0.15)
+        rpath = nav_map.piece2path(path0, -0.35)
 
         lx = None
         ly = None
@@ -517,7 +521,7 @@ def gopath(path00, plen):
 
 # Find the best route from n0 to n1 and go there (first straight to n0)
 def travel(n0, n1, n2 = None, nz = None):
-    routes_p = eight.paths_p(n0, n1, n2, nz)
+    routes_p = nav_map.paths_p(n0, n1, n2, nz)
     if routes_p == []:
         print("no route found")
         return False
@@ -525,7 +529,7 @@ def travel(n0, n1, n2 = None, nz = None):
     # Value judgment: pick the shortest
     routes_p.sort()
     (d1, r1) = routes_p[0]
-    r2 = eight.insert_waypoints_l(r1)
+    r2 = nav_map.insert_waypoints_l(r1)
 
     print((d1, r2))
 
