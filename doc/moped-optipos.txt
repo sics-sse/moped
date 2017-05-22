@@ -8,7 +8,7 @@ The positioning system consists of these parts:
 
 1) A number of different paper markers of size A4 taped to the
 ceiling, with two circles with three white or black sectors each.
-2) A map file which specifies the coordinates of each marker.
+2) A map file which specifies the coordinates of each marker as well as characteristics such as ceiling height.
 3) a camera on each car, pointing upwards.
 4) an image analysis server (the Optipos server), running on a server host.
 5) a process on each TCU, taking a picture once or twice a second and
@@ -28,7 +28,7 @@ moped/position/Optipos/
 
 
 Setting up:
-* Print out the markers that you need.
+* Print out the markers that you need. A marker file is created running the method createMarkerFile in the module OptiposTools, and generates a post script file that can be printed.
 
 * Tape them to the ceiling, so that no point on the ceiling in the
   interesting area is more than 2m from a marker.
@@ -53,9 +53,9 @@ Originally, the client would write the coordinates to MQTT after receiving
 them from the server. Now it appends them to a file /tmp/marker0 instead,
 to reduce the delays.
 
+The positioning algorithm starts by taking an image using the camera, and the image is uploaded on the server for analysis. The analysis identifies markers in the image, and by finding the same marker identifier on the map, it can derive from the position of the marker in the image and the rotation of the image where the car is located. The derived position is sent back to the car. A marker consists of two circles close to each other, and each circle is divided into three fields that can be either black or white. In this way, an identity is encoded, as well as a direction. The image processing algorithms first identifies all circles of appropriate size in the image. Then, it matches pairs of circles at the right distance from each other, which will be treated as markers. Finally, it identifies the fields in the circles to calculate the identifiers. Apart from the position (x, y) and direction of the car, a quality metric is also calculated, which indicates how well the selected markers match an ideal marker.
+
 TODO:
-how to print a marker?
-how does the analysis work?
 quality etc, the format of /tmp/marker0
 
 
@@ -64,4 +64,3 @@ Calibration of the camera:
 * Look at the images and turn the camera lens until the focus is good.
 * Put the car at a known place and see what coordinates you get. Modify
 the offsets in the config file for the car.
-
