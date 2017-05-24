@@ -350,7 +350,20 @@ void bcm2835_read_mac_address(void) {
 	//pi_printf("read mac 3\r\n");
 	val = bcm2835_mailbox_read(8);
 	//pi_printf("read mac 4\r\n");
-	if (place[1] == 0x80000000 && place[4] == 0x80000006) {
+
+#if 0
+	char mbuf[80];
+	printf("mbox\r\n");
+	sprintf(mbuf, "val %d", val);
+	printf("%s\r\n", mbuf);
+	for (i = 0; i < 7; i++) {
+	  sprintf(mbuf, "place %d %d", i, place[i]);
+	  printf("%s\r\n", mbuf);
+	}
+#endif
+
+	if ((place[1] == 0x80000000 ||
+	     place[1] == 0x80000001) && place[4] == 0x80000006) {
 	  uint8 *addr = (uint8 *) &place[5];
 	  for (i = 0; i < 6; i++) {
 	    bcm2835_mac_address[2*i] = hexd(addr[i]/16);
