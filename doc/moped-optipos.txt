@@ -36,7 +36,7 @@ Setting up:
 * On a suitable server host, copy the directory Optipos from the repository.
 * Measure where the markers are, enter the coordinates in a map file
   and put it in Maps.
-* For each car, find the TCU's WLAN MAC address and write a config
+* For each car, find the TCU's ethernet MAC address and write a config
   file for the car, with the name being the MAC address and the suffix .json,
   for example b827eb31395c.json. Put those files in Settings.
 * Start the server thus:
@@ -53,7 +53,30 @@ Originally, the client would write the coordinates to MQTT after receiving
 them from the server. Now it appends them to a file /tmp/marker0 instead,
 to reduce the delays.
 
-The positioning algorithm starts by taking an image using the camera, and the image is uploaded on the server for analysis. The analysis identifies markers in the image, and by finding the same marker identifier on the map, it can derive from the position of the marker in the image and the rotation of the image where the car is located. The derived position is sent back to the car. A marker consists of two circles close to each other, and each circle is divided into three fields that can be either black or white. In this way, an identity is encoded, as well as a direction. The image processing algorithms first identifies all circles of appropriate size in the image. Then, it matches pairs of circles at the right distance from each other, which will be treated as markers. Finally, it identifies the fields in the circles to calculate the identifiers. Apart from the position (x, y) and direction of the car, a quality metric is also calculated, which indicates how well the selected markers match an ideal marker.
+The positioning algorithm starts by taking an image using the camera,
+and the image is uploaded on the server for analysis. The analysis
+identifies markers in the image, and by finding the same marker
+identifier on the map, it can derive from the position of the marker
+in the image and the rotation of the image where the car is
+located. The derived position is sent back to the car. A marker
+consists of two circles close to each other, and each circle is
+divided into three fields that can be either black or white. In this
+way, an identity is encoded, as well as a direction. The image
+processing algorithms first identifies all circles of appropriate size
+in the image. Then, it matches pairs of circles at the right distance
+from each other, which will be treated as markers. Finally, it
+identifies the fields in the circles to calculate the
+identifiers. Apart from the position (x, y) and direction of the car,
+a quality metric is also calculated, which indicates how well the
+selected markers match an ideal marker.
+
+The server stores all images, but removes old ones when disk starts to
+fill up. The numbers probably need to be adapted to how full the disk is.
+
+sudo pip3 install picamera
+maybe we need to enable the camera, in raspi-config, and then reboot
+start_x=1 in config.txt
+sudo update-rc.d optipos defaults
 
 TODO:
 quality etc, the format of /tmp/marker0
