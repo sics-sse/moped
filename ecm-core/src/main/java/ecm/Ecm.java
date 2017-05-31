@@ -57,8 +57,7 @@ public class Ecm {
     public String subscriberName = "AllVCU";
     public int subscriberPort = -1;
 
-    public int crashstatus = 0;
-    public double xpos = 0.0, ypos = 0.0;
+    public byte [] crashbytes;
 
 	public Ecm() {
 	    System.out.println("Ecm new");

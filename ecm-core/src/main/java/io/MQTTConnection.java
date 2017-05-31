@@ -27,6 +27,9 @@ public class MQTTConnection {
 	 * URLs are built.
 	 */
 	private String location = null;
+    private String the_server;
+    private String the_uniqueId;
+    private MqttConnectOptions the_connection;
 
 	/**
 	 * The class maintains a mapping between the (cleaned) server part of the
@@ -56,6 +59,8 @@ public class MQTTConnection {
 	 * output.
 	 */
 	private static boolean debug = false;
+
+    private String uniqueId;
 
 	/**
 	 * Creates an MQTT connection. The scheme of the URL, in other words, the
@@ -99,6 +104,11 @@ public class MQTTConnection {
 	 *            sugaring possibilities.
 	 */
 	public MQTTConnection(String uniqueId, String location) {
+	    this.uniqueId = uniqueId;
+	    initconnection(uniqueId, location);
+	}
+
+    public void initconnection(String uniqueId, String location) {
 		if (uniqueId.length() > 23)
 			uniqueId = uniqueId.substring(uniqueId.length() - 23);
 		System.out.println("mqtt-id: " + uniqueId);
@@ -221,6 +231,7 @@ public class MQTTConnection {
 					// above, i.e. both the user name and password, but also
 					// requests for a clean session.
 					MqttConnectOptions connection = new MqttConnectOptions();
+					this.the_connection = connection;
 					connection.setCleanSession(cleanSession);
 					if (username != null) {
 						connection.setUserName(username);
@@ -234,10 +245,12 @@ public class MQTTConnection {
 					}
 					// Open connection to server and remember that connection
 					// for future (re)use.
+					this.the_uniqueId = uniqueId;
+					this.the_server = server;
 					this.handler = new MQTTConnectionHandler(server, uniqueId, connection);
 					servers.put(server, this.handler);
 				} catch (MqttException e) {
-					System.err.println("Cannot connect to MQTT server at " + server);
+					System.err.println("Cannot connect to MQTT server at " + server + ": " + e);
 				}
 			} else {
 				this.handler = servers.get(server);
@@ -282,7 +295,14 @@ public class MQTTConnection {
 		try {
 			handler.client.publish(topic, message);
 		} catch (MqttException e) {
-			System.err.println("Cannot send message to " + topic);
+			System.err.println("Cannot send message to " + topic
+					   + ": " +e);
+			try {
+			    this.handler = new MQTTConnectionHandler(the_server, the_uniqueId, the_connection);
+			} catch (MqttException e2) {
+			    System.err.println("Cannot restart connection "
+					   + ": " +e2);
+			}
 			return false;
 		}
 		return true;
@@ -302,10 +322,17 @@ public class MQTTConnection {
     private MqttClient client;
     private HashMap<String, IMessage> dispatchers = new HashMap<>();
 
+      private String uri, id;
+      MqttConnectOptions options;
+
     public MQTTConnectionHandler(String uri, String id, MqttConnectOptions options) throws MqttException {
       // Open connection to remote server using a Paho compliant
       // URL.
       this.client = new MqttClient(uri, id);
+
+      this.uri = uri;
+      this.id = id;
+      this.options = options;
 
       // Open connection to server
       this.client.connect(options);
@@ -332,7 +359,16 @@ public class MQTTConnection {
 
     @Override
     public void connectionLost(Throwable cause) {
-      System.err.println("Connection to MQTT server at "+client.getServerURI()+" lost.");
+      System.err.println("Connection to MQTT server at "+client.getServerURI()+" lost. (" + location + ") " + cause);
+
+      try {
+	  this.client = new MqttClient(this.uri, this.id);
+	  this.client.connect(this.options);
+      } catch (MqttException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
     }
 
     @Override

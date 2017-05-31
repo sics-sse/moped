@@ -56,13 +56,6 @@ public class CarNav implements Runnable {
 		}
 	}
 	
-	/**
-	 * This class listens for Wirelessino inputs and relays them to VCU,
-	 * skipping old values in each iteration (to avoid building upp buffers). 
-	 * 
-	 * @author zeni, avenir
-	 *
-	 */
 	class Service implements Runnable {
 		private InputStream in = null;
 		private OutputStream out = null;
@@ -77,43 +70,17 @@ public class CarNav implements Runnable {
 
 		}
 		
-		/**
-		 * Interpret the input from Wirelessino and convert it into an appropriate format
-		 * 
-		 * Example: 
-		 * 			Input:  "H0050V-097\0"
-		 * 			Output: [50, -97]
-		 * 
-		 * @param message		----- a Wirelessino speed&steer command, such as "H0050V-097\0"
-		 * @return				----- speed&steer command in VCU-readable format, such as [50, -97]
-		 */
-		private byte[] interpretWirelessino(String message) {
-			byte[] res = new byte[2];
-			
-			System.out.println("RC message " + message);
-
-			res[0] = Byte.parseByte(message.substring(1, 5));
-			res[1] = Byte.parseByte(message.substring(6, 10));
-				
-			return res;
-		}
-
 		public void run() {
-			/* We only want to read the last 11 bytes from the input stream (5 for each bar + EOF) */
-			byte[] incomingBytes = new byte[11];
-			byte[] bytes = new byte[4];
+			byte[] incomingBytes;
 			
 			try {
 				while (true) {
 					int nrIncomingBytes = in.available();
 					if (nrIncomingBytes > 0) {
+					    incomingBytes = new byte[nrIncomingBytes];
 						in.read(incomingBytes);
 						
-						String str = new String(incomingBytes, "UTF-8");
-						if (ecm.crashstatus != 1) {
-						    System.out.println("CarNav got " + str);
-						}
-						ecm.crashstatus = 1;
+						ecm.crashbytes = incomingBytes;
 					}
 				    Thread.sleep(1);
 				}

@@ -56,13 +56,6 @@ public class CarMobile implements Runnable {
 		}
 	}
 	
-	/**
-	 * This class listens for Wirelessino inputs and relays them to VCU,
-	 * skipping old values in each iteration (to avoid building upp buffers). 
-	 * 
-	 * @author zeni, avenir
-	 *
-	 */
 	class Service implements Runnable {
 		private InputStream in = null;
 		private OutputStream out = null;
@@ -77,52 +70,15 @@ public class CarMobile implements Runnable {
 
 		}
 		
-		/**
-		 * Interpret the input from Wirelessino and convert it into an appropriate format
-		 * 
-		 * Example: 
-		 * 			Input:  "H0050V-097\0"
-		 * 			Output: [50, -97]
-		 * 
-		 * @param message		----- a Wirelessino speed&steer command, such as "H0050V-097\0"
-		 * @return				----- speed&steer command in VCU-readable format, such as [50, -97]
-		 */
-		private byte[] interpretWirelessino(String message) {
-			byte[] res = new byte[2];
-			
-			System.out.println("RC message " + message);
-
-			res[0] = Byte.parseByte(message.substring(1, 5));
-			res[1] = Byte.parseByte(message.substring(6, 10));
-				
-			return res;
-		}
-
-		/**
-		 * Listen for input from the Wirelessino app, skip old values, 
-		 * and send the last incoming value to VCU
-		 */
 		public void run() {
 			/* We only want to read the last 11 bytes from the input stream (5 for each bar + EOF) */
 			String outs;
 			
 			try {
-			    int n = 0;
 				while (true) {
-				    int crashn;
-				    if (ecm.crashstatus > 0) {
-					crashn = 9;
-				    } else {
-					crashn = n;
-					n = (n+1)%9;
-				    }
-				    outs = "{\"crash\":" + crashn + ", \"x\":" +
-					ecm.xpos + ", \"y\":" + ecm.ypos + "}\n";
-				    byte[] bytes = new byte[outs.length()];
-				    for (int i = 0; i < outs.length(); i++) {
-					bytes[i] = (byte) outs.charAt(i);
-				    }
-				    out.write(bytes);
+				    if (ecm.crashbytes != null) {
+					out.write(ecm.crashbytes);
+				    }					
 
 				    Thread.sleep(1000);
 				}
