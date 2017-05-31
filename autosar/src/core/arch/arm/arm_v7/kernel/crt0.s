@@ -17,7 +17,8 @@
      .set    MODE_ABT, 0x17
      .set    MODE_UND, 0x1B
      .set    MODE_SYS, 0x1F
-
+     .set    MODE_HYP, 0x1A
+     .set    MODE_MASK, 0x1F
      .set    I_BIT, 0x80
      .set    F_BIT, 0x40
 
@@ -61,6 +62,28 @@ fiq_handler:
 .balign 4
 .global ResetHandler
 ResetHandler:
+
+    /* enable jtag */
+    ldr r10, =0x3F200000
+    ldr r11, =0x00002000
+    ldr r12, =0x0061B0C0
+    str r11, [r10, #0]
+    str r12, [r10, #8]
+           
+    /* are we in hyp mode? */
+    mrs r10, CPSR_all
+    and r10, r10, #MODE_MASK
+    cmp r10, #MODE_HYP
+    bne svc_reset
+
+    /* hyp -> svc mode switch */
+    ldr r10, =svc_reset
+    ldr r11, =MODE_SVC | I_BIT | F_BIT
+    msr elr_hyp, r10
+    msr spsr_hyp, r11
+    eret
+
+svc_reset:
 	/* set exception vector */
 	ldr r0, = _exception_vector
 	MCR p15, 0, r0, c12, c0, 0
