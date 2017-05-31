@@ -24,8 +24,8 @@ static uint32 pulse[2];
 static uint32 pulse_total[2];
 
 #define SAVED_PULSE_T	5
-uint32 pulse_t[2][SAVED_PULSE_T];
-uint32 pulse_t_n[2];
+uint64 pulse_t[2][SAVED_PULSE_T];
+uint64 pulse_t_n[2];
 
 /**
  * Interrupt service routine that counts the number of detected pulses
@@ -36,6 +36,8 @@ uint32 pulse_t_n[2];
 void SpeedSensor_Isr(void) {
   static int readc = 0;
 
+#if 0
+# experiment with pin 3 (GPIO 2)
   if (bcm2835_ReadGpioPin(&GPEDS0, 2)) {
     readc++;
     bcm2835_Sleep(100);
@@ -45,6 +47,7 @@ void SpeedSensor_Isr(void) {
 	   readc, yy, xx);
     bcm2835_ClearEventDetectPin(2);
   }
+#endif
 
   if (bcm2835_ReadGpioPin(&GPEDS0, GPIO_FRONT_SPEED)) {
     pulse[FRONT_WHEEL]++;
@@ -109,6 +112,15 @@ static uint8 SpeedSensor_IsValidWheel(enum Wheel wheel) {
  * rising edges.
  */
 void SpeedSensor_Init(void){
+
+#if 0
+# experiment with pin 3 (GPIO 2)
+	bcm2835_GpioFnSel(2, GPFN_IN);
+	bcm2835_SetReadWriteGpioReg(&GPFEN0, 2);
+	//bcm2835_SetReadWriteGpioReg(&GPREN0, 2);
+	bcm2835_ClearEventDetectPin(2);
+#endif
+
 
 	/* Configure the pins connected to the wheel speed sensor as input pins */
 	bcm2835_GpioFnSel(GPIO_FRONT_SPEED, GPFN_IN);
