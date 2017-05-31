@@ -70,9 +70,9 @@ LED, which can be controlled by writing to the appropriate autosar port.
 See also ACT LED.
 
 MQTT
-MQ Telemetry Transport or Message Queue Telemetry Transport. An internet
-protocol for communicating by storing messages on a server in the form of
-values associated with hierarchical keys.
+Message Queue Telemetry Transport. An internet protocol for
+communicating by storing messages on a server in the form of values
+associated with hierarchical keys.
 
 PIRTE
 Plugin Runtime Environment. The addition to autosar that enables the

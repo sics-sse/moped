@@ -104,7 +104,7 @@ magnetometer
 
 camera, clean lens
 
-don't let the sensor cable get stuck in the servo
+don't let the battery sensor cable get stuck in the servo
 
 adjust cogwheels
 
