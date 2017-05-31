@@ -27,7 +27,7 @@ extern boolean ComWrite;
 extern int runSquawk(void);
 
 void SquawkTask(void){
-	printf("Squawk task\r\n");
+	pi_printf("Squawk task\r\n");
 #if RUN_SQUAWK
 	runSquawk();
 #endif
@@ -35,7 +35,7 @@ void SquawkTask(void){
 }
 
 void StartupTask( void ) {
-    pi_printf("infor: start up\r\n");
+  pi_printf("infor: start up\r\n");
 
     bcm2835_read_mac_address();
 
