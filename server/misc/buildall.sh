@@ -30,7 +30,7 @@ cd plugins
 mvn clean install
 cd ..
 
-cd new-server
+cd server
 mvn clean install
 cd ..
 
