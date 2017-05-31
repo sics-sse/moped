@@ -38,7 +38,7 @@ global currentpath
 
 obstacles = dict()
 
-sys.path.append("car-control2")
+sys.path.append("car-control")
 import eight
 import nav_map
 
