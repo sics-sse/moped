@@ -28,6 +28,8 @@ import messages.UninstallAckPacket;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.core.session.IdleStatus;
+import org.apache.mina.core.session.IoSessionConfig;
 import org.apache.mina.filter.logging.MdcInjectionFilter;
 
 import cache.Cache;
@@ -35,6 +37,24 @@ import cache.VehiclePluginRecord;
 
 public class ServerHandler extends IoHandlerAdapter {
 	
+    private class MessageLoop implements Runnable {
+	public IoSession session;
+	public void run() {
+	    while (true) {
+		
+		try {
+                    Thread.sleep(60000*15);
+		} catch (InterruptedException e) {
+		}
+
+		PingcarPacket pingcarPacket = new PingcarPacket("vin", 0);
+		pingcarPacket.type = 45;
+		pingcarPacket.msg = "ping";
+		session.write(pingcarPacket);
+	    }
+	}
+    }
+
     // session sets
     private final Set<IoSession> sessions = Collections  
 	.synchronizedSet(new HashSet<IoSession>());  
@@ -54,11 +74,28 @@ public class ServerHandler extends IoHandlerAdapter {
 	System.out.println("Vehicle " + vin + " leaves the connection");
     }
 
+    public void sessionCreated(IoSession session) {
+	System.out.println("Session created");
+	IoSessionConfig sessionConfig=session.getConfig();
+
+	if (false) {
+	    MessageLoop rb = new MessageLoop();
+	    rb.session = session;
+	    Thread t = new Thread(rb);
+	
+	    t.start();
+	}
+    }
+
+    public void sessionIdle(IoSession session, IdleStatus status) {
+	System.out.println("Session idle " + status);
+    }
+
     public void messageSent(IoSession session, Object message) throws Exception {
 	System.out.println("Message sent from server... " + message);
     }
 	
-    public void exceptionCaughtXXX(IoSession session, Throwable cause) throws Exception {
+    public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
 	System.out.println("IoSession exception... " + cause);
     }
 
