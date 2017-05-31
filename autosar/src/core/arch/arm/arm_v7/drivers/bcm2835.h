@@ -66,11 +66,11 @@ typedef unsigned long irqmask;
 //#define GPFSEL5 	REG(0x3F200014)
 
 #define GPSET0  	REG(0x3F20001C)
-//#define GPSET1  	REG(0x3F200020)
+#define GPSET1  	REG(0x3F200020)
 #define GPCLR0  	REG(0x3F200028)
-//#define GPCLR1  	REG(0x3F20002C)
+#define GPCLR1  	REG(0x3F20002C)
 #define GPLEV0		REG(0x3F200034)
-//#define GPLEV1		REG(0x3F200038)
+#define GPLEV1		REG(0x3F200038)
 
 #define GPEDS0      REG(0x3F200040) 		//GPIO Pin Event Detect Status 0
 //#define GPEDS1      REG(0x3F200044) 		//GPIO Pin Event Detect Status 1
@@ -89,7 +89,7 @@ typedef unsigned long irqmask;
 
 #define GPPUD           REG(0x3F200094)
 #define GPPUDCLK0       REG(0x3F200098)
-//#define GPPUDCLK1       REG(0x3F20009C)
+#define GPPUDCLK1       REG(0x3F20009C)
 
 #define GPIO_PUD_OFF      0x00
 #define GPIO_PUD_TRISTATE 0x00
