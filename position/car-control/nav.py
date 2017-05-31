@@ -335,11 +335,19 @@ g.heartn = -1
 g.heartn_r = -1
 
 def heartbeat():
+    maxdiff = 1
     while True:
         g.heartn += 1
-        if g.heartn - g.heartn_r > 1:
-            pass
-            #print("heart %d %d: %d" % (g.heartn, g.heartn_r, g.heartn - g.heartn_r))
+        diff = g.heartn - g.heartn_r
+        if diff < maxdiff:
+            if maxdiff > 2:
+                print("heart %d %d: %d" % (g.heartn, g.heartn_r, maxdiff))
+            maxdiff = 1
+        elif diff > maxdiff:
+            maxdiff = diff
+            if maxdiff % 50 == 0:
+                print("heart %d %d: %d" % (g.heartn, g.heartn_r, maxdiff))
+
         nav_tc.send_to_ground_control(
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
 
@@ -677,3 +685,31 @@ def follow():
         if sp != oldsp:
             driving.drive(sp)
         time.sleep(0.5)
+
+def auto():
+    # I'd like to light LEDs here, but maybe the LEDlight plugin
+    # hasn't started yet.
+    driving.drive(0)
+    while not g.ground_control:
+        time.sleep(3)
+    driving.steer(70)
+    time.sleep(0.5)
+    driving.steer(-70)
+    m3(0.4)
+    while True:
+        ang = g.ang%360
+        if ang > 180:
+            ang -= 360
+        print("pos %f %f %f" % (g.ppx, g.ppy, ang))
+        if (abs(g.ppx-2.5) < 0.5 and
+            abs(g.ppy-14.2) < 0.5 and
+            abs(ang) < 30):
+            break
+        time.sleep(1)
+
+    driving.steer(0)
+    m1()
+    nav1.whole4()
+
+    while True:
+        time.sleep(100)

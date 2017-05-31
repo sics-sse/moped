@@ -9,6 +9,14 @@ from nav_util import start_new_thread
 import nav_signal
 import nav2
 
+prevprint1s = None
+
+def print1(g, s):
+    global prevprint1s
+    if prevprint1s != s:
+        print(("%f: " % (time.time()-g.t0)) + s)
+    prevprint1s = s
+
 def connect_to_ground_control():
     while True:
         if not g.ground_control:
@@ -47,6 +55,8 @@ def linesplit(socket):
 def from_ground_control():
     lastreportclosest = False
 
+    prevl = None
+
     while True:
         if g.ground_control:
             for data in linesplit(g.ground_control):
@@ -69,6 +79,10 @@ def from_ground_control():
                 elif l[0] == "continue":
                     g.paused = False
                 elif l[0] == "carsinfront":
+                    if l != prevl:
+                        pass
+                        #print("traffic %s" % str(l[1:]))
+                    prevl = l
                     n = int(l[1])
                     closest = None
                     for i in range(0, n):
@@ -76,7 +90,7 @@ def from_ground_control():
                         dist = float(l[6*i+3])
                         #x = float(l[6*i+4])
                         #y = float(l[6*i+5])
-                        othercar = float(l[6*i+6])
+                        othercar = l[6*i+6]
                         onlyif = float(l[6*i+7])
                         if closest == None or closest > dist:
                             closest = dist
@@ -89,6 +103,7 @@ def from_ground_control():
                             continue
                         # a car length
                         closest = closest - 0.5
+                        closest0 = closest
                         # some more safety:
                         closest = closest - 0.5
                         if closest < 0:
@@ -110,6 +125,13 @@ def from_ground_control():
                             #print("reduced limitspeed")
                             pass
 
+                        if g.limitspeed < g.outspeedcm:
+                            print1(g, "%s %s %.2f m speed %.1f -> %.1f (%.1f)" % (
+                                    relation,
+                                    othercar, closest0,
+                                    g.finspeed,
+                                    g.limitspeed,
+                                    g.outspeedcm))
                         if "crash" in relation and g.simulate:
                             g.crash = True
                             g.simulmaxacc = 0.0
@@ -118,6 +140,7 @@ def from_ground_control():
                         if g.finspeed != 0 and g.finspeed >= g.limitspeed:
                             if relation == "givewayto":
                                 ff = tolog2
+                                ff = tolog
                         ff("closest car in front2: %s dist %f limitspeed %f" % (
                                 relation, closest, g.limitspeed))
                         lastreportclosest = True
