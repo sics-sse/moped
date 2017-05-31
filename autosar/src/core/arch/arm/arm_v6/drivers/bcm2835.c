@@ -208,6 +208,11 @@ void bcm2835_GpioIsr(void) {
 	irqMask |= BIT(GPIO_CAN_IRQ);
 #endif
 
+#if 0
+# experiment with pin 3 (GPIO 2)
+	irqMask |= BIT(2); // pin 3, used on VCU but not on SCU
+#endif
+
 	/* If there is a edge flank on one of interrupt-enabled pins,
 	 * go to the appropriate interrupt handler. Repeat until all
 	 * interrupts have been handled. */
