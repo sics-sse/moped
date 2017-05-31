@@ -123,10 +123,11 @@ typedef enum {
 
 
 void Mpu9150_Init(void);
-void Mpu9150_Configuration(void);
-void Write_Sensor(uint8_t addr, uint8_t data);
+static void Mpu9150_Configuration(void);
+//void Write_Sensor(uint8_t addr, uint8_t data);
 int16_t Read_Sensor(uint8_t addr_l, uint8_t addr_h);
-void Mpu9150_Self_Test(void);
+void Read_Sensor2(uint8_t addr_h, uint16_t *a, uint16_t *b, uint16_t *c);
+static void Mpu9150_Self_Test(void);
 
 #endif /* MPU9150_SENSOR_H_ */
 
