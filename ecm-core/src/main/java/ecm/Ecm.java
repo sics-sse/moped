@@ -65,6 +65,11 @@ public class Ecm {
 	}
 
 	public void init(EcuManager ecuManager, CommunicationManager commuManager,
+			 IoTManager iotManager, CarDriver carDriver) {
+	    init(ecuManager, commuManager, iotManager, carDriver, null, null);
+	}
+
+	public void init(EcuManager ecuManager, CommunicationManager commuManager,
 			 IoTManager iotManager, CarDriver carDriver, CarMobile carMobile, CarNav carNav) {
 		this.ecuManager = ecuManager;
 		this.commuManager = commuManager;
@@ -76,8 +81,12 @@ public class Ecm {
 		ecuManager.setEcm(this);
 		commuManager.setEcm(this);
 		carDriver.setEcm(this);
-		carMobile.setEcm(this);
-		carNav.setEcm(this);
+		if (carMobile != null) {
+		    carMobile.setEcm(this);
+		}
+		if (carNav != null) {
+		    carNav.setEcm(this);
+		}
 //		iotManager.setEcm(this);
 
 	    System.out.println("Ecm init");
@@ -87,8 +96,12 @@ public class Ecm {
 	public void start(String [] args) {
 		new Thread(ecuManager).start();
 		new Thread(carDriver).start();
-		new Thread(carMobile).start();
-		new Thread(carNav).start();
+		if (carMobile != null) {
+		    new Thread(carMobile).start();
+		}
+		if (carNav != null) {
+		    new Thread(carNav).start();
+		}
 		new Thread(iotManager).start();
 		new Thread(commuManager).start();
 		
