@@ -1,7 +1,3 @@
-I added a 4x7 LED display (7 segments, and actually a period too), which
-uses I2C. SCU has code I2C, and otherwise uses this for the ADC. It's
-probably possible to put both ADC and the display on the same I2C pins,
-after setting a different device id on the display.
 
 The MPU9150 (accelerometer) unit also has a magnetometer, so one can
 get the orientation with some additional code on the SCU.
@@ -12,12 +8,6 @@ is not readable from Java yet.
 
 New plugin: StarAndGo, and others
 
-Sound: connected a small loudspeaker with 3.5mm audio and USB power (to
-charge internal battery) to TCU. But taking power from the TCU is not
-a good idea. Charge the speaker separately instead.
-The small loudspeakers I bought at Clas Ohlson run without charging
-for at least 12 hours (at least when not emitting sound). 5 minutes of
-charging (whether turned on or not) gives one hour of use.
 
 Sending data from VCU to SCU (in the same way as SCU to VCU already works)
 is in progress, but not ready yet.
