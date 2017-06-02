@@ -8,15 +8,11 @@ GtkTerm shows nothing.
 If the cable has been disconnected and then inserted again, GtkTerm must be
 configured again for the right speed.
 
-An SD card has been inserted in the computer (or adapter connected to the
-computer), but it is read-only.
+An SD card adapter has been inserted in the computer, but it is read-only.
 It happens, maybe more easily with much used cards, that the read-only switch
 on the card gets half moved to the read-only position when the card is
 inserted, and that is enough. Slide it back and take care to not let that
 edge of the card rub on the socket when inserting it.
-
-XXX: this is probably not relevant for the new micro-SD cards
-
 
 The car starts and the TCU contacts the server, but the VCU (or SCU) doesn't
 do anything.
