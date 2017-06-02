@@ -1,10 +1,7 @@
 
 
-The car has three Raspberry Pi 1 (called rpi below) boards, model B revision 2,
-called TCU, SCU and VCU.
-
-XXX: that was 1st generation; now we have 1B+ and 3
-
+The car has three Raspberry Pi 3 (called rpi below) boards, called
+TCU, SCU and VCU.
 
 TCU = telemetric control unit
 SCU = sensor
@@ -21,13 +18,9 @@ SCU has some other sensors.
 
 
 TCU runs Linux and handles all communication with the outside world.
-It has an ethernet socket and two USB sockets, of which one should have
-a wifi dongle (and the other may be connected to a keyboard). It has
-a video socket, for connecting a screen. (So do the others, but there
-these sockets are not used.)
-
-XXX: RPi 3 needs no dongle
-
+It has an ethernet socket and four USB sockets. It has a video socket,
+for connecting a screen. (So do the others, but there these sockets
+are not used.)
 
 SCU and VCU are very similar. They run autosar, but are not meant to run
 exactly the same MOPED RTS code - the last building step is different.
@@ -35,15 +28,12 @@ exactly the same MOPED RTS code - the last building step is different.
 The three boards communicate with a CAN bus, which is implemented by
 what's sitting on the extra little board connected to the main rpi boards.
 
-All three boards have a list of 2x13 pins, described here (revision 2):
-http://www.megaleecher.net/Raspberry_Pi_GPIO_Pinout_Helper
-
 At the front of the car is an ultra sound sensor.
 Behind it are three LEDs: two yellow ones, and between them a red one.
 
-Under the TCU, next to the battery, sits an ADC (analog to digital)
-converter. In the current configuration, it is taking input from the
-power supply, for measuring the voltage level.
+There is also an ADC (analog to digital) converter. In the current
+configuration, it is taking input from the power supply, for measuring
+the voltage level.
 
 XXX: write about what identifies a car
 
@@ -65,9 +55,7 @@ The second one is usually lit when the power is on. The first one blinks
 slowly (once a second) on VCU and SCU to show that autosar is running.
 If it doesn't start to blink when the board is turned on, turn off and on
 again.
-
-On the TCU, the serial and network traffic is shown. I think there is
-no corresponding heartbeat function.
+XXX: this role has been given to a LED on pin 32.
 
 
 There are lights for indicating the power level, see moped-battery.txt.
@@ -93,10 +81,9 @@ from 5V to 3.3V.
 Google "hc sr04 raspberry pi" - there seem to be several solutions.
 
 * I2C
-MPU9150
+MPU9250
 
-The accelerometer, also containing a magnetometer. There is no code
-yet for handling the magnetometer.
+The accelerometer, also containing a magnetometer.
 
 rpi pins 1, 3, 5 and 9 (ground) are used.
 
@@ -106,4 +93,3 @@ Mcp3008
 
 driven by 3V: rpi pins 17 and 20
 digital signal: rpi pins 12, 16, 18 and 24.
-
