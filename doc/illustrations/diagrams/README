@@ -1,4 +1,4 @@
-Commands for showing the data:
+Commands for showing the data (using our in-house tool 'tdvis'):
 
 
 tdvis 'o drive-speed.dat' 'p pa 1 3' 'p pa 1 2' 'hide cov' 'hide pairlines' 'plotlinewidth 4'
