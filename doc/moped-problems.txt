@@ -13,9 +13,5 @@ the TCU (and maybe everything) immediately restart. When by battery,
 it works well.  I think this is due to a fall in voltage, not to a
 loose connection.
 
-The maximum size of a plugin is 4096 bytes. This should be increased.
-[This seems not to be true, but there is certainly a limit which is not
-much larger.]
-
 If one node receives messages on the CAN bus from two different sources
 too fast, it may happen that packets get lost.
