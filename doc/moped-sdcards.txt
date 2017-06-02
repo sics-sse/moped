@@ -1,30 +1,8 @@
 How SD cards behave.
 Write-protection
 
-start.elf bootcode.bin kernel.img
-
-A card may be mountable and have these files with correct content, but
-still refuse to boot.
-
-Conversely, a card may be unrecognized by a computer, but fully working
-as TCU.
-
-SD cards may get worn and stop functioning. It could be that they still
-work in a computer or SD card reader, but not in the Raspberry.
-Once, one of the small plastic ridges between the contacts broke. I could
-fix that by simply removing most of the ridge.
-
-Sometimes an ECU fails to start because the SD card is somewhat loose.
-One theory is that this is especially likely to happen with the micro SD
-cards.
-
-If the problem is the contacts inside the raspi board, it may get better
-if a few strips of paper are put under the SD card.
-
-
 After copying something to an SD card, make sure it is unmounted
 properly before removing it.
-
 
 https://developer.ridgerun.com/wiki/index.php/Formatting_a_new_SD_card
 but it seems that the 4GB cards I bought already had a file system on
