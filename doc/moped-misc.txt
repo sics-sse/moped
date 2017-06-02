@@ -10,10 +10,6 @@ add this to how-to-build.txt
 
 mvn clean package -Dmaven.test.skip=true
 
-* Adding the local network on TCU
-sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
-
-
 ============================================================
 
 indoor positioning system
@@ -31,14 +27,21 @@ MQTT
 The VCU/SCU writes to a port, which sends the data to TCU, which sends it
 out (publishes).
 
-The address of the MQTT server is set in ecm-linux/.../Main.java and
-simulator/.../CarFactory.java.
+The address of the MQTT server is specified by MQTTHOST in settings.properties.
 
-A template is also defined there, which consists of a JSON structure. It
+A template is defined in ecm-linux/.../Main.java and
+simulator/.../CarFactory.java, which consists of a JSON structure. It
 is filled in with the key and value of what is written to the part in
 the form "key|value".
 
-XXX: the two servers often used
+At SICS, we have used names under /sics/moped. In order not to clash,
+change this to something of your own.
+
+Two public servers we have often used are:
+test.mosquitto.org
+iot.eclipse.org
+
+It often happens that one of them is not available.
 
 ============================================================
 
@@ -79,20 +82,7 @@ though. So always use the VM functions in plugins.
 
 ============================================================
 
-XXX: this is for 1st generation
-
-Time taken to get the car started:
-
-0  boot
-33 TCU gets a wifi address (the dongle starts blinking in blue)
-34 ECM starts
-56 ECM connects to the server
-68 SCU or VCU receives the first plugin (if the TCU has one)
-78 (if the plugin is 2400 bytes) the first plugin starts running
-
-============================================================
-
 Useful commands on TCU:
 
 gpio readall (displays the layout of the pins)
-candump -td can0 (shows the CAN traffic)
+/home/pi/can-utils/candump -td can0 (shows the CAN traffic)
