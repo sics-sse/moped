@@ -66,7 +66,7 @@ X and Y are in cm, orientation is from 0 to 255 in units of 360/256 degrees.
 quality is between 0 and 100, 100 being perfect
 
 
-When setting up the system, change new-server/settings.properties so
+When setting up the system, change server/settings.properties so
 it points out the MOPED directory.
 Also, change ecm-linux/settings.properties so the server will be found,
 and, after copying it to the TCU, set the VIN to something unique
@@ -133,7 +133,7 @@ With Python:
 (u'394', u'AllVCU', u'installed', u'030-compiled')
 
 Configuration files: settings.properties
-in new-server, ecm-linux, simulator
+in server, ecm-linux, simulator
 
 tvservice -o on TCU for lowering battery use
 
