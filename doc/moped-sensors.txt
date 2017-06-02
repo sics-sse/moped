@@ -31,7 +31,7 @@ represents a real distance.
 
 The area reached by the sensor has an angle of about 30 degrees in
 both directions from the forward direction. I don't know if the shape
-is conical, or if it is wider in the left-right direction that up-down.
+is conical, or if it is wider in the left-right direction than up-down.
 It points slightly upwards so it will miss the floor, or if it hits
 the floor, the angle is such that the echo won't return.
 
