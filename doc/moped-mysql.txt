@@ -26,12 +26,12 @@ If the dump doesn't say "use ..." on line 1, add such a line for the
 appropriate database (mentioned in the comment further down).
 
 For setting up the 'fresta2' database, see the script
-new-server/misc/init-moped.sh.
+server/misc/init-moped.sh.
 
 
 If you selected other than root/root for the user/password, change
-new-server/src/main/java/service/CallMySql.java accordingly.
+server/src/main/java/service/CallMySql.java accordingly.
 
 
 
-The schema for MOPED is in new-server/fresta2-schema.
+The schema for MOPED is in server/fresta2-schema.
