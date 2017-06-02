@@ -27,7 +27,7 @@ sudo apt-get install maven
 git clone https://github.com/sics-sse/moped
 
 
-In new-server/settings.properties,
+In server/settings.properties,
 change the value of "serverhost" to use the computer's domain name
 instead, if you want the server to be reachable from outside.
 
@@ -43,7 +43,7 @@ modify
 if the server is not running on the same host as the web server.
 
 
-Maybe relevant note, for pom.xml in new-server:
+Maybe relevant note, for pom.xml in server:
 org.json is compiled with Java 8 in its latest version,
 			<version>20141113</version>
 so we use 20140107
@@ -52,7 +52,7 @@ so we use 20140107
 
 Be sure that the "moped" top directory is your current directory.
 
-Modify the setting for CODEBENCH in new-server/misc/buildall.sh
+Modify the setting for CODEBENCH in server/misc/buildall.sh
 Run buildall.sh
 
 If there is any error, the script will abort at that step.
@@ -129,7 +129,7 @@ Fetch a simple SOAP client for Python:
 https://fedorahosted.org/suds/wiki/Documentation
 Install using "python setup.py install"
 
-cd new-server/misc
+cd server/misc
 
 Start python, and do
     from suds.client import Client
