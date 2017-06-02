@@ -6,11 +6,6 @@ To understand the rest of this document, you may want to read
 moped-overview.txt, where the architecture is broadly described, and
 special terms introduced.
 
-(This document is written in the first person, because I did mostly
-not construct any of the things described, and my competence in
-describing the parts varies a bit.)
-
-
 To get a complete MOPED system up and running from scratch, you need to
 perform the following steps:
 
