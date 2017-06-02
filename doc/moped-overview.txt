@@ -20,18 +20,18 @@ keyboard
 
 screen
 
-Cables between some of the parts:
+Cables between some of the parts (only when debugging):
  from car (UART to USB) to GtkTerm
  from car (USB port) to keyboard
  from car (video port) to screen
  from car (ethernet port) to computer
 
-Internet access for connecting the router to the server.
+Internet access (or wifi if everything is on the same network) for
+connecting the router to the server.
 
 
 
-The two smart phone functions may be realised on the same phone. The
-functions on computers may be realised on the same computer, or
+The functions on computers may be realised on the same computer, or
 different ones.
 
 You may also want to use an ssh app on the Android to connect
