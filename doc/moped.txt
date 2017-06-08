@@ -4,7 +4,8 @@ very much except references to other files.
 
 To understand the rest of this document, you may want to read
 moped-overview.txt, where the architecture is broadly described, and
-special terms introduced.
+special terms introduced. Refer to moped-glossary.txt for special
+abbreviations and terms.
 
 To get a complete MOPED system up and running from scratch, you need to
 perform the following steps:
@@ -32,10 +33,9 @@ D Set up a wordpress server with the MOPED GUI files.
 E Build the remote control app for Android.
   See moped-android.txt.
 
-F Construct a car, or get acquainted with an existing one. I haven't
-  written documentation for constructing a car, but there is a description of
-  some parts of existing ones.
-  See moped-car.txt.
+F Construct a car, or get acquainted with an existing one. There are
+  building instructions on http://moped.sics.se.
+  See also moped-car.txt.
 
 G Put the appropriate code from C on three SD cards, one for each
   Raspberry Pi on the car.
@@ -71,11 +71,3 @@ into moped-misc.txt.
 
 On the MOPED site http://moped.sics.se you can find additional material,
 for example explaining the architecture.
-
-
-
-server/src/main/java/service/PluginWebServicesImpl.java
-    private SuiteGen suiteGen = new SuiteGen("/home/arndt/moped/moped/squawk");
-	    String dir = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname
-	    String SCHEMA_PATH = "/home/arndt/moped/moped/xml/vehicleconfig.xsd";
-	String zipFile = "/home/arndt/moped/moped/webportal/moped_plugins/" + appname + "/" + version + "/" + appname + ".jar";
