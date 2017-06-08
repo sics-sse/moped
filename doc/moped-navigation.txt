@@ -1,0 +1,12 @@
+The code for running the cars autonomously is mainly in the directory
+moped/position.
+
+XXX
+
+traffic control
+car control
+
+eight
+map
+
+4d/rcs
