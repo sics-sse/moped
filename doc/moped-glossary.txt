@@ -116,7 +116,8 @@ SCU or VCU.
 
 UBEC
 Universal Battery Elimination Circuit. Connected to the battery and provides
-a constant voltage to the Raspberry Pi's and the servo.
+a constant voltage to the Raspberry Pi's and the servo. Can also be called
+Voltage Regulator.
 
 VCU
 Vehicle control unit. One of the three Raspberry Pi's on the car. It
