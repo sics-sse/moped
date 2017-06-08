@@ -66,4 +66,4 @@ is not controlled by MOPED (it is possible, but needs additional
 driver code), so we use pins 31 (ground) and 32 to light an external
 LED.
 
-TODO: put all information in the table in Plugin Manual here.
+XXX put all information in the table in Plugin Manual here.
