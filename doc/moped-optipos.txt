@@ -34,6 +34,7 @@ Setting up:
   interesting area is more than 2m from a marker.
 
 * On a suitable server host, copy the directory Optipos from the repository.
+* Install the python library OpenCV (its module cv2 is used).
 * Measure where the markers are, enter the coordinates in a map file
   and put it in Maps.
 * For each car, find the TCU's ethernet MAC address and write a config
