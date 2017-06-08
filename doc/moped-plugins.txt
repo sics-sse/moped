@@ -9,8 +9,8 @@ For clearing the simulator, do rm apps/* and rm db/*
 And same in can-utils/java on the TCU.
 You may need to use sudo.
 
-TODO: describe what the plugin code should look like, and how it is
-compiled.
+XXX describe what the plugin code should look like, and how it is compiled.
+
 But see PlugInManual.docx.
 
 pom.xml
