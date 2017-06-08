@@ -1,10 +1,8 @@
 
-The car should be powered with about 8.4 V DC.
+The car should be powered with about 8.4 V DC. This can be done either
+with a LiPo battery or a DC power supply.
 
-This can be done either with a LiPo battery or a DC power aggregate
-(or what the name is).
-
-On the voltage divider (UBEC), there are four lights, showing the
+On the voltage regulator (UBEC), there are four lights, showing the
 voltage. When all four are steadily on, the voltage is fine. When only
 the red ones are lit, the battery will soon run out (then all lights
 will flicker).
@@ -12,19 +10,28 @@ will flicker).
 Only two red lights are lit in the interval 6.6-7.2V. One will flicker for
 a short while and then go out. Then it's time to turn off.
 
-XXX: Copy from LOG-sensor-battery
+How the voltage sinks with time is shown in the picture
+doc/illustrations/diagrams/battery.png
+
+Plugin code on the VCU can read the voltage level from port 7.
+
+The command
+    tvservice -o
+can be used on the TCU to turn off video output and lower battery
+consumption.
 
 
 * Charging the battery
 
-Follow the instructions carefully.
+Follow the instructions carefully (On moped.sics.se, MOPED Configuration ->
+Hardware Configuration -> Battery Charging, and the manual for the charger).
 
-It may happen that a battery depleted so nuch that it can't power the
-Raspi's anymore will elicit the message "low voltage" or something
-similar from the charger, which will then refuse to charge it. In that
-case, it has always helped so far to simply wait a few hours before
-trying again.
+It may happen that a battery which has been depleted so much that it
+can't power the RPi's anymore will elicit the message "low voltage" or
+something similar from the charger, which will then refuse to charge
+it. In that case, it has almost always helped so far to simply wait a
+few hours before trying again.
 
-Charging a battery fully which has been depleted so that the rpi's
+Charging a battery fully which has been depleted so that the RPi's
 can't run anymore (it's then between 5.7 and 6.6 V) takes between 65
 and 75 minutes.
