@@ -1,3 +1,6 @@
+Various notes in more or less raw form, to be improved and moved to the
+right file.
+
 
 The MPU9150 (accelerometer) unit also has a magnetometer, so one can
 get the orientation with some additional code on the SCU.
@@ -67,7 +70,7 @@ quality is between 0 and 100, 100 being perfect
 
 
 When setting up the system, change server/settings.properties so
-it points out the MOPED directory.
+it points out the MOPED directory with the variable 'mopedtop'.
 Also, change ecm-linux/settings.properties so the server will be found,
 and, after copying it to the TCU, set the VIN to something unique
 (especially relevant if you have several cars).
@@ -164,3 +167,124 @@ cat < /dev/ttyAMA0
 It works fine.
 
 But it seems to take a bit of cpu from the other things running.
+
+----------------------------------------
+
+IMU pauses
+
+navigation
+
+configuration of servo in main.c
+
+eight.py
+edges of the road, turning radius, circle arcs, other things
+
+maps
+open street view
+we added properties
+
+traffic control
+
+traffic rules
+
+------------------------------------------------------------
+correlation battery-motor-speed
+drive	finspeed	spi
+5	21		1
+10	32		2
+15	40		3
+20	52		4
+25	60		5
+30	71		6
+
+
+full battery
+5	32		1
+10	43		2
+15	53		3
+20	64		4
+25	75		5
+30	84		6
+------------------------------------------------------------
+
+MQTT server can be down - use the other one
+
+android app: send message with the button
+
+extra devices: loudspeaker, LED matrix, 4-digit display, extra ultra with
+servo (scan about 180 degrees every 1s)
+
+simulating physical car, in wm.py
+
+log files
+
+discrete speed
+
+------------------------------------------------------------
+braking distances
+inspeed cm
+106 105
+ 95 92
+ 83 60
+ 75 59
+ 64 46
+ 53 34
+ 43 27
+ 33 14
+ 21  8
+------------------------------------------------------------
+
+*ultrasound normally goes down to about 0.5 when approaching a wall, but
+it reports 0.1 or less sometimes, rather than the actual minimum
+how to filter off those?
+
+separate file moped-calibration.txt?
+
+ideas used for getting absolute position: RFID (needed an additional
+RPi), dropping water, bumping over a small obstacle, dragging a mouse
+    sudo od /dev/input/mouse0
+    mouse.py
+    dragging the mouse after the car for 12m gave
+    (-2162, 13123), so it was a bit turned
+    13300 pulses from the mouse means 1.1 pulses/mm
+
+
+left and right rear odometer: used it for finding a good parameter to
+use only right odometer and gyro.
+
+scheduling in python: sleep(0.00001)
+
+to the checklist of errors:
+has the extra cable of the battery inserted itself in the servo?
+does the left odometer report anything?
+if the IMU won't be inited: some pin may be loose - just wiggle them a
+ little
+if the speeds don't work, restart VCU
+if leftspeed is less than rightspeed when driving straight, or standing
+loose, clean the lens or the reflective patches or adjust the cube
+ a little
+
+electric brake:
+I think the opposite sign needs to be sent continuously, so we have to
+remove the optimization in senddrive.
+big difference for speed 100 but not much for speed 50
+investigate further
+
+steering hysteresis
+
+camera, clean lens
+
+adjust cogwheels
+
+colliding with a water-filled watering can: 9-12 m/s^2.
+
+important files in autosar
+
+things done for NGEA cases: 112 server, passenger app etc.
+
+diagrams
+
+============================================================
+LOG: look before line 10000
+
+look at my paper notes
