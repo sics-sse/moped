@@ -1,9 +1,0 @@
-How SD cards behave.
-Write-protection
-
-After copying something to an SD card, make sure it is unmounted
-properly before removing it.
-
-https://developer.ridgerun.com/wiki/index.php/Formatting_a_new_SD_card
-but it seems that the 4GB cards I bought already had a file system on
-them.
