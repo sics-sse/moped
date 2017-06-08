@@ -16,14 +16,13 @@ Put this on an Android phone somehow, via USB cable or a local web server.
 The app doesn't detect loss of connection immediately, but it does if any
 value is changed.
 
-Tapping on the circle at the top sends a message to the car.
-XXX: details
+Tapping on the circle at the top sends a message to the car. The car
+puts the message on the CAN bus with destination TCU, so it can be
+read and acted on by the navigation code.
 
 The screen turns around if you turn the phone, as with many apps, but
-this can be changed, somehow.
-XXX: details
+it will not do this if the controls are in a non-zero position.
 
 For the latest version of Android, I made a change to the code, so
 that the main thread is still allowed to do I/O, although it has
 become deprecated. The code ought to be reorganized.
-
