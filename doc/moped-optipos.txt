@@ -79,8 +79,7 @@ maybe we need to enable the camera, in raspi-config, and then reboot
 start_x=1 in config.txt
 sudo update-rc.d optipos defaults
 
-TODO:
-quality etc, the format of /tmp/marker0
+XXX quality etc, the format of /tmp/marker0
 
 
 
