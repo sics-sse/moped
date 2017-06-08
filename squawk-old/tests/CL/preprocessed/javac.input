@@ -1,1 +1,0 @@
- -bootclasspath tests/CL/classes:tests/CL/classes:./cldc/classes:./cldc/classes:./imp/classes:./cldc/classes:./cldc/classes:./imp/classes:/home/avenir/Documents/dev/eclipse_ws/moped/squawk/tests/CL/. -d tests/CL/classes -g tests/CL/preprocessed/tests/CL.java

@@ -1,4 +1,0 @@
-.suite HelloWorldMain
-.class tests.HelloWorldMain
-    .method <init> ()V
-    .method main ([Ljava/lang/String;)V

@@ -1,7 +1,0 @@
-.suite UltraSonicReader
-.class tests.UltraSonicReader
-    .method <init> ([Ljava/lang/String;)V
-    .method main ([Ljava/lang/String;)V
-    .method init ()V
-    .method run ()V
-    .method doFunction ()V

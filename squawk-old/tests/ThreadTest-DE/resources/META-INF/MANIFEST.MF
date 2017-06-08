@@ -1,6 +1,0 @@
-MIDlet-Name: ThreadTest
-MIDlet-Version: 1.0.0
-MIDlet-Vendor: Sun Microsystems Inc
-MIDlet-1: ThreadTest,, tests.TestMIDlet
-MicroEdition-Profile: IMP-1.0
-MicroEdition-Configuration: CLDC-1.1
