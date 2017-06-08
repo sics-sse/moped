@@ -1,6 +1,7 @@
 
 Tested with wordpress 3.6 and 4.1.
 
+webportal is a modification of https://wordpress.org/download/
 
 1) Install wordpress, put it in /var/www/wp
 
@@ -39,3 +40,8 @@ developer and engineer groups.
 
 9) Once you have users in the wordpress user table, dump that table and
 enter it as fresta2.wp_users so the trusted server also sees the users.
+
+
+
+You may want to change the address to the trusted server in
+custom/globalVariables.php
