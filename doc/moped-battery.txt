@@ -4,9 +4,10 @@ The car should be powered with about 8.4 V DC.
 This can be done either with a LiPo battery or a DC power aggregate
 (or what the name is).
 
-On the voltage divider, there are four lights, showing the voltage. When
-all four are steadily on, the voltage is fine. When only the red ones are
-lit, the battery will soon run out (then all lights will flicker).
+On the voltage divider (UBEC), there are four lights, showing the
+voltage. When all four are steadily on, the voltage is fine. When only
+the red ones are lit, the battery will soon run out (then all lights
+will flicker).
 
 Only two red lights are lit in the interval 6.6-7.2V. One will flicker for
 a short while and then go out. Then it's time to turn off.
