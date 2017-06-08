@@ -19,11 +19,10 @@ XXX: measuring steering: use ang speed
 The value can be set to between -100 and 100. Negative numbers mean
 reversing. At least 0 should be set explicitly. More things may be
 needed, but I don't understand this yet. Suitable pauses are
-important, and it takes a while for the thing to start (at which time
-the hardware beeps to indicate this). Setting a value of the opposite
-sign invokes an electric brake.
+important.
 
-To init the ESC, set speed to 0.
+To init the ESC after it is turned on, set speed to 0. You should hear
+three beeps.
 
 Currently, the actual reverse speed is lower than the forward speed,
 for the same speed setting. This can apparently be configured
@@ -33,14 +32,14 @@ When going forward, setting the speed negative invokes a brake.
 Setting it to zero lets the car roll. In order to reverse, the car must
 be standing still first.
 
-The minimum value for which the car moves is 7.
+The minimum value magnitude for which the car moves is 7.
 
 Braking distance for speed yyy: xxx
 
 XXX: function of battery level, discreteness
 XXX: measuring speed: see speed sensor
 
-* LED (VCU)
+* LED (VCU, port 9)
 
 The LEDs are numbered 1 to 3. To light one, set it to 0. To extinguish,
 set it to 1.
@@ -49,20 +48,22 @@ LED 1 = red
 LED 2 = right yellow
 LED 3 = left yellow
 
-
 Send a string like this to the port: "3|1".
 
-XXX: which port?
 XXX: the Led plugin
 
-The ACT LED on the Raspberry Pi card can also be controlled this way,
+The ACT LED on the Raspberry Pi board can also be controlled this way,
 by using the LED number -1. The value is then not 0 or 1, but a blinking
 pattern. This can be used on the SCU as well.
 
-The LED blinks in a pattern that is described by a sequence of
-hexadecimal digits, 1-f, representing the time the LED is on or off,
-where f is about one second. The first nonzero digit represents the
-LED being on.
+The LED blinks in a pattern that is described by a number, which when
+represented as a sequence of hexadecimal digits, 1-f, defines the time
+the LED is on or off, where f is about one second. The first nonzero
+digit represents the LED being on.
 
+On the most recent Raspberry Pi's, the physical ACT LED on the board
+is not controlled by MOPED (it is possible, but needs additional
+driver code), so we use pins 31 (ground) and 32 to light an external
+LED.
 
 TODO: put all information in the table in Plugin Manual here.
