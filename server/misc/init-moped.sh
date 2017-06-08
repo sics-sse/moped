@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Current directory should be moped/new-server/misc.
+# Current directory should be moped/server/misc.
 # You need the python module "suds" somewhere; modify PYTHONPATH below
 # accordingly.
 # There should be a newly started server and car or simulator running.
