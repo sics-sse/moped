@@ -74,7 +74,12 @@ constructor is used.
 The zero-argument constructor seems not to be called, but if it isn't there,
 the simulator will fail to load the plugin.
 
+Don't forget super(args) in the constructor.
 
+
+InterruptedException should be caught in plugins.
+Works sometimes, but not always. This ought to be the correct way to
+kill a Java thread. It is done when a running plugin is reinstalled.
 
 
 Compiling and uploading a plugin, for example the existing plugin LEDLighter,
