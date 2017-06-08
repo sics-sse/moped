@@ -26,3 +26,6 @@ To get started:
 
 Forum for discussion of the MOPED platform:
 http://mopedforum.prophpbb.com
+
+Repository:
+https://github.com/sics-sse/moped
