@@ -1,7 +1,37 @@
 I added a 4x7 LED display (7 segments, and actually a period too), which
-uses I2C. SCU has code I2C, and otherwise uses this for the ADC. It's
-probably possible to put both ADC and the display on the same I2C pins,
-after setting a different device id on the display.
+uses I2C. SCU has code for I2C, and otherwise uses this for the IMU. It's
+probably possible to put both IMU and the display on the same I2C pins,
+after setting a different device id on the display, but the code now
+uses only one of them.
+
+Mpu9150_Init in autosar/src/examples/Raspberry_Pi/demo_SCU/mpu9150_sensor.c.
+
+For use on SCU.
+
+----------------------------------------
+
+LED matrix 8x8, using the SPI interface.
+
+See extra-hardware/ledmatrix.py, for use on TCU.
+
+Unlike the RFID reader below, /dev/spidev0.1 works here, so it can
+co-exist with the CAN board.
+
+----------------------------------------
+
+RFID reader
+
+MFRC522-python and a separate RPi, since I couldn't make it read from
+/dev/spidev0.1, and spidev0.0 is used by CAN on the TCU. (Though this
+worked fine with the LED matrix above.)
+
+I changed
+    i = 2000
+in MFRC522.py to
+    i = 200
+
+
+----------------------------------------
 
 Sound: connected a small loudspeaker with 3.5mm audio and USB power (to
 charge internal battery) to TCU. But taking power from the TCU is not
@@ -9,3 +39,27 @@ a good idea. Charge the speaker separately instead.
 The small loudspeakers I bought at Clas Ohlson run without charging
 for at least 12 hours (at least when not emitting sound). 5 minutes of
 charging (whether turned on or not) gives one hour of use.
+Use for example the 'espeak' or 'aplay' commands.
+It may happen that wav files have the wrong format for 'aplay'. Then they
+can be read by for example 'audacity' and exported again.
+
+For use on TCU.
+
+----------------------------------------
+
+Alternative speed measurement: use an optical mouse.
+See extra-hardware/mouse.py
+
+For use on TCU.
+
+----------------------------------------
+
+Scanning ultrasound sensor
+
+I mounted a second servo on the car and put a second ultrasound sensor on
+it. Without reconfiguring autosar, no devices can be added, so the input
+to the first servo can be intercepted and when in a certain range, sent
+to the second servo instead.
+
+Then we can make the servo go back and forth.
+
