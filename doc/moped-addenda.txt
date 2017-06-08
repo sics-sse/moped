@@ -3,7 +3,9 @@ right file.
 
 
 The MPU9150 (accelerometer) unit also has a magnetometer, so one can
-get the orientation with some additional code on the SCU.
+get the orientation with some additional code. Note that since the autosar
+code as configured now cannot transmit more than six values, then either
+the acceleration or gyro values can be used, but not both.
 
 I added code for reading the value of the GPIO 2 pin (pin 3). This can be
 changed from 1 to 0 with a simple switch which grounds the pin. The code
@@ -21,21 +23,16 @@ Don't force the front wheels to change steering by hand. Doing so
 generates a current, which may be high enough to damage circuits.
 
 The speed of the car: 20m in between 10 and 50 s.
-The lowest value for the speed port that results in movement is 7.
-Smallest circle has outer diameter 153 cm. At lowest speed, it is
-circumvented in 17s.
+Smallest circle has outer diameter 153 cm.
 
 When "ready? 0 xxx", xxx being some number, appears on VCU/SCU serial
 output, it means that the Can reception works, but PIRTE is not
 running.
 
 ACT LED blinking (the first LED on the Raspberry Pi board)
- (for defining the blinking pattern, see moped-actuators.txt)
+ (for setting the blinking pattern, see moped-actuators.txt)
  The normal state is 121f; that is, a rapid on-off-on followed by off for
  one second.
-
- A plugin can set the pattern by pretending to write to ordinary LED
- number -1.
 
  When a plugin started installing but failed, it changes to 21f1; that is,
  a rapid off-on-off followed by on for one second.
@@ -75,33 +72,20 @@ Also, change ecm-linux/settings.properties so the server will be found,
 and, after copying it to the TCU, set the VIN to something unique
 (especially relevant if you have several cars).
 
-Hint: if a plugin drives the motor but doesn't set it to zero often, it
-may not start when the ESC is turned on. Then using the remote control and
-sliding the speed up and down a little gets it going.
+Hint: if a plugin drives the motor but doesn't set it to zero often,
+the ESC may not start directly when turned off and on again. Then
+using the remote control, move the speed to non-zero and then back
+to zero.
 
 Instead of restarting SCU and reinstall UltraSonicReader, just disconnect
-its CAN cable. When putting it back, it will continue working. This is
-currently a useful thing to do so that the messages from the SCU don't
+its CAN cable. When putting it back, it will continue working. This may
+be a useful thing to do so that the messages from the SCU don't
 get in the way of a plugin installation.
 
-Maybe already there:
- start.elf bootcode.bin kernel.img
-
- A card may be mountable and have these files with correct content, but
- still refuse to boot.
-
- Conversely, a card may be unrecognized by a computer, but fully working
- as TCU.
-
- SD cards may get worn and stop functioning. It could be that they still
- work in a computer or SD card reader, but not in the Raspberry.
- Once, one of the small plastic ridges between the contacts broke. I could
- fix that by simply removing most of the ridge. It may help to put a folded
- piece of paper under the SD card.
-
-If you intend to let the car run without cables attached, don't boot it
-with an ethernet cable attached (and then removing it), since the connection
-to MQTT, and maybe also the server, will be made using the cable.
+If you intend to let the car run without cables attached, don't boot
+it with an ethernet cable attached (and then removing it), since the
+network connections to external entities (MQTT and the trusted server)
+will be made using the cable.
 
 plugins/new-plugin.sh
 
@@ -111,8 +95,6 @@ it into place if so. Check that the VCU reacts for each of the five
 strips.
 
 About j2me and missing things (split, maths) and the string+double bug.
-
-InterruptedException in plugins
 
 With Python:
 >>> for y in [(x["appId"],x["name"],x["installationState"],x["applicationState"]) for x in json.loads(s.listInstalledApps())["result"] if x["applicationState"] < "060"]: print y;
@@ -138,17 +120,13 @@ With Python:
 Configuration files: settings.properties
 in server, ecm-linux, simulator
 
-tvservice -o on TCU for lowering battery use
-
 Making partition bootable
 use sudo fdisk /dev/sdg
 and the commands p, a and w
 
 
-When writing a plugin, don't forget super(args) in the constructor.
-
 ----------------------------------------
-New debugging idea: connect the serial output from the SCU to the UART of
+Debugging idea: connect the serial output from the SCU to the UART of
 the TCU, and read from its /dev/ttyAMA0.
 
 Connect UART pins on SCU to those on TCU (RX to TX, etc.)
