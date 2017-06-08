@@ -20,11 +20,9 @@ It consists of the following packages:
 * Some useful tools
 
 
-2015-10-14
 To get started:
 * Read everything in the "doc" directory.
-* Building is done by running new-server/misc/buildall.sh
-* Ignore the directory "server". "new-server" is the currently active code.
+* Building is done by running server/misc/buildall.sh
 
 Forum for discussion of the MOPED platform:
 http://mopedforum.prophpbb.com
