@@ -239,10 +239,10 @@ typedef unsigned long irqmask;
 #define GPIO_LED_RED			4				// Led light, red
 #define GPIO_PWM_SPEED			17				// PWM-actuator for speed control
 #define GPIO_PWM_STEERING		18				// PWM-actuator for steering control
-#define GPIO_LED_YELLOW1		22				// Led light, yellow 1 (left)
+#define GPIO_LED_YELLOW1		22				// Led light, yellow 1 (right)
 #define GPIO_FRONT_SPEED  		23				// Front wheel speed sensor
 #define GPIO_REAR_SPEED     	24				// Rear wheel speed sensor
-#define GPIO_LED_YELLOW2		27				// Led light, yellow 2 (right)
+#define GPIO_LED_YELLOW2		27				// Led light, yellow 2 (left)
 
 /* Sensor Control Unit (SCU) GPIOs */
 #define GPIO_I2C_SDA			2				// I2C, serial data line
