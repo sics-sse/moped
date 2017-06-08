@@ -12,16 +12,6 @@ mvn clean package -Dmaven.test.skip=true
 
 ============================================================
 
-indoor positioning system
-
-with the camera and opencv
-
-on TCU
-
-XXX: Optipos, server, maps, settings, error range, etc.
-
-============================================================
-
 MQTT
 
 The VCU/SCU writes to a port, which sends the data to TCU, which sends it
