@@ -152,6 +152,8 @@ Test the server:
 Get three micro-SD cards with size 4GB or larger, call them TCU, SCU and VCU.
 
 1) Making TCU
+Fetch TCU.img.gz through the Software Installation page on
+moped.sics.se.
 Put the image TCU.img on the TCU card.
 
 Mount the card. It has a Linux file system, and most MOPED-related files
