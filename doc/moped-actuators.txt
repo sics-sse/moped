@@ -53,13 +53,18 @@ not to be active when reversing. The effect is not large for speeds up to
 The minimum value magnitude for which the car moves is 7.
 
 The speed of the motor doesn't change for every value sent to the ESC,
-and it isn't even monotonous: increasing the value may lead to a lower
+and it isn't even monotonic: increasing the value may lead to a lower
 speed. Whether this is an effect in the ESC or in the motor is unknown.
 By experiment, these have been found to be the useful values to
 send:
 0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49, 53, 57, 73, 77, 81, 85, 89,
 93, 97, 100
 
+See the diagram illustrations/diagrams/motorspeed-not-monotonic.png.
+It was produced in this way:
+At a cycle time of 200 ms, for each motorspeed from 7 to 100:
+  we drive it until the maximal wheel speed value hasn't changed during 10
+  cycles, then we set it to 0 for 10 cycles.
 
 
 XXX: measuring speed: see speed sensor
