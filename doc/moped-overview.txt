@@ -103,6 +103,7 @@ doc/illustration/diagrams
 	doc-map
 	motor-speed
 	steeringhysteresis
+	motorspeed-not-monotonic
 doc/illustration/drawings
 	Car
 	communication1
@@ -127,6 +128,9 @@ to the ESC, at two different voltages of the battery.
 a geometric quantity depending almost linearly on the angle) behaves
 when the wheels are turned stepwise to the left, to the right and back
 again.
+
+"motorspeed-not-monotonic" shows that the speed does not increase with
+increasing values sent to the ESC.
 
 "Car" is a schematic view of the car from above, with and without the
 top plate.
