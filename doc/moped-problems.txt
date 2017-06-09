@@ -15,3 +15,6 @@ loose connection.
 
 If one node receives messages on the CAN bus from two different sources
 too fast, it may happen that packets get lost.
+
+Sometimes an IMU doesn't report any values at all for up to several
+seconds, for an unknown reason.

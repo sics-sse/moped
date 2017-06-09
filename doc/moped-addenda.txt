@@ -2,10 +2,6 @@ Various notes in more or less raw form, to be improved and moved to the
 right file.
 
 
-The MPU9150 (accelerometer) unit also has a magnetometer, so one can
-get the orientation with some additional code. Note that since the autosar
-code as configured now cannot transmit more than six values, then either
-the acceleration or gyro values can be used, but not both.
 
 I added code for reading the value of the GPIO 2 pin (pin 3). This can be
 changed from 1 to 0 with a simple switch which grounds the pin. The code
@@ -64,20 +60,25 @@ The value is of type 'long', in the form
 + vehiclePositionAge;
 X and Y are in cm, orientation is from 0 to 255 in units of 360/256 degrees.
 quality is between 0 and 100, 100 being perfect
+[port 22 is used in PIRTE.java, but so is port 8. Which one does what?
+The current applications don't use either of them, but there are plugins
+which do. Since the navigation code runs on the TCU, ports are not involved
+there.]
 
 
-When setting up the system, change server/settings.properties so
-it points out the MOPED directory with the variable 'mopedtop'.
-Also, change ecm-linux/settings.properties so the server will be found,
-and, after copying it to the TCU, set the VIN to something unique
-(especially relevant if you have several cars).
+When setting up the system, change the file server/settings.properties
+so it points out the MOPED directory with the variable 'mopedtop'.
+Also, change ecm-linux/settings.properties so the server will be
+found, and, after copying it to the TCU, set the VIN to something
+unique (especially relevant if you have several cars).
+The simulator has its corresponding settings.properties file.
 
 Hint: if a plugin drives the motor but doesn't set it to zero often,
 the ESC may not start directly when turned off and on again. Then
 using the remote control, move the speed to non-zero and then back
 to zero.
 
-Instead of restarting SCU and reinstall UltraSonicReader, just disconnect
+Instead of restarting SCU and reinstalling UltraSonicReader, just disconnect
 its CAN cable. When putting it back, it will continue working. This may
 be a useful thing to do so that the messages from the SCU don't
 get in the way of a plugin installation.
@@ -117,14 +118,6 @@ With Python:
 (u'387', u'FWPub', u'installed', u'030-compiled')
 (u'394', u'AllVCU', u'installed', u'030-compiled')
 
-Configuration files: settings.properties
-in server, ecm-linux, simulator
-
-Making partition bootable
-use sudo fdisk /dev/sdg
-and the commands p, a and w
-
-
 ----------------------------------------
 Debugging idea: connect the serial output from the SCU to the UART of
 the TCU, and read from its /dev/ttyAMA0.
@@ -142,13 +135,9 @@ cat < /dev/ttyAMA0
 
 /dev/ttyAMA0 is already at the right speed etc.
 
-It works fine.
-
-But it seems to take a bit of cpu from the other things running.
+It seems to take a bit of CPU from the other things running.
 
 ----------------------------------------
-
-IMU pauses
 
 navigation
 
@@ -165,56 +154,9 @@ traffic control
 
 traffic rules
 
-------------------------------------------------------------
-correlation battery-motor-speed
-drive	finspeed	spi
-5	21		1
-10	32		2
-15	40		3
-20	52		4
-25	60		5
-30	71		6
-
-
-full battery
-5	32		1
-10	43		2
-15	53		3
-20	64		4
-25	75		5
-30	84		6
-------------------------------------------------------------
-
-MQTT server can be down - use the other one
-
-android app: send message with the button
-
-extra devices: loudspeaker, LED matrix, 4-digit display, extra ultra with
-servo (scan about 180 degrees every 1s)
-
 simulating physical car, in wm.py
 
 log files
-
-discrete speed
-
-------------------------------------------------------------
-braking distances
-inspeed cm
-106 105
- 95 92
- 83 60
- 75 59
- 64 46
- 53 34
- 43 27
- 33 14
- 21  8
-------------------------------------------------------------
-
-*ultrasound normally goes down to about 0.5 when approaching a wall, but
-it reports 0.1 or less sometimes, rather than the actual minimum
-how to filter off those?
 
 separate file moped-calibration.txt?
 
@@ -227,26 +169,14 @@ RPi), dropping water, bumping over a small obstacle, dragging a mouse
     13300 pulses from the mouse means 1.1 pulses/mm
 
 
-left and right rear odometer: used it for finding a good parameter to
-use only right odometer and gyro.
-
 scheduling in python: sleep(0.00001)
 
 to the checklist of errors:
-has the extra cable of the battery inserted itself in the servo?
 does the left odometer report anything?
-if the IMU won't be inited: some pin may be loose - just wiggle them a
- little
 if the speeds don't work, restart VCU
 if leftspeed is less than rightspeed when driving straight, or standing
 loose, clean the lens or the reflective patches or adjust the cube
  a little
-
-electric brake:
-I think the opposite sign needs to be sent continuously, so we have to
-remove the optimization in senddrive.
-big difference for speed 100 but not much for speed 50
-investigate further
 
 steering hysteresis
 
@@ -259,8 +189,6 @@ colliding with a water-filled watering can: 9-12 m/s^2.
 important files in autosar
 
 things done for NGEA cases: 112 server, passenger app etc.
-
-diagrams
 
 ============================================================
 LOG: look before line 10000

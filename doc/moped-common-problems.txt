@@ -49,3 +49,9 @@ by both.
 The simulator and the car use different entry points. Make sure the plugin
 has a zero-argument constructor, a one-argument (String []) constructor,
 and a 'main' method.
+
+Steering doesn't work properly: has the extra cable of the battery
+inserted itself in the servo?
+
+If the IMU won't be inited: some pin may be loose - just wiggle them a
+little.

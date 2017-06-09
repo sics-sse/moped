@@ -1,7 +1,9 @@
 ACT LED
 One of the LEDs on the Raspberry Pi board. It can be controlled
 programmatically and is used for signalling status when no other
-communication channel is available.
+communication channel is available. However, in the most recent
+version of the car (using Raspberry Pi 3), a separate LED placed
+on two neighbouring pins must be used instead.
 
 actuator
 A device which affects the environment, controlled by a computer. It may
@@ -50,7 +52,7 @@ An older name for the MOPED project, which is still visible in some places.
 GPIO
 General Purpose I/O. Some of the pins on a Raspberry Pi can be read or
 written freely by software, either polling or interrupt-driven,
-conveying one bit of information.
+conveying one bit of information at a time.
 
 gyro
 A subfunction of the IMU, which presents the angular speed around the three
@@ -85,6 +87,10 @@ port
 A communication abstraction on autosar: communication between autosar
 tasks (on the same or different nodes), as well as reading from sensors and
 writing to actuators, is done by reading/writing to ports.
+
+RFID
+Radio-Frequency Identification. A means of being notified when a reader
+passes closely by a passive tag.
 
 SCU
 Sensor Control Unit.  One of the three Raspberry Pi's on the car. It

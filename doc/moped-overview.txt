@@ -118,7 +118,7 @@ rate is dependent on what the car does, anyway.)
 "brakingdist" shows how far the car travels after getting a command to
 stop, related to speed.
 
-"doc-map" is a schematic map of the documentation files
+"doc-map" is a schematic map of the documentation files.
 
 "motor-speed" shows how the speed in cm/s depends on the command given
 to the ESC, at two different voltages of the battery.

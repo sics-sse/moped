@@ -11,6 +11,11 @@ a memory cell which the sensor port then reads. So reading fast gives you
 the same value several times in sequence. This is maybe the case with all
 sensors.
 
+What is directly measured is the distance travelled rather than speed,
+so the sensor can be called an odometer. The speed is computed by a
+filtering process.
+
+XXX: reported on CAN bus, too
 
 Testing the speed sensor without actually using the motor is easy: rotate
 one of the back wheels by hand (the mechanics make the other wheel rotate
@@ -22,6 +27,12 @@ the wire gets in the way of the path of the light, causing some or all of
 the reflectors to be ignored.
 
 XXX: front, rear, left, right, averaging
+
+Experiments have been made with putting the sensor for port 5 on the
+rear left wheel instead, so that the average of the two will give the
+car's real speed. In practice, it's possible to use information about
+the turning speed together with only the rear right wheel speed, so the
+original arrangement is kept for the time being.
 
 * distance (SCU, port 13)
 
@@ -35,18 +46,16 @@ is conical, or if it is wider in the left-right direction than up-down.
 It points slightly upwards so it will miss the floor, or if it hits
 the floor, the angle is such that the echo won't return.
 
-It seems that it only detects the echo if its angle to the reflecting surface is
-45-90 degrees.
-
+It seems that it only detects the echo if its angle to the reflecting
+surface is 45-90 degrees.
 
 * battery (VCU, port 7)
 
-See moped-battery.txt
+See moped-battery.txt.
 
 * position (VCU, port 8)
 
-There is no simple sensor for the position, but the TCU can use a camera
-and then sends position information to the VCU.
+See moped-optipos.txt.
 
 * accelerometer/gyro (SCU, port 14)
 
@@ -54,4 +63,8 @@ I2C
 IMU
 six values
 
-The unit contains a compass as well.
+The MPU9150 (accelerometer) unit also has a magnetometer, so one can
+get the orientation with some additional code. Note that since the autosar
+code as configured now cannot transmit more than six values, then either
+the acceleration or gyro values can be used, but not both.
+

@@ -8,10 +8,23 @@
 0 after -100 makes the wheels point straight ahead, while doing so after
 100 makes them stay noticeably to the right.
 
-Minimum turning diameter: 166 cm
 
-XXX: configuring the servo in main.c, toe-in, hysteresis
+
+
+Minimum turning diameter for the car type used so far: 166 cm.
+This in fact varies between individual cars.
+
+To ensure a stable direction when going forward, the front wheels should
+have some toe-in. Read the instructions for the car.
+
+Due to the physics of the steering mechanism, the steering angle is not
+a unique function of the input to the servo. The diagram
+illustrations/diagrams/steeringhysteresis.png illustrates this.
+
+XXX: configuring the servo in main.c
 XXX: measuring steering: use ang speed
+
+
 
 
 * speed (VCU, port 3)
@@ -28,16 +41,64 @@ Currently, the actual reverse speed is lower than the forward speed,
 for the same speed setting. This can apparently be configured
 somewhere in the motor unit.
 
-When going forward, setting the speed negative invokes a brake.
+When going forward, setting the speed negative invokes a brake (electric
+or perhaps magnetic).
 Setting it to zero lets the car roll. In order to reverse, the car must
 be standing still first.
+The electric brake has not been investigated fully, but it appears that for
+it to work, the negative value has to be sent continously. Also, it appears
+not to be active when reversing. The effect is not large for speeds up to
+50 cm/s but quite noticeable at 100 cm/s.
 
 The minimum value magnitude for which the car moves is 7.
 
-Braking distance for speed yyy: xxx
+The speed of the motor doesn't change for every value sent to the ESC,
+and it isn't even monotonous: increasing the value may lead to a lower
+speed. Whether this is an effect in the ESC or in the motor is unknown.
+By experiment, these have been found to be the useful values to
+send:
+0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49, 53, 57, 73, 77, 81, 85, 89,
+93, 97, 100
 
-XXX: function of battery level, discreteness
+
+
 XXX: measuring speed: see speed sensor
+
+Braking distances (without using electric brake)
+1st column: speed in cm/s
+2nd column: braking distance in cm
+106 105
+ 95 92
+ 83 60
+ 75 59
+ 64 46
+ 53 34
+ 43 27
+ 33 14
+ 21  8
+The values above are plotted in illustrations/diagrams/brakingdist.png.
+
+PWM values to speed
+1st column: the value sent to the ESC, divided by 2
+2nd column: the speed of the car, in cm/s
+full battery
+5	32
+10	43
+15	53
+20	64
+25	75
+30	84
+
+medium full battery
+5	21
+10	32
+15	40
+20	52
+25	60
+30	71
+
+The values above are plotted in the diagram
+illustrations/diagrams/motor-speed.png.
 
 * LED (VCU, port 9)
 

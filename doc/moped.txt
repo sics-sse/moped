@@ -69,8 +69,14 @@ The file moped-common-problems.txt describes some more or less common
 situation in which the car doesn't do what you think it should, and
 how to fix it.
 
+The diagram illustrations/drawings/doc-map.png aims to be helpful
+for locating documentation about a certain part of the system.
+
 Things that don't fit into any of the text files mentioned above are put
 into moped-misc.txt.
+
+In the directory doc/illustrations, some pictures can be found, which are
+referred to in the other documentation files.
 
 On the MOPED site http://moped.sics.se you can find additional material,
 for example explaining the architecture.
