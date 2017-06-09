@@ -76,3 +76,45 @@ Useful commands on TCU:
 
 gpio readall (displays the layout of the pins)
 /home/pi/can-utils/candump -td can0 (shows the CAN traffic)
+
+
+============================================================
+
+How CAN messages go
+
+SCU 		 TCU		VCU
+  <-- 1602 ---	    --- 1601 -->		plugin (un)installation
+
+  --- 1292 --->	    <-- 1284 ---		plugin (un)installation ack
+
+		    ---  257 -->		motor/servo
+
+		    --- 1025 -->		position (raw)
+
+  <-- 1130 ---	    --- 1129 -->		MQTT subscription
+
+  --- 1132 --->	    <-- 1124 ---		MQTT publishing (cantp)
+
+  ------------- 1121 ---------->		data
+  <------------ 1122 -----------		data
+
+To send a large data chunk with CAN, the protocol cantp has been devised,
+and is partly used here. It's not true cantp, because then resending dropped
+packets is included.
+
+ecm-linux/canConfig.xml
+autosar/src/examples/Raspberry_Pi/demo_VCU/config/Raspberry_Pi/CanIf_PBCfg.c
+autosar/src/examples/Raspberry_Pi/demo_VCU/config/Raspberry_Pi/Can_PBcfg.c
+
+The "MQTT subscription" is not actually in use. See IoTIMessageHandler.java.
+
+TCU also sends to itself using 1124 (kludge), to transmit the button
+press from the Android app to the CAN bus so the navigation code can
+read it.
+
+The navigation code on TCU also uses a kludge to send commands to a
+plugin on the VCU, namely 1121, as if it came from the SCU.
+
+VCU misuses uninstallation ack messages to send speed information
+(with a fake plugin id), which the navigation code on TCU reads from
+the CAN bus.
