@@ -44,7 +44,7 @@ void SquawkTask(void){
 struct ecu_config {
   char *mac;
   char *conf;
-  int *ptab;
+  int *ptab;			/* not used */
   int steering_min, steering_max, steering_zero;
 };
 
@@ -70,9 +70,6 @@ struct ecu_config configs[] = {
 int vcu_servo_direction = DEFAULT_SERVO_DIRECTION;
 int steering_min = -100, steering_max = 100, steering_zero = 0;
 
-// See Pwm.c
-extern int *Pwm_pulse_tab;
-
 static void parse_config(void) {
   int i, j;
   int matched = 0;
@@ -90,7 +87,6 @@ static void parse_config(void) {
       steering_min = configs[i].steering_min;
       steering_max = configs[i].steering_max;
       steering_zero = configs[i].steering_zero;
-      Pwm_pulse_tab = configs[i].ptab;
       if (vcu_servo_direction != 1 && vcu_servo_direction != -1) {
 	printf("invalid servo direction %d\r\n",
 	       vcu_servo_direction);
