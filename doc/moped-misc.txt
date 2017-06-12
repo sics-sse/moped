@@ -118,3 +118,8 @@ plugin on the VCU, namely 1121, as if it came from the SCU.
 VCU misuses uninstallation ack messages to send speed information
 (with a fake plugin id), which the navigation code on TCU reads from
 the CAN bus.
+
+Hint: if a plugin drives the motor but doesn't set it to zero often,
+the ESC may not start directly when turned off and on again. Then
+using the remote control, move the speed to non-zero and then back
+to zero.
