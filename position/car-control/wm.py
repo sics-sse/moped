@@ -12,7 +12,6 @@ from nav_log import tolog, tolog0
 from nav_util import dist
 
 import nav_signal
-import driving
 import nav_mqtt
 
 mp = dict()
