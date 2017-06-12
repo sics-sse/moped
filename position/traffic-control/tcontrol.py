@@ -5,6 +5,10 @@ from math import cos, sin, pi
 
 from Tkinter import *
 
+sys.path.append("car-control")
+import eight
+import nav_map
+
 #from tcontrol_comm import *
 import tcontrol_comm
 from tcontrol_comm import update_mark
@@ -37,10 +41,6 @@ pathlist = []
 global currentpath
 
 obstacles = dict()
-
-sys.path.append("car-control")
-import eight
-import nav_map
 
 eight.eightinit()
 
@@ -575,7 +575,7 @@ start_obstacles = [(1.26, 19.7-9.30),
                    (2.60, 19.7-7.89-0.75),
                    (3.00-0.18, 19.7-8.19-0.14-0.75),
                    (3.00-0.64, 19.7-8.39-0.14-0.75),]
-#start_obstacles = []
+start_obstacles = []
 
 for point in start_obstacles:
     obstacles[point] = True
