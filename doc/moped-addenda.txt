@@ -50,7 +50,7 @@ ACT LED blinking (the first LED on the Raspberry Pi board)
 
  If the pattern is 55, it means that the Java virtual machine never started.
 
-Port 22 is for reading position information, sent to the VCU from the TCU
+Port 22 or 8 is for reading position information, sent to the VCU from the TCU
 when an external image processing server is running.
 The value is of type 'long', in the form
 (vehiclePositionX << 48)
@@ -72,11 +72,6 @@ Also, change ecm-linux/settings.properties so the server will be
 found, and, after copying it to the TCU, set the VIN to something
 unique (especially relevant if you have several cars).
 The simulator has its corresponding settings.properties file.
-
-Hint: if a plugin drives the motor but doesn't set it to zero often,
-the ESC may not start directly when turned off and on again. Then
-using the remote control, move the speed to non-zero and then back
-to zero.
 
 Instead of restarting SCU and reinstalling UltraSonicReader, just disconnect
 its CAN cable. When putting it back, it will continue working. This may
