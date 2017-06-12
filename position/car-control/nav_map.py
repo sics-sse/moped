@@ -276,3 +276,38 @@ def findpiece(a, b, q):
             break
     return found
 
+def extendpath_p(p, goaln, d0, n2, nz, acc):
+    nlast1 = p[-1]
+
+    if nlast1 == goaln:
+        if nz == None or p[-2] == nz:
+            #print("%f %s" % (d0, str(p)))
+            return acc + [(d0, p)]
+
+    for (n, d) in neighbours_p(nlast1):
+        # Here, we should not look for only p, but for the sequence
+        # [p[-1], n]
+        if n in p:
+            continue
+
+        if len(p) == 1 and n2 != None and n != n2:
+            continue
+
+        sharpturns = [[6, 23, 5],
+                      [34, 23, 35],
+                      [5, 6, 23],
+                      [34, 35, 23],
+                      [35, 34, 23],
+                      [6, 5, 23],
+                      [3, 4, 34]]
+
+        newp = p + [n]
+        if len(newp) >= 3:
+            newp3 = newp[-3:]
+            if newp3 in sharpturns or rev(newp3) in sharpturns:
+                continue
+
+        acc = extendpath_p(p + [n], goaln, d0 + d,
+                           n2, nz, acc)
+
+    return acc
