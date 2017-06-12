@@ -1,12 +1,122 @@
 The code for running the cars autonomously is mainly in the directory
 moped/position.
 
+moped/position/car-control: runs on the TCU of each car
+
+To start:
+    cd ~pi
+    python3 -i run.py
+
+The relevant python files in ~pi have been copied there from the
+position/car-control directory.
+
+moped/position/traffic-control: runs on a traffic control server
+To start:
+    cd moped/position
+    python traffic-control/tcontrol.py
+
+
+
+
+eight.py is used by both car control and traffic control, and defines
+the road network. Currently, it has the form of two ovals meeting at
+one point, forming an eight, plus straight paths at the edges, so the
+final shape is a zero overlayed on an eight.
+
+I generally call one end (the top of the eight, with the highest y
+value) the northern end.
+
+Points where different parts of the network meet are called "decision
+points". A part between one decision point and another is called a "piece".
+
+The semi-circle arcs are defined by either seven points, or 13,
+depending on the global variable 'interleave' in eight.py. The sparse
+points have numbers from 1 to 36. The in-between points are numbered
+by a neighbouring point plus a multiple of 100, depending on the arc
+they belong to.
+
+See illustrations/screenshots/eight.png. Node 1 is outside the
+picture, at the bottom left.
+
+So the decision points are numbered 5, 6, 34, 35 and 23. And 4, if node
+1 is in use.
+
+The network can consist of two lanes, 50 cm each, or one lane, 100 cm.
+In our environment, we have found that 50 cm is too narrow, and only works
+at most a few minutes at a time without a car going outside the road (which
+means hitting a wall), or entering the opposite lane.
+
+A car needs optipos running in order to know where it is. Between optipos
+messages, the car uses dead reckoning based on wheel speed and orientation.
+
+When more than car is running, traffic needs to be regulated in
+certain areas, namely the decision points and the area near
+them. Additionally, they need to be informed when there are obstacles
+(other cars) in front of them.
+
+The traffic rules are implemented by a traffic control server, running on
+a separate host.
+
+
+Information flow:
+The optipos client running on the car appends information to the file
+/tmp/marker0, from which the car control code reads it.
+
+C code on the VCU reads the odometers and sends the readings on the CAN
+bus, from which the car control code reads it.
+
+If wanted, a plugin on the SCU sends ultrasonic distance information on
+the CAN bus, from which the car control code reads it.
+
+The car control code uses the program 'cansend' to send motor and steering
+commands to the VCU.
+
+To control the LEDs, the car control code send CAN messages which are
+conveyed to a port read by a plugin on the VCU.
+
+The car control code opens a TCP connection to the traffic control server.
+
+
+
+
+Questions that are answered by functions in eight.py + nav_map.py
+(which is also used by both car control and traffic control):
+How long is it between point A and B?
+What paths/pieces exist for going between A and B?
+
+For representing a particular position in the network, the closest
+points in both directions are used, and a number between 0 and 1 which
+says how far we are from the first point.
+
 XXX
 
-traffic control
-car control
+eight.pieces
+ .distances
+ .nodes
+ .roadpoints
+ .ways
 
-eight
-map
 
-4d/rcs
+The dynamic part of navigating is structured following the 4D/RCS
+architecture (although not fully done yet). nav1.py and nav2.py
+constitute two different levels. driving.py implements a lowest
+level with no planning.
+
+The car's world model is kept up-to-date by wm.py (optipos and
+CAN), nav_imu.py (IMU) and nav_tc (other traffic).
+
+nav_map, nav_signal, nav_mqtt, nav_log and nav_util.
+
+
+If the reason for running the car control code is to test the traffic
+rules, or other aspects of the communication with traffic control, and
+a physical car is not needed, a simulated car is available. Then start
+the car control code like this, but on a development host:
+    cd position/car-control
+    python3 -i run.py carX
+where carX is the name you want to give the car.
+
+
+Many things are not done yet in the 4D/RCS scheme:
+a common superclass for the levels, with common code;
+handling of speed
