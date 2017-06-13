@@ -1,0 +1,69 @@
+Here those files in the autosar source tree are described which contain
+the MOPED additions to autosar, especially those which may be
+interesting to change.
+
+Under moped/autosar/src, there are two directories: core and examples.
+"examples" contains what is specific for VCU and for SCU (although
+with many files in common), whereas "core" contains what is common to
+all autosar nodes.
+
+Under "core", there are specific trees for the various architectures.
+
+autosar/src/core/arch/arm/arm_v6/
+autosar/src/core/arch/arm/arm_v7/
+
+These trees have most files in common, but a small set are different.
+arm_v7 is for Raspberry Pi 3, and v6 is for Raspberry Pi 1, which was used
+in the earlier generation of cars.
+
+    crt0.s
+    bcm2835.h
+    bcm2835.c
+    led.c
+    UltraSonicSensor.c (?)
+    Can.c (?)
+?
+
+
+The interesting files:
+
+autosar/src/core/arch/arm/arm_v*/drivers/
+	Pwm.c
+	bcm2835.*
+	mcp2515.h
+autosar/src/core/arch/arm/arm_v*/drivers/sensors/
+	Mcp3008.c
+	Sensors.h
+	SpeedSensor.c
+	UltrasonicSensor.c
+autosar/src/core/arch/arm/arm_v*/kernel/
+	crt0.s
+	sys_tick.c
+autosar/src/core/boards/Raspberry_Pi/config/
+	Pwm_Cfg.*
+autosar/src/core/system/kernel/
+	os_init.c
+
+Common to both VCU and SCU:
+
+autosar/src/examples/Raspberry_Pi/demo_*CU/
+	MOPED_DEBUG.h
+	MOPED_signal.h
+	build_config.mk
+	java.c
+	main.c
+	makefile
+autosar/src/examples/Raspberry_Pi/demo_SCU/config/Raspberry_Pi/
+	IoHwAb_Digital.c
+	Port_Cfg.c
+
+Unique to one of SCU and VCU:
+
+autosar/src/examples/Raspberry_Pi/demo_SCU/
+	mpu9150_sensor.*
+	scu_platform.c
+
+autosar/src/examples/Raspberry_Pi/demo_VCU/
+	vcu_platform.c
+autosar/src/examples/Raspberry_Pi/demo_VCU/config/Raspberry_Pi/
+	Os_Cfg.c
