@@ -88,7 +88,8 @@ Std_ReturnType IoHw_Read_AdcSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data)
  */
 Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data){
 	static uint64 startTime;
-	*Data = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
+	//*Data = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
+	*Data = 0;
 
 //	printf("In IoHw_Front_RearWheelSensor, data = %lu cm\r\n", *Data);
 
@@ -100,8 +101,8 @@ Std_ReturnType IoHw_Read_FrontWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32
 }
 
 #define SAVED_PULSE_T	5
-extern uint32 pulse_t[][SAVED_PULSE_T];
-extern uint32 pulse_t_n[];
+extern uint64 pulse_t[][SAVED_PULSE_T];
+extern uint64 pulse_t_n[];
 
 //TODO: As above
 /**
@@ -113,15 +114,18 @@ extern uint32 pulse_t_n[];
  */
 Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32* Data){
 	static uint64 startTime;
+	uint64 startTime2 = startTime;
 	uint32 odo;
 	int i;
 
 	odo = Sensors_GetWheelPulseTotal(REAR_WHEEL);
-	*Data = IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime);
+	*Data = IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime2);
 	//*Data = 1000*odo + IoHwAb_Digital_CalcWheelSpeed(REAR_WHEEL, &startTime);
 
-	uint32 fData = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
+	uint32 realfData = IoHwAb_Digital_CalcWheelSpeed(FRONT_WHEEL, &startTime);
 	uint32 fodo;
+	uint32 fData;
+	uint32 fDataleft;
 	fodo = Sensors_GetWheelPulseTotal(FRONT_WHEEL);
 
 	//	printf("wheels %d %d %d %d\r\n", *Data, odo, fData, fodo);
@@ -131,14 +135,65 @@ Std_ReturnType IoHw_Read_RearWheelSensor(/*IN*/uint32 portDefArg1, /*IN*/uint32*
 	char tbuf[200];
 	// we put our calculation of average speed for REAR in fData
 	uint64 curt = CURRENT_TIME;
-	uint64 avgt = ((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][0])/(SAVED_PULSE_T-1));
-	if (curt - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] > 2000000) {
+	uint64 avgt;
+
+	int n;
+
+#if 0
+	n = 0;
+	if (curt - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] < 600000) {
+	  for (i = SAVED_PULSE_T-1; i > 0; i--) {
+	    if (pulse_t[REAR_WHEEL][i] - pulse_t[REAR_WHEEL][i-1] > 600000) {
+	      break;
+	    }
+	    n++;
+	  }
+	}
+
+	if (n == 0) {
 	  fData = 0.0;
 	} else {
+	  avgt = ((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1-n])/n);
 	  fData = 10.2*3.14/5/avgt*1000000;
 	}
-	sprintf(tbuf, "speed x %3d x%d x %3d x%d x",
-		*Data, odo, fData, fodo);
+
+	n = 0;
+	if (curt - pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1] < 600000) {
+	  for (i = SAVED_PULSE_T-1; i > 0; i--) {
+	    if (pulse_t[FRONT_WHEEL][i] - pulse_t[FRONT_WHEEL][i-1] > 600000) {
+	      break;
+	    }
+	    n++;
+	  }
+	}
+
+	if (n == 0) {
+	  fDataleft = 0.0;
+	} else {
+	  avgt = ((pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1] - pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1-n])/n);
+	  fDataleft = 10.2*3.14/5/avgt*1000000;
+	}
+#else
+	if (curt - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] > 600000) {
+	  fData = 0.0;
+	} else {
+	  n = 1;
+	  avgt = ((pulse_t[REAR_WHEEL][SAVED_PULSE_T-1] - pulse_t[REAR_WHEEL][SAVED_PULSE_T-1-n])/n);
+	  fData = 10.2*3.14/5/avgt*1000000;
+	}
+
+	if (curt - pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1] > 600000) {
+	  fDataleft = 0.0;
+	} else {
+	  n = 1;
+	  avgt = ((pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1] - pulse_t[FRONT_WHEEL][SAVED_PULSE_T-1-n])/n);
+	  fDataleft = 10.2*3.14/5/avgt*1000000;
+	}
+
+#endif
+
+	sprintf(tbuf, "speed x %3d x%d x %3d x%d x%d x %3dxy",
+		*Data, odo, fData, fodo, realfData, fDataleft);
 	autosarSendPackageData(strlen(tbuf), tbuf);
 #endif
 
@@ -181,10 +236,19 @@ Std_ReturnType IoHw_WriteServo_DutyCycle(/*IN*/uint32 portDefArg1, /*OUT*/uint8 
 
   int channel = 0;
 
+#if 0
+  // Experiment with second servo.
   if (servo > 100 || servo < -100) {
     channel = 2;
-    servo = (servo-101)*100/26;
+    printf("channel 2 servo0: %d\r\n", servo);
+    if (servo > 100) {
+      servo = (servo-101)*127/26;
+    } else {
+      servo = -(-servo-101)*127/26;
+    }
+    printf("channel 2 servo1: %d\r\n", servo);
   }
+#endif
 
   if (channel == 0) {
     servo = vcu_servo_direction*servo;
