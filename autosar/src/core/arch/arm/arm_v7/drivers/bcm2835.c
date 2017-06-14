@@ -208,7 +208,10 @@ void bcm2835_GpioIsr(void) {
 	irqMask |= BIT(GPIO_CAN_IRQ);
 #endif
 
-	irqMask |= BIT(2); // pin 3, used on SCU but not on VCU
+#if 0
+# experiment with pin 3 (GPIO 2)
+	irqMask |= BIT(2); // pin 3, used on VCU but not on SCU
+#endif
 
 	/* If there is a edge flank on one of interrupt-enabled pins,
 	 * go to the appropriate interrupt handler. Repeat until all
@@ -330,11 +333,7 @@ void bcm2835_read_mac_address(void) {
 	uint32 *place;
 	int i;
 
-	led_on();
-
 	place = (uint32 *) VC_MBOX_MEM;
-
-	//pi_printf("read mac 1\r\n");
 
 	place[0] = 32;
 	place[1] = 0;
@@ -343,25 +342,8 @@ void bcm2835_read_mac_address(void) {
 	place[4] = 0;
 	place[5] = 0;
 	place[6] = 0;
-
-	//pi_printf("read mac 2\r\n");
-
 	bcm2835_mailbox_write(8, VC_MBOX_MEM);
-	//pi_printf("read mac 3\r\n");
 	val = bcm2835_mailbox_read(8);
-	//pi_printf("read mac 4\r\n");
-
-#if 0
-	char mbuf[80];
-	printf("mbox\r\n");
-	sprintf(mbuf, "val %d", val);
-	printf("%s\r\n", mbuf);
-	for (i = 0; i < 7; i++) {
-	  sprintf(mbuf, "place %d %d", i, place[i]);
-	  printf("%s\r\n", mbuf);
-	}
-#endif
-
 	if ((place[1] == 0x80000000 ||
 	     place[1] == 0x80000001) && place[4] == 0x80000006) {
 	  uint8 *addr = (uint8 *) &place[5];
@@ -370,8 +352,6 @@ void bcm2835_read_mac_address(void) {
 	    bcm2835_mac_address[2*i+1] = hexd(addr[i]&15);
 	  }
 	  bcm2835_mac_address[12] = '\0';
-	  led_off();
-	  pi_printf("hepp\r\n");
 	  printf("MAC address: %s\r\n", bcm2835_mac_address);
 	} else {
 	  printf("Obtaining MAC address failed\r\n");
