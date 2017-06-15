@@ -531,8 +531,12 @@ public class RomCommand extends Command {
             env.log(env.brief, "[compiling '" + VM_SRC_FILE + "' ...]");
             objectFiles.add(ccompiler.compile(includeDirs, VM_SRC_FILE, VM_BLD_DIR, false));
 
-            env.log(env.brief, "[linking '" + bootstrapSuiteName + "' ...]");
-            ccompiler.link((File[])objectFiles.toArray(new File[objectFiles.size()]), bootstrapSuiteName, env.dll);
+	    if (!bootstrapSuiteName.equals("squawk")) {
+		env.log(env.brief, "[linking '" + bootstrapSuiteName + "' ...]");
+		ccompiler.link((File[])objectFiles.toArray(new File[objectFiles.size()]), bootstrapSuiteName, env.dll);
+	    } else {
+		env.log(env.brief, "[not linking squawk]");
+	    }
 
             if (!env.verbose) {
             	for (File file : generatedFiles) {
