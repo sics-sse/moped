@@ -4,10 +4,9 @@ some testing.
 
 Building:
 
-    A cross compiler is needed, arm-none-eabi. I got a copy from Avenir.
-    See http://elinux.org/ARMCompilers
-    I don't know how to get a new, free, one.
-I think the above is incorrect - it may be the IDE that's nonfree.
+A cross compiler is needed, arm-none-eabi.
+It can be obtained here:
+https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
 
 You may need to install gawk.
 
