@@ -1,4 +1,4 @@
-Here those files in the autosar source tree are described which contain
+Here those files in the autosar source tree are listed which contain
 the MOPED additions to autosar, especially those which may be
 interesting to change.
 
@@ -15,14 +15,8 @@ autosar/src/core/arch/arm/arm_v7/
 These trees have most files in common, but a small set are different.
 arm_v7 is for Raspberry Pi 3, and v6 is for Raspberry Pi 1, which was used
 in the earlier generation of cars.
-
     crt0.s
     bcm2835.h
-    bcm2835.c
-    led.c
-    UltraSonicSensor.c (?)
-    Can.c (?)
-?
 
 
 The interesting files:
@@ -53,9 +47,8 @@ autosar/src/examples/Raspberry_Pi/demo_*CU/
 	java.c
 	main.c
 	makefile
-autosar/src/examples/Raspberry_Pi/demo_SCU/config/Raspberry_Pi/
+autosar/src/examples/Raspberry_Pi/demo_*CU/config/Raspberry_Pi/
 	IoHwAb_Digital.c
-	Port_Cfg.c
 
 Unique to one of SCU and VCU:
 
