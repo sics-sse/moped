@@ -7,9 +7,6 @@ I added code for reading the value of the GPIO 2 pin (pin 3). This can be
 changed from 1 to 0 with a simple switch which grounds the pin. The code
 is not readable from Java yet.
 
-New plugin: StarAndGo, and others
-
-
 Sending data from VCU to SCU (in the same way as SCU to VCU already works)
 is in progress, but not ready yet.
 
@@ -17,9 +14,6 @@ is in progress, but not ready yet.
 
 Don't force the front wheels to change steering by hand. Doing so
 generates a current, which may be high enough to damage circuits.
-
-The speed of the car: 20m in between 10 and 50 s.
-Smallest circle has outer diameter 153 cm.
 
 When "ready? 0 xxx", xxx being some number, appears on VCU/SCU serial
 output, it means that the Can reception works, but PIRTE is not
@@ -85,12 +79,10 @@ will be made using the cable.
 
 plugins/new-plugin.sh
 
-In the front wheels, the reflection reader is fastened with a piece of
-plastic-embedded metal wire which can get in the way of the light. Pull
-it into place if so. Check that the VCU reacts for each of the five
-strips.
-
-About j2me and missing things (split, maths) and the string+double bug.
+In the front wheels, the reflection reader has sometimes been fastened
+with a piece of plastic-embedded metal wire which can get in the way
+of the light. Pull it into place if so. Check that the VCU reacts for
+each of the five strips.
 
 With Python:
 >>> for y in [(x["appId"],x["name"],x["installationState"],x["applicationState"]) for x in json.loads(s.listInstalledApps())["result"] if x["applicationState"] < "060"]: print y;
@@ -180,8 +172,6 @@ camera, clean lens
 adjust cogwheels
 
 colliding with a water-filled watering can: 9-12 m/s^2.
-
-important files in autosar
 
 things done for NGEA cases: 112 server, passenger app etc.
 
