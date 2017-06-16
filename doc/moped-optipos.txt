@@ -79,11 +79,24 @@ maybe we need to enable the camera, in raspi-config, and then reboot
 start_x=1 in config.txt
 sudo update-rc.d optipos defaults
 
-XXX quality etc, the format of /tmp/marker0
+Data format:
+The lines in /tmp/marker0 look like this:
+markerno x y angle quality time0 time1
+
+For example:
+6 1.039530 7.715666 2 0.519157 1497596736.476303 1497596736.633731
+
+The times are when the picture was sent to the server and when the
+result came back.
+
+The quality is a number between 0 and 1. In practice, it is between 0.2
+and 0.8. If < 0.4, the risk is large that the position is nonsense.
 
 
 
 Calibration of the camera:
 * Look at the images and turn the camera lens until the focus is good.
+It helps to paint a small marker on the holder of the lens.
+
 * Put the car at a known place and see what coordinates you get. Modify
 the offsets in the config file for the car.
