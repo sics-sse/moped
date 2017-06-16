@@ -93,3 +93,24 @@ Mcp3008
 
 driven by 3V: RPi pins 17 and 20
 digital signal: RPi pins 12, 16, 18 and 24.
+
+============================================================
+
+Before the ESC is used the first time, it needs to be initialized. Follow
+the instructions in its documentation.
+
+One more things you may want to do with the ESC is reduce the speed by
+using a programming card:
+
+item value
+1    3
+2    2
+3    3
+4    3
+5    1
+6    9
+7    5
+8    1
+9    1
+10   3
+Items 5 and 6 are probably the only ones that need to be changed.
