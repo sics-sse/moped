@@ -11,7 +11,8 @@ You may need to use sudo.
 
 XXX describe what the plugin code should look like, and how it is compiled.
 
-But see PlugInManual.docx.
+See PlugInManual.docx. That document is old, and some parts need updating.
+Some parts are useful.
 
 pom.xml
 plugin configuration file (XML)
@@ -22,6 +23,8 @@ See moped-ports.txt
 The simulator only supports a subset of the sensors and actuators.
 See moped-simulator.txt
 
+
+To create a template for a new plugin, use the script plugins/new-plugin.sh.
 
 Existing plugins (and the ports they use):
 
@@ -82,10 +85,109 @@ Works sometimes, but not always. This ought to be the correct way to
 kill a Java thread. It is done when a running plugin is reinstalled.
 
 
-Compiling and uploading a plugin, for example the existing plugin LEDLighter,
-with version 1.0:
+To compile and install a plugin, for example LEDLighter:
 
-Compiling:
+1) cd plugins/LEDLighter
+   mvn clean install
 
-The plugin is compiled with "mvn clean install" and uploaded from the
-"target" directory.
+2) Upload the plugin jar file to the trusted server (from the plugin's
+target directory). In the GUI, use the Application Upload page.
+
+3) The plugin is now visible on the page Apps Gallery. To put it on a car,
+two things are required: the car must be on and have contacted the trusted
+server; and the car must be the active vehicle in the GUI. To make it the
+active vehicle, go to the Vehicle Configuration Upload and Associations page.
+If the car is not available there, upload its vehicle configuration file
+(make a copy of simulator/configs/system1.xml and change the 'vin' entry
+to what you want the car to be called).
+
+When the car is the active vehicle in the Apps Gallery, press the Install
+button for the plugin. The plugin should now be sent to the car and started
+there.
+
+
+How to do the same things without using the GUI is shown by the script
+server/misc/init-moped.sh.
+
+
+------------------------------------------------------------
+Various notes about problems with Java:
+
+Java j2me doesn't contain String.split.
+See http://stackoverflow.com/questions/200746/how-do-i-split-strings-in-j2me
+
+
+When such a construct is used, testmoped.uploadplus gives an error, but
+the plugin is put in place anyway and can then be installed, with various
+errors on the VCU/SCU.
+
+
+floating args to string concatenation.
+Error when compiling with squawk:
+
+      	   	        double speed;
+			String sss;
+			sss = " at speed = " +
+			    speed;
+
+Reported by user-compile by a large but noninformative stack trace.
+Better reported with retroweaver (user-compile-r).
+Does it help if we do preprocess first in user-compile-r?
+
+Workaround: put Double.toString() around the doubles.
+This happened in SemiAutomaticReverseParking.
+
+
+log, sin, etc.
+
+j2me doesn't have atan2 etc. Found this class:
+http://www.java2s.com/Code/Java/Data-Type/ClassforfloatpointcalculationsinJ2MEapplicationsCLDC.htm
+
+
+In SemiAutomaticReverseParking, there is a comment that Math.round is not
+there, but MathUtils has it.
+
+------------------------------------------------------------
+
+package plugins;
+
+import java.io.IOException;
+import com.sun.squawk.VM;
+import sics.port.PluginPPort;
+import sics.port.PluginRPort;
+import sics.plugin.PlugInComponent;
+
+public class PLUGINNAME extends PlugInComponent {
+    //private PluginPPort fs;
+    //private PluginRPort ff;
+	
+    public PLUGINNAME() {}
+	
+    public PLUGINNAME(String[] args) {
+	super(args);
+    }
+	
+    public static void main(String[] args) {
+	PLUGINNAME plugin = new PLUGINNAME(args);
+	plugin.run();
+    }
+
+    public void init() {
+	//fs = new PluginPPort(this, "fs");
+	//ff = new PluginRPort(this, "ff");
+    }
+	
+    public void doFunction() throws InterruptedException {
+    }
+
+    public void run() {
+	init();
+
+	try {
+	    doFunction();
+	} catch (InterruptedException e) {
+	    VM.println("**************** Interrupted.");
+	    return;
+	}
+    }
+}
