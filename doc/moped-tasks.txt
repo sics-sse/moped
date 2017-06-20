@@ -1,0 +1,37 @@
+Here is a list of either problem areas or interesting tasks.
+
+
+* CAN bus handling
+Our code in autosar which handles CAN is less than perfect: it has a naive
+implementation of cantp, which means that if a sequence of packets comprising
+one large message is interrupted by a packet with another destination, one
+of them will fail. Attempts to keep separate buffers of packets have been
+made.
+
+* Optipos
+It should be possible to improve the Optipos positioning, for example by
+identifying several markers and check that those can actually be
+visible at the same time.
+
+* Positioning
+Obtaining the most likely position of a car is the result of a process
+involving Optipos, dead reckoning and perhaps ultrasonic distance measuring,
+all of which have inherent errors. This process can be improved.
+
+* 4D/RCS
+The 4D/RCS architecture has been used to some extent: nav1.py and nav2.py
+work in that way. But all attempts to handle unforeseen events are ad-hoc
+today, and should be handled in a well-defined way by the architecture,
+and the speed keeping is done outside it.
+
+* Road network
+The current road network is somewhat encapsulated in the file eight.py,
+but the identities of important waypoints are used explicitly in several
+places.
+
+* Traffic rules
+The traffic rules, as implemented in the traffic controller, are very
+dependent on the current shape of the road network, i.e., eight.py.
+Ideally, no special code should be needed, but only knowledge of the
+network itself.
+
