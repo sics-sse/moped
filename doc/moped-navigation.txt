@@ -120,3 +120,10 @@ where carX is the name you want to give the car.
 Many things are not done yet in the 4D/RCS scheme:
 a common superclass for the levels, with common code;
 handling of speed
+
+
+
+Two log files are written:
+acclog and navlog.
+acclog is written for every reading of the IMU. navlog contains information
+written in some interesting places in the code, at a slower pace.
