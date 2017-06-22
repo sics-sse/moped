@@ -3,11 +3,6 @@ Tested with wordpress 3.6, 4.1 and 4.7.
 
 webportal is a modification of https://wordpress.org/download/
 
-wordpress probably insists on using https. How to set up apache for
-https is described here:
-https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-apache-for-ubuntu-14-04
-
-
 1) Install wordpress, put it in /var/www/wp
 
 2) Copy in the files from moped/webportal/wordpress
@@ -31,8 +26,9 @@ harmless but annoying warnings.
 
 Add require_once('pluggable.php') to wp-includes/capabilities.php
 
-5) Add https to Apache. This is not needed for moped to work, but may be
-needed for wordpress administration.
+5) Add https to Apache. This is not needed for moped to work, but wordpress
+may insist on it. One way to set up apache for https is described here:
+https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-apache-for-ubuntu-14-04
 
 6) Make a copy of the file moped/webportal/wordpress/db_dump/fresta_dump.sql
 and replace all occurrences of "merkur.sics.se/wp" in it to what is
