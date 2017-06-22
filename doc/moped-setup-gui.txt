@@ -1,7 +1,12 @@
 
-Tested with wordpress 3.6 and 4.1.
+Tested with wordpress 3.6, 4.1 and 4.7.
 
 webportal is a modification of https://wordpress.org/download/
+
+wordpress probably insists on using https. How to set up apache for
+https is described here:
+https://www.digitalocean.com/community/tutorials/how-to-create-a-ssl-certificate-on-apache-for-ubuntu-14-04
+
 
 1) Install wordpress, put it in /var/www/wp
 
