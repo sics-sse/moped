@@ -17,6 +17,16 @@ visible at the same time.
 Obtaining the most likely position of a car is the result of a process
 involving Optipos, dead reckoning and perhaps ultrasonic distance measuring,
 all of which have inherent errors. This process can be improved.
+Kalman filter, perhaps. Using the full information from the IMU with
+known techniques.
+
+* Navigation
+The current code for making the car follow a sequence of points is
+probably not optimal.
+
+* Roadless navigation
+Getting from one point to another where there is no road network is
+a separate problem.
 
 * 4D/RCS
 The 4D/RCS architecture has been used to some extent: nav1.py and nav2.py
@@ -35,3 +45,32 @@ dependent on the current shape of the road network, i.e., eight.py.
 Ideally, no special code should be needed, but only knowledge of the
 network itself.
 
+* Traffic behaviour
+Interesting additions to our code now are: overtaking.
+
+* MQTT
+MQTT handling needs to be made more stable. There are bugs in our Java code
+that cause simultaneous requests to fail. One goal is to make battery
+level reporting reliable - now it often stops after a while.
+
+* Car identity
+As the number of cars rises, it becomes more interesting to get away from
+having individual SD cards for each TCU. They should be able to tell who
+they are from their MAC addresses. This also makes it easier to
+handle configuration data.
+
+* More ultrasonic information
+1) To begin with, use the existing information better.
+2) I have new ultrasonic sensors that should be tried out.
+3) Do something useful with the idea of mounting a movable ultrasonic
+sensor on a servo.
+
+* Plugins
+1) Investigate the idea of collecting plugins into applications.
+2) Handle plugins appropriately depending on their compatibility with
+the car where they are to be installed.
+3) Dependencies/conflicts between plugins.
+
+* Android app
+Add some useful functions, such as picking one of a number of earlier
+used cars, and receiving messages from a car.
