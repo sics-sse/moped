@@ -45,6 +45,8 @@ B->C->D, C->G.
 
 When you have a running system, you may want to do these things:
 
+* Test whether the car functions: see moped-tests.txt.
+
 * Write and run plugins, either in the car, or in the simulator.
   Some plugins are included.
   See moped-plugins.txt, moped-simulator.txt, moped-gui.txt.
