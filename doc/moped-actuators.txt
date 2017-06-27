@@ -116,7 +116,7 @@ LED 3 = left yellow
 
 Send a string like this to the port: "3|1".
 
-XXX: the Led plugin
+XXX: the Led plugin and VCUfromSCU
 
 The ACT LED on the Raspberry Pi board can also be controlled this way,
 by using the LED number -1. The value is then not 0 or 1, but a blinking
