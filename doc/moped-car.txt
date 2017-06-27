@@ -55,7 +55,7 @@ The second one is usually lit when the power is on. The first one blinks
 slowly (once a second) on VCU and SCU to show that autosar is running.
 If it doesn't start to blink when the board is turned on, turn off and on
 again.
-XXX: this role has been given to a LED on pin 32.
+XXX: this role has been given to a LED on pins 31+32.
 
 
 There are lights for indicating the power level, see moped-battery.txt.
