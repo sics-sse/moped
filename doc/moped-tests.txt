@@ -31,6 +31,10 @@ blink in another pattern (this means a plugin is being loaded), and
 then go back to the first kind of blinking (see moped-actuators.txt and
 moped-addenda.txt).
 
+There is a little LED near one corner on the CAN boards which may
+light up when there is CAN traffic, but it seems it does not always do
+this.
+
 * with wifi access
 
 If you know you don't have wifi access yet, you can test with an
@@ -81,6 +85,9 @@ manually, we must first disable the speed limit.
 The car should move forward fairly slowly.
      drive(0)
 The car stops.
+    drive(-14)
+The car should move backward fairly slowly.
+
 
 Inspect the odometers
      (g.odometer, g.fodometer)
@@ -98,6 +105,21 @@ It should say "connected".
 
 You can now move the car with the speed and steering controls.
 
+When you run run.py on the car at the same time, check g.ang, drive a
+full circle turning right and check g.ang again. It should have become
+larger by 360 degrees.
+
+Turning as tightly as possible and going forward, measure the diameter
+of the smallest circle which the car stays within. It should be around
+160 cm or less.
+
+Run the car with steering value 0. If it doesn't go straight ahead, that
+is not an error, but should be compensated for in software for that
+particular car.
+
+Listen to the sound when the car moves. It should not rattle loudly as
+if something was loose, nor indicate that the motor has to overcome
+a too tight connection to the differential.
 
 * with optipos
 
@@ -109,16 +131,17 @@ On the car,
 should show the arrival of position data. If the car is not in an area
 with ceiling markers which the server knows about, the first column
 is zero, and the last two columns are time stamps. Columns two to four
-are random.
+(x, y and angle) are random.
 
 (Before the optipos server is started, the file also grows, with -1 markers,
 but faster, and with 0.0 in columns two to four.)
 
-Move the car to where the camera will see ceiling markers. The correct
-marker numbers should appear in the file. The focus will probably have to
-be set right first by turning the lens holder and looking at the images.
-You can take single pictures with the raspistill program, if you first
-kill the optipos client.
+Move the car to where the camera will see ceiling markers. Correct
+marker numbers should appear in the file, and correct x, y and
+angle. The focus will probably have to be set right first by turning
+the lens holder and looking at the images.  You can take single
+pictures with the raspistill program, if you first kill the optipos
+client.
 
 When running run.py, you can inspect the position
      (g.ppx, g.ppy)
