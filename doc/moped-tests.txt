@@ -1,0 +1,148 @@
+Suggestions for how to test the functionality.
+
+This is not a troubleshooting help, only a list of scenarios.
+
+
+* alone
+
+Make sure there is an appropriate SD card in each RPi.
+
+If you want, connect a screen to the HDMI port on the TCU, to see what
+the Linux on the TCU is doing.
+
+Connect the battery. The BEC should have one to four (preferably three
+or four; otherwise the battery will soon run out) lights lit up on one
+side.
+
+Turn both on switches on (on the BEC and on the ESC). On the other side
+of the BEC, the single light should light up. The fan on the ESC should
+start spinning.
+
+After about 10 s, the light on the camera should turn on.
+
+For both SCU and VCU, if there is a LED on pins 31+32, it should
+flicker and then start blinking regularly. A little later, it should
+blink in another pattern (this means a plugin is being loaded), and
+then go back to the first kind of blinking (see moped-actuators.txt and
+moped-addenda.txt).
+
+If you're curious about what is happening on the SCU or VCU during
+startup, first connect it with a serial cable to your computer and use
+the GtkTerm program. It says a lot of things, so it may be difficult
+to see whether things are working or not.
+
+* with wifi access
+
+If you know you don't have wifi access yet, you can test with an
+ethernet cable instead.
+
+On the default MQTT server (test.mosquitto.org), values should start
+appearing on /sics/moped/value, saying things about DistPub at least once
+a second.
+
+You can log in with ssh on the car: user pi, password pi.
+If you don't know the IP address it got, try the command
+   sudo arp-scan -l --interface=wlan0
+
+Once logged in, you can first let the command
+   can-utils/candump -atd can0
+run for a little while. It should say binary things with the strings
+"DistPub" and "speed" in them. The DistPub data are the basis for the
+MQTT data.
+
+Then, run
+   python3 -i run.py
+
+It should say something like
+
+    VIN car6
+    read byte 0x0
+    read byte 0x0
+    read byte 0x0
+    read byte 0x48
+    setleds 0 7
+    rbias = -13.240000, rxbias = 0.000000, rybias = 0.000000, xbias = -906.520000, ybias = -17.400000, zbias = 16602.200000
+
+and then present a Python prompt. At the same time, the ESC should emit
+three beeps. The servo is set to the zero position, which may mean that
+it moves a little and/or vibrates.
+
+Test the LEDs at the back of the car: give the command
+     setleds(0, 0)
+All LEDs should light up.
+     setleds(2, 7)
+The right yellow LED should blink once a second.
+
+     steer(100)
+The front wheels should turn to the extreme right position.
+
+The python code wants there to be a traffic control server, which there
+isn't at the moment, so it sets g.limitspeed to 0.0. To set the speed
+manually, we must first disable the speed limit.
+     g.limitspeed = None
+
+     drive(14)
+The car should move forward.
+     drive(0)
+The car stops.
+
+Inspect the odometers
+     (g.odometer, g.fodometer)
+You should get back a pair of small integer numbers, almost equal to each
+other, if you didn't go far while turning.
+
+(g.fodometer is badly named - 'f' is for float, but actually it's the
+value of the odometer which is not on the right rear wheel.)
+
+* with remote control app
+
+Start the app. Enter the car's IP address. Press Connect.
+
+It should say "Connected".
+
+You can now move the car with the speed and steering controls.
+
+
+* with optipos
+
+On a suitable computer, start the optipos server. When a car is active,
+the server should show several transactions a second on standard output.
+
+On the car,
+   tail -f /tmp/marker0
+should show the arrival of position data. If the car is not in an area
+with ceiling markers which the server knows about, the first column
+is zero, and the last two columns are time stamps. Columns two to four
+are random.
+
+(Before the optipos server is started, the file also grows, with -1 markers,
+but faster, and with 0.0 in columns two to four.)
+
+Move the car to where the camera will see ceiling markers. The correct
+marker numbers should appear in the file. The focus will probably have to
+be set right first by turning the lens holder and looking at the images.
+You can take single pictures with the raspistill program, if you first
+kill the optipos client.
+
+When running run.py, you can inspect the position
+     (g.ppx, g.ppy)
+and it should correspond to the one in the file, or stay unchanged if
+the marker quality is too low.
+
+(g.x and g.y also exist, but denote the acceleration.)
+
+* with traffic control
+
+Start the traffic control program. If a car is active and run.py is running,
+both should show that a connection is established. After that, the traffic
+control window will reflect the position which the car reports to it.
+
+
+* with trusted server
+
+Start the trusted server. If a car is active, it will connect and the
+trusted server will say something like
+    Vehicle car6 joins the connection (simulator 0)
+    from 193.10.67.193 at 2017-06-27 08:45:24
+
+Then you can use the GUI to install plugins on the car.
