@@ -7,6 +7,8 @@ GUI
 server
  also uses a mysql database
 
+traffic control
+
 simulator
 
 GtkTerm (or equivalent program)
