@@ -71,8 +71,9 @@ it moves a little and/or vibrates.
      steer(100)
 The front wheels should turn to the extreme right position.
 
-The python code wants there to be a traffic control server, which there
-isn't at the moment, so it sets g.limitspeed to 0.0. To set the speed
+The python code wants there to be a traffic control server, which
+there isn't at the moment (unless you went ahead and started it), so
+it sets g.limitspeed to 0.0. To set the speed
 manually, we must first disable the speed limit.
      g.limitspeed = None
 
@@ -86,14 +87,14 @@ Inspect the odometers
 You should get back a pair of small integer numbers, almost equal to each
 other, if you didn't go far while turning.
 
-(g.fodometer is badly named - 'f' is for float, but actually it's the
-value of the odometer which is not on the right rear wheel.)
+(g.fodometer is badly named - 'f' originally meant float, but actually
+it's the value of the odometer which is not on the right rear wheel.)
 
 * with remote control app
 
 Start the app. Enter the car's IP address. Press Connect.
 
-It should say "Connected".
+It should say "connected".
 
 You can now move the car with the speed and steering controls.
 
@@ -131,7 +132,7 @@ the marker quality is too low.
 Start the traffic control program. If a car is active and run.py is running,
 both should show that a connection is established. After that, the traffic
 control window will reflect the position which the car reports to it.
-
+See moped-navigation.txt.
 
 * with trusted server
 
