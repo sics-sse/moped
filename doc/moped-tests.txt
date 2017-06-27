@@ -10,11 +10,16 @@ Make sure there is an appropriate SD card in each RPi.
 If you want, connect a screen to the HDMI port on the TCU, to see what
 the Linux on the TCU is doing.
 
-Connect the battery. The BEC should have one to four (preferably three
-or four; otherwise the battery will soon run out) lights lit up on one
-side.
+If you're curious about what is happening on the SCU or VCU during
+startup, first connect it with a serial cable to your computer and use
+the GtkTerm program. It says a lot of things, so it may be difficult
+to see whether things are working or not.
 
-Turn both on switches on (on the BEC and on the ESC). On the other side
+Connect the battery. The BEC should have one to four lights lit up on
+one side (preferably three or four; otherwise the battery will soon
+run out).
+
+Turn both switches on (on the BEC and on the ESC). On the other side
 of the BEC, the single light should light up. The fan on the ESC should
 start spinning.
 
@@ -26,19 +31,15 @@ blink in another pattern (this means a plugin is being loaded), and
 then go back to the first kind of blinking (see moped-actuators.txt and
 moped-addenda.txt).
 
-If you're curious about what is happening on the SCU or VCU during
-startup, first connect it with a serial cable to your computer and use
-the GtkTerm program. It says a lot of things, so it may be difficult
-to see whether things are working or not.
-
 * with wifi access
 
 If you know you don't have wifi access yet, you can test with an
 ethernet cable instead.
 
 On the default MQTT server (test.mosquitto.org), values should start
-appearing on /sics/moped/value, saying things about DistPub at least once
-a second.
+appearing on /sics/moped/value, saying things about "DistPub" (a
+counter, and the distance in cm) at least once a second, and less often
+the battery voltage "adc" (the instantaneous value and a weighted average).
 
 You can log in with ssh on the car: user pi, password pi.
 If you don't know the IP address it got, try the command
@@ -67,12 +68,6 @@ and then present a Python prompt. At the same time, the ESC should emit
 three beeps. The servo is set to the zero position, which may mean that
 it moves a little and/or vibrates.
 
-Test the LEDs at the back of the car: give the command
-     setleds(0, 0)
-All LEDs should light up.
-     setleds(2, 7)
-The right yellow LED should blink once a second.
-
      steer(100)
 The front wheels should turn to the extreme right position.
 
@@ -82,7 +77,7 @@ manually, we must first disable the speed limit.
      g.limitspeed = None
 
      drive(14)
-The car should move forward.
+The car should move forward fairly slowly.
      drive(0)
 The car stops.
 
@@ -146,3 +141,11 @@ trusted server will say something like
     from 193.10.67.193 at 2017-06-27 08:45:24
 
 Then you can use the GUI to install plugins on the car.
+
+If you install VCUfromSCU, you can then light LEDs from run.py:
+
+Give the command
+     setleds(0, 0)
+All LEDs should light up.
+     setleds(2, 7)
+The right yellow LED should blink once a second.
