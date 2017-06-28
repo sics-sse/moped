@@ -193,3 +193,11 @@ Give the command
 All LEDs should light up.
      setleds(2, 7)
 The right yellow LED should blink once a second.
+
+* GUI to the trusted server
+
+Not written yet.
+
+* SOAP interface to the trusted server
+
+Not written yet.
