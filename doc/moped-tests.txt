@@ -3,7 +3,7 @@ Suggestions for how to test the functionality.
 This is not a troubleshooting help, only a list of scenarios.
 
 
-* alone
+* car alone
 
 Make sure there is an appropriate SD card in each RPi.
 
@@ -97,6 +97,7 @@ other, if you didn't go far while turning.
 (g.fodometer is badly named - 'f' originally meant float, but actually
 it's the value of the odometer which is not on the right rear wheel.)
 
+
 * with remote control app
 
 Start the app. Enter the car's IP address. Press Connect.
@@ -150,12 +151,31 @@ the marker quality is too low.
 
 (g.x and g.y also exist, but denote the acceleration.)
 
+Make it move to a point 1m in front and to the left in the car area
+coordinate system (first make it ignore that it's not using the road network):
+     g.maxoffroad = 4.0
+     drive(14); nav2.goto_1(g.ppx - 1.0, g.ppy + 1.0); drive(0)
+
 * with traffic control
 
 Start the traffic control program. If a car is active and run.py is running,
 both should show that a connection is established. After that, the traffic
 control window will reflect the position which the car reports to it.
 See moped-navigation.txt.
+
+You can use the traffic control program with a simulated car. Start the
+traffic control program, and in a separate window, start run.py with
+an argument which is the name of your simulated car:
+
+    cd moped/position/car-control
+    python3 -i run.py simca
+
+Set g.ppx and g.ppy so it appears in the window:
+    g.ppx=1.4
+    g.ppy=15
+
+Let it start and follow the road network:
+    whole4()
 
 * with trusted server
 
