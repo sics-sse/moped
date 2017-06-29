@@ -193,18 +193,20 @@ raspi-config on the Raspberry Pi.
 If VCU doesn't have a file system, create one. Copy these files to it:
 autosar/boot/bootcode.bin
 autosar/boot/start.elf
-autosar/SCU/SCU-kernel-16.img
-autosar/VCU/VCU-kernel-16.img
+autosar/SCU/SCU-kernel-16-v7.img
+autosar/VCU/VCU-kernel-16-v7.img
 
 Create a file config.txt on the VCU file system, with one single line:
-kernel=VCU-kernel-16.img
+kernel=VCU-kernel-16-v7.img
 
-(The number 16 refers to the frequency of the CAN card. Files also exist
-for the frequency 20, but this is no longer used.)
+(The number 16 refers to the frequency of the CAN card. Files also
+exist for the frequency 20, but this is no longer used. v7 refers to
+the architecture of the RPi 3; there are also files for v6, which is
+used by RPi 1.)
 
 3) Making SCU
 Do the same as for VCU, except that the line in config.txt should be
-kernel=SCU-kernel-16.img
+kernel=SCU-kernel-16-v7.img
 
 
 
@@ -215,3 +217,5 @@ Turn the car on.
 
 After a while (about one minute), the server should say that a car has
 connected.
+
+See moped-tests.txt for more comprehesive tests.
