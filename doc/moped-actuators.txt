@@ -129,7 +129,7 @@ digit represents the LED being on.
 
 On the most recent Raspberry Pi's, the physical ACT LED on the board
 is not controlled by MOPED (it is possible, but needs additional
-driver code), so we use pins 31 (ground) and 32 to light an external
+driver code), so we use pins 34 (ground) and 32 to light an external
 LED.
 
 XXX put all information in the table in Plugin Manual here.
