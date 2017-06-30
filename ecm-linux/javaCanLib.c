@@ -43,7 +43,7 @@ void sendBigData(int chn_num, int can_id, int can_dlc, int dataSize, char* data)
 char* receiveData(int chn_num, int can_id) {
   //printf("javaCanLib 1 %d %d %d\r\n", chn_num, can_id, packageTotalSize);
   char *p = (char*) Can_Read_Package((uint32)chn_num, (uint32)can_id);
-  //printf("javaCanLib 2 %d %d %d\r\n", chn_num, can_id, packageTotalSize);
+  //printf("javaCanLib 2 %d %d %d -> %p\r\n", chn_num, can_id, packageTotalSize, p);
   return p;
 }
 
