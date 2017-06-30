@@ -25,7 +25,7 @@ start spinning.
 
 After about 10 s, the light on the camera should turn on.
 
-For both SCU and VCU, if there is a LED on pins 31+32, it should
+For both SCU and VCU, if there is a LED on pins 34+32, it should
 flicker and then start blinking regularly. A little later, it should
 blink in another pattern (this means a plugin is being loaded), and
 then go back to the first kind of blinking (see moped-actuators.txt and
