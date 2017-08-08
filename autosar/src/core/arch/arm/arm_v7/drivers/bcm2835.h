@@ -42,7 +42,10 @@ typedef unsigned long irqmask;
  * bus address range starting at 0x7E000000. Sometimes, there is a need to
  * convert from physical to bus addresses (for example when using DMA).
  */
-#define PHYS_TO_BUS_OFFSET		(0x5E000000)
+//#define PHYS_TO_BUS_OFFSET		(0x5E000000)
+// 0x7E - 0x20 = 0x5E
+// 0x7E - 0x3F = 0x3F
+#define PHYS_TO_BUS_OFFSET		(0x3F000000)
 #define MAP_TO_BUSADDRESS(x)	((uint32)&(x) + PHYS_TO_BUS_OFFSET)
 
 /// This means pin HIGH, true, 3.3volts on a pin.
