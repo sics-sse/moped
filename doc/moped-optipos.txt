@@ -54,6 +54,9 @@ Originally, the client would write the coordinates to MQTT after receiving
 them from the server. Now it appends them to a file /tmp/marker0 instead,
 to reduce the delays.
 
+It still does write to MQTT, and if the MQTT server can't be reached,
+this will sabotage the operation. In that case, comment out that code.
+
 The positioning algorithm starts by taking an image using the camera,
 and the image is uploaded on the server for analysis. The analysis
 identifies markers in the image, and by finding the same marker
