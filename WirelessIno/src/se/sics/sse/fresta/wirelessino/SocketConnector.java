@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import android.os.StrictMode;
+
 public class SocketConnector extends Activity {
     private final static int CONNECTION_TIMEOUT = 3000;
 	
@@ -23,7 +25,13 @@ public class SocketConnector extends Activity {
 	private Socket   socket = null;
 
 	protected void onCreate(Bundle savedInstanceState) {
+	    
 		super.onCreate(savedInstanceState);
+
+
+      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+      StrictMode.setThreadPolicy(policy);
+
 		setContentView(R.layout.socket_connection_build);
 		ed_host = (EditText) findViewById(R.id.ed_host);
 		ed_port = (EditText) findViewById(R.id.ed_port);
@@ -114,7 +122,7 @@ public class SocketConnector extends Activity {
 			else {
 				new AlertDialog.Builder(SocketConnector.this)
 				.setTitle("notification")
-				.setMessage(msg)
+				.setMessage(msg + " " + result)
 				.setPositiveButton("ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 					}
