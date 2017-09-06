@@ -24,6 +24,8 @@ class Car:
 
         self.objs = []
 
+        self.conn = None
+
         self.x = None
         self.y = None
         self.ang = None
