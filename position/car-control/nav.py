@@ -190,6 +190,7 @@ g.limitspeed = None
 
 # local to 'heartbeat' in nav.py
 g.limitspeed0 = "notset"
+g.heartwarn = 5
 
 g.last_send = None
 
@@ -258,6 +259,9 @@ g.acc = 0
 
 # nav_tc
 g.tctime = None
+
+g.otherpos = dict()
+g.posnow = dict()
 
 wm.wminit()
 nav1.nav1init()
@@ -340,13 +344,15 @@ def heartbeat():
         g.heartn += 1
         diff = g.heartn - g.heartn_r
         if diff < maxdiff:
-            if maxdiff > 2:
-                print("heart %d %d: %d" % (g.heartn, g.heartn_r, maxdiff))
+            if maxdiff >= g.heartwarn:
+                print("heart %d %d: %d (%d)" % (g.heartn, g.heartn_r, maxdiff,
+                                                time.time()))
             maxdiff = 1
         elif diff > maxdiff:
             maxdiff = diff
             if maxdiff % 50 == 0:
-                print("heart %d %d: %d" % (g.heartn, g.heartn_r, maxdiff))
+                print("heart %d %d: %d (%d)" % (g.heartn, g.heartn_r, maxdiff,
+                                           time.time()))
 
         nav_tc.send_to_ground_control(
             "heart %.3f %d" % (time.time()-g.t0, g.heartn))
@@ -477,6 +483,8 @@ def init():
         start_new_thread(heartbeat, ())
     if not g.simulate:
         start_new_thread(connect_to_ecm, ())
+    if not g.simulate:
+        start_new_thread(pos_thread, ())
 
     if g.simulate:
         g.steering = 0
@@ -713,3 +721,93 @@ def auto():
 
     while True:
         time.sleep(100)
+
+def pos_thread():
+    while True:
+        nav_tc.send_to_ground_control("dpos %f %f %f %f 0 %f" % (
+                g.ppx,g.ppy,g.ang,time.time()-g.t0, g.finspeed))
+        time.sleep(0.1)
+
+def platoon(other):
+    driving.drive(0)
+    while other not in g.otherpos:
+        time.sleep(1)
+    print("a queue appeared for %s" % other)
+    q = g.otherpos[other]
+    follow = False
+    lastx = None
+    laxty = None
+    slowsp = 15
+    fastsp = 25
+
+    goingslow = True
+
+    tb1 = None
+
+    while True:
+        #print("q length %d" % q.qsize())
+        (x1, y1) = g.posnow[other]
+        t0 = time.time()
+        (x, y) = q.get()
+        t1 = time.time()
+        #print("got (%f %f) (%f %f)" % (x, y, x1, y1))
+        q.task_done()
+        if y1 > 15.0 and not follow:
+            follow = True
+            driving.drive(fastsp)
+
+        if not follow:
+            continue
+
+        if t1-t0 > 0.1:
+            print("waited %f" % (t1-t0))
+
+        near = 0.5+0.3
+        near = 0.6+0.3
+        d = dist(x1, y1, g.ppx, g.ppy)
+        if d < near and not goingslow:
+            print("dist %f, speed %d" % (d, slowsp))
+            goingslow = True
+            driving.drive(slowsp)
+        if d > near and goingslow:
+            print("dist %f, speed %d" % (d, fastsp))
+            goingslow = False
+            driving.drive(fastsp)
+
+        if lastx != None:
+            if dist(x, y, lastx, lasty) < 0.5:
+                continue
+
+        lastx = x
+        lasty = y
+
+        tb0 = time.time()
+        if tb1 != None and tb0-tb1 > 0.1:
+            print("waitedb %f" % (tb0-tb1))
+
+        status = nav2.goto_1(x, y)
+        #print((status, g.ppx, g.ppy))
+        tb1 = time.time()
+
+def runfile(file):
+    f = open(file)
+    driving.drive(20)
+    for line0 in f:
+        line = line0[:-1]
+        l = line.split("\t")
+        x = float(l[0])
+        y = float(l[1])
+        #t = float(l[2])
+        print((x, y))
+
+        t = time.time()
+        ti = int(t)
+        if ti/2 % 2 == 0:
+            driving.drive(20)
+        else:
+            driving.drive(10)
+
+        status = nav2.goto_1(x, y)
+        print((status, g.ppx, g.ppy))
+
+    driving.drive(0)
