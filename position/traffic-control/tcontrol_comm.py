@@ -629,6 +629,15 @@ def connsend(c, data):
         print("exception %s" % str(e))
         c.alive = False
 
+def tell_other_cars(c0, x, y):
+    for cn in cars:
+        c = cars[cn]
+        try:
+            if c.info != c0.info:
+                c.conn.send("carpos %s %f %f\n" % (c0.info, x, y))
+        except Exception as e:
+            print("exception %s" % str(e))
+
 def handlerun(conn, addr):
     global waitingcars
 
@@ -712,207 +721,214 @@ def handlerun(conn, addr):
 
     t1 = time.time()
 
-    for data in dataf:
+    try:
+        for data in dataf:
 
-        if not c.alive:
-            conn.close()
-            return
+            if not c.alive:
+                conn.close()
+                return
 
-        if data[-1] == "\n":
-            data = data[:-1]
+            if data[-1] == "\n":
+                data = data[:-1]
 
-        #print "received (%s)" % data
-        l = data.split(" ")
-        # mpos = from marker; d = from dead reckoning
-        #print (c, l)
-        if l[0] == "mpos" or l[0] == "dpos":
-            #print (time.time(), c, l)
-            x = float(l[1])
-            y = float(l[2])
-            ang = float(l[3])
-            if (x, y, ang) == (c.x, c.y, c.ang):
-                samepos = True
-            else:
+            #print "received (%s)" % data
+            l = data.split(" ")
+            # mpos = from marker; d = from dead reckoning
+            #print (c, l)
+            if l[0] == "mpos" or l[0] == "dpos":
+                #print (time.time(), c, l)
+                x = float(l[1])
+                y = float(l[2])
+                ang = float(l[3])
+                if (x, y, ang) == (c.x, c.y, c.ang):
+                    samepos = True
+                else:
+                    samepos = False
+
+                # if samepos is set to True, disconnecting cars doesn't
+                # erase them for some reason
                 samepos = False
 
-            # if samepos is set to True, disconnecting cars doesn't
-            # erase them for some reason
-            samepos = False
+                c.x = x
+                c.y = y
+                c.ang = ang
+                time1 = float(l[4])
+                adj = int(l[5])
+                # comes in as a float, but has only integer accuracy
+                insp = float(l[6])
+                c.finspeed = insp
+                spavg = [insp] + spavg
+                if len(spavg) > spavgn:
+                    spavg = spavg[0:spavgn]
+                spavg1 = arravg(spavg)
 
-            c.x = x
-            c.y = y
-            c.ang = ang
-            time1 = float(l[4])
-            adj = int(l[5])
-            # comes in as a float, but has only integer accuracy
-            insp = float(l[6])
-            c.finspeed = insp
-            spavg = [insp] + spavg
-            if len(spavg) > spavgn:
-                spavg = spavg[0:spavgn]
-            spavg1 = arravg(spavg)
+                c.v2.set("time %.1f" % time1)
 
-            c.v2.set("time %.1f" % time1)
+                t = time.time()
 
-            t = time.time()
+                #c.v5.set("speed %d" % insp)
+                if t-t1 > 1.0:
+                    c.v5.set("speed %d" % round(spavg1))
+                    t1 = t
 
-            #c.v5.set("speed %d" % insp)
-            if t-t1 > 1.0:
-                c.v5.set("speed %d" % round(spavg1))
-                t1 = t
+                if (l[0] == "dpos" or l[0] == "mpos" and g.show_markpos
+                    and not samepos):
+                    update_carpos1(x, y, ang, c)
+                if l[0] == "mpos" and g.show_markpos1:
+                    set_markerpos(x, y, c, adj)
+                #check_other_cars(c)
 
-            if (l[0] == "dpos" or l[0] == "mpos" and g.show_markpos
-                and not samepos):
-                update_carpos1(x, y, ang, c)
-            if l[0] == "mpos" and g.show_markpos1:
-                set_markerpos(x, y, c, adj)
-            check_other_cars(c)
+                tell_other_cars(c, x, y)
 
-            tolog0("%s %f %f %s" % (c.info, x, y, l[0]))
+                tolog0("%s %f %f %s" % (c.info, x, y, l[0]))
 
-        elif l[0] == "badmarker":
-            x = float(l[1])
-            y = float(l[2])
-            set_badmarkerpos(x, y, c)
-        elif l[0] == "waitallcars":
-            waitingcars.append(c.n)
-            if len(waitingcars) == len(cars):
-                for n in waitingcars:
-                    cx = cars[n]
-                    connsend(cx, "waitallcarsdone\n")
-                waitingcars = []
-        elif l[0] == "odometer":
-            odo = int(l[1])
-            c.v.set("%d pulse%s = %.2f m" % (
-                    odo, "" if odo == 1 else "s",
-                    float(odo)/5*pi*10.2/100))
-        elif l[0] == "heart":
-            #print("heart %s" % c.info)
-            c.heart_seen = time.time()
-            c.heart_t = float(l[1])
-            c.heart_n = int(l[2])
-            connsend(c, "heartecho %.3f %.3f %d\n" % (
-                    c.heart_seen - c.t0, c.heart_t, c.heart_n))
-        elif l[0] == "message":
-            s = " ".join(l[1:])
-            c.v8.set(s)
-        elif l[0] == "stopat":
-            i = int(l[1])
-            i -= 1
-            print "%s stopped at %d" % (c.info, i)
-#            if i == 4 or i == 7 or i == 9 or i == 12:
-#            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 16 or i == 18 or i == 0:
-            # fits path3:
-            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 0:
-                if False:
-                    if i == 4:
-                        j = 7
-                    elif i == 7:
-                        j = 9
-                    elif i == 9:
-                        j = 12
-                    elif i == 12:
-                        j = 4
+            elif l[0] == "badmarker":
+                x = float(l[1])
+                y = float(l[2])
+                set_badmarkerpos(x, y, c)
+            elif l[0] == "waitallcars":
+                waitingcars.append(c.n)
+                if len(waitingcars) == len(cars):
+                    for n in waitingcars:
+                        cx = cars[n]
+                        connsend(cx, "waitallcarsdone\n")
+                    waitingcars = []
+            elif l[0] == "odometer":
+                odo = int(l[1])
+                c.v.set("%d pulse%s = %.2f m" % (
+                        odo, "" if odo == 1 else "s",
+                        float(odo)/5*pi*10.2/100))
+            elif l[0] == "heart":
+                #print("heart %s" % c.info)
+                c.heart_seen = time.time()
+                c.heart_t = float(l[1])
+                c.heart_n = int(l[2])
+                connsend(c, "heartecho %.3f %.3f %d\n" % (
+                        c.heart_seen - c.t0, c.heart_t, c.heart_n))
+            elif l[0] == "message":
+                s = " ".join(l[1:])
+                c.v8.set(s)
+            elif l[0] == "stopat":
+                i = int(l[1])
+                i -= 1
+                print "%s stopped at %d" % (c.info, i)
+    #            if i == 4 or i == 7 or i == 9 or i == 12:
+    #            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 16 or i == 18 or i == 0:
+                # fits path3:
+                if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 0:
+                    if False:
+                        if i == 4:
+                            j = 7
+                        elif i == 7:
+                            j = 9
+                        elif i == 9:
+                            j = 12
+                        elif i == 12:
+                            j = 4
+                    else:
+                        j = i+2
+                        if i == 14:
+                            j = 0
+
+                    print "occupied: %s" % str(occupied)
+                    print "waiting: %s" % str(waiting)
+                    for ci in cars:
+                        carx = cars[ci]
+                        print "%s %s" % (carx.info, str(carx.waitingat))
+
+                    if j not in occupied:
+                        print " %s not occupied" % str(j)
+                        print " continuing %s" % c.info
+                        esend_continue(c)
+                        occupied[j] = c
+
+                        if i in occupied:
+                            c1 = occupied[i]
+                            print " %d was occupied by %s" % (i, c1.info)
+                            del occupied[i]
+                            wi = i
+                            while wi in waiting:
+                                print " %d was waited for" % wi
+                                c2 = waiting[wi]
+                                print " %s waited for %d" % (c2.info, wi)
+                                print " continuing %s" % c2.info
+                                occupied[wi] = c2
+                                wi2 = c2.waitingat
+                                if wi2 in occupied:
+                                    del occupied[wi2]
+                                c2.waitingat = None
+                                esend_continue(c2)
+                                del waiting[wi]
+                                wi = wi2
+                    else:
+                        print " %s occupied, waiting" % str(j)
+                        waiting[j] = c
+                        print " waitingat %d" % i
+                        c.waitingat = i
+
+                    s1 = ""
+                    if len(occupied.keys()) != 0:
+                        s1 += " occupied: "
+                        print(occupied)
+                        for k in occupied:
+                            c1 = occupied[k]
+                            s1 += " %s@%d" % (c1.info, k)
+                    if len(waiting.keys()) != 0:
+                        s1 += " waiting: "
+                        for k in waiting:
+                            c1 = waiting[k]
+                            s1 += " %s@%d" % (c1.info, k)
+                    v5.set(s1)
+
                 else:
-                    j = i+2
-                    if i == 14:
-                        j = 0
-
-                print "occupied: %s" % str(occupied)
-                print "waiting: %s" % str(waiting)
-                for ci in cars:
-                    carx = cars[ci]
-                    print "%s %s" % (carx.info, str(carx.waitingat))
-
-                if j not in occupied:
-                    print " %s not occupied" % str(j)
-                    print " continuing %s" % c.info
                     esend_continue(c)
-                    occupied[j] = c
 
-                    if i in occupied:
-                        c1 = occupied[i]
-                        print " %d was occupied by %s" % (i, c1.info)
-                        del occupied[i]
-                        wi = i
-                        while wi in waiting:
-                            print " %d was waited for" % wi
-                            c2 = waiting[wi]
-                            print " %s waited for %d" % (c2.info, wi)
-                            print " continuing %s" % c2.info
-                            occupied[wi] = c2
-                            wi2 = c2.waitingat
-                            if wi2 in occupied:
-                                del occupied[wi2]
-                            c2.waitingat = None
-                            esend_continue(c2)
-                            del waiting[wi]
-                            wi = wi2
+            elif l[0] == "battery":
+                b = float(l[1])
+                c.battery_seen = time.time()
+                if b < 6.8:
+                    warnbattery = (warnbattery + 1) % 2
                 else:
-                    print " %s occupied, waiting" % str(j)
-                    waiting[j] = c
-                    print " waitingat %d" % i
-                    c.waitingat = i
+                    warnbattery = 0
+                if warnbattery == 0:
+                    c.v4.set("battery %.2f" % b)
+                else:
+                    c.v4.set("")
+            elif l[0] == "markers":
+                s = " ".join(l[1:])
+                if False:
+                    delim = "/-\\|"[c.markern]
+                    c.markern = (c.markern + 1) % 4
+                else:
+                    delim = "- "[c.markern]
+                    c.markern = (c.markern + 1) % 2
+                s = delim + " " + s
+                c.v7.set(s)
+            elif l[0] == "between":
+                i1 = int(l[1])
+                i2 = int(l[2])
+                c.lastnode = i1
+                c.nextnode = i2
+                c.betweenlist.append((i1, i2))
+                if len(c.betweenlist) > 2:
+                    c.betweenlist = c.betweenlist[-3:]
+                if len(l) > 3:
+                    c.nextnode2 = int(l[3])
+                else:
+                    c.nextnode2 = -1
 
-                s1 = ""
-                if len(occupied.keys()) != 0:
-                    s1 += " occupied: "
-                    print(occupied)
-                    for k in occupied:
-                        c1 = occupied[k]
-                        s1 += " %s@%d" % (c1.info, k)
-                if len(waiting.keys()) != 0:
-                    s1 += " waiting: "
-                    for k in waiting:
-                        c1 = waiting[k]
-                        s1 += " %s@%d" % (c1.info, k)
-                v5.set(s1)
+                print("%f %s between %d and %d (then %d)" % (
+                        time.time()-g.t0, c.info, i1, i2, c.nextnode2))
+            else:
+                print "received (%s)" % data
 
-            else:
-                esend_continue(c)
-
-        elif l[0] == "battery":
-            b = float(l[1])
-            c.battery_seen = time.time()
-            if b < 6.8:
-                warnbattery = (warnbattery + 1) % 2
-            else:
-                warnbattery = 0
-            if warnbattery == 0:
-                c.v4.set("battery %.2f" % b)
-            else:
-                c.v4.set("")
-        elif l[0] == "markers":
-            s = " ".join(l[1:])
-            if False:
-                delim = "/-\\|"[c.markern]
-                c.markern = (c.markern + 1) % 4
-            else:
-                delim = "- "[c.markern]
-                c.markern = (c.markern + 1) % 2
-            s = delim + " " + s
-            c.v7.set(s)
-        elif l[0] == "between":
-            i1 = int(l[1])
-            i2 = int(l[2])
-            c.lastnode = i1
-            c.nextnode = i2
-            c.betweenlist.append((i1, i2))
-            if len(c.betweenlist) > 2:
-                c.betweenlist = c.betweenlist[-3:]
-            if len(l) > 3:
-                c.nextnode2 = int(l[3])
-            else:
-                c.nextnode2 = -1
-            
-            print("%f %s between %d and %d (then %d)" % (
-                    time.time()-g.t0, c.info, i1, i2, c.nextnode2))
-        else:
-            print "received (%s)" % data
-
-    conn.close()
-    print("connection closed %d %s" % (c.n, c.info))
-    deletecar(c)
+        conn.close()
+        print("connection closed %d %s" % (c.n, c.info))
+        deletecar(c)
+    except Exception as e:
+        c.alive = False
+        conn.close()
+        return
 
 def run():
     totdata = ""
