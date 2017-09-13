@@ -4,11 +4,13 @@ Tested with wordpress 3.6, 4.1 and 4.7.
 webportal is a modification of https://wordpress.org/download/
 
 1) Install wordpress, put it in /var/www/wp
+(or in /var/www/html/wp, if /var/www/html is used for web pages)
 
 2) Copy in the files from moped/webportal/wordpress
 
 cd wp
 cp -rp ~/moped/moped/webportal/wordpress/custom .
+cd wp-content/plugins
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/groups .
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/moped .
 cp -rp ~/moped/moped/webportal/wordpress/wp-content/plugins/vehicle-config* .
