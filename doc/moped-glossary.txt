@@ -67,7 +67,7 @@ Inertial Motion Unit. A device which measurs motion, for example acceleration
 and gyro (see gyro).
 
 LED
-Light Emitting Diode. On the front of the car are two yellow and one red
+Light Emitting Diode. At the back of the car are two yellow and one red
 LED, which can be controlled by writing to the appropriate autosar port.
 See also ACT LED.
 
