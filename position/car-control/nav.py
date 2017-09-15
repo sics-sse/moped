@@ -111,6 +111,7 @@ g.maxmarkerdist = 2.0
 #g.maxoffroad = 0.15
 # now lane is 1m:
 g.maxoffroad = 0.40
+g.maxoffroad = 4.00
 
 g.slightlyoffroad = 0.03
 
@@ -150,7 +151,7 @@ g.markertimesep = 2
 g.oldpos = None
 
 # set to 9.0 for wall crashes
-g.crashlimit = 9.0
+g.crashlimit = 99.0
 
 g.speedtime = None
 
@@ -477,8 +478,8 @@ def init():
         start_new_thread_really(nav_imu.readgyro, ())
     if not g.simulate:
         start_new_thread(driving.senddrive, ())
-    if not g.simulate:
-        start_new_thread(keepspeed, ())
+#    if not g.simulate:
+#        start_new_thread(keepspeed, ())
     if not g.standalone:
         start_new_thread(heartbeat, ())
     if not g.simulate:
@@ -811,3 +812,52 @@ def runfile(file):
         print((status, g.ppx, g.ppy))
 
     driving.drive(0)
+
+def gencyc(l):
+    while True:
+        for item in l:
+            yield(item)
+
+def driv(sp):
+    #print("driv %d" % sp)
+    g.outspeed = sp
+    driving.dodrive(sp, g.send_st)
+
+def odist():
+    other = "car4"
+    if other in g.posnow:
+        (x1, y1) = g.posnow[other]
+        d = dist(x1, y1, g.ppx, g.ppy)
+        return d
+    else:
+        return 10.0
+
+def circle(cx, cy, r):
+    l = []
+    n = 24
+    for i in range(0, n):
+        l.append((cx + r*cos(i*pi*2/n),
+                  cy + r*sin(i*pi*2/n)))
+    for (x, y) in gencyc(l):
+        s = nav2.goto_1(x, y)
+        d = odist()
+        print("dist %f" % d)
+        if d < 0.7:
+            driv(11)
+        else:
+            driv(19)
+
+def gocircle(r, cx=None, cy=None):
+    if g.send_st == None:
+        steer(-100)
+    if cx == None:
+        cx = g.ppx - r
+    if cy == None:
+        cy = g.ppy
+    try:
+        driv(15)
+        circle(cx, cy, r)
+    except KeyboardInterrupt as e:
+        driv(0)
+
+# testing git branches
