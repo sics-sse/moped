@@ -160,7 +160,7 @@ Put the image TCU.img on the TCU card.
 Mount the card. It has a Linux file system, and most MOPED-related files
 lie under the user 'pi' (which has been given the password 'pi').
 
-Create a file /home/pi/java/settings.properties with the following contents
+Create a file /home/pi/can-utils/java/settings.properties with the following contents
 (you can copy it from ecm-linux/settings.properties):
 
 LOCAL_PORT=8888
