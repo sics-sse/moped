@@ -235,6 +235,7 @@ static void Pwm_GeneratePulse(Pwm_ChannelType channel,
 	 * (see pp.91-94 in BCM2835-ARM-Peripherals.pdf) */
 	if ((selected_pins & BIT(gpio)) == 0) {
 		bcm2835_GpioFnSel(gpio, GPFN_OUT);
+		//printf("Pwm selecting gpio\n");
 		selected_pins |= BIT(gpio);
 	}
 
@@ -283,6 +284,8 @@ void Pwm_Init(const Pwm_ConfigType *ConfigPtr)
 	if( Pwm_ModuleState == PWM_STATE_INITIALIZED ) {
 	  return;
 	}
+
+	// printf("Pwm_Init 1\n");
 
 	/* Initialize the hardware clock */
 	PWM_CTL = 0; // Stop/reset PWM
