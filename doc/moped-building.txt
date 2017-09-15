@@ -52,6 +52,8 @@ so we use 20140107
 Be sure that the "moped" top directory is your current directory.
 
 Modify the setting for CODEBENCH in server/misc/buildall.sh
+JAVA_HOME may also need to be changed, or removed if it is set already in
+your environment.
 Run buildall.sh
 
 If there is any error, the script will abort at that step.
