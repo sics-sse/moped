@@ -19,6 +19,9 @@ update-alternatives --config java
 Whether everything works with 1.8, I don't know.
 
 
+If you are on a 64-bit architecture, it may be necessary to follow the
+suggestions in https://askubuntu.com/questions/454253/how-to-run-32-bit-app-in-ubuntu-64-bit first.
+
 sudo apt-get install git
 sudo apt-get install maven
 
