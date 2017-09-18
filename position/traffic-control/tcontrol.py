@@ -6,7 +6,8 @@ from math import cos, sin, pi
 from Tkinter import *
 
 sys.path.append("car-control")
-import eight
+import network2 as eight
+#import eight
 import nav_map
 
 #from tcontrol_comm import *
@@ -42,7 +43,22 @@ global currentpath
 
 obstacles = dict()
 
-eight.eightinit()
+nav_map.mapinit()
+
+def draw_nodes():
+    for i in eight.nodes:
+        (x, y) = eight.nodes[i]
+        # manual kludge for keeping the middle points readable:
+        if i == 219 or i == 223:
+            y += 0.03
+        if i == 323 or i == 326:
+            y -= 0.03
+
+        v5 = StringVar()
+        v5.set("%d" % i)
+        tx5 = Label(g.w, textvariable=v5, bg="white", fg="black",
+                    font=(None, 8))
+        g.w.create_window(xcoord(x), ycoord(y), window=tx5)
 
 def draw_way(offset, w, **kargs):
     path = [(i, eight.nodes[i]) for i in eight.ways[w]]
@@ -198,9 +214,6 @@ def draw_area(w):
         draw_way(0, w, fill="#bbffbb", width=1)
         draw_way(-0.25, w, fill="#bbffbb", width=1)
         draw_way(0.25, w, fill="#bbffbb", width=1)
-
-    draw_path(nav_map.makepath(0, thepath), fill="#bbbbff", width=2)
-    draw_path(nav_map.makepath(0, thepath2), fill="#bbbbff", width=2)
 
 def send_go(carno):
     c = cars[carno-1]
@@ -546,10 +559,6 @@ g.w.pack(expand=YES, fill=BOTH)
 
 currentpath = None
 
-thepath = [(i, eight.nodes[i]) for i in [34, 29, 26, 23, 19, 13, 6, 7, 11, 17, 24, 28, 30, 36, 35, 32, 27, 23, 16, 10, 5, 4, 12, 18, 22, 25, 31, 33, 34]]
-
-thepath2 = [(i, eight.nodes[i]) for i in [3, 4]]
-
 draw_area(g.w)
 
 
@@ -585,7 +594,6 @@ for point in start_obstacles:
 
 g.w.focus_set()
 
-
 select_car(1)
 
 v5 = StringVar()
@@ -601,5 +609,7 @@ g.logf = open("tc_log", "w")
 zoom(1)
 zoom(1)
 
+if False:
+    draw_nodes()
 
 mainloop()
