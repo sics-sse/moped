@@ -193,8 +193,61 @@ def eightinit():
         pieces[(piece[0],piece[-1])] = (piece[1:-1], dtot)
         pieces[(piece[-1],piece[0])] = (rev(piece[1:-1]), dtot)
 
+def getnextpiece(i10, i2):
+    nextpiece = None
+
+    if (i10, i2) == (23, 34):
+        # not possible: 35
+        #nextpiece = randsel([23, 6], [23, 5])
+        nextpiece = [23, 5]
+    elif (i10, i2) == (6, 23):
+        # not possible: 5
+        nextpiece = [6, 35]
+    elif (i10, i2) == (35, 6):
+        # xx
+        #nextpiece = randsel([35, 23], [35, 34, 5])
+        nextpiece = [35, 34, 5]
+    elif (i10, i2) == (23, 35):
+        # not possible: 34
+        #nextpiece = randsel([23, 5], [23, 6])
+        nextpiece = [23, 6]
+    elif (i10, i2) == (5, 23):
+        # not possible: 6
+        nextpiece = [5, 34]
+    elif (i10, i2) == (34, 5):
+        # xx
+        #nextpiece = randsel([34, 23], [34, 35, 6])
+        # (don't turn: only allow for one kind of give-way situation)
+        nextpiece = [34, 35, 6]
+    elif (i10, i2) == (23, 6):
+        # not possible: 5
+        #nextpiece = randsel([23, 35], [23, 34])
+        nextpiece = [23, 35]
+    elif (i10, i2) == (23, 5):
+        # not possible: 6
+        # temporarily avoid going 16-23-27 (now named 5-23-35)
+        #nextpiece = randsel([23, 34], [23, 35])
+        nextpiece = [23, 34]
+    elif (i10, i2) == (5, 34):
+        # xx
+        #nextpiece = randsel([5, 6, 35], [5, 23])
+        nextpiece = [5, 6, 35]
+    elif (i10, i2) == (6, 35):
+        # xx
+        #nextpiece = randsel([6, 5, 34], [6, 23])
+        nextpiece = [6, 5, 34]
+    elif (i10, i2) == (35, 23):
+        # not possible: 34
+        nextpiece = [35, 6]
+    elif (i10, i2) == (34, 23):
+        # not possible: 35
+        nextpiece = [34, 5]
+    return nextpiece
+
+
 #    for (x, y) in roadpoints.keys():
 #        print("%f %f" % (x, y))
 
 if __name__ == "__main__":
     eightinit()
+
