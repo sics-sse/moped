@@ -2,7 +2,8 @@ from math import cos, sin, pi, atan2, sqrt
 
 from nav_util import rev, dist
 
-import eight
+import network2 as eight
+#import eight
 
 def roaddist(x0, y0):
     dmin = None
@@ -311,3 +312,9 @@ def extendpath_p(p, goaln, d0, n2, nz, acc):
                            n2, nz, acc)
 
     return acc
+
+def mapinit():
+    eight.eightinit()
+
+def getnextpiece(i10, i2):
+    return eight.getnextpiece(i10, i2)
