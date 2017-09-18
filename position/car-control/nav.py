@@ -7,7 +7,7 @@ import json
 import queue
 import random
 
-import eight
+import nav_map
 
 import nav_mqtt
 
@@ -436,7 +436,7 @@ def init():
 
     g.angleknown = False
 
-    eight.eightinit()
+    nav_map.mapinit()
 
     g.t0 = time.time()
 
