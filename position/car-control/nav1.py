@@ -183,7 +183,7 @@ def planner0(qfromplanner, qtoplanner):
 
     nextpiece = path0
 
-    while True:
+    while nextpiece != []:
         i10 = nextpiece[-1]
         i2 = nextpiece[-2]
 
@@ -191,48 +191,8 @@ def planner0(qfromplanner, qtoplanner):
 
         #print("(%d, %d)" % (i10, i2))
 
-        if (i10, i2) == (23, 34):
-            # not possible: 35
-            #nextpiece = randsel([23, 6], [23, 5])
-            nextpiece = [23, 5]
-        elif (i10, i2) == (6, 23):
-            # not possible: 5
-            nextpiece = [6, 35]
-        elif (i10, i2) == (35, 6):
-            nextpiece = randsel([35, 23], [35, 34, 5])
-            #nextpiece = [35, 34, 5]
-        elif (i10, i2) == (23, 35):
-            # not possible: 34
-            #nextpiece = randsel([23, 5], [23, 6])
-            nextpiece = [23, 6]
-        elif (i10, i2) == (5, 23):
-            # not possible: 6
-            nextpiece = [5, 34]
-        elif (i10, i2) == (34, 5):
-            nextpiece = randsel([34, 23], [34, 35, 6])
-            # (don't turn: only allow for one kind of give-way situation)
-            #nextpiece = [34, 35, 6]
-        elif (i10, i2) == (23, 6):
-            # not possible: 5
-            #nextpiece = randsel([23, 35], [23, 34])
-            nextpiece = [23, 35]
-        elif (i10, i2) == (23, 5):
-            # not possible: 6
-            # temporarily avoid going 16-23-27 (now named 5-23-35)
-            #nextpiece = randsel([23, 34], [23, 35])
-            nextpiece = [23, 34]
-        elif (i10, i2) == (5, 34):
-            nextpiece = randsel([5, 6, 35], [5, 23])
-        elif (i10, i2) == (6, 35):
-            nextpiece = randsel([6, 5, 34], [6, 23])
-            #nextpiece = [6, 5, 34]
-        elif (i10, i2) == (35, 23):
-            # not possible: 34
-            nextpiece = [35, 6]
-        elif (i10, i2) == (34, 23):
-            # not possible: 35
-            nextpiece = [34, 5]
-        else:
+        nextpiece = nav_map.getnextpiece(i10, i2)
+        if nextpiece == None:
             print("impossible combination (%d, %d), whole4aux exits" % (
                     i10, i2))
             driving.drive(0)
@@ -242,6 +202,8 @@ def planner0(qfromplanner, qtoplanner):
         #print("thispiece %s" % str(thispiece))
 
         sendplan(qfromplanner, thispiece)
+
+    sendplan(qfromplanner, 'stop')
         
 def executor0(path, qtolower, qfromlower):
 
