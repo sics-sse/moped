@@ -31,9 +31,10 @@ def makepath(offset, path):
             x = x1
             y = y1
 
-            path1.append((i1,
-                          x+offset*cos(angle),
-                          y+offset*sin(angle)))
+            o = noffset(i1, offset)
+            path1.append((nsimple(i1),
+                          x+o*cos(angle),
+                          y+o*sin(angle)))
 
         i1 = i
         x1 = x0
@@ -41,14 +42,27 @@ def makepath(offset, path):
         n += 1
 
     # use the same angle as for the previous point
-    path1.append((i1,
-                  x1+offset*cos(angle),
-                  y1+offset*sin(angle)))
+    o = noffset(i1, offset)
+    path1.append((nsimple(i1),
+                  x1+o*cos(angle),
+                  y1+o*sin(angle)))
 
     return path1
 
+def nsimple(x):
+    if type(x) == type(()):
+        return x[0]
+    else:
+        return x
+
+def noffset(x, d=0.0):
+    if type(x) == type(()):
+        return x[1]
+    else:
+        return d
+
 def piece2path(p, offset):
-    path1 = [(i, eight.nodes[i]) for i in p]
+    path1 = [(i, eight.nodes[nsimple(i)]) for i in p]
     path = makepath(offset, path1)
     return path
 
@@ -237,7 +251,9 @@ def insert_waypoints_l(l0):
     lastn = l0[0]
     l = [lastn]
     for n in l0[1:]:
-        l1 = insert_waypoints(lastn, n)
+        o = noffset(n)
+        l1_0 = insert_waypoints(nsimple(lastn), nsimple(n))
+        l1 = [(i, o) for i in l1_0]
         l += l1[1:]
         lastn = n
 
