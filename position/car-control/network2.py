@@ -17,12 +17,17 @@ def fillinlist(l, add):
 interleave = 1
 #interleave = 2
 
-piece1 = [33, 34, 35, 36]
+x0 = 2.0
+y0 = 12.0
+y1 = 18.0
+n = 15
 
-nodes[33] = (1.0, 12.0)
-nodes[34] = (1.0, 13.0)
-nodes[35] = (1.0, 14.0)
-nodes[36] = (1.0, 15.0)
+piece1 = []
+
+for i in range(0, n):
+    id = 101 + i
+    piece1.append(id)
+    nodes[id] = (x0, y0 + i*(y1-y0)/(n-1))
 
 
 if interleave == 2:
@@ -96,7 +101,7 @@ def eightinit():
 
     neighbours = dict()
 
-    piecelist = [[33, 34, 35, 36]]
+    piecelist = [piece1]
 
     distances = dict()
     pieces = dict()
