@@ -478,8 +478,8 @@ def init():
         start_new_thread_really(nav_imu.readgyro, ())
     if not g.simulate:
         start_new_thread(driving.senddrive, ())
-#    if not g.simulate:
-#        start_new_thread(keepspeed, ())
+    if not g.simulate:
+        start_new_thread(keepspeed, ())
     if not g.standalone:
         start_new_thread(heartbeat, ())
     if not g.simulate:
