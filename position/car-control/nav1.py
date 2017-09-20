@@ -261,7 +261,8 @@ def executor1(qfromhigher, qtohigher):
         qfromplanner.task_done()
         contflag = False
         while True:
-            px = [i for (i, _) in p]
+            #px = [i for (i, _) in p]
+            px = [item[0] for item in p]
 
             # printed by gopath too
             #out(1, "1 executor got plan %d %s len %d" % (p[0][1], str(px), plen))
@@ -304,6 +305,18 @@ def executor1(qfromhigher, qtohigher):
         # we will just have put 2, too
         qtohigher.put(1)
 
+def overtake(p0, node1, node2):
+    p = []
+    for item in p0:
+        id = nav_map.nsimple(item)
+        if id >= node1 and id <= node2:
+            if id == node1 or id == node2:
+                item = (id, 0.0)
+            else:
+                item = (id, 0.25)
+        p.append(item)
+    return p
+
 def planner1(qfromplanner, qtoplanner):
     plann = 0
     path1_0 = None
@@ -313,6 +326,7 @@ def planner1(qfromplanner, qtoplanner):
         if info[0] == 'path':
             plann += 1
             path1_0 = info[1][:]
+            path1_0 = [(i, -0.25) for i in path1_0]
             path1 = path1_0[0:2]
             reachedmiddle = False
             thengoal = None
@@ -349,7 +363,8 @@ def planner1(qfromplanner, qtoplanner):
 
 
             # pretend we did:
-            path2_e = [(i, plann) for (i, _) in path2_e]
+            #path2_e = [(i, plann) for (i, _) in path2_e]
+            path2_e = [(item[0], plann) for item in path2_e]
 
             if len(path2_e) > 1:
                 # we want npath to also include the intermediate
@@ -366,6 +381,12 @@ def planner1(qfromplanner, qtoplanner):
                     npath = [path2_e[1][0], path1_e[-1][0], path2_e[-1][0]]
                     out(2, "1 path3_e %s -> " % (npath))
                     path3 = nav_map.insert_waypoints_l(npath)
+
+                    # An obstacle blocks the nodes 106 to 111 in our path
+                    path3 = overtake(path3, 106, 111)
+
+                    #path3_e = [(i, plann, 'test') for i in path3]
+                    #path3_e = [((i, 'test'), plann) for i in path3]
                     path3_e = [(i, plann) for i in path3]
                     out(2, "1 -> %s" % (path3_e))
                 path2_e = path3_e
@@ -390,7 +411,8 @@ def gopath(path00, plen):
 
     g.last_send = None
 
-    path0 = [i for (i, _) in path00]
+    #path0 = [i for (i, _) in path00]
+    path0 = [item[0] for item in path00]
 
     #out(2, "path00 = %s" % (str(path00)))
     outstr = "1 gopath: %d %s" % (path00[0][1], str(path0[0:plen]))
@@ -402,11 +424,12 @@ def gopath(path00, plen):
     g.speedsign = 1
 
     # two lanes:
-    #path = nav_map.piece2path(path0, -0.25)
+    path = nav_map.piece2path(path0, -0.25)
     # experimental, to make it crash more seldom:
     #path = nav_map.piece2path(path0, -0.1)
+
     # single lane:
-    path = nav_map.piece2path(path0, 0)
+    #path = nav_map.piece2path(path0, 0)
 
     boxp = False
     if boxp:
