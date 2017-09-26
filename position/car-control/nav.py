@@ -133,8 +133,6 @@ g.goodmarkers = [(7, 'all', 0.6), (25, 'all', 0.6), (22, 'all', 0.65), (2, 'all'
 g.poserror = False
 g.maxadjdist = 0
 
-g.paused = False
-
 #--------------------
 
 # can be local to wm.py
@@ -261,17 +259,16 @@ g.acc = 0
 # nav_tc
 g.tctime = None
 
-g.otherpos = dict()
+g.otherpos = None
+
 g.posnow = dict()
 
 wm.wminit()
 nav1.nav1init()
 if not g.simulate:
     nav_imu.imuinit()
-if not g.simulate:
-    nav_mqtt.mqttinit()
-else:
-    nav_mqtt.mqttinit()
+
+nav_mqtt.mqttinit()
 
 nav_tc.tcinit()
 driving.drivinginit()
@@ -671,11 +668,6 @@ def m3(q = 0.5):
     g.goodmarkers = None
     g.minquality = q
 
-def wait1():
-    nav_tc.send_to_ground_control("waitallcars\n")
-    x = g.queue.get()
-    g.queue.task_done()
-
 def follow():
     speeds = [0, 7, 11, 15, 19, 23, 27, 37, 41, 45, 49,
               # 93 to 100 haven't been run yet
@@ -731,6 +723,8 @@ def pos_thread():
 
 def platoon(other):
     driving.drive(0)
+    if g.otherpos == None:
+        g.otherpos = dict()
     while other not in g.otherpos:
         time.sleep(1)
     print("a queue appeared for %s" % other)
