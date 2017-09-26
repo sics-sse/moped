@@ -328,7 +328,7 @@ def readspeed2():
             data = g.canSocket.recv(64)
             if (data[0], data[1]) == (100,4) and data[4] == 2:
                 # length of packet is 2
-                print((data[8], data[9]))
+                #print("on CAN: %s" % str((data[8], data[9])))
                 g.rc_button = True
                 time.sleep(0.00001)
             elif (data[0], data[1]) == (100,4):
@@ -347,7 +347,6 @@ def readspeed2():
                         if (g.inspeed == 0 and g.speedtime != None and
                             time.time() - g.speedtime > 7.0):
                             nav_signal.speak("obstacle")
-                            send_to_ground_control("obstacle")
                             g.obstacle = True
 
                         g.odometer = int(m.group(2))
@@ -370,6 +369,9 @@ def readspeed2():
             elif (data[0], data[1]) == (1,1):
                 sp = data[8]
                 st = data[9]
+                print("remotecontrol %d %d" % (sp, st))
+                send_to_ground_control("cancommand %d %d" % (sp, st))
+
                 if False:
                     if g.last_send != None and (sp, st) != g.last_send:
                         tolog("remote control")
