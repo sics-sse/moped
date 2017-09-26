@@ -9,6 +9,8 @@ from nav_util import start_new_thread
 import nav_signal
 import nav2
 
+import driving
+
 prevprint1s = None
 
 def print1(g, s):
@@ -50,6 +52,7 @@ def linesplit(socket):
                 buffer += more
     if buffer:
         yield buffer
+    print("linesplit returned")
     return
 
 def from_ground_control():
@@ -67,25 +70,16 @@ def from_ground_control():
 
                 g.tctime = time.time()
 
-                if l[0] == "go":
-                    x = float(l[1])
-                    y = float(l[2])
-                    print(("goto is not implemented", x, y))
-                elif l[0] == "path":
-                    path = ast.literal_eval(data[5:])
-                    print("Received path from traffic control:")
-                    print(path)
-                    # currently, we don't do anything with this path
-                elif l[0] == "continue":
-                    g.paused = False
-                elif l[0] == "carpos":
+                if l[0] == "carpos":
                     carname = l[1]
                     x = float(l[2])
                     y = float(l[3])
                     g.posnow[carname] = (x, y)
-                    if carname not in g.otherpos:
-                        g.otherpos[carname] = queue.Queue(100000)
-                    g.otherpos[carname].put((x, y))
+                    if g.otherpos != None:
+                        if carname not in g.otherpos:
+                            # is there a will_block?
+                            g.otherpos[carname] = queue.Queue(10000)
+                        g.otherpos[carname].put((x, y))
                 elif l[0] == "carsinfront":
                     if l != prevl:
                         pass
@@ -172,10 +166,6 @@ def from_ground_control():
                 elif l[0] == "parameter":
                     g.parameter = int(l[1])
                     print("parameter %d" % g.parameter)
-                # can be used so we don't have to stop if the next
-                # section is free
-                elif l[0] == "waitallcarsdone":
-                    g.queue.put(1)
                 elif l[0] == "cargoto":
                     x = float(l[2])
                     y = float(l[3])
@@ -193,6 +183,12 @@ def from_ground_control():
                     t2 = float(l[2])
                     g.heartn_r = int(l[3])
                     #print("heartecho %.3f %.3f %.3f %d" % (time.time() - g.t0, t1, t2, g.heartn_r))
+                elif l[0] == "heff":
+                    sp = float(l[1])
+                    st = float(l[2])
+                    print("heff1 %d %d" % (sp, st))
+                    driving.dodrive(sp, st)
+                    #print("heff2 %d %d" % (sp, st))
                 else:
                     print("unknown control command %s" % data)
         time.sleep(1)
@@ -244,4 +240,3 @@ def open_socket():
 
 def tcinit():
     g.ground_control = None
-    g.queue = queue.Queue(5)
