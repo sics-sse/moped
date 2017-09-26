@@ -610,9 +610,6 @@ def handleheart(c, conn):
             return
         time.sleep(5)
 
-def esend_continue(c):
-    c.conn.send("continue\n")
-
 def arravg(l):
     n = len(l)
     sum = 0.0
@@ -620,26 +617,25 @@ def arravg(l):
         sum += v
     return sum/n
 
-waitingcars = []
-
 def connsend(c, data):
-    try:
-        c.conn.send(data)
-    except Exception as e:
-        print("exception %s" % str(e))
-        c.alive = False
+    if c.alive:
+        try:
+            c.conn.send(data)
+        except Exception as e:
+            print("exception1 %s" % str(e))
+            c.alive = False
 
 def tell_other_cars(c0, x, y):
     for cn in cars:
         c = cars[cn]
-        try:
-            if c.info != c0.info:
-                c.conn.send("carpos %s %f %f\n" % (c0.info, x, y))
-        except Exception as e:
-            print("exception %s" % str(e))
+        if c.alive:
+            try:
+                if c.info != c0.info:
+                    c.conn.send("carpos %s %f %f\n" % (c0.info, x, y))
+            except Exception as e:
+                print("exception2 %s" % str(e))
 
 def handlerun(conn, addr):
-    global waitingcars
 
     dataf = linesplit(conn)
     print 'Connected %s (at %f)' % (addr, time.time())
@@ -659,12 +655,10 @@ def handlerun(conn, addr):
         c = Car()
 
         c.conn = conn
+        c.alive = True
 
         thread.start_new_thread(handlebatterytimeout, (c,))
         thread.start_new_thread(handleheart, (c, conn))
-
-        # in case the car waited for us to start
-        esend_continue(c)
 
         car = l[1]
         c.v3.set("car %s" % car)
@@ -786,13 +780,6 @@ def handlerun(conn, addr):
                 x = float(l[1])
                 y = float(l[2])
                 set_badmarkerpos(x, y, c)
-            elif l[0] == "waitallcars":
-                waitingcars.append(c.n)
-                if len(waitingcars) == len(cars):
-                    for n in waitingcars:
-                        cx = cars[n]
-                        connsend(cx, "waitallcarsdone\n")
-                    waitingcars = []
             elif l[0] == "odometer":
                 odo = int(l[1])
                 c.v.set("%d pulse%s = %.2f m" % (
@@ -803,86 +790,11 @@ def handlerun(conn, addr):
                 c.heart_seen = time.time()
                 c.heart_t = float(l[1])
                 c.heart_n = int(l[2])
-                connsend(c, "heartecho %.3f %.3f %d\n" % (
+                c.conn.send("heartecho %.3f %.3f %d\n" % (
                         c.heart_seen - c.t0, c.heart_t, c.heart_n))
             elif l[0] == "message":
                 s = " ".join(l[1:])
                 c.v8.set(s)
-            elif l[0] == "stopat":
-                i = int(l[1])
-                i -= 1
-                print "%s stopped at %d" % (c.info, i)
-    #            if i == 4 or i == 7 or i == 9 or i == 12:
-    #            if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 16 or i == 18 or i == 0:
-                # fits path3:
-                if i == 2 or i == 4 or i == 6 or i == 8 or i == 10 or i == 12 or i == 14 or i == 0:
-                    if False:
-                        if i == 4:
-                            j = 7
-                        elif i == 7:
-                            j = 9
-                        elif i == 9:
-                            j = 12
-                        elif i == 12:
-                            j = 4
-                    else:
-                        j = i+2
-                        if i == 14:
-                            j = 0
-
-                    print "occupied: %s" % str(occupied)
-                    print "waiting: %s" % str(waiting)
-                    for ci in cars:
-                        carx = cars[ci]
-                        print "%s %s" % (carx.info, str(carx.waitingat))
-
-                    if j not in occupied:
-                        print " %s not occupied" % str(j)
-                        print " continuing %s" % c.info
-                        esend_continue(c)
-                        occupied[j] = c
-
-                        if i in occupied:
-                            c1 = occupied[i]
-                            print " %d was occupied by %s" % (i, c1.info)
-                            del occupied[i]
-                            wi = i
-                            while wi in waiting:
-                                print " %d was waited for" % wi
-                                c2 = waiting[wi]
-                                print " %s waited for %d" % (c2.info, wi)
-                                print " continuing %s" % c2.info
-                                occupied[wi] = c2
-                                wi2 = c2.waitingat
-                                if wi2 in occupied:
-                                    del occupied[wi2]
-                                c2.waitingat = None
-                                esend_continue(c2)
-                                del waiting[wi]
-                                wi = wi2
-                    else:
-                        print " %s occupied, waiting" % str(j)
-                        waiting[j] = c
-                        print " waitingat %d" % i
-                        c.waitingat = i
-
-                    s1 = ""
-                    if len(occupied.keys()) != 0:
-                        s1 += " occupied: "
-                        print(occupied)
-                        for k in occupied:
-                            c1 = occupied[k]
-                            s1 += " %s@%d" % (c1.info, k)
-                    if len(waiting.keys()) != 0:
-                        s1 += " waiting: "
-                        for k in waiting:
-                            c1 = waiting[k]
-                            s1 += " %s@%d" % (c1.info, k)
-                    v5.set(s1)
-
-                else:
-                    esend_continue(c)
-
             elif l[0] == "battery":
                 b = float(l[1])
                 c.battery_seen = time.time()
@@ -904,6 +816,16 @@ def handlerun(conn, addr):
                     c.markern = (c.markern + 1) % 2
                 s = delim + " " + s
                 c.v7.set(s)
+            elif l[0] == "cancommand":
+                if c.info == "car6":
+                    i1 = int(l[1])
+                    i2 = int(l[2])
+                    for ci in cars:
+                        if "car4" == cars[ci].info:
+                            print("ploff2 %d %d" % (i1, i2))
+                            c2 = cars[ci]
+                            c2.conn.send("heff %d %d\n" % (i1, i2))
+                
             elif l[0] == "between":
                 i1 = int(l[1])
                 i2 = int(l[2])
@@ -926,8 +848,10 @@ def handlerun(conn, addr):
         print("connection closed %d %s" % (c.n, c.info))
         deletecar(c)
     except Exception as e:
+        print("exception3 %s" % str(e))
         c.alive = False
         conn.close()
+        deletecar(c)
         return
 
 def run():
