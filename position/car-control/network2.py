@@ -29,22 +29,15 @@ for i in range(0, n):
     piece1.append(id)
     nodes[id] = (x0, y0 + i*(y1-y0)/(n-1))
 
-
 if interleave == 2:
     piece1 = fillinlist(piece1, 100)
 
 
 ways[1] = piece1
 
-
-
-# for the geometric 8 only
 nodenumbers = piece1
 
-
-
 roadpoints = dict()
-
 
 def makepathpoints(offset, path):
     path1 = []
