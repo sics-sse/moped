@@ -39,7 +39,6 @@ markedpoint = None
 areaobjs = []
 
 pathlist = []
-global currentpath
 
 obstacles = dict()
 
@@ -215,16 +214,6 @@ def draw_area(w):
         draw_way(-0.25, w, fill="#bbffbb", width=1)
         draw_way(0.25, w, fill="#bbffbb", width=1)
 
-def send_go(carno):
-    c = cars[carno-1]
-    if currentmark:
-        (x, y) = currentmarkpos
-        c.conn.send("go %f %f\n" % (x, y))
-
-def send_path(carno, p):
-    c = cars[carno-1]
-    c.conn.send("path " + str(p) + "\n")
-
 def toggle_show_markpos():
     g.show_markpos = not g.show_markpos
     print("toggle show_markpos -> %s" % str(g.show_markpos))
@@ -302,18 +291,10 @@ def key_event(event):
         zoom(1)
     elif event.char == '-':
         zoom(-1)
-    elif event.char == 'r':
-        remove_markedpoint()
-    elif event.char == 'n':
-        new_pathpoint()
-    elif event.char == 'g':
-        send_go(currentcar)
     elif event.char == 'm':
         toggle_show_markpos()
     elif event.char == 'M':
         toggle_show_markpos1()
-    elif event.char == 'p':
-        send_path(currentcar, currentpath)
     elif event.char == 'o':
         save_obstacle()
     elif event.char == 'O':
@@ -365,73 +346,12 @@ def button1_event(event):
 def dist(x1, y1, x2, y2):
     return math.sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2))
 
-# find which point in currentpath is closest to where we clicked
-# set markedpoint to its index in currentpath
 def button2_event(event):
     global markedpoint
 
     (px, py) = (event.x, event.y)
     (x, y) = (coordx(px), coordy(py))
-    d = 100000
-    cmd1 = None
-    i = 0
-    for cmd in currentpath:
-        if cmd[0] == 'go':
-            x1 = cmd[2]
-            y1 = cmd[3]
-            if d > dist(x, y, x1, y1):
-                d = dist(x, y, x1, y1)
-                markedpoint = i
-        i += 1
-    print "markedpoint %d" % markedpoint
-
-# if a point in currentpath has been selected with button2, move it to where
-# we clicked now
-def button3_event(event):
-    global markedpoint
-
-    (px, py) = (event.x, event.y)
-    (x, y) = (coordx(px), coordy(py))
-    if markedpoint == None:
-        return
-
-    cmd1 = currentpath[markedpoint]
-    cmd2 = ('go', cmd1[1], x, y)
-    currentpath[markedpoint] = cmd2
-    markedpoint = None
-    redraw_area()    
-
-def new_pathpoint():
-    global markedpoint
-
-    # NOT READY
-
-    i = 0
-    last = None
-    for cmd in currentpath:
-        if cmd[0] == 'go':
-            x1 = cmd[2]
-            y1 = cmd[3]
-            if d > dist(x, y, x1, y1):
-                d = dist(x, y, x1, y1)
-                markedpoint = i
-        i += 1
-
-    sp = 7
-
-    cmd = ('go', sp, x, y)
-    currentpath[markedpoint:markedpoint] = [cmd]
-
-    markedpoint = None
-    redraw_area()
-
-def remove_markedpoint():
-    global markedpoint
-
-    currentpath[markedpoint:markedpoint+1] = []
-
-    markedpoint = None
-    redraw_area()
+    # does nothing now
 
 def double_event(event):
     print event
@@ -557,8 +477,6 @@ g.w = Canvas(width=winw, height=winh, bg='white')
 g.w.pack(expand=YES, fill=BOTH)
 
 
-currentpath = None
-
 draw_area(g.w)
 
 
@@ -568,7 +486,7 @@ draw_area(g.w)
 
 g.w.bind("<Button-1>", button1_event)
 g.w.bind("<Button-2>", button2_event)
-g.w.bind("<Button-3>", button3_event)
+#g.w.bind("<Button-3>", button3_event)
 g.w.bind("<Key>", key_event)
 g.w.bind("<<CarPos>>", carpos_event)
 #g.w.bind("<Double-1>", double_event)
