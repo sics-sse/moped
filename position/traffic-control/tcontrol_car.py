@@ -39,7 +39,7 @@ class Car:
 
         self.t0 = time.time()
 
-        self.alive = True
+        self.alive = False
 
         self.waitingat = None
 
