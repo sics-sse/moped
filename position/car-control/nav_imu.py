@@ -335,7 +335,7 @@ def readgyro0():
                         g.can_speed, g.inspeed, g.outspeed, g.odometer, z0,
                         r, rx, ry, g.acc, g.finspeed,
                         g.fodometer, t2-g.t0, pleftspeed, g.leftspeed, g.fleftspeed,
-                        g.realspeed, g.can_ultra, g.droppedlog)
+                        g.realspeed, g.can_ultra, g.droppedlog, g.dists[0], g.dists[1], g.dists[2])
                 fstr = "%f" + " %f"*(len(dtup)-1) + "\n"
                 if False:
                     g.accf.write(fstr % dtup)
