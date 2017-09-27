@@ -7,7 +7,10 @@ from nav_log import tolog, tolog0
 from nav_util import sign
 
 def dodrive(sp, st):
-    #print("dodrive %d %d" % (sp, st))
+    if g.send_sp != None:
+        pass
+        #print("dodrive %d %d <- %d %d" % (sp, st, g.send_sp, g.send_st))
+        #print("dodrive %d %d" % (sp, st))
     g.send_sp = sp
     g.send_st = st
 
