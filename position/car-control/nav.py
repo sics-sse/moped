@@ -40,6 +40,7 @@ print("VIN %s" % g.VIN)
 
 if not g.simulate:
     import nav_imu
+    import nav_laser
 
 g.standalone = True
 g.standalone = False
@@ -65,6 +66,8 @@ from math import pi, cos, sin, sqrt, atan2, acos, asin, log
 
 if not g.simulate:
     nav_imu.g = g
+    nav_laser.g = g
+
 nav_log.g = g
 nav_mqtt.g = g
 nav_tc.g = g
@@ -263,6 +266,9 @@ g.otherpos = None
 
 g.posnow = dict()
 
+# nav_laser
+g.dists = [0,0,0,0,0]
+
 wm.wminit()
 nav1.nav1init()
 if not g.simulate:
@@ -450,7 +456,7 @@ def init():
 
     #g.accf.write("%f %f %f %f %f %f %f %f %f %f %f %f\n" % (
     #x, y, g.vx, g.vy, g.px, g.py, x0, y0, vvx, vvy, g.ppx, g.ppy, g.ang))
-    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra droppedlog\n")
+    g.accf.write("x y vx vy px py x0 y0 vvx vvy ppx ppy ang angvel steering speed inspeed outspeed odometer z0 r rx ry acc finspeed fodometer t pleftspeed leftspeed fleftspeed realspeed can_ultra droppedlog dist1 dist2 dist3\n")
 
     g.accfqsize = 1000
     g.accfq = queue.Queue(g.accfqsize)
@@ -473,6 +479,8 @@ def init():
         start_new_thread(wm.readspeed2, ())
     if not g.simulate:
         start_new_thread_really(nav_imu.readgyro, ())
+    if not g.simulate:
+        start_new_thread_really(nav_laser.readdist, ())
     if not g.simulate:
         start_new_thread(driving.senddrive, ())
     if not g.simulate:
