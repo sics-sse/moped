@@ -369,7 +369,7 @@ def readspeed2():
             elif (data[0], data[1]) == (1,1):
                 sp = data[8]
                 st = data[9]
-                print("remotecontrol %d %d" % (sp, st))
+                #print("remotecontrol %d %d" % (sp, st))
                 send_to_ground_control("cancommand %d %d" % (sp, st))
 
                 if False:
