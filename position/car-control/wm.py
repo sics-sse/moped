@@ -3,9 +3,11 @@ import re
 import subprocess
 import random
 
-from math import sqrt, sin, cos, pi
+from math import sqrt, sin, cos, pi, asin
 
-from nav_tc import send_to_ground_control
+import nav_tc
+# If we do this, the circular dependency of wm - nav_tc - nav2 - wm catches us:
+#from nav_tc import send_to_ground_control
 
 from nav_log import tolog, tolog0
 
@@ -189,7 +191,7 @@ def readmarker0():
                 if g.adjust_t and it0 < g.adjust_t and False:
                     tolog0("POS: picture too old, we already adjusted %f %f" % (
                             it0, g.adjust_t))
-                    send_to_ground_control("mpos %f %f %f %f 0 %f" % (x,y,g.ang,time.time()-g.t0, g.inspeed))
+                    nav_tc.send_to_ground_control("mpos %f %f %f %f 0 %f" % (x,y,g.ang,time.time()-g.t0, g.inspeed))
                     continue
                 elif g.oldpos != None and it0_10 in g.oldpos:
                     (thenx, theny, thenang) = g.oldpos[it0_10]
@@ -231,7 +233,7 @@ def readmarker0():
                         doadjust_n = 1
                     else:
                         doadjust_n = 0
-                    send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,g.ang,time.time()-g.t0, doadjust_n, g.inspeed))
+                    nav_tc.send_to_ground_control("mpos %f %f %f %f %d %f" % (x,y,g.ang,time.time()-g.t0, doadjust_n, g.inspeed))
                     nav_mqtt.send_to_mqtt(x, y, ori)
                     g.lastpos = (thenx,theny)
                     g.px = x
@@ -309,10 +311,10 @@ def readmarker0():
                 recentmarkers = ['x'] + recentmarkers
             if len(recentmarkers) > 10:
                 recentmarkers = recentmarkers[0:10]
-            send_to_ground_control("markers %s" % " ".join(recentmarkers))
+            nav_tc.send_to_ground_control("markers %s" % " ".join(recentmarkers))
 
             if not accepted:
-                send_to_ground_control("badmarker %f %f" % (x,y))
+                nav_tc.send_to_ground_control("badmarker %f %f" % (x,y))
                 tolog0("marker5 %s %f %f" % (m, g.ang, ori))
         time.sleep(0.00001)
 
@@ -351,7 +353,7 @@ def readspeed2():
 
                         g.odometer = int(m.group(2))
                         if g.odometer != g.lastodometer:
-                            send_to_ground_control("odometer %d" % (g.odometer))
+                            nav_tc.send_to_ground_control("odometer %d" % (g.odometer))
                             g.lastodometer = g.odometer
                         #print("rsp-odo %d %d" % (g.inspeed, g.odometer))
 
@@ -370,7 +372,7 @@ def readspeed2():
                 sp = data[8]
                 st = data[9]
                 #print("remotecontrol %d %d" % (sp, st))
-                send_to_ground_control("cancommand %d %d" % (sp, st))
+                nav_tc.send_to_ground_control("cancommand %d %d" % (sp, st))
 
                 if False:
                     if g.last_send != None and (sp, st) != g.last_send:
@@ -481,6 +483,34 @@ def simulatecar():
         g.ang += (2*f-1) * 0
 
         time.sleep(dt*g.speedfactor)
-        send_to_ground_control("dpos %f %f %f %f 0 %f" % (
+        nav_tc.send_to_ground_control("dpos %f %f %f %f 0 %f" % (
                 g.ppx, g.ppy, g.ang, 0, g.finspeed))
         nav_mqtt.send_to_mqtt(g.ppx, g.ppy, g.ang)
+
+# x, y offsets from the center, in cm
+# and angle in degrees to the right of straight ahead
+distconfig = [(5.0, 25.0-7.0, asin(42.0/50.0)*180/pi),
+              (0.0, 25.0-4.0, asin(8.0/50.0)*180/pi),
+              (3.0, 25.0-5.0, asin(22.0/50.0)*180/pi),
+              ]
+
+def obstacles():
+    l = []
+    n = len(distconfig)
+    for i in range(0, n):
+        d = g.dists[i]
+        if d <= 0:
+            continue
+        xo = distconfig[i][0]
+        yo = distconfig[i][1]
+        ang = distconfig[i][2]
+        x = g.ppx + xo/100.0 + d/1000.0*sin((g.ang+ang)*pi/180)
+        y = g.ppy + yo/100.0 + d/1000.0*cos((g.ang+ang)*pi/180)
+        r = d/1000.0*2*sin(12.5*pi/180)
+        # if the obstacle is outside the road
+        # (must be made more general)
+        if x-r > 1.8+0.5 or x+r < 1.8-0.5:
+            continue
+        tup = (x, y, r)
+        l.append(tup)
+    return l
