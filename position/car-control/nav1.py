@@ -12,6 +12,7 @@ import nav_map
 import driving
 import nav2
 import nav_tc
+import wm
 
 def nav1init():
     g.user_pause = False
@@ -382,8 +383,19 @@ def planner1(qfromplanner, qtoplanner):
                     out(2, "1 path3_e %s -> " % (npath))
                     path3 = nav_map.insert_waypoints_l(npath)
 
-                    # An obstacle blocks the nodes 106 to 111 in our path
-                    path3 = overtake(path3, 106, 111)
+                    obs = wm.obstacles()
+                    print("obstacles1 %s" % (str(obs)))
+                    #print(" path %s" % (str(path3)))
+                    if obs != []:
+                        # An obstacle blocks the nodes 106 to 111 in our path
+                        node = nav_map.nsimple(path3[0])
+                        if len(path3) > 5:
+                            node5 = nav_map.nsimple(path3[5])
+                        else:
+                            node5 = nav_map.nsimple(path3[-1])
+                        # what if the overtaking has to go into the next
+                        # higher plan?
+                        path3 = overtake(path3, node, node5)
 
                     #path3_e = [(i, plann, 'test') for i in path3]
                     #path3_e = [((i, 'test'), plann) for i in path3]
