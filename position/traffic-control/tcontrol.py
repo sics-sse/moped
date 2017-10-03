@@ -104,6 +104,8 @@ def save_obstacle():
         add_obstacle(x, y)
 
 scale = 30
+#scale for making the scale 1:2 when printing a screenshot:
+#scale = 30*6/7.13
 
 xoffset = 0
 yoffset = 0
