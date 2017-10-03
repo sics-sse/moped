@@ -5,6 +5,8 @@ import nav_map
 import driving
 import nav_tc
 
+import wm
+
 from nav_log import tolog, tolog0, tolog2
 from nav_util import sign, dist, start_new_thread
 
@@ -92,6 +94,8 @@ def getdist(x2, y2):
 def goto_1(x, y):
     g.targetx = x
     g.targety = y
+
+    #print("obstacles2 %s" % (str(wm.obstacles())))
 
     missed = False
     inc = 0
