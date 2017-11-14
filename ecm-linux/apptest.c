@@ -195,11 +195,25 @@ void Can_Read_First_Frame(struct can_frame frame, uint8* package){
 }
 
 void Can_Read_Consecutive_Frame(struct can_frame frame, uint8* package){
-	//printf("infor: consecutive frame\r\n");
+  //printf("infor: consecutive frame\r\n");
     uint32 i = 0;
 	uint16 sequenceNumber = frame.data[0] & SEQUENCE_NUMBER;
 	//printf("sequenceNumber = %d\r\n", sequenceNumber);
 	if(sequenceNumber == nextFrameRead){
+
+#if 0
+	  printf("cons frame 1 (%d, %d): ", sequenceNumber, frame.can_id);
+		for (i = 0; i < CONSECUTIVE_FRAME_DATA_SIZE; i++) {
+		  printf(" %d", frame.data[i+CF_PCI_SIZE]);
+		}
+		printf("\r\n");
+	  printf("cons frame 2: ");
+		for (i = 0; i < CONSECUTIVE_FRAME_DATA_SIZE; i++) {
+		  printf(" %d", frame.data[i+CF_PCI_SIZE]);
+		}
+		printf("\r\n");
+#endif
+
 		//printf("nextFrameRead = %d\r\n", nextFrameRead);
 		for (i = 0; i < CONSECUTIVE_FRAME_DATA_SIZE; i++) {
 			package[package_read_index] = frame.data[i+CF_PCI_SIZE];
@@ -229,37 +243,96 @@ void Can_Read_Consecutive_Frame(struct can_frame frame, uint8* package){
 			//printf("//total %d\r\n", package_read_index);
 		}*/
 	}else{
-		//nothing
+	  //	  printf("wrong sequence number: %d (should be %d)\r\n",
+	  //		 sequenceNumber, nextFrameRead);
 	}
 }
 
+#define MAXPENDINGFRAMES 10000
+struct can_frame pendingframes[MAXPENDINGFRAMES];
+int pendingcanid = 0;
+int pendingframes_n = 0;
+
 uint8* Can_Read_Package (int can_socket, uint32 can_ID){
-	uint32 canID = 0;
-	//printf("infor: can read package\r\n");
-    do{
-		read(can_socket, &frame, sizeof(struct can_frame));
-		canID = frame.can_id;
-		if(canID != can_ID){
-		  if (((frame.data[0] & FRAME_TYPE) >> 4) == FIRST_FRAME) {
-		    printf("infor: p canId not match %d %d\r\n", canID, can_ID);
+  uint32 canID = 0;
+  //printf("infor: can read package (looking for %d)\r\n", can_ID);
+  int readpending;
+  int pending_i;
+  //  int j;
+  int n;
+  if (pendingcanid == can_ID) {
+    readpending = 1;
+    pending_i = 0;
+  } else {
+    readpending = 0;
+  }
+  do {
+    //printf("reading frame (%d) %d\r\n", can_ID, readpending);
+                if (readpending) {
+		  //printf("pending_i %d %d\r\n", pending_i, pendingframes_n);
+		  frame = pendingframes[pending_i];
+		  pending_i++;
+		  if (pending_i == pendingframes_n) {
+		    //printf("all pending read for %d\r\n", pendingcanid);
+		    readpending = 0;
+		    pendingframes_n = 0;
+		    pendingcanid = 0;
 		  }
-		  // The code used to return NULL here, which meant that we
-		  // gave up just because one foreign message appeared, and
-		  // with two senders it meant that we almost never could read
-		  // a full package.
-		  // Now, instead, it may happen that the message we wait for
-		  // was lost, and no other message will come. Then we just
-		  // loop here, which is not good.
-		  // The more reliable future solution is to keep separate buffers
-		  // for the possible senders.
-
-		  // Update: this needs more thought. While simultaneous
-		  // publishing works better with the change described above,
-		  // installation acknowledgements don't arrive anymore,
-		  // which is a worse problem.
-		  return NULL;
-
 		} else {
+		  n = read(can_socket, &frame, sizeof(struct can_frame));
+		  canID = frame.can_id;
+		  if (n < 0 && canID != can_ID) {
+		    return NULL;
+		  }
+
+#if 0
+		  printf("read frame: %d (%d)\r\n", canID, can_ID);
+		  for (j = 0; j < 8; j++) {
+		    printf(" %x", frame.data[j]);
+		  }
+		  printf("\r\n");
+#endif
+
+		  if(canID != can_ID){
+		    if (pendingframes_n == MAXPENDINGFRAMES) {
+		      printf("can't save pending frame for %d\r\n", canID);
+		    } else {
+		      //printf("pendingcanid %d -> %d\r\n", pendingcanid, canID);
+		      pendingcanid = canID;
+		      pendingframes[pendingframes_n] = frame;
+		      //printf("pendingframes_n %d\r\n", pendingframes_n);
+		      pendingframes_n++;
+		    }
+
+#if 0
+		    if (((frame.data[0] & FRAME_TYPE) >> 4) == FIRST_FRAME) {
+		      printf("infor: p canId not match %d %d\r\n",
+			     canID, can_ID);
+		    }
+#endif
+		    // The code used to return NULL here, which meant that we
+		    // gave up just because one foreign message appeared, and
+		    // with two senders it meant that we almost never could read
+		    // a full package.
+		    // Now, instead, it may happen that the message we wait for
+		    // was lost, and no other message will come. Then we just
+		    // loop here, which is not good.
+		    // The more reliable future solution is to keep separate
+		    // buffers for the possible senders.
+
+		    // Update: this needs more thought. While simultaneous
+		    // publishing works better with the change described above,
+		    // installation acknowledgements don't arrive anymore,
+		    // which is a worse problem.
+#if 0
+		    return NULL;
+#else
+		    continue;
+#endif
+		  }
+		}
+
+		{
 		  //printf("infor: can_id %d\r\n", canID);
 			frameType = (frame.data[0] & FRAME_TYPE) >> 4;
 			switch(frameType){
@@ -287,6 +360,46 @@ uint8* Can_Read_Package (int can_socket, uint32 can_ID){
 			}
 		}
 	}while(packageReadDone == false);
+  if (readpending) {
+    //printf("leaving: readpending 1: %d %d\r\n", pending_i, pendingframes_n);
+    if (pending_i != pendingframes_n) {
+      int i;
+#if 0
+      int j;
+      printf("handled frames:\r\n");
+      for (i = 0; i < pending_i; i++) {
+	for (j = 0; j < 8; j++) {
+	  printf(" %x", pendingframes[i].data[j]);
+	}
+	printf("\r\n");
+      }
+#endif
+
+      for (i = 0; i < pendingframes_n - pending_i; i++) {
+	pendingframes[i] = pendingframes[i+pending_i];
+      }
+
+#if 0
+      printf("next frames:\r\n");
+      for (i = 0; i < pending_i; i++) {
+	for (j = 0; j < 8; j++) {
+	  printf(" %x", pendingframes[i].data[j]);
+	}
+	printf("\r\n");
+      }
+#endif
+
+      pendingframes_n -= pending_i;
+      printf("pendingframes_n now %d, id %d\r\n",
+	     pendingframes_n, pendingcanid);
+    } else {
+      pendingframes_n = 0;
+      pendingcanid = 0;
+    }
+  } else {
+    //    printf("leaving: readpending 0: %d id %d\r\n",
+    //	   pendingframes_n, pendingcanid);
+  }
     packageReadDone = false;
 	return package; 
 }
@@ -420,46 +533,3 @@ while(1){*/
     return 0;
 }
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
