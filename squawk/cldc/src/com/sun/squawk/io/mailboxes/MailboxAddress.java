@@ -166,6 +166,7 @@ public final class MailboxAddress {
         
         if (finalAddress == null) {
             // something fell apart in callHandleOpen
+	    VM.println("lookupMailbox exception 1");
             throw new NoSuchMailboxException(name);
         }
 
@@ -190,8 +191,10 @@ public final class MailboxAddress {
      */
     public void send(Envelope env) throws AddressClosedException {
         if (state == CLOSED) {
+	    VM.println("send exception 1");
             throw new AddressClosedException(this);
         } else if (!mailbox.isOpen()) {
+	    VM.println("send exception 2");
             closeLocalState();
             throw new AddressClosedException(this);
         } else if (state == UNOWNED) {
@@ -213,8 +216,10 @@ public final class MailboxAddress {
      */
     void send0(Envelope env) throws AddressClosedException {
         if (state == CLOSED) {
+	    VM.println("send0 exception 1");
             throw new AddressClosedException(this);
         } else if (!mailbox.isOpen()) {
+	    VM.println("send0 exception 2");
             closeLocalState();
             throw new AddressClosedException(this);
         }
