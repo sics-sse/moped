@@ -10,6 +10,8 @@ public class DistPub extends PlugInComponent {
 	private PluginPPort fs;
 	private PluginRPort ff;
 	
+        public DistPub() {}
+
 	public DistPub(String[] args) {
 		super(args);
 	}
