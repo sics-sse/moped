@@ -210,7 +210,8 @@ public abstract class ObjectMemoryLoader {
         try {
             return load0(dis, uri, loadIntoReadOnlyMemory, false);
         } catch (ObjectMemory.GCDuringRelocationError e) {
-            throw new OutOfMemoryError("garbage collection occured while loading object memory from " + uri);
+	    VM.println("outofmemory 4");
+            throw new OutOfMemoryError("garbage collection occurred while loading object memory from " + uri);
         }
     }
     
@@ -240,8 +241,13 @@ public abstract class ObjectMemoryLoader {
         	
         	/* Shortcut for FRESTA plugins (loading bytecode from a hashtable instead of a file) */
         	if (url.startsWith("plugin://")) {
+#if 0
+		    VM.println("ObjectMemoryLoader: getpluginmemories");
+		    Hashtable ht = VM.getPluginObjectMemories();
+		    VM.println("ObjectMemoryLoader: getpluginmemories " + ht);
+#endif
             	byte[] pluginData = (byte[])VM.getPluginObjectMemories().get(url);
-		VM.println("ObjectMemoryFile: hash = " + VM.datahash(pluginData));
+		VM.println("ObjectMemoryLoader: hash = " + VM.datahash(pluginData));
             	if (pluginData != null) {
             		dis = new DataInputStream(new ByteArrayInputStream(pluginData));
             	}
@@ -722,19 +728,25 @@ class StandardObjectMemoryLoader extends ObjectMemoryLoader {
         String url = reader.getFileName();
         int size = buffer.length;
 
+	VM.println("relocateMemory 1");
+
         // Calculate the canonical starting address of the memory about to be loaded
         // based on the canonical starting address and size of the parent
         Address canonicalStart = parent == null ? Address.zero() : parent.getCanonicalEnd();
 
+	VM.println("relocateMemory 2");
         // If this is the mapper, then the memory model in com.sun.squawk.Address needs to be initialized/appended to
         if (VM.isHosted()) {
             NativeUnsafe.initialize(buffer, oopMap, parent != null);
         }
 
+	VM.println("relocateMemory 3");
         // Set up the address at which the object memory will finally reside
         final Address bufferAddress = VM.isHosted() ? canonicalStart : Address.fromObject(buffer);
+	VM.println("relocateMemory 4");
         final Address relocatedBufferAddress = (loadIntoReadOnlyMemory) ? GC.allocateNvmBuffer(size) : bufferAddress;
 
+	VM.println("relocateMemory 5");
         // Null the buffer object as there is no need for the relocation to test whether
         // or not the relocated buffer has moved which it won't have if it is in read-only
         // memory or this host environment is not Squawk
