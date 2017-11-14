@@ -452,6 +452,7 @@ public final class Address {
             try {
                 pool.put(value, addr);
             } catch (OutOfMemoryError e) {
+		VM.println("outofmemory 6");
                 throw new OutOfMemoryError("Failed to grow pool when adding " + value);
             }
         }
