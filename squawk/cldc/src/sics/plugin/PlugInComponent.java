@@ -131,6 +131,7 @@ public abstract class PlugInComponent implements Runnable {
 			try {
 				clientChannel = Channel.lookup(MAILBOX_NAME);
 				while (true) {
+				    VM.println("PlugInComponent 1");
 					ByteArrayEnvelope replyEnv = (ByteArrayEnvelope) clientChannel
 							.receive();
 					byte[] replyData = replyEnv.getData();
@@ -147,6 +148,7 @@ public abstract class PlugInComponent implements Runnable {
 				}
 
 			} catch (IOException ex) {
+			    VM.println("IOException " + ex);
 				ex.printStackTrace();
 			}
 		}
