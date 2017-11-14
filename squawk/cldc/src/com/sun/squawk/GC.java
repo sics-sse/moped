@@ -429,6 +429,7 @@ public class GC implements GlobalStaticFields {
         if (VM.isHosted()) {
         	nvmEnd = next;
         } else if (next.hi(nvmEnd)) {
+	    VM.println("outofmemory 1");
             throw VM.getOutOfMemoryError();
         }
         nvmAllocationPointer = next;
@@ -919,6 +920,7 @@ public class GC implements GlobalStaticFields {
                     VM.printOffset(heapEnd.diff(allocTop));
                     VM.println(" in total");
                 }
+		VM.println("outofmemory 2");
                 throw VM.getOutOfMemoryError();
             }
         }
