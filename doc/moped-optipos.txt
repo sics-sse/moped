@@ -20,6 +20,9 @@ center of the car.
 On the car, the image taking process is started at boot time, by the
 boot script /etc/init.d/optipos
 
+If you want to use the camera for some other purpose, kill this process or
+see to it that it is never started.
+
 
 
 In the repository, there are
