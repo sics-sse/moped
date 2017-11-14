@@ -39,7 +39,7 @@ public class VirtualIMUPPort extends EcuVirtualPPort {
 	private short[] parseIMU(long rawIMUVal) {
 		short[] res = new short[3];
 		res[0] = (short) ((rawIMUVal >> 32) & 0x0000FFFF);
-		res[1] = (short) ((rawIMUVal >> 16) & 0x00000000000000FF);
+		res[1] = (short) ((rawIMUVal >> 16) & 0x000000000000FFFF);
 		res[2] = (short) (rawIMUVal & 0x000000000000FFFF);
 		return res;
 	}
