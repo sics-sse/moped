@@ -17,6 +17,7 @@ public class VCUReadPluginDataFromSCUVirtualPPort extends EcuVirtualPPort {
 
 	public Object deliver(int portId) {
 		int pluginDataSize = VM.jnaReadPluginDataSizeFromSCU();
+		//VM.println("VCU<-SCU deliver");
 		// size should be larger than 4, cause the first 4 bytes represent
 		// destination plug-in port id, the rest of bytes are value
 		if (pluginDataSize <= 4) {
@@ -32,12 +33,14 @@ public class VCUReadPluginDataFromSCUVirtualPPort extends EcuVirtualPPort {
 				return null;
 			} else {
 				int valLength = pluginDataSize - 4;
+				VM.println("VCU<-SCU length " + valLength);
 				byte[] valBytes = new byte[valLength];
 				for (int i = 0; i < valLength ; i++) {
 					valBytes[i] = VM.jnaReadPluginDataByteFromSCU(i+4);
 				}
 				String res = new String(valBytes);
 				
+				VM.println("resetting datasize");
 				VM.jnaResetPluginDataSizeFromSCU();
 				return res;
 			}
