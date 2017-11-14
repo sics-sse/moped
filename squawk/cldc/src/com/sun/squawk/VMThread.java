@@ -363,9 +363,11 @@ public final class VMThread implements GlobalStaticFields {
      * @see        java.lang.Object#notify()
      */
     public static void sleep(long millis) throws InterruptedException {
+	//VM.println("VMThread sleep " + millis + " " + currentThread);
         if (millis < 0) {
             throw new IllegalArgumentException("negative sleep time");
         }
+	//VM.println("pending " + currentThread.pendingInterrupt);
         // Was the thread interrupted?
         currentThread.handlePendingInterrupt();
         if (millis > 0) {
@@ -1700,6 +1702,7 @@ VM.println("creating stack: " + stackSize);
      * Primitive method to choose the next executable thread.
      */
     private static void rescheduleNext() {
+	//VM.println("rescheduleNext 0");
         Assert.that(GC.isSafeToSwitchThreads());
         VMThread thread = null;
 
@@ -1713,14 +1716,17 @@ VM.println("creating stack: " + stackSize);
              */
             int event;
             while ((event = VM.getEvent()) != 0) {
+		//VM.println("rescheduleNext 11");
                 signalEvent(event);
             }
 
+	    //VM.println("rescheduleNext 2");
             /*
              * Add any threads waiting for a certain time that are now due.
              */
 //VM.println("Add any threads waiting for a certain time that are now due.");
             while ((thread = timerQueue.next()) != null) {
+		//VM.println("rescheduleNext3 " + thread + " " + thread.pendingInterrupt);
                 Assert.that(thread.isAlive());
                 Monitor monitor = thread.monitor;
                 /*
@@ -1732,20 +1738,25 @@ VM.println("creating stack: " + stackSize);
                     /* Stop wait for condvar, and make runnable.
                      * when eventually run, the code in monitorWait will attempt to grab the monitor.
                      */
+		    //VM.println("rescheduleNext 31");
                 } else {
                     /*
                      * Otherwise it is just waking up from a sleep() so it is now
                      * ready to run.
                      */
+		    //VM.println("rescheduleNext 32");
                     thread.setNotInQueue(Q_TIMER);
                 }
+		//VM.println("rescheduleNext 4");
                 addToRunnableThreadsQueue(thread);
+		//VM.println("rescheduleNext 5");
             }
 //VM.println("Break if there is something to do.");
             /*
              * Break if there is something to do.
              */
             if ((thread = runnableThreads.next()) != null) {
+		//VM.println("rescheduleNext break");
                 break;
             }
 
@@ -1776,6 +1787,7 @@ VM.println("creating stack: " + stackSize);
                 long oldWaitTimeTotal = getTotalWaitTime();
                 VM.waitForEvent(delta);
                 waitTime = VM.getTimeMillis() - waitTime;
+		//VM.println("rescheduleNext waitTime " + waitTime);
                 oldWaitTimeTotal += waitTime;
                 waitTimeHi32 = VM.getHi(oldWaitTimeTotal);
                 waitTimeLo32 = VM.getLo(oldWaitTimeTotal);
@@ -1787,8 +1799,11 @@ VM.println("creating stack: " + stackSize);
         /*
          * Set the next thread.
          */
+	//VM.println("rescheduleNext break 2");
         Assert.that(thread != null);
+	//VM.println("rescheduleNext break 3");
         thread.checkInQueue(Q_NONE);
+	//VM.println("rescheduleNext out");
         otherThread = thread;
     }
     
@@ -2338,6 +2353,7 @@ VM.println("creating stack: " + stackSize);
 /*if[DEBUG_CODE_ENABLED]*/
                 VM.println("monitorEnter:");
 /*end[DEBUG_CODE_ENABLED]*/
+		VM.println("outofmemory 5");
                 throw VM.getOutOfMemoryError();
             }
             monitor.depth++;
@@ -2458,7 +2474,9 @@ VM.println("creating stack: " + stackSize);
      * @throws InterruptedException if this thread's <i>interrupted status</i> is set
      */
     private void handlePendingInterrupt() throws InterruptedException {
+	//VM.println("handlePendingInterrupt");
         if (pendingInterrupt) {
+	    VM.println("handlePendingInterrupt throwing");
             pendingInterrupt = false;
             throw new InterruptedException();
         }
@@ -2668,10 +2686,13 @@ VM.println("creating stack: " + stackSize);
      * If none of the previous conditions hold then this thread's interrupt status will be set.
      */
     public void interrupt() {
+	VM.println("VMThread interrupt " + currentThread + " " + this + " " + state);
+
         if (state == ALIVE && currentThread != this) {
 //VM.print("Thread::interrupt - bcount = ");
 //VM.println(VM.branchCount());
 
+	    VM.println("VMThread interrupt 2");
             // Interrupt a join
             if (waitingToJoin != null) {
 
@@ -2713,7 +2734,9 @@ VM.println("creating stack: " + stackSize);
                     addToRunnableThreadsQueue(this);
                 }
             }
+	    VM.println("VMThread interrupt 3");
             pendingInterrupt = true;
+	    VM.println("VMThread interrupt 4");
         }
     }
     
