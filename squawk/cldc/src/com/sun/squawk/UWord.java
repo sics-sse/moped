@@ -331,6 +331,7 @@ public final class UWord {
             try {
                 pool.put(value, instance);
             } catch (OutOfMemoryError e) {
+		VM.println("outofmemory 3");
                 throw new OutOfMemoryError("Failed to grow pool when adding " + value);
             }
         }
