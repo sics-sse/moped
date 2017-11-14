@@ -186,6 +186,7 @@ public final class Mailbox {
          * @return an AddressClosedException to be thrown by Mailbox.receive().
          */
         public AddressClosedException handleClose(MailboxAddress address) {
+	    VM.println("handleClose create exception");
             return new AddressClosedException(address);
         }
     } // AnonymousMailboxHandler
@@ -266,6 +267,7 @@ public final class Mailbox {
                     MailboxAddress replyTo = env.getReplyAddress();
                     AddressClosedException e = handler.handleClose(replyTo);
                     if (e != null) {
+			VM.println("receive exception");
                         throw e;
                     } else {
                         env = null; // repeat outer while loop.
