@@ -337,6 +337,7 @@ public final class Offset {
             try {
                 pool.put(value, instance);
             } catch (OutOfMemoryError e) {
+		VM.println("outofmemory 7");
                 throw new OutOfMemoryError("Failed to grow instance pool when adding " + value);
             }
         }
