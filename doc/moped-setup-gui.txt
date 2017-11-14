@@ -37,6 +37,8 @@ and replace all occurrences of "merkur.sics.se/wp" in it to what is
 appropriate for you, for example "myhost.com/wordpress".
 
 7) Enter the fresta database dump into the SQL of wordpress.
+Now there is a user with administration privileges, 'arndt' with password
+'moped2015'.
 
 8) Add users to wordpress. Moped users should also be added to both the
 developer and engineer groups.
