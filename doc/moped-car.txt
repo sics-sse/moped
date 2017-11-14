@@ -38,7 +38,8 @@ the voltage level.
 XXX: write about what identifies a car
 
 
-On each of the cars, there is a camera, pointing upwards
+On each of the cars, there is a camera, pointing upwards. It is
+currently used by the optipos positional system (see moped-optipos.txt).
 
 Output (written by VM.println or printf) from SCU and VCU can be seen
 by connecting a serial cable to the UART pins. I used one with USB and
