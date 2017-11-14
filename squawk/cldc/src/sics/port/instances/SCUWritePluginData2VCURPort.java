@@ -25,6 +25,7 @@ public class SCUWritePluginData2VCURPort extends EcuVirtualRPort {
 		dataBytes[1] = (byte) (remotePortId >> 16);
 		dataBytes[2] = (byte) (remotePortId >> 8);
 		dataBytes[3] = (byte) (remotePortId);
+		VM.println("SCU->VCU deliver " + valLength + "(" + value + ")");
 		for(int i=0;i<valLength;i++) {
 			dataBytes[i+4] = valBytes[i];
 		}
