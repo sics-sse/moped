@@ -19,8 +19,7 @@ public class DistPub extends PlugInComponent {
 	public static void main(String[] args) {
 		VM.println("DistPub.main()");
 		DistPub publish = new DistPub(args);
-		publish.init();
-		publish.doFunction();
+		publish.run();
 		VM.println("DistPub-main done");
 	}
 
@@ -31,27 +30,44 @@ public class DistPub extends PlugInComponent {
 		ff = new PluginRPort(this, "ff");
 	}
 
-	public void run() {}
+	public void run() {
+	    init();
+	    try {
+		doFunction();
+	    } catch (InterruptedException e) {
+		VM.println("**************** Interrupted.");
+		return;
+	    }
+	}
 	
-	public void doFunction() {
+	public void doFunction() throws InterruptedException {
 		String data = "";
 		int cnt = 0;
 		VM.println("[DistPub X is running]");
 		while (true) {
 		    cnt += 1;
-		    int val = ff.readInt();
-		    data += " " + val;
-		    VM.println(data);
-		    if (cnt % 20 == 0) {
-			data = "DistPub| (" + cnt + ")" + data;
+		    int val;
+		    val = ff.readInt();
+		    //val = (2*cnt+1)%300+5;
+		    if (false) {
+			data += " " + val;
+			//VM.println(data);
+			if (cnt % 20 == 0) {
+			    data = "DistPub| (" + cnt + ")" + data;
+			    VM.println(data);
+			    fs.write(data);
+			    data = "";
+			    try {
+				Thread.sleep(2000);
+			    } catch (InterruptedException e) {
+				VM.println("Interrupted.");
+			    }
+			}
+		    } else {
+			data = "DistPub|" + cnt + " " + val + " ";
 			//VM.println(data);
 			fs.write(data);
-			data = "";
-			try {
-			    Thread.sleep(200);
-			} catch (InterruptedException e) {
-			    VM.println("Interrupted.");
-			}
+			//Thread.sleep(200);
 		    }
 		}
 	}
