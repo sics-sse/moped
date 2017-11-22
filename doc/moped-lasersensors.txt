@@ -34,11 +34,12 @@ On the TCU, the relevant files are put in /home/pi/lasersensor
 The values in g.dists are read by wm.obstacles, which has knowledge
 hard-coded about how the sensors are pointed. In the latest
 configuration, there are three: one pointing forward, one slightly to
-the right, and one due right (because in my simple scenario, the
-obstacles are expected to be to the right). The sectors of sight are
-meant to overlap slightly.  wm.obstacles computes for each sensor an
-interval of possible positions for the obstacle, and returns it as a
-position and a "radius".
+the right, and one more to the right (because in my simple scenario,
+the obstacles are expected to be to the right). The sectors of sight
+don't overlap, so they can miss small obstacles, but not a
+car. wm.obstacles computes for each sensor an interval of possible
+positions for the obstacle, and returns it as a position and a
+"radius".
 
 wm.obstacles is used in nav1. The details about the obstacles are not
 used; only whether there is one or not. If there is one, the plan is
