@@ -1,0 +1,76 @@
+VL53L0X
+
+I2C
+
+
+A small gotcha: the sensors are covered by a very small plastic film,
+which is hardly visible. Before this film is removed, the sensor
+doesn't work well.
+
+
+https://github.com/johnbryanmoore/VL53L0X_rasp_python/tree/master/Api/core/src
+fetched with git, copied to car 9 and built.
+cd johnbryanmoore/VL53L0X_rasp_python/python
+python3 -m VL53L0X_example
+
+
+Field of sight is about 25 degrees.
+
+
+moped/position/lasersensor
+The python files are modified a little, to be imported to the nav program.
+VL53L0X.py
+VL53L0X_example.py
+Functions 'setup' and 'scan', assuming three to five sensors.
+nav.py starts nav_laser.readdist in a thread, which calls 'scan', which
+constantly puts values (or -1) in the array g.dists.
+
+moped/position/car-control/nav_laser.py
+
+On the TCU, the relevant files are put in /home/pi/lasersensor
+.so files etc. are built on the TCU.
+
+
+The values in g.dists are read by wm.obstacles, which has knowledge
+hard-coded about how the sensors are pointed. In the latest
+configuration, there are three: one pointing forward, one slightly to
+the right, and one due right (because in my simple scenario, the
+obstacles are expected to be to the right). The sectors of sight are
+meant to overlap slightly.  wm.obstacles computes for each sensor an
+interval of possible positions for the obstacle, and returns it as a
+position and a "radius".
+
+wm.obstacles is used in nav1. The details about the obstacles are not
+used; only whether there is one or not. If there is one, the plan is
+adjusted so the car goes in the left lane instead for a while.
+
+
+Since the sensors are mounted so that nothing on the car is in the
+way, they don't notice another car unless the other car is equipped
+with something reflective, such as a piece of paper at the rear end.
+
+
+When the sensors get power, they all appear with the I2C address 0x29.
+They have to be given different addresses, and this is done by setting
+their xshut pin for all except one. The remaining one is then told
+to change address. This is done again until all have their own address.
+Electrically, for convenience, they are all connected to a breadboard.
+The xshut cables are connected individually to some free GPIO pins
+on the TCU, and the rest are connected in parallel to the usual I2C
+pins. The IMU also takes part on the breadboard but of course doesn't
+use an xshut line.
+
+
+The sensors have several modes: high speed, long range, high speed,
+good accuracy and better accuracy. The long range is up to 2m, and
+otherwise 1.2m, I think.  The fastest updating is 26ms (with five
+sensors). With BETTER_ACCURACY, it's 64ms, and with BEST_ACCURACY,
+it's 200ms.
+
+
+The black walls are almost invisible to the sensors, so if we want to
+see them, we can put tape of a more reflective colour on the walls.
+
+
+The sensors may react to the floor if they happen to be pointing slightly
+downwards.
