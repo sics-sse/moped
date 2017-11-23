@@ -1,0 +1,23 @@
+Simple experiments with overtaking.
+
+Car A follows a planned path along a road network. Car B stands still
+(turned off) in the way. When A detects it using distance sensors, it
+replans tactically so it uses the left lane to bypass B.
+
+See moped-lasersensors.txt for how the information of an obstacle is
+transmitted to the navigation code.
+
+In nav1.py, the simple logic is that when an obstacle is seen (and we know
+it must be a car in our way because we are far from the wall and we only
+look in directions where a car would be in the way), the next five
+nodes in our planning are changed so they are taken on the opposite
+lane instead of the normal lane in the function nav1.overtake. The data
+structure for a path was extended so it also contains an offset from the
+middle line, normally -0.25 but now first 0 and then +0.25.
+
+For running, we replace the usual 'eight' network with 'network2', which
+is only a straight path along the right wall. The start and end points
+get the numbers 101 and 114.
+
+g.lev = 2
+whole4([101,114])
