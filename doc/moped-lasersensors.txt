@@ -10,8 +10,6 @@ doesn't work well.
 
 https://github.com/johnbryanmoore/VL53L0X_rasp_python/tree/master/Api/core/src
 fetched with git, copied to car 9 and built.
-cd johnbryanmoore/VL53L0X_rasp_python/python
-python3 -m VL53L0X_example
 
 
 Field of sight is about 25 degrees.
@@ -27,8 +25,8 @@ constantly puts values (or -1) in the array g.dists.
 
 moped/position/car-control/nav_laser.py
 
-On the TCU, the relevant files are put in /home/pi/lasersensor
-.so files etc. are built on the TCU.
+On the TCU, the directory is copied to /home/pi/lasersensor and built there,
+which creates .so files etc.
 
 
 The values in g.dists are read by wm.obstacles, which has knowledge
@@ -53,13 +51,13 @@ with something reflective, such as a piece of paper at the rear end.
 
 When the sensors get power, they all appear with the I2C address 0x29.
 They have to be given different addresses, and this is done by setting
-their xshut pin for all except one. The remaining one is then told
-to change address. This is done again until all have their own address.
+their xshut pin for all except one. The remaining one is then told to
+change address. This is done again until all have their own address.
 Electrically, for convenience, they are all connected to a breadboard.
-The xshut cables are connected individually to some free GPIO pins
-on the TCU, and the rest are connected in parallel to the usual I2C
-pins. The IMU also takes part on the breadboard but of course doesn't
-use an xshut line.
+The xshut cables are connected individually to some free GPIO pins on
+the TCU (all that look free are not - some are used for CAN), and the
+rest are connected in parallel to the usual I2C pins. The IMU also
+takes part on the breadboard but of course doesn't use an xshut line.
 
 
 The sensors have several modes: high speed, long range, high speed,
@@ -70,8 +68,12 @@ it's 200ms.
 
 
 The black walls are almost invisible to the sensors, so if we want to
-see them, we can put tape of a more reflective colour on the walls.
+see them, we can put tape of a more reflective colour on the walls. Glass
+walls are invisible too.
 
 
 The sensors may react to the floor if they happen to be pointing slightly
 downwards.
+
+The connection between the cables and the breadboard is not particularly
+tight, so the risk is high that there is something loose somewhere.
