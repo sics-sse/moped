@@ -1,0 +1,36 @@
+Simple experiments with platooning.
+
+Car A runs on its own, and car B follows it.
+
+Detecting car A is not enough - B needs to know all the points where A
+has been. Traffic control now sends a car's position to all other cars,
+as soon as it gets it (function 'tell_other_cars').
+
+nav.platoon(other)
+
+g.posnow
+g.otherpos
+
+g.posnow contains the latest position, so that B can avoid running into
+A by adjusting the speed. g.otherpos is a queue of all positions, so that
+B can follow the same path as A, and not cut corners.
+
+B doesn't try to use any other information from A than position, such
+as speed or instructions to the motor/steering.
+
+Currently, in fact, B doesn't calculate the proper speed - A is assumed
+to have the speed 20.
+
+In the function nav.platoon, the lower-level navigating function nav2.goto_1
+is called, so there is no higher-level 4D/RCS planning for B.
+
+To run, put car A pointing north at a point with y < 15 and B a car
+length or two behind it.
+On B, run platoon('carA').
+On A, get it running autonomously. When it passes y = 15, carB will start
+to follow it.
+
+Future:
+
+Since the error in positioning is potentially as large as the preferred
+distance between the cars, some distance sensing should be added too.
