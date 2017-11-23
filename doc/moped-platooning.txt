@@ -1,6 +1,6 @@
 Simple experiments with platooning.
 
-Car A runs on its own, and car B follows it.
+Car A runs on its own, and car B follows it, using position data.
 
 Detecting car A is not enough - B needs to know all the points where A
 has been. Traffic control now sends a car's position to all other cars,
