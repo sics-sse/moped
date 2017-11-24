@@ -1,0 +1,8 @@
+Avoiding collisions in a road network.
+
+The network in question is the one defined by eight.py.
+
+As the cars move in the network, they tell TC where they are. TC then
+calculates whether any car needs to be notified about nearby cars to
+avoid.
+
