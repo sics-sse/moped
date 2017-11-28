@@ -1,3 +1,6 @@
+[Do not use build.sh explicitly - use moped/server/misc/buildall.sh after
+reading the information under moped/doc.]
+
 
 Arctic Core - the open source AUTOSAR embedded platform
 
