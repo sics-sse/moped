@@ -1,0 +1,49 @@
+The IMU contains a magnetometer, which can be used to get a rough idea
+of which way the car is pointing.
+
+The magnetic field in the three directions x, y and z can be obtained.
+To be able to use them properly, a calibration must be used at some
+time to get the minimum and maximum values for each.
+
+Since the car is supposed to be on a horizontal surface, the z
+direction is ignored, since it shouldn't vary. The y and z values as
+functions of the angle are supposed to be sine curves, one shifted 90
+degrees from the other.  Each value on its own is ambiguous, but
+together, they define a unique angle.
+
+nav_imu.py contains, under "if False", this code:
+
+                w = g.bus.read_i2c_block_data(imuaddress, 0x4c, 6)
+                mx0 = make_word(w[1], w[0])
+                my0 = make_word(w[3], w[2])
+                mz0 = make_word(w[5], w[4])
+
+                mx = float((mx0-g.mxmin))/(g.mxmax-g.mxmin)*2 - 1
+                my = float((my0-g.mymin))/(g.mymax-g.mymin)*2 - 1
+                mz = mz0
+
+                quot = (mx+my)/sqrt(2)
+                if quot > 1.0:
+                    quot = 1.0
+                if quot < -1.0:
+                    quot = -1.0
+                mang = (asin(quot))*180/pi+45
+                if mx < my:
+                    mang = 270-mang
+                    mang = mang%360
+
+                mang = -mang
+                mang = mang%360
+
+Initializating the IMU with
+        Write_Sensor(MPU9150_CONFIG, 0x02);
+seems to be important.
+
+The minimum and maximum values are set explicitly in nav.py, differently
+depending on which car it is. The difference seems mainly to be what
+the average value is.
+
+My conclusion is that we do get a rough angle but that the field
+varies too much in the building to be sure of an absolute direction,
+and even when it doesn't, the error is too large to for example go
+straight in a corridor.
