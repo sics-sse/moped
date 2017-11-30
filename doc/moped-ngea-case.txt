@@ -1,0 +1,53 @@
+In the NGEA and NGEA2 projects, scenarios were suggested which to some
+extent were realised using one or several MOPED cars.
+
+
+tcontrol_comm.py
+
+list         returns list of cars' IP addresses
+cargoto      tell a named car to go to (x, y), state "accident"
+ nav2.goto
+ sets g.signalling to True and starts signalling thread, which makes sound
+
+Ecm (CarMobile.java) + MyCar app
+port 9001
+Ecm.java: ecm.crashbytes
+
+nav.py connects to CarNav port 9002, gets bytes, puts them in crashbytes
+nav_comm.py
+open_socket2, port 9002
+open_socket3, 112 server
+nav.py: connect_to_ecm
+
+
+
+
+112 server
+and "ryssen"
+
+via Firebase, remote control?
+
+
+Two cars are involved: carA and Ambulance
+
+A passenger in carA has a mobile phone, and runs the app MyCar, and connects
+to carA on port 9001 (similar to the remote control, which uses port 9000).
+
+carA follows some plan, such as going around the road network. While
+doing that, it runs 'connect_to_ecm' in a thread. This function
+continuously sends a message to port 9002 on Ecm, which is received
+by CarNav and passed on via the static class member ecm.crashbytes to
+CarMobile. CarMobile has a connection to the mobile phone running MyCar.
+The message has a counter going from 0 to 8 and to 0 again.
+
+When carA encounters a high acceleration, it is seen as a crash, and
+a connection is opened to the 112 server, and a message sent there.
+A Json response is read, which is supposed to contain a phrase to speak.
+The car uses the loudspeaker to say the phrase ("this is emergency center;
+are you alright?" or something like that). Then the counter sent to
+MyCar is changed to 9 which indicates a crash.
+
+When the 112 server receives an accident message, it sends a message to
+Ambulance to go the place where carA said that it is.
+
+
