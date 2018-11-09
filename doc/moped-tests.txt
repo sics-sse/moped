@@ -149,8 +149,6 @@ When running run.py, you can inspect the position
 and it should correspond to the one in the file, or stay unchanged if
 the marker quality is too low.
 
-(g.x and g.y also exist, but denote the acceleration.)
-
 Make it move to a point 1m in front and to the left in the car area
 coordinate system (first make it ignore that it's not using the road network):
      g.maxoffroad = 4.0
