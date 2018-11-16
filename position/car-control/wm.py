@@ -413,6 +413,8 @@ def readspeed2():
 
                             #print((cnt,d))
                             g.can_ultra = d/100.0
+                            # maybe too often:
+                            nav_tc.send_to_ground_control("dist %d" % d)
                             # not used:
                             can_ultra_count = cnt
                         part2 = b""
@@ -489,9 +491,9 @@ def simulatecar():
 
 # x, y offsets from the center, in cm
 # and angle in degrees to the right of straight ahead
-distconfig = [(5.0, 25.0-7.0, asin(42.0/50.0)*180/pi),
-              (0.0, 25.0-4.0, asin(8.0/50.0)*180/pi),
-              (3.0, 25.0-5.0, asin(22.0/50.0)*180/pi),
+distconfig = [(5.0, 25.0-7.0, 56.5),
+              (0.0, 25.0-4.0, 7.4),
+              (3.0, 25.0-5.0, 25.4),
               ]
 
 def obstacles():
