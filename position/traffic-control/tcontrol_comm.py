@@ -795,6 +795,10 @@ def handlerun(conn, addr):
             elif l[0] == "message":
                 s = " ".join(l[1:])
                 c.v8.set(s)
+            elif l[0] == "dist":
+                d = int(l[1])
+                d = d/100.0
+                c.dist = d
             elif l[0] == "battery":
                 b = float(l[1])
                 c.battery_seen = time.time()
