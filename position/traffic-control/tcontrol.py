@@ -6,8 +6,8 @@ from math import cos, sin, pi
 from Tkinter import *
 
 sys.path.append("car-control")
-import network2 as eight
-#import eight
+#import network2 as eight
+import eight
 import nav_map
 
 #from tcontrol_comm import *
@@ -407,15 +407,15 @@ def carpos_event(event):
         r4 = g.w.create_line(x4, y4, x1, y1, fill=c.colour,width=4)
         r5 = g.w.create_line((x2+x3)/2,(y2+y3)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour,width=4)
         r6 = g.w.create_line((x1+x4)/2,(y1+y4)/2,(x1+x2)/2,(y1+y2)/2, fill=c.colour,width=4)
+        dlen = c.dist * scale
+        #r7 = g.w.create_line((x1+x2)/2, (y1+y2)/2, (x1+x2)/2 + dlen*(x2-x3), (y1+y2)/2 +dlen*(y2-y3), fill="yellow", width=6)
+        coords = ((x1+x2)/2-dlen, (y1+y2)/2-dlen, (x1+x2)/2+dlen, (y1+y2)/2+dlen)
+        #print(coords)
+        r7 = g.w.create_arc(coords, start=-c.ang+90-30, extent=30*2, fill="yellow", outline="yellow")
         if c.currentpos != None:
-            (or1, or2, or3, or4, or5, or6) = c.currentpos
-            g.w.delete(or1)
-            g.w.delete(or2)
-            g.w.delete(or3)
-            g.w.delete(or4)
-            g.w.delete(or5)
-            g.w.delete(or6)
-        c.currentpos = (r1, r2, r3, r4, r5, r6)
+            for orr in c.currentpos:
+                g.w.delete(orr)
+        c.currentpos = (r1, r2, r3, r4, r5, r6, r7)
 #        r1 = g.w.create_line(x-2, y-2, x+2, y+2)
 #        r2 = g.w.create_line(x-2, y+2, x+2, y-2)
         if False:
