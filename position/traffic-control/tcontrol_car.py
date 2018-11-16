@@ -39,6 +39,8 @@ class Car:
 
         self.t0 = time.time()
 
+        self.dist = 0
+
         self.alive = False
 
         self.waitingat = None
