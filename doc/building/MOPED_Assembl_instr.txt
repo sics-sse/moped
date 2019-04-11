@@ -1,0 +1,100 @@
+Model Car Chassis including servo
+ESC
+Sensored Brushless Motor
+Rechargable battery
+Raspberry pi model B+ x2
+Raspberry Pi model 3 B+
+Micro SDHC cards x3
+5V power supply (BEC)
+Reflective Sensor Wheelspeed x2
+Ultrasonic Sensor
+3DOF IMU Acc/Gyro/Mag sensor
+A/D converter
+Servo
+Resistors (2x 1kohm, 2.2 kohm, 270 ohm, 560 ohm)
+Micro USB Harness x3
+CAN-cards x3
+Jumper cables
+Wires
+Shinkage tube
+headers 2.54 spacing
+Charger
+Programming Card
+Screws (m4,m3,m2.5)
+Bolts (m4,m3,m2.5)
+washers (m4,m3,m2.5)
+
+
+Steps:
+Stage I: Car
+If you are building the chassis yourself, here are some tips:
+1. DO NOT, I reapeat, DO NOT use an o-ring on the outside bolt of the suspension (the one that the spring rests on). It will just get stuck and break the construction.
+2. To more easly screw in the screws, you can widen the initial gap with a screwdriver (twist it around a bit) and then use a more wide-threaded screw to widen the hole
+3. Replace the screws in step 6-1 with some longers (there are 2 15 mm screws in the replacment bag you can use)
+
+1. Start Without the wheels
+2. Make sure the back body holder is in the correct hight. See pictures for information.
+[Image_I_2_1.jpg,Image_I_2_2.jpg]
+3. For the Body holder, widen the holes to Ø4mm. This is because the m4 nut fits inside the holder.
+[Image_I_3_1.jpg]
+4. Fasten some m4 screws and bolt on the body holder, so that they can later be used to fasten the board on top of the car.
+[Image_I_4_1.jpg]
+5. Fasten the ESC with some dubble-adhisive tape, see picture.
+[Image_I_5_1.jpg,Image_I_5_2.jpg]
+6. Solder the ESC wires to the engine. Make sure to put some Shrinking cables on the wires first, and that the A Cable goes to the spot marked for A, and the same for B and C. Add the additional sensor wire between the engine and the ESC.
+[Image_I_6_1.jpg,Image_I_6_2.jpg]
+7. Solder the ESC to a battery plug, and add 2 aditional cables to the UBEC power supply. Additionally, solder a battery sensor wire. Don't forget about shinkage tubes. See pictures
+[Image_I_7_1.jpg,Image_I_7_2.jpg,Image_I_7_3.jpg,Image_I_7_4.jpg,Image_I_7_5.jpg]
+8. Fasten the Reflective sensores on the right hand side of the car, and make sure the wires will not get in the way of the wheels. You can remove the plastic tabs if they get in the way. Lead the wires from the sensor to the top of the car.
+[Image_I_8_1.jpg,Image_I_8_2.jpg]
+9. Fasten 5 pieces of reflective tape on the inside of 2 of the wheels. make sure it's symmetrically aligned.
+[Image_I_9_1.jpg]
+10.Fasten the wheels, making sure the reflective tape wheels is on the right hand side. Make sure the wheels are aligned. (the back wheels should point inwards, that's ok)
+11. Pit a cable on the "S" hole in the "RX" group on the ESC. (we will be using a gray cable)
+[Image_I_11_1.jpg,Image_I_Done.jpg]
+
+Stage II: Board
+1. Cut and drill the Board out of Plexiglas (acrylic glass). We used a 500x250x4mm piece. It is not recommended to use a thicker piece then 5mm, and 3mm thick piece should work fine. 
+For drilling, make sure the holes for fastening the car is at least 4 mm. As we will be using washers, you can drill every hole slightly bigger. The front pair should have 115 mm between them, and the back should have 110 mm between them. Make sure the front and back pair have 326 mm in between them.
+Here is the blueprint we used. The holes for the ultrasonic sensor is 3 mm (4 holes), the the IMU-holes are 3 mm, The hole in the middle is 32 mm thick, all the holes for the PI-holders are 3.2 mm, the camera have 3 mm holes, the LED holes have 5 mm.
+1 unmarked hole we had was a 3mm hole just below the 32mm hole, to fasten the battery cables.
+[Image_II_1_1.jpg,Image_II_1_2.png]
+2. Fasten the computers to the board. Use 3 mm screws. Remove the bottom right PI-holder (see picture), fastend the distancing screws and nuts on the PI card, fastend the pi-card, mount the long GPIO header on the GPIO, attach the CAN-card (make sure to solder a header on the CAN cards, something we forgot in these pictures), add the header from the can card on the GPIO header, and then fasten the distancing screws. Make sure the Pi 3 card (back in our case) has the camera attached to it. Pictures for reference
+[Image_II_2_1.jpg,Image_II_2_2.jpg,Image_II_2_3.jpg,Image_II_2_4.jpg,Image_II_2_5.jpg,Image_II_2_6.jpg,Image_II_2_7.jpg,Image_II_2_8.jpg,Image_II_2_9.jpg,Image_II_2_10.jpg,Image_II_2_11.jpg,Image_II_2_12.jpg,Image_II_2_13.jpg,Image_II_2_14.jpg,Image_II_2_15.jpg,Image_II_2_16.jpg,Image_II_2_17.jpg,Image_II_2_18.jpg]
+3. Fasten the camera with screws and double-sided adhesive tape.
+[Image_II_3_1.jpg]
+4. Solder the header on the IMU board and fasten it with double-sided adhisive tape and screws.
+[Image_II_4_1.jpg,Image_II_4_2.jpg]
+5. Fasten the Ultrasonic sensor in the front with double sided adhisive tape and some zip-ties.
+[Image_II_5_1.jpg]
+6. Solder the A/D card and fasten it with tape and screws. See here for how we solder it.
+[Image_II_6_1.jpg]
+7. Fasten the 5V power supply (UBEC) and some of the cable manegement fasteners. Put some ZIP ties on the fasterners. Picture for how our board looked at this state.
+[Image_II_7_1.jpg,Image_II_7_2.jpg]
+8. Start solder the LED. The 2 yellow ones should have 91 ohm resistor on their Cathode, while the red one should have a 130 ohm. sodler the anodes together, so you end up with 4 different wires coming from the LEDs (1 +5 V, and 3 diffrent GPIO).
+[Image_II_8_1.jpg,Image_II_8_2.jpg,Image_II_8_3.jpg,Image_II_8_4.jpg,Image_II_8_5.jpg,Image_II_8_6.jpg]
+9. Measure the length of the USB cables. We did it by leading the cables in the possition they will be in, and then cutting them on the far side of the hole in the middle.
+[Image_II_9_1.jpg]
+10. solder the Micro usb cables together with on of the output cables from the power supply
+[Image_II_10_1.jpg,Image_II_10_2.jpg,Image_II_10_3.jpg]
+11. fasten the USB cables, and draw some wires between the CAN_L and CAN_H slots on the CAN cards. They can be twisted around eachother.
+[Image_II_11_1.jpg]
+
+Stage III:
+1. Fasten the board on the car.
+2. (optional) use a zip tie to fasten the battery cable to the board.
+3. Put a header on the battery sensor wire and attach it to the A/D converter, Pin 2 on the IC circuit.
+[Image_III_3_1.jpg]
+4. Solder the UBEC to the battery wires. (attention! this will be the only point were the board is permenantly fastened to the car. It might be wise to put some plug instead of soldering the wires together!)
+5. The ECHO connector on the Ultrasonic sensor need a 2.2 kohm resistor. We soldered it on the wire as pictured.
+[Image_III_5_1.jpg]
+6. Measure the distance on the LED wires and then fasten headers on them.
+[Image_III_6_1.jpg]
+7. The reflective sensor need a 1 kohm resistor on it's sensor wire. solder it and headers on the sensor, 5V and GND wire.
+[Image_III_7_1.jpg]
+8. Trim down the header on the second UBEC output so that it is 2 headers wide, put two pins into it and fasten it with the steering servo, together with a signal cable (orange). Use some Electric tape to secure it.
+[Image_III_8_1.jpg,Image_III_8_2.jpg]
+9. Run all the cables and connect them to the computers. Check the charts to see how the wires were connected as of writing this guide.
+
+Complete!
+[Image_III_Done_1.jpg,Image_III_Done_2.jpg]

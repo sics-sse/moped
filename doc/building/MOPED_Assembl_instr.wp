@@ -1,0 +1,220 @@
+<pre>
+Model Car Chassis including servo
+ESC
+Sensored Brushless Motor
+Rechargable battery
+Raspberry pi model B+ x2
+Raspberry Pi model 3 B+
+Micro SDHC cards x3
+5V power supply (BEC)
+Reflective Sensor Wheelspeed x2
+Ultrasonic Sensor
+3DOF IMU Acc/Gyro/Mag sensor
+A/D converter
+Servo
+Resistors (2x 1kohm, 2.2 kohm, 270 ohm, 560 ohm)
+Micro USB Harness x3
+CAN cards x3
+Jumper cables
+Wires
+Shrinkage tube
+headers 2.54 spacing
+Charger
+Programming Card
+Screws (m4,m3,m2.5)
+Bolts (m4,m3,m2.5)
+washers (m4,m3,m2.5)
+</pre>
+
+Steps:
+
+Stage I: Car
+
+If you are building the chassis yourself, here are some tips:
+<p>
+1. DO NOT, I reapeat, DO NOT use an o-ring on the outside bolt of the suspension (the one that the spring rests on). It will just get stuck and break the construction.
+<p>
+2. To more easly screw in the screws, you can widen the initial gap with a screwdriver (twist it around a bit) and then use a more wide-threaded screw to widen the hole.
+<p>
+3. Replace the screws in step 6-1 with some longer ones (there are two 15 mm screws in the replacment bag you can use).
+<p>
+1. Start without the wheels.
+<p>
+2. Make sure the back body holder is in the correct height. See pictures for information.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_2_11.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_2_11.jpg" alt="Image_I_2_11" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_2_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_2_2.jpg" alt="Image_I_2_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+3. For the Body holder, widen the holes to Ø4mm. This is because the m4 nut fits inside the holder.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_3_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_3_1.jpg" alt="Image_I_3_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+4. Fasten some m4 screws and bolt on the body holder, so that they can later be used to fasten the board on top of the car.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_4_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_4_1.jpg" alt="Image_I_4_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+5. Fasten the ESC with some double-adhesive tape, see picture.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_5_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_5_1.jpg" alt="Image_I_5_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_5_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_5_2.jpg" alt="Image_I_5_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+6. Solder the ESC wires to the engine. Make sure to put some Shrinking cables on the wires first, and that the A Cable goes to the spot marked for A, and the same for B and C. Add the additional sensor wire between the engine and the ESC.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_6_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_6_1.jpg" alt="Image_I_6_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_6_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_6_2.jpg" alt="Image_I_6_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+7. Solder the ESC to a battery plug, and add two additional cables to the UBEC power supply. Additionally, solder a battery sensor wire. Don't forget about shrinkage tubes. See pictures.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_1.jpg" alt="Image_I_7_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_2.jpg" alt="Image_I_7_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_3.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_3.jpg" alt="Image_I_7_3" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_4.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_4.jpg" alt="Image_I_7_4" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_5.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_7_5.jpg" alt="Image_I_7_5" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+8. Fasten the Reflective sensors on the right hand side of the car, and make sure the wires will not get in the way of the wheels. You can remove the plastic tabs if they get in the way. Lead the wires from the sensor to the top of the car.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_8_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_8_1.jpg" alt="Image_I_8_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_8_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_8_2.jpg" alt="Image_I_8_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+9. Fasten 5 pieces of reflective tape on the inside of two of the wheels. Make sure it's symmetrically aligned.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_9_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_9_1.jpg" alt="Image_I_9_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+10. Fasten the wheels, making sure the reflective tape wheels are on the right hand side. Make sure the wheels are aligned. (The back wheels should point inwards, that's ok.)
+<p>
+11. Put a cable on the "S" hole in the "RX" group on the ESC. (We will be using a gray cable.)
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_11_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_11_1.jpg" alt="Image_I_11_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_Done.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_I_Done.jpg" alt="Image_I_Done" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+
+Stage II: Board
+<p>
+1. Cut and drill the Board out of Plexiglas (acrylic glass). We used a 500x250x4mm piece. It is not recommended to use a thicker piece than 5mm, and 3mm thick piece should work fine. 
+For drilling, make sure the holes for fastening the car are at least 4 mm. As we will be using washers, you can drill every hole slightly bigger. The front pair should have 115 mm between them, and the back should have 110 mm between them. Make sure the front and back pair have 326 mm in between them.
+Here is the blueprint we used. The holes for the ultrasonic sensor is 3 mm (4 holes), the the IMU-holes are 3 mm, The hole in the middle is 32 mm thick, all the holes for the PI-holders are 3.2 mm, the camera has 3 mm holes, the LED holes have 5 mm.
+<p>
+One unmarked hole we had was a 3mm hole just below the 32mm hole, to fasten the battery cables.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_1_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_1_1.jpg" alt="Image_II_1_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+
+
+
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_1_2.png"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_1_2.png" alt="Image_II_1_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+
+
+
+<p>
+2. Fasten the computers to the board. Use 3 mm screws. Remove the bottom right PI-holder (see picture), fasten the distancing screws and nuts on the PI card, fastend the pi-card, mount the long GPIO header on the GPIO, attach the CAN card (make sure to solder a header on the CAN cards, something we forgot in these pictures), add the header from the can card on the GPIO header, and then fasten the distancing screws. Make sure the Pi 3 card (back in our case) has the camera attached to it. Pictures for reference.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_1.jpg" alt="Image_II_2_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+
+
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_21.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_21.jpg" alt="Image_II_2_21" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+
+
+
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_3.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_3.jpg" alt="Image_II_2_3" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_4.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_4.jpg" alt="Image_II_2_4" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_51.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_51.jpg" alt="Image_II_2_51" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_61.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_61.jpg" alt="Image_II_2_61" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_71.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_71.jpg" alt="Image_II_2_71" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_8.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_8.jpg" alt="Image_II_2_8" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_91.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_91.jpg" alt="Image_II_2_91" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_101.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_101.jpg" alt="Image_II_2_101" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_11.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_11.jpg" alt="Image_II_2_11" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_12.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_12.jpg" alt="Image_II_2_12" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_13.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_13.jpg" alt="Image_II_2_13" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_14.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_14.jpg" alt="Image_II_2_14" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_15.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_15.jpg" alt="Image_II_2_15" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_16.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_16.jpg" alt="Image_II_2_16" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_17.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_17.jpg" alt="Image_II_2_17" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_18.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_2_18.jpg" alt="Image_II_2_18" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+3. Fasten the camera with screws and double-sided adhesive tape.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_3_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_3_1.jpg" alt="Image_II_3_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+4. Solder the header on the IMU board and fasten it with double-sided adhesive tape and screws.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_4_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_4_1.jpg" alt="Image_II_4_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_4_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_4_2.jpg" alt="Image_II_4_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+5. Fasten the Ultrasonic sensor in the front with double-sided adhesive tape and some zip-ties.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_5_11.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_5_11.jpg" alt="Image_II_5_11" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+6. Solder the A/D card and fasten it with tape and screws. See here for how we solder it.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_6_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_6_1.jpg" alt="Image_II_6_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+7. Fasten the 5V power supply (UBEC) and some of the cable management fasteners. Put some ZIP ties on the fasteners. Pictures of how our board looked at this state.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_7_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_7_1.jpg" alt="Image_II_7_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_7_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_7_2.jpg" alt="Image_II_7_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+8. Start soldering the LED. The two yellow ones should have a 91 ohm resistor on their Cathode, while the red one should have a 130 ohm. solder the anodes together, so you end up with 4 different wires coming from the LEDs (1 +5 V, and 3 different GPIO).
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_1.jpg" alt="Image_II_8_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_2.jpg" alt="Image_II_8_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_3.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_3.jpg" alt="Image_II_8_3" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_4.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_4.jpg" alt="Image_II_8_4" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_5.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_8_5.jpg" alt="Image_II_8_5" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+9. Measure the length of the USB cables. We did it by leading the cables in the position they will be in, and then cutting them on the far side of the hole in the middle.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_9_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_9_1.jpg" alt="Image_II_9_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+10. Solder the Micro usb cables together with one of the output cables from the power supply.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_1.jpg" alt="Image_II_10_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_2.jpg" alt="Image_II_10_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_3.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_10_3.jpg" alt="Image_II_10_3" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+11. Fasten the USB cables, and draw some wires between the CAN_L and CAN_H slots on the CAN cards. They can be twisted around each other.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_11_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_II_11_1.jpg" alt="Image_II_11_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+
+Stage III:
+<p>
+1. Fasten the board on the car.
+<p>
+2. (optional) use a zip tie to fasten the battery cable to the board.
+<p>
+3. Put a header on the battery sensor wire and attach it to the A/D converter, Pin 2 on the IC circuit.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_3_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_3_1.jpg" alt="Image_III_3_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+4. Solder the UBEC to the battery wires. (attention! this will be the only point were the board is permanently fastened to the car. It might be wise to put some plug instead of soldering the wires together!)
+<p>
+5. The ECHO connector on the Ultrasonic sensor needs a 2.2 kohm resistor. We soldered it on the wire as pictured.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_5_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_5_1.jpg" alt="Image_III_5_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+6. Measure the distance on the LED wires and then fasten headers on them.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_6_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_6_1.jpg" alt="Image_III_6_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+7. The reflective sensor need a 1 kohm resistor on it's sensor wire. solder it and headers on the sensor, 5V and GND wire.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_7_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_7_1.jpg" alt="Image_III_7_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+8. Trim down the header on the second UBEC output so that it is 2 headers wide, put two pins into it and fasten it with the steering servo, together with a signal cable (orange). Use some Electric tape to secure it.
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_8_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_8_1.jpg" alt="Image_III_8_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_8_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_8_2.jpg" alt="Image_III_8_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<p>
+9. Run all the cables and connect them to the computers. Check the charts to see how the wires were connected as of writing this guide.
+<p>
+
+Complete!
+<p>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_Done_1.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_Done_1.jpg" alt="Image_III_Done_1" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
+<a href="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_Done_2.jpg"><img src="http://193.10.66.250/wp/wp-content/uploads/2016/10/Image_III_Done_2.jpg" alt="Image_III_Done_2" width="3264" height="2448" class="alignnone size-full wp-image-416" /></a>
